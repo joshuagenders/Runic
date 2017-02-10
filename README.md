@@ -13,6 +13,7 @@ Data can be passed into the tests as a dependency from the test database. The te
 ## Runic UI
 Runic UI provides user access to the test lab and oracle functionality. The UI should be interactive, drag and drop etc. Can be used to create and execute test plans. The oracle is used to analyse the test results in depth and perform functional checks. 
 Want to use React for the framework.
+Might also add the ability to save test plans and have scheduled runs, as a second stage. Will also introduce more templated analytics at a later stage.
 
 ## The Oracle
 Verify results out of a datastore using an oracle
