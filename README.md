@@ -12,6 +12,7 @@ Data can be passed into the tests as a dependency from the test database. The te
 
 ## Runic UI
 Runic UI provides user access to the test lab and oracle functionality. The UI should be interactive, drag and drop etc. Can be used to create and execute test plans. The oracle is used to analyse the test results in depth and perform functional checks. 
+Want to use React for the framework.
 
 ## The Oracle
 Verify results out of a datastore using an oracle
@@ -32,6 +33,8 @@ Threads: 800
 RampUpMinutes: 10
 RampDownMinutes: 10
 ExecutionLengthMinutes: 60
+
+Should be able to write a test that asks the reporting db for stats, and tests where we haven't been testing much recently.
 
 ## OrientDb
 I'm going to give OrientDb a go as a database. I want to see if we can implement queries for runes faster.
