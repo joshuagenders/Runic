@@ -39,3 +39,5 @@ Need a way to regularly clean out expired runes.
 
 ## Kamon
 I hope to use kamon for Graphana functionality
+
+![Architecture draft](draft.png)
