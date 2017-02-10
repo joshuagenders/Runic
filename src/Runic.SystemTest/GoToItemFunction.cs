@@ -4,8 +4,6 @@ using Runic.Exceptions;
 using Runic.Orchestration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Runic.SystemTest
 {
@@ -30,5 +28,10 @@ namespace Runic.SystemTest
         {
             return "";
         }
+    }
+
+    internal class SearchResult
+    {
+        public List<string> itemIds { get; set; }
     }
 }
