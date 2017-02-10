@@ -4,8 +4,6 @@ using Newtonsoft.Json;
 using Runic.Data;
 using System.Threading.Tasks;
 using Runic.Query;
-using System.Text;
-using System.Text.Encodings.Web;
 
 namespace Runic.Clients
 {
@@ -20,16 +18,15 @@ namespace Runic.Clients
             _config = config;
             _client.BaseAddress = new Uri(_config.BaseUri);
         }
-        //async
+
         public async Task<HttpResponseMessage> SendRune(Rune rune)
         {
             return await _client.PostAsync("/runes", new StringContent(JsonConvert.SerializeObject(rune)));
         }
 
-        public async Task<HttpResponseMessage> RetrieveRune(RuneQuery query)
+        public async Task<HttpResponseMessage> RetrieveRune(params RuneQuery[] queries)
         {
-            var encoder = new HtmlEncoder();
-            return await _client.GetAsync("/runes", .new StringContent(JsonConvert.SerializeObject(rune)));
+            return await _client.PostAsync("/query", new StringContent(JsonConvert.SerializeObject(queries)));
         }
     }
 
