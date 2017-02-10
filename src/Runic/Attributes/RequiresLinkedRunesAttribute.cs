@@ -2,6 +2,7 @@
 
 namespace Runic.Attributes
 {
+    [AttributeUsage(AttributeTargets.Method)]
     public class RequiresLinkedRunesAttribute : Attribute
     {
         private string _propertyName { get; set; }

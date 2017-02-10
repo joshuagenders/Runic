@@ -2,6 +2,7 @@
 
 namespace Runic.Attributes
 {
+    [AttributeUsage(AttributeTargets.Method)]
     public class MinesRunesAttribute : Attribute
     {
         private string[] _runes { get; set; }

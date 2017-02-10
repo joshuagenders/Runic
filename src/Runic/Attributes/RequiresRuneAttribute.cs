@@ -2,6 +2,7 @@
 
 namespace Runic.Attributes
 {
+    [AttributeUsage(AttributeTargets.Method)]
     public class RequiresRunesAttribute : Attribute
     {
         private string[] _runes { get; set; }
