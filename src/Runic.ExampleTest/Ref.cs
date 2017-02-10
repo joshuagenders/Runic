@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Runic.SystemTest
+namespace Runic.ExampleTest
 {
     public class Ref
     {

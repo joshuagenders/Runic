@@ -2,7 +2,7 @@
 using Runic.Data;
 using Runic.Orchestration;
 
-namespace Runic.SystemTest
+namespace Runic.ExampleTest
 {
     public class LoginFunction
     {

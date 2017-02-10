@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 
-namespace Runic.SystemTest
+namespace Runic.ExampleTest
 {
     public class PlaceOrderFunction
     {

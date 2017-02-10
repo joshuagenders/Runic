@@ -1,4 +1,4 @@
-﻿namespace Runic.SystemTest
+﻿namespace Runic.ExampleTest
 {
     public class ExampleResponse
     {
