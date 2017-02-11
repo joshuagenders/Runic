@@ -15,6 +15,7 @@ namespace RunicOracle
             //can load interpreters dynamically which assess the results of tests based, gets fed results
             //can also be used to discern information and report from the interpreter - how many tests go down which path etc.
             //works as test reporting as well as test assessment, probably need to use python for this
+            //can maybe interpret linq predicates?
         }
     }
 }
