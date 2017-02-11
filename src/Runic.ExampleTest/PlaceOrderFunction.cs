@@ -2,7 +2,7 @@
 using Runic.Attributes;
 using Runic.Data;
 using Runic.Orchestration;
-using Runic.Query;
+using RunicCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;

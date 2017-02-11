@@ -1,6 +1,5 @@
-﻿using Newtonsoft.Json;
-using Runic.Clients;
-using Runic.Query;
+﻿using Runic.Clients;
+using RunicCore.Query;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

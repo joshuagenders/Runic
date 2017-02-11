@@ -2,7 +2,7 @@
 using System.Reflection;
 using Xunit;
 
-namespace Runic.UnitTest
+namespace Runic.UnitTest.Runic
 {
     public class TestAttributes
     {

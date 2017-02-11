@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RuneDbApi.Services
 {
-    public class QueryPlanService
+    public class QueryPlanService : IService
     {
+        public void Execute()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

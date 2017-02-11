@@ -1,14 +1,13 @@
 ﻿using Moq;
-using Newtonsoft.Json;
 using Runic.Clients;
 using Runic.Data;
-using Runic.Query;
+using RunicCore.Query;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Runic.UnitTest
+namespace Runic.UnitTest.Runic
 {
     public class TestDbClient
     {
