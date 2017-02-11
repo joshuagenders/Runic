@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using React.AspNet;
 
-namespace RunicUI
+namespace Runic.UI
 {
     public class Startup
     {
