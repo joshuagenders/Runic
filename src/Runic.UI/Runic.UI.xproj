@@ -6,8 +6,8 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>94bd047c-e10a-4ea2-ba73-4e954ae069c8</ProjectGuid>
-    <RootNamespace>RuneDbApi</RootNamespace>
+    <ProjectGuid>50f8a605-8dbe-4ff4-b4b1-4552f751a6f6</ProjectGuid>
+    <RootNamespace>Runic.UI</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
