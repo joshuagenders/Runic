@@ -15,8 +15,13 @@ namespace Runic.UnitTest
         [Fact]
         public void TestMockedMine()
         {
+            var testRune = new Rune()
+            {
+                Name = "TestName1"
+            };
+
             Mock<IRuneClient> clientMock = new Mock<IRuneClient>();
-            clientMock.Setup(x => x.SendRunes(null))
+            clientMock.Setup(x => x.SendRunes(testRune))
                       .Returns(new Task<HttpResponseMessage>(() => 
                       {
                           return new HttpResponseMessage()
@@ -28,44 +33,43 @@ namespace Runic.UnitTest
             Runes.Client = clientMock.Object;
 
             // Act
-            Runes.Mine(new Rune()
-            {
-                Name = "TestName1"
-            });
+            Runes.Mine(testRune);
+
+            clientMock.Verify(c => c.SendRunes(testRune));
         }
 
         [Fact]
         public async void TestMockedRetrieve()
         {
+            var runeQuery = new RuneQuery()
+            {
+                RuneName = "blah",
+                EnableRegex = true,
+                LinkedProperties = new string[] { "1", "2", "3" },
+                RequiredProperties = new Dictionary<string, string>()
+                {
+                    { "1", "2" }
+                }
+            };
+
             Mock<IRuneClient> clientMock = new Mock<IRuneClient>();
-            clientMock.Setup(x => x.RetrieveRunes())
+            clientMock.Setup(x => x.RetrieveRunes(runeQuery))
                       .Returns(Task.Run(() => {
-                          return new HttpResponseMessage()
+                          return new List<Rune>()
                           {
-                              StatusCode = System.Net.HttpStatusCode.OK,
-                              Content = new StringContent("['satu', 'dua', ''tiga']")
+                              new Rune()
+                              {
+                                  Name = "satu"
+                              }
                           };
                       }));
 
             Runes.Client = clientMock.Object;
 
             // Act
-            var rune = await Runes.Retrieve(new RuneQuery()
-            {
-                RuneName = "blah",
-                EnableRegex = true,
-                LinkedProperties = new string[] { "1","2","3"},
-                RequiredProperties = new Dictionary<string, string>()
-                {
-                    { "1", "2" }
-                }
-            });
-
-            var result = JsonConvert.DeserializeObject<List<string>>(rune.Detail.ToString());
-
-            Assert.Equal(result[0], "satu");
-            Assert.Equal(result[2], "dua");
-            Assert.Equal(result[3], "tiga");
+            var rune = await Runes.Retrieve(runeQuery);
+            
+            Assert.Equal(rune.Name, "satu");
         }
     }
 }

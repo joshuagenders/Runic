@@ -22,8 +22,7 @@ namespace Runic.Data
         public static async Task<Rune> Retrieve(RuneQuery runeQuery)
         {
             var response = await Client.RetrieveRunes(runeQuery);
-            var content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<Rune>(content);
+            return response[0];
         }
 
         public static async Task<List<Rune>> RetrieveMultiple(params string[] runeNames)
@@ -39,9 +38,7 @@ namespace Runic.Data
         public static async Task<List<Rune>> RetrieveMultiple(params RuneQuery[] runeQueries)
         {
             //TODO
-            var response = await Client.RetrieveRunes(runeQueries[0]);
-            var content = await response.Content.ReadAsStringAsync();
-            return new List<Rune>() { JsonConvert.DeserializeObject<Rune>(content) };
+            return await Client.RetrieveRunes(runeQueries[0]);
         }
 
         public static void Mine(params Rune[] runes)
