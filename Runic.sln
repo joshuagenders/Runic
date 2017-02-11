@@ -12,21 +12,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic", "src\Runic\Runic.xproj", "{EE281C69-F006-4A43-AF96-AD6F771BDC20}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RunicController", "src\RunicController\RunicController.xproj", "{DEB52032-8BDE-4346-9E36-24892FC2B60C}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.TestPlanner", "src\RunicController\Runic.TestPlanner.xproj", "{DEB52032-8BDE-4346-9E36-24892FC2B60C}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RunicAgent", "src\RunicAgent\RunicAgent.xproj", "{9DCF05D9-2285-4058-9202-87FF3D987C79}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.Agent", "src\RunicAgent\Runic.Agent.xproj", "{9DCF05D9-2285-4058-9202-87FF3D987C79}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RunicCore", "src\RunicCore\RunicCore.xproj", "{71BA09DD-5497-4811-BCD1-E5769D6B2A9C}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.Core", "src\RunicCore\Runic.Core.xproj", "{71BA09DD-5497-4811-BCD1-E5769D6B2A9C}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RunicOracle", "src\RunicOracle\RunicOracle.xproj", "{8AF6D20F-D2D3-4AEC-BA77-9624E209BEF4}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.Oracle", "src\RunicOracle\Runic.Oracle.xproj", "{8AF6D20F-D2D3-4AEC-BA77-9624E209BEF4}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.ExampleTest", "src\Runic.ExampleTest\Runic.ExampleTest.xproj", "{C77E3224-824F-452C-9482-F8772E8EDB92}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RuneDbApi", "src\RuneDbApi\RuneDbApi.xproj", "{94BD047C-E10A-4EA2-BA73-4E954AE069C8}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.RuneDbApi", "src\RuneDbApi\Runic.RuneDbApi.xproj", "{94BD047C-E10A-4EA2-BA73-4E954AE069C8}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.UnitTest", "src\Runic.UnitTest\Runic.UnitTest.xproj", "{DACD2D61-AD9A-4857-80E3-2254B7BBF039}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RunicUI", "RunicUI\RunicUI.xproj", "{50F8A605-8DBE-4FF4-B4B1-4552F751A6F6}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.UI", "RunicUI\Runic.UI.xproj", "{50F8A605-8DBE-4FF4-B4B1-4552F751A6F6}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.TestDatastoreApi", "src\Runic.TestDatastoreApi\Runic.TestDatastoreApi.xproj", "{E46262CB-7398-4DD9-A885-2AFD4B545FAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,6 +72,10 @@ Global
 		{50F8A605-8DBE-4FF4-B4B1-4552F751A6F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50F8A605-8DBE-4FF4-B4B1-4552F751A6F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50F8A605-8DBE-4FF4-B4B1-4552F751A6F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E46262CB-7398-4DD9-A885-2AFD4B545FAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E46262CB-7398-4DD9-A885-2AFD4B545FAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E46262CB-7398-4DD9-A885-2AFD4B545FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E46262CB-7398-4DD9-A885-2AFD4B545FAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,5 +90,6 @@ Global
 		{94BD047C-E10A-4EA2-BA73-4E954AE069C8} = {F45D166D-9CE2-401F-948F-61309B7F8855}
 		{DACD2D61-AD9A-4857-80E3-2254B7BBF039} = {F45D166D-9CE2-401F-948F-61309B7F8855}
 		{50F8A605-8DBE-4FF4-B4B1-4552F751A6F6} = {F45D166D-9CE2-401F-948F-61309B7F8855}
+		{E46262CB-7398-4DD9-A885-2AFD4B545FAE} = {F45D166D-9CE2-401F-948F-61309B7F8855}
 	EndGlobalSection
 EndGlobal

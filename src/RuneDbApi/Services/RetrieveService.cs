@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RuneDbApi.Services
+namespace Runic.RuneDbApi.Services
 {
     public class RetrieveService : IService
     {

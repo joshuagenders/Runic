@@ -1,4 +1,4 @@
-﻿namespace RuneDbApi.Services
+﻿namespace Runic.RuneDbApi.Services
 {
     public interface IService
     {

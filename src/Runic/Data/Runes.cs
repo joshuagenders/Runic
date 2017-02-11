@@ -1,5 +1,5 @@
 ﻿using Runic.Clients;
-using RunicCore.Query;
+using Runic.Core.Query;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

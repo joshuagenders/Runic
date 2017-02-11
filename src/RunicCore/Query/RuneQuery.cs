@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace RunicCore.Query
+namespace Runic.Core.Query
 {
     public class RuneQuery
     {
