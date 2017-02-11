@@ -22,12 +22,12 @@ namespace Runic.Clients
 
         public async Task<HttpResponseMessage> SendRunes(params Rune[] runes)
         {
-            return await _client.PostAsync("/runes", new StringContent(JsonConvert.SerializeObject(runes)));
+            return await _client.PostAsync("/api/runes", new StringContent(JsonConvert.SerializeObject(runes)));
         }
 
         public async Task<List<Rune>> RetrieveRunes(params RuneQuery[] queries)
         {
-            var response = await _client.PostAsync("/query", new StringContent(JsonConvert.SerializeObject(queries)));
+            var response = await _client.PostAsync("/api/query", new StringContent(JsonConvert.SerializeObject(queries)));
             return JsonConvert.DeserializeObject<List<Rune>>(response.Content.ToString());
         }
     }
