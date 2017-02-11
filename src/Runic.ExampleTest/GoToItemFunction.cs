@@ -1,4 +1,5 @@
-﻿using Runic.Attributes;
+﻿using Newtonsoft.Json;
+using Runic.Attributes;
 using Runic.Data;
 using Runic.Exceptions;
 using Runic.Orchestration;
@@ -13,13 +14,13 @@ namespace Runic.ExampleTest
         [MutableParameter("itemId", typeof(string))]
         public async void GoToItem(string itemId = null)
         {
-            //would normally deserialize, but to simplify just cast
             if (itemId == null)
             {
-                var rune = (SearchResult)Runes.Retrieve("SearchResults");
-                if (rune.itemIds.Count == 0)
+                var rune = await Runes.Retrieve("SearchResults");
+                var results = JsonConvert.DeserializeObject<SearchResult>(rune.Detail.ToString());
+                if (results.itemIds.Count == 0)
                     throw new InvalidRuneException("No item ids in search results");
-                itemId = rune.itemIds[new Random().Next(0, rune.itemIds.Count - 1)];
+                itemId = results.itemIds[new Random().Next(0, results.itemIds.Count - 1)];
             }
 
             await new TimedAction("Login", () => OpenItem(itemId)).Execute();
@@ -30,7 +31,7 @@ namespace Runic.ExampleTest
         }
     }
 
-    internal class SearchResult
+    public class SearchResult
     {
         public List<string> itemIds { get; set; }
     }

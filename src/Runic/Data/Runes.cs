@@ -1,35 +1,52 @@
-﻿using Runic.Query;
+﻿using Newtonsoft.Json;
+using Runic.Clients;
+using Runic.Query;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Runic.Data
 {
     public class Runes
     {
-        public static object Retrieve(string runeName)
+        public static IRuneClient Client { get; set; }
+
+        public static async Task<Rune> Retrieve(string runeName)
         {
-            return null;
+            return await Retrieve(new RuneQuery()
+            {
+                RuneName = runeName,
+                EnableRegex = false
+            });
         }
 
-        public static object Retrieve(params RuneQuery[] runeQuery)
+        public static async Task<Rune> Retrieve(RuneQuery runeQuery)
         {
-            return null;
+            var response = await Client.RetrieveRunes(runeQuery);
+            var content = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<Rune>(content);
         }
 
-        public static List<object> RetrieveMultiple(params string[] runeNames)
+        public static async Task<List<Rune>> RetrieveMultiple(params string[] runeNames)
         {
-            
-            return null;
+            //TODO
+            return await RetrieveMultiple(new RuneQuery()
+            {
+                RuneName = runeNames[0],
+                EnableRegex = false
+            });
         }
 
-        public static List<object> RetrieveMultiple(params RuneQuery[] runeNames)
+        public static async Task<List<Rune>> RetrieveMultiple(params RuneQuery[] runeQueries)
         {
-
-            return null;
+            //TODO
+            var response = await Client.RetrieveRunes(runeQueries[0]);
+            var content = await response.Content.ReadAsStringAsync();
+            return new List<Rune>() { JsonConvert.DeserializeObject<Rune>(content) };
         }
 
         public static void Mine(params Rune[] runes)
         {
-            
+            Client.SendRunes(runes);
         }
     }
 }

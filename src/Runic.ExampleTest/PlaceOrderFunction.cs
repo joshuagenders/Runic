@@ -14,7 +14,7 @@ namespace Runic.ExampleTest
         [RequiresLinkedRunes("CustomerId", "AuthenticatedUser", "BasketCreated")]
         public async void PlaceOrder()
         {
-            var runes = Runes.RetrieveMultiple(
+            var runes = await Runes.RetrieveMultiple(
                 new RuneQuery()
                 {
                     RuneName = "AuthenticatedUser",
@@ -31,9 +31,9 @@ namespace Runic.ExampleTest
                     LinkedProperties = new string[] { "Body.CustomerId" }
                 });
             
-            var user = JsonConvert.DeserializeObject<ExampleResponse>((string)runes[0]);
+            var user = JsonConvert.DeserializeObject<ExampleResponse>((string)runes[0].Detail);
             var customerId = user.CustomerId;
-            var basket = JsonConvert.DeserializeObject<ExampleResponse>((string)runes[1]);
+            var basket = JsonConvert.DeserializeObject<ExampleResponse>((string)runes[1].Detail);
             var basketId = basket.BasketId;
 
             await new TimedAction("PlaceOrder", () => DoPlaceOrder(basketId, customerId)).Execute();
