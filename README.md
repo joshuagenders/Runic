@@ -29,14 +29,14 @@ The controller orchestrates the tests based on defined parameters. It should hav
 
 As an example for a test plan:
 
-- Function: Login, 800
-- Function: Search, 50%, "postcodes.csv"
-- Function: OpenItem, 30%
-- Function: Order, 20%
-  -  Threads: 800
-  -  RampUpMinutes: 10
-  -  RampDownMinutes: 10
-  -  ExecutionLengthMinutes: 60
+ * Function: Login, 800
+ * Function: Search, 50%, "postcodes.csv"
+ * Function: OpenItem, 30%
+ * Function: Order, 20%
+  *  Threads: 800
+  *  RampUpMinutes: 10
+  *  RampDownMinutes: 10
+  *  ExecutionLengthMinutes: 60
 
 Should be able to write a test that asks the reporting db for stats, and tests where we haven't been testing much recently.
 
