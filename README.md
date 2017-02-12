@@ -1,4 +1,3 @@
-# Runic
 ![Runic](images/runic_logo_1.png)
 
 Runic is a test lab and framework for running distributed automated tests. The tool is designed to support functional and performance tests.
