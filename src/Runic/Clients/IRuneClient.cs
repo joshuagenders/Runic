@@ -9,6 +9,6 @@ namespace Runic.Clients
     public interface IRuneClient
     {
         Task<List<Rune>> RetrieveRunes(params RuneQuery[] queries);
-        Task<HttpResponseMessage> SendRunes(params Rune[] runes);
+        void SendRunes(params Rune[] runes);
     }
 }

@@ -10,7 +10,8 @@
     "StatsN": "1.2.1",
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
     "Microsoft.Extensions.Logging.Debug": "1.0.0",
-    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0"
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
+    "RabbitMQ.Client": "4.1.1"
   },
 
   "frameworks": {

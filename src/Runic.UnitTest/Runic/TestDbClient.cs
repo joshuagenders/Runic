@@ -20,14 +20,7 @@ namespace Runic.UnitTest.Runic
             };
 
             Mock<IRuneClient> clientMock = new Mock<IRuneClient>();
-            clientMock.Setup(x => x.SendRunes(testRune))
-                      .Returns(new Task<HttpResponseMessage>(() => 
-                      {
-                          return new HttpResponseMessage()
-                          {
-                              StatusCode = System.Net.HttpStatusCode.Created
-                          };
-                      }));
+            clientMock.Setup(x => x.SendRunes(testRune));
        
             Runes.Client = clientMock.Object;
 

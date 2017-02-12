@@ -20,9 +20,9 @@ namespace Runic.Clients
             _client.BaseAddress = new Uri(_config.BaseUri);
         }
 
-        public async Task<HttpResponseMessage> SendRunes(params Rune[] runes)
+        public async void SendRunes(params Rune[] runes)
         {
-            return await _client.PostAsync("/api/runes", new StringContent(JsonConvert.SerializeObject(runes)));
+            await _client.PostAsync("/api/runes", new StringContent(JsonConvert.SerializeObject(runes)));
         }
 
         public async Task<List<Rune>> RetrieveRunes(params RuneQuery[] queries)
