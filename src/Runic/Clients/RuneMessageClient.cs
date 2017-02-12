@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Runic.Core.Query;
-using Runic.Data;
+using Runic.Core;
 using RabbitMQ.Client;
 using System.Text;
 using Newtonsoft.Json;

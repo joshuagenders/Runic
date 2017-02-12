@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Runic.Data
+namespace Runic.Core
 {
     public class Rune
     {

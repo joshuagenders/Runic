@@ -1,6 +1,7 @@
 ﻿using Runic.Attributes;
 using Runic.Data;
 using Runic.Orchestration;
+using Runic.Core;
 
 namespace Runic.ExampleTest
 {

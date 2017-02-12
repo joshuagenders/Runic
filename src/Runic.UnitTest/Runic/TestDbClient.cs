@@ -1,9 +1,8 @@
 ﻿using Moq;
 using Runic.Clients;
 using Runic.Data;
-using Runic.Core.Query;
+using Runic.Core;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 

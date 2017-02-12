@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Runic.Attributes;
+using Runic.Core;
 using Runic.Data;
 using System;
 using System.Collections.Generic;

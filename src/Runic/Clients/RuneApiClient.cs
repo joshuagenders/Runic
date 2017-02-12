@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Net.Http;
 using Newtonsoft.Json;
-using Runic.Data;
 using System.Threading.Tasks;
-using Runic.Core.Query;
+using Runic.Core;
 using System.Collections.Generic;
 
 namespace Runic.Clients
