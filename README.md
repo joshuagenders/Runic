@@ -9,7 +9,7 @@ The framework designs tests around functions that produce and store this informa
 Each time a runic test finds information that might be useful to another test, it stores it as a rune.
 Functions can span accross multiple pages, or apis etc. to achieve an action. The idea is to create re-usable functions that can be stringed together dyanamically.
 When constructing a framework, careful thought should be given to how to break up functions and how to standardise runes.
-Data can be passed into the tests as a dependency from the test database. The test should be able to function without this input.
+Data that cannot be sourced from runes can be passed into the tests from the test datastore. The test should be able to function without this input wherever possible.
 
 ![Basic flow](images/basic_flow.png)
 
