@@ -1,4 +1,5 @@
 # Runic
+![Runic](images/runic_logo_1.png)
 Runic is a test lab and framework for running distributed automated tests. The tool is designed to support functional and performance tests.
 
 ## The framework
@@ -45,7 +46,7 @@ Need a way to regularly clean out expired runes.
 I hope to use kamon for Graphana functionality
 
 # Architecture rough sketch
-![Architecture draft](draft.png)
+![Architecture draft](images/draft.png)
 
 # Rough UI Idea
-![Draft UI](draftui.png)
+![Draft UI](images/draftui.png)
