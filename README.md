@@ -11,6 +11,9 @@ Functions can span accross multiple pages, or apis etc. to achieve an action. Th
 When constructing a framework, careful thought should be given to how to break up functions and how to standardise runes.
 Data can be passed into the tests as a dependency from the test database. The test should be able to function without this input.
 
+![Basic flow](images/basic_flow.png)
+
+
 ## Runic UI
 Runic UI provides user access to the test lab and oracle functionality. The UI should be interactive, drag and drop etc. Can be used to create and execute test plans. The oracle is used to analyse the test results in depth and perform functional checks. 
 Want to use React for the framework.
