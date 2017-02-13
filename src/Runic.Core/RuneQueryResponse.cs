@@ -2,8 +2,10 @@
 
 namespace Runic.Core
 {
-    public class RuneStorageRequest
+    public class RuneQueryResponse
     {
+        public string Id { get; set; }
+        public bool Success { get; set; }
         public List<Rune> Runes { get; set; }
     }
 }

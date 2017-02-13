@@ -11,7 +11,8 @@
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
     "Microsoft.Extensions.Logging.Debug": "1.0.0",
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
-    "RabbitMQ.Client": "4.1.1"
+    "RabbitMQ.Client": "4.1.1",
+    "EasyNetQ": "2.0.3-unstable0055"
   },
 
   "frameworks": {

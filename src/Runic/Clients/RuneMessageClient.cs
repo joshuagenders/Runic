@@ -2,79 +2,32 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Runic.Core;
-using RabbitMQ.Client;
-using System.Text;
-using Newtonsoft.Json;
-using RabbitMQ.Client.Events;
+using EasyNetQ;
 
 namespace Runic.Clients
 {
     public class RuneMessageClient : IRuneClient
     {
+        public string SubscriberId { get; set; }
+        public List<RuneQueryResponse> QueryResponses { get; set; }
+        public IBus Bus { get; set; }
+
         public Task<List<Rune>> RetrieveRunes(params RuneQuery[] queries)
         {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
-            {
-                channel.QueueDeclare(queue: "query_runes",
-                                     durable: false,
-                                     exclusive: false,
-                                     autoDelete: false,
-                                     arguments: null);
-
-                string message = JsonConvert.SerializeObject(queries);
-                var body = Encoding.UTF8.GetBytes(message);
-
-                channel.BasicPublish(exchange: "",
-                                     routingKey: "query_runes",
-                                     basicProperties: null,
-                                     body: body);
-
-                //poll
-
-                var consumer = new EventingBasicConsumer(channel);
-                consumer.Received += (model, ea) =>
-                {
-                    var rBody = ea.Body;
-                    var rMessage = Encoding.UTF8.GetString(body);
-                    Console.WriteLine(" [x] Received {0}", rMessage);
-                };
-                
-                return Task.Run(() =>
-                {
-                    bool noAck = false;
-                    BasicGetResult result = channel.BasicGet("query_results", noAck);
-
-                    channel.BasicConsume(queue: "query_results",
-                                         noAck: true,
-                                         consumer: consumer);
-                    return JsonConvert.DeserializeObject<List<Rune>>(Encoding.UTF8.GetString(result.Body));
-                });
-            }
-
+            var request = new RuneQueryRequest();
+            var task = Bus.RequestAsync<RuneQueryRequest, RuneQueryResponse>(request);
+            return task.ContinueWith(response => {
+                return response.Result.Runes;
+            });
         }
 
         public void SendRunes(params Rune[] runes)
         {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
+            var request = new RuneStorageRequest()
             {
-                channel.QueueDeclare(queue: "mined_runes",
-                                     durable: false,
-                                     exclusive: false,
-                                     autoDelete: false,
-                                     arguments: null);
-
-                string message = JsonConvert.SerializeObject(runes);
-                var body = Encoding.UTF8.GetBytes(message);
-
-                channel.BasicPublish(exchange: "",
-                                     routingKey: "mined_runes",
-                                     basicProperties: null,
-                                     body: body);
-            }
+                Runes = new List<Rune>(runes)
+            };
+            Bus.Publish(request);
         }
     }
 }

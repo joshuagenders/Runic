@@ -6,12 +6,16 @@ Runic is a test lab and framework for running distributed automated tests. The t
 The Runic framework is designed around user interactions. It supports a data-driven model of testing. 
 Performing actions in the system produces data, and potentially back-end state, which can be surfaced and used in subsequent actions.
 The framework designs tests around functions that produce and store this information, "runes". Some functions will require runes from other functions, and can retrieve them from the Runic database in the test lab.
+
 Each time a runic test finds information that might be useful to another test, it stores it as a rune.
 Functions can span accross multiple pages, or apis etc. to achieve an action. The idea is to create re-usable functions that can be stringed together dyanamically.
 When constructing a framework, careful thought should be given to how to break up functions and how to standardise runes.
 Data that cannot be sourced from runes can be passed into the tests from the test datastore. The test should be able to function without this input wherever possible.
 
 ![Basic flow](images/basic_flow.png)
+
+# Architecture rough sketch
+![Architecture draft](images/draft.png)
 
 ## Runic UI
 Runic UI provides user access to the test lab and oracle functionality. The UI should be interactive, drag and drop etc. Can be used to create and execute test plans. The oracle is used to analyse the test results in depth and perform functional checks. 
@@ -45,15 +49,12 @@ The test datastore can be used to store data that tests need that cannot be sour
 The datastore should support linq queries that query the db and feed tests.
 Alternatively the user can map tables or queries into inputs for tests.
 
+# Rough UI Idea
+![Draft UI](images/draftui.png)
+
 ## OrientDb
 I'm going to give OrientDb a go as a database. I want to see if we can implement queries for runes faster.
 Need a way to regularly clean out expired runes.
 
 ## Kamon
 I hope to use kamon for Graphana functionality
-
-# Architecture rough sketch
-![Architecture draft](images/draft.png)
-
-# Rough UI Idea
-![Draft UI](images/draftui.png)
