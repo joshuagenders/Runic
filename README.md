@@ -52,6 +52,16 @@ Alternatively the user can map tables or queries into inputs for tests.
 # Rough UI Idea
 ![Draft UI](images/draftui.png)
 
+![Draft UI 2](images/draftui2.png)
+
+should be able to configure inputs to test datasources, and link fields in a request through parameterized queries. If the query finds more than one it selects a random record.
+Queries can also be used as datasource inputs to support complex cases.
+Should be able to subscribe to certain tests/functions or runes, one use case is so that the test datastore can be updated with state instead of querying the database.
+Although this approach does assume that the data surfaced on the front end; in the case of bugs the data may need to be sanitized. As a precaution, data could be set with expiry so only relatively new state is used for tests.
+
+Should be able to lock a flow down to a single agent and down to a single thread if needed, supporting consistent state for the thread.
+The agent should also be capable of being bootstrapped with any dll, running non-runic tests (without supporting frameworks, custom attributes etc. ) and provide basic test functions such as beforeScenario, AfterScenario.
+
 ## OrientDb
 I'm going to give OrientDb a go as a database. I want to see if we can implement queries for runes faster.
 Need a way to regularly clean out expired runes.
