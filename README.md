@@ -52,7 +52,7 @@ Alternatively the user can map tables or queries into inputs for tests.
 # Rough UI Idea
 ![Draft UI](images/draftui.png)
 
-![Draft UI 2](images/draftui2.png)
+![Draft UI 2](images/draft2.png)
 
 should be able to configure inputs to test datasources, and link fields in a request through parameterized queries. If the query finds more than one it selects a random record.
 Queries can also be used as datasource inputs to support complex cases.
