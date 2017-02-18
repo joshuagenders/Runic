@@ -65,6 +65,8 @@ The agent should also be capable of being bootstrapped with any dll, running non
 Oracle
 Can provide specflow dll which executes by being fed test results?
 and or provide an easy way to express preconditions and expected values
+hamstring matchers?
+Can define rune datamodel in the UI? rune service recieves update events to datamodel
 
 ## OrientDb
 I'm going to give OrientDb a go as a database. I want to see if we can implement queries for runes faster.
@@ -72,3 +74,5 @@ Need a way to regularly clean out expired runes.
 
 ## Kamon
 I hope to use kamon for Graphana functionality
+
+add local caching of runes
