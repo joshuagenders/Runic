@@ -1,4 +1,4 @@
-﻿using Runic.Core;
+﻿using Runic.Core.Messaging;
 
 namespace Runic.QueryProcessingService
 {

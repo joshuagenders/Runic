@@ -1,0 +1,22 @@
+﻿{
+  "version": "1.0.0-*",
+  "testRunner": "xunit",
+  "dependencies": {
+    "xunit": "2.2.0-beta2-build3300",
+    "dotnet-test-xunit": "2.2.0-preview2-build1029",
+    "moq": "4.6.38-alpha",
+    "Runic.RuneStorageService": "1.0.0-*",
+    "OrientDB-Net.binary.Innov8tive": "0.1.12",
+    "EasyNetQ": "2.0.3-unstable0055"
+  },
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0"
+        }
+      }
+    }
+  }
+}

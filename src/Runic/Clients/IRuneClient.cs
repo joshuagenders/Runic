@@ -1,5 +1,4 @@
-﻿using Runic.Core;
-using System.Collections.Generic;
+﻿using Runic.Core.Messaging;
 using System.Threading.Tasks;
 
 namespace Runic.Clients

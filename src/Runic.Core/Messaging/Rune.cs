@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Runic.Core
+namespace Runic.Core.Messaging
 {
     public class Rune
     {
