@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
-using Runic.Attributes;
 using Runic.Core;
+using Runic.Core.Attributes;
 using Runic.Data;
+using Runic.SystemTest.Runes;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -26,7 +27,7 @@ namespace Runic.ExampleTest
                     searchTerm = GenerateSearchTerm(searchType);
                 }
             }
-            ExampleResponse exampleResponse = null;
+            SearchResults exampleResponse = null;
             string stringResponse = string.Empty;
             using (var client = new HttpClient())
             {
@@ -35,22 +36,15 @@ namespace Runic.ExampleTest
                     client.BaseAddress = new Uri("http://myexample.com");
                     var response = await client.GetAsync($"/search?q={searchTerm}");
                     stringResponse = await response.Content.ReadAsStringAsync();
-                    exampleResponse = JsonConvert.DeserializeObject<ExampleResponse>(stringResponse);
+                    exampleResponse = JsonConvert.DeserializeObject<SearchResults>(stringResponse);
                 }
                 catch (HttpRequestException e)
                 {
                     Console.WriteLine($"Request exception: {e.Message}");
                 }
             }
-            var rune = new Rune()
-            {
-                Detail = stringResponse,
-                Name = "SearchResults",
-            };
-            rune.IndexedProperties[Ref.Indexes[(int)Ref.Keys.CustomerId]] = exampleResponse.CustomerId;
-            rune.IndexedProperties[Ref.Indexes[(int)Ref.Keys.Area]] = exampleResponse.Area;
-
-            Runes.Mine(rune);
+            
+            Runes.Mine(exampleResponse);
         }
 
         public string GenerateSearchTerm()

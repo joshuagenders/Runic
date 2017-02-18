@@ -1,7 +1,7 @@
-﻿using Runic.Attributes;
+﻿using Runic.Core.Attributes;
 using Runic.Data;
 using Runic.Orchestration;
-using Runic.Core;
+using Runic.SystemTest.Runes;
 
 namespace Runic.ExampleTest
 {
@@ -17,14 +17,12 @@ namespace Runic.ExampleTest
             }
             var result = await new TimedAction("Login", () => DoLogin(userDetails)).Execute();
             var response = (ExampleResponse)result.ExecutionResult;
-            var rune = new Rune()
+            var rune = new AuthenticatedUser()
             {
-                Name = "AuthenticatedUser",
-                Detail = result
+                Username = response.Username,
+                Password = "default"
             };
-            rune.IndexedProperties[Ref.Indexes[(int)Ref.Keys.CustomerId]] = response.CustomerId;
-            rune.IndexedProperties[Ref.Indexes[(int)Ref.Keys.AuthCookie]] = response.AuthCookie;
-
+            
             Runes.Mine(rune);
         }
 

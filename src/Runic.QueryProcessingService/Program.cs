@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 
-namespace Runic.RuneDbService
+namespace Runic.QueryProcessingService
 {
     public class Program
     {
@@ -59,7 +59,6 @@ namespace Runic.RuneDbService
         {
             bus.Respond<RuneQueryRequest, RuneQueryResponse>(request => 
                 new QueryProcessingService().ProcessRuneQuery(request));
-            bus.Subscribe<RuneStorageRequest>(AgentId, msg => new RuneStorageService().StoreRunes(msg.Runes));
         }
     }
 }

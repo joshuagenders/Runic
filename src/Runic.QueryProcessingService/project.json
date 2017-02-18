@@ -14,7 +14,8 @@
     "Microsoft.Extensions.Configuration": "1.0.0",
     "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
-    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0"
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
+    "OrientDB-Net.binary.Innov8tive": "0.1.12"
   },
 
   "frameworks": {

@@ -1,5 +1,6 @@
 ﻿using Runic.Clients;
 using Runic.Core;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,38 +10,12 @@ namespace Runic.Data
     {
         public static IRuneClient Client { get; set; }
 
-        public static async Task<Rune> Retrieve(string runeName)
+        public static async Task<RuneQuery> Retrieve(RuneQuery query) 
         {
-            return await Retrieve(new RuneQuery()
-            {
-                RuneName = runeName,
-                EnableRegex = false
-            });
+            return await Client.RetrieveRunes(query);
         }
 
-        public static async Task<Rune> Retrieve(RuneQuery runeQuery)
-        {
-            var response = await Client.RetrieveRunes(runeQuery);
-            return response[0];
-        }
-
-        public static async Task<List<Rune>> RetrieveMultiple(params string[] runeNames)
-        {
-            //TODO
-            return await RetrieveMultiple(new RuneQuery()
-            {
-                RuneName = runeNames[0],
-                EnableRegex = false
-            });
-        }
-
-        public static async Task<List<Rune>> RetrieveMultiple(params RuneQuery[] runeQueries)
-        {
-            //TODO
-            return await Client.RetrieveRunes(runeQueries[0]);
-        }
-
-        public static void Mine(params Rune[] runes)
+        public static void Mine<T>(params T[] runes) where T : Rune
         {
             Client.SendRunes(runes);
         }

@@ -1,4 +1,4 @@
-﻿using Runic.Attributes;
+﻿using Runic.Core.Attributes;
 using System.Reflection;
 using Xunit;
 

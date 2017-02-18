@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Runic.Attributes
+namespace Runic.Core.Attributes
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class MutableParameterAttribute : Attribute

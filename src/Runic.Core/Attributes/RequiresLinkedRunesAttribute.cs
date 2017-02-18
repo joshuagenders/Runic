@@ -1,14 +1,15 @@
 ﻿using System;
 
-namespace Runic.Attributes
+namespace Runic.Core.Attributes
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public class RequiresRunesAttribute : Attribute
+    public class RequiresLinkedRunesAttribute : Attribute
     {
         private string[] _runes { get; set; }
+
         public string[] Runes { get { return _runes; } set { _runes = value; } }
 
-        public RequiresRunesAttribute (params string[] runes)
+        public RequiresLinkedRunesAttribute(params string[] runes)
         {
             _runes = runes;
         }

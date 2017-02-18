@@ -62,6 +62,10 @@ Although this approach does assume that the data surfaced on the front end; in t
 Should be able to lock a flow down to a single agent and down to a single thread if needed, supporting consistent state for the thread.
 The agent should also be capable of being bootstrapped with any dll, running non-runic tests (without supporting frameworks, custom attributes etc. ) and provide basic test functions such as beforeScenario, AfterScenario.
 
+Oracle
+Can provide specflow dll which executes by being fed test results?
+and or provide an easy way to express preconditions and expected values
+
 ## OrientDb
 I'm going to give OrientDb a go as a database. I want to see if we can implement queries for runes faster.
 Need a way to regularly clean out expired runes.

@@ -8,5 +8,6 @@
         public string BasketId { get; set; }
         public string CustomerName { get; set; }
         public string Area { get; set; }
+        public string Username { get; set; }
     }
 }

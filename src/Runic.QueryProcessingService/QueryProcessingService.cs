@@ -1,6 +1,6 @@
 ﻿using Runic.Core;
 
-namespace Runic.RuneDbService
+namespace Runic.QueryProcessingService
 {
     public class QueryProcessingService
     {

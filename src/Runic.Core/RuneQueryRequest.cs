@@ -5,6 +5,6 @@ namespace Runic.Core
     public class RuneQueryRequest
     {
         public string Id { get; set; }
-        public List<RuneQuery> RuneQueries { get; set;}
+        public RuneQuery RuneQuery { get; set;}
     }
 }

@@ -1,13 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Runic.Core
 {
     public class Rune
     {
         public string Name { get; set; }
-        public Dictionary<string,string> IndexedProperties { get; set; }
-        public object Detail { get; set; }
-        public DateTime RuneExpiry { get; set; }
+        public DateTimeOffset RuneExpiry { get; set; }
+
+        public Rune(string name)
+        {
+            RuneExpiry = DateTime.Now.AddDays(1);
+            Name = name;
+        }
     }
 }

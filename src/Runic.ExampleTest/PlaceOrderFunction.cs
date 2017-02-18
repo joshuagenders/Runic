@@ -1,11 +1,13 @@
 ﻿using Newtonsoft.Json;
-using Runic.Attributes;
+using Runic.Core.Attributes;
 using Runic.Data;
 using Runic.Orchestration;
 using Runic.Core;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using Runic.SystemTest.Runes;
+using System.Linq;
 
 namespace Runic.ExampleTest
 {
@@ -14,26 +16,30 @@ namespace Runic.ExampleTest
         [RequiresLinkedRunes("CustomerId", "AuthenticatedUser", "BasketCreated")]
         public async void PlaceOrder()
         {
-            var runes = await Runes.RetrieveMultiple(
-                new RuneQuery()
-                {
-                    RuneName = "AuthenticatedUser",
-                    EnableRegex = true,
-                    RequiredProperties = new Dictionary<string, string>() {
+            var runeQuery = new RuneQuery()
+            {
+                RuneName = "AuthenticatedUser",
+                RequiredProperties =
+                    new Dictionary<string, string>() {
                         { "CustomerName", "$fakeuser.*" }
                     },
-                    LinkedProperties = new string[] { "CustomerId" }
-                },
-                new RuneQuery()
-                {
-                    RuneName = "BasketCreated",
-                    EnableRegex = false,
-                    LinkedProperties = new string[] { "Body.CustomerId" }
-                });
-            
-            var user = JsonConvert.DeserializeObject<ExampleResponse>((string)runes[0].Detail);
-            var customerId = user.CustomerId;
-            var basket = JsonConvert.DeserializeObject<ExampleResponse>((string)runes[1].Detail);
+                RequiredLinks =
+                    new List<RuneQuery>() {
+                        new RuneQuery()
+                        {
+                            RuneName = "BasketCreated",
+                            RequiredProperties = new Dictionary<string, string>()
+                            {
+                                { "Active", "true" }
+                            }
+                        }
+                    }
+            };
+            var queryResults = await Runes.Retrieve(runeQuery);
+            var results = queryResults.ToResultsList();
+            var user = results.Where(r => r.Name == typeof(AuthenticatedUser).Name).First() as AuthenticatedUser;
+            var customerId = user.Username;
+            var basket = results.Where(r => r.Name == typeof(BasketCreated).Name).First() as BasketCreated;
             var basketId = basket.BasketId;
 
             await new TimedAction("PlaceOrder", () => DoPlaceOrder(basketId, customerId)).Execute();

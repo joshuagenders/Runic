@@ -2,8 +2,8 @@
 
 namespace Runic.Core
 {
-    public class RuneStorageRequest
+    public class RuneStorageRequest<T>
     {
-        public List<Rune> Runes { get; set; }
+        public List<T> Runes { get; set; }
     }
 }

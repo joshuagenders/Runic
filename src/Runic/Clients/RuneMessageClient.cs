@@ -12,20 +12,20 @@ namespace Runic.Clients
         public List<RuneQueryResponse> QueryResponses { get; set; }
         public IBus Bus { get; set; }
 
-        public Task<List<Rune>> RetrieveRunes(params RuneQuery[] queries)
+        public Task<RuneQuery> RetrieveRunes(RuneQuery queries)
         {
             var request = new RuneQueryRequest();
             var task = Bus.RequestAsync<RuneQueryRequest, RuneQueryResponse>(request);
             return task.ContinueWith(response => {
-                return response.Result.Runes;
+                return response.Result.RuneQueryResult;
             });
         }
 
-        public void SendRunes(params Rune[] runes)
+        public void SendRunes<T>(params T[] runes)
         {
-            var request = new RuneStorageRequest()
+            var request = new RuneStorageRequest<T>()
             {
-                Runes = new List<Rune>(runes)
+                Runes = new List<T>(runes)
             };
             Bus.Publish(request);
         }

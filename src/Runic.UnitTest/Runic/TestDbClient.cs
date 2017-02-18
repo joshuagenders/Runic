@@ -13,11 +13,7 @@ namespace Runic.UnitTest.Runic
         [Fact]
         public void TestMockedMine()
         {
-            var testRune = new Rune()
-            {
-                Name = "TestName1"
-            };
-
+            var testRune = new ExampleRune();
             Mock<IRuneClient> clientMock = new Mock<IRuneClient>();
             clientMock.Setup(x => x.SendRunes(testRune));
        
@@ -34,9 +30,7 @@ namespace Runic.UnitTest.Runic
         {
             var runeQuery = new RuneQuery()
             {
-                RuneName = "blah",
-                EnableRegex = true,
-                LinkedProperties = new string[] { "1", "2", "3" },
+                RuneName = "ExampleRune",
                 RequiredProperties = new Dictionary<string, string>()
                 {
                     { "1", "2" }
@@ -45,22 +39,27 @@ namespace Runic.UnitTest.Runic
 
             Mock<IRuneClient> clientMock = new Mock<IRuneClient>();
             clientMock.Setup(x => x.RetrieveRunes(runeQuery))
-                      .Returns(Task.Run(() => {
-                          return new List<Rune>()
+                      .Returns<RuneQuery>((o) =>
+                      {
+                          return Task.Run(() =>
                           {
-                              new Rune()
-                              {
-                                  Name = "satu"
-                              }
-                          };
-                      }));
+                              o.Result = new ExampleRune();
+                              return o;
+                          });
+                      });
 
             Runes.Client = clientMock.Object;
 
             // Act
             var rune = await Runes.Retrieve(runeQuery);
             
-            Assert.Equal(rune.Name, "satu");
+            Assert.Equal(rune.RuneName, "ExampleRune");
         }
+    }
+    
+    public class ExampleRune : Rune
+    {
+        public ExampleRune() : base("ExampleRune") { }
+
     }
 }

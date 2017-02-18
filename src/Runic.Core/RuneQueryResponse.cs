@@ -6,6 +6,6 @@ namespace Runic.Core
     {
         public string Id { get; set; }
         public bool Success { get; set; }
-        public List<Rune> Runes { get; set; }
+        public RuneQuery RuneQueryResult { get; set; }
     }
 }

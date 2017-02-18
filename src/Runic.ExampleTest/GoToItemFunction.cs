@@ -1,10 +1,11 @@
 ﻿using Newtonsoft.Json;
-using Runic.Attributes;
+using Runic.Core;
+using Runic.Core.Attributes;
 using Runic.Data;
 using Runic.Exceptions;
 using Runic.Orchestration;
+using Runic.SystemTest.Runes;
 using System;
-using System.Collections.Generic;
 
 namespace Runic.ExampleTest
 {
@@ -16,11 +17,11 @@ namespace Runic.ExampleTest
         {
             if (itemId == null)
             {
-                var rune = await Runes.Retrieve("SearchResults");
-                var results = JsonConvert.DeserializeObject<SearchResult>(rune.Detail.ToString());
-                if (results.itemIds.Count == 0)
+                var queryResults = await Runes.Retrieve(new RuneQuery());
+                var searchResults = queryResults.Result as SearchResults;
+                if (searchResults.Results.Count == 0)
                     throw new InvalidRuneException("No item ids in search results");
-                itemId = results.itemIds[new Random().Next(0, results.itemIds.Count - 1)];
+                itemId = searchResults.Results[new Random().Next(0, searchResults.Results.Count - 1)];
             }
 
             await new TimedAction("Login", () => OpenItem(itemId)).Execute();
@@ -29,10 +30,5 @@ namespace Runic.ExampleTest
         {
             return "";
         }
-    }
-
-    public class SearchResult
-    {
-        public List<string> itemIds { get; set; }
     }
 }

@@ -6,7 +6,7 @@ namespace Runic.Clients
 {
     public interface IRuneClient
     {
-        Task<List<Rune>> RetrieveRunes(params RuneQuery[] queries);
-        void SendRunes(params Rune[] runes);
+        Task<RuneQuery> RetrieveRunes(RuneQuery query);
+        void SendRunes<T>(params T[] runes);
     }
 }
