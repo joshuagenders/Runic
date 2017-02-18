@@ -13,7 +13,7 @@
       "type": "platform",
       "version": "1.0.1"
     },
-    "Runic.Core.JoshuaGenders": "1.0.0",
+    "Runic.Core": "0.0.1",
     "System.Runtime.Loader": "4.0.0"
   },
 

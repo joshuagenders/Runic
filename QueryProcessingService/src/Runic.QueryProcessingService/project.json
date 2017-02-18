@@ -15,7 +15,7 @@
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
     "OrientDB-Net.binary.Innov8tive": "0.1.12",
-    "Runic.Core.JoshuaGenders": "1.0.0"
+    "Runic.Core": "0.0.1"
   },
 
   "frameworks": {
