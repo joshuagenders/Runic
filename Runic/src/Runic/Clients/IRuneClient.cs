@@ -1,4 +1,4 @@
-﻿using Runic.Core.Messaging;
+﻿using Runic.Core.Models;
 using System.Threading.Tasks;
 
 namespace Runic.Clients

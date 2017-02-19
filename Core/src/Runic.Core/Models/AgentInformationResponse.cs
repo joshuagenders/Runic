@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Runic.Core.Messaging
+namespace Runic.Core.Models
 {
     public class AgentInformationResponse
     {

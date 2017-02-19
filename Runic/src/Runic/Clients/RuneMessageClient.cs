@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Runic.Core.Messaging;
+using Runic.Core.Models;
 using EasyNetQ;
 
 namespace Runic.Clients

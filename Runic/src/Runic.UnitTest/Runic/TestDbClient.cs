@@ -1,7 +1,7 @@
 ﻿using Moq;
 using Runic.Clients;
 using Runic.Data;
-using Runic.Core.Messaging;
+using Runic.Core.Models;
 using System.Threading.Tasks;
 using Xunit;
 

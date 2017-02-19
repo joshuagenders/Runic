@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Runic.Core.Messaging;
+using Runic.Core.Models;
 using Runic.Agent.Harness;
 
 namespace Runic.Agent

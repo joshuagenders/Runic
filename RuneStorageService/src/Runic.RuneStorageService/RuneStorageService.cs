@@ -4,7 +4,7 @@ using Orient.Client;
 using OrientDB_Net.binary.Innov8tive.API;
 using System;
 using System.Reflection;
-using Runic.Core.Messaging;
+using Runic.Core.Models;
 
 namespace Runic.RuneStorageService
 {

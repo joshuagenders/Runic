@@ -13,7 +13,7 @@
       "type": "platform",
       "version": "1.0.1"
     },
-    "Runic.Core": "0.0.1",
+    "Runic.Core": "0.0.2",
     "System.Runtime.Loader": "4.0.0"
   },
 

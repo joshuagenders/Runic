@@ -35,9 +35,15 @@ As a later feature, I may also add the ability create scheduled test plans.
 
 ## The Oracle
 The oracle is (most likely a group of services) responsible for analysing the results from tests executed in a Runic test lab. The oracle should be designed so that the user can express the pre-conditions and expected outcomes for a test. The test can then be executed against any runes which match the pre-conditions. There may be a need to support several methods of expression, including external script execution. Possibly the use of hamstring matchers.
+
+Some types of verification to support are:
+ * Expressing preconditions to source results to verify back-end state
+ * Expressing preconditions to source results to verify front end funtionality or state
+ * Locating outliers in function and flow results in comparison to similar other result sets and averages
+ * General statisticical analytics of performance characteristics
+ 
 I will introduce more templated analytics at a later stage, that can also utilise the performance outputs from the framework.
 
- 
 ## The Agent 
 The Agent is responsible for executing the functions or tests. The agent loads the required executables dynamically. The agent also reports all timing related statistics to graphite. The agent executes functions or tests based on messages received from a controller, and works on a pull mechanism. Agents support multiple threads, however a test dll will only be loaded once. When retrieving runes, a local cache of runes will be checked first to improve performance. The agent is also responsible for querying and sourcing the test data required to execute the test. The order of preference of inputs to function is: 
 

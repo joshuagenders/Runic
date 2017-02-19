@@ -1,6 +1,6 @@
 ﻿using EasyNetQ;
 using Newtonsoft.Json;
-using Runic.Core.Messaging;
+using Runic.Core.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

@@ -12,7 +12,7 @@
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
     "RabbitMQ.Client": "4.1.1",
     "EasyNetQ": "2.0.3-unstable0055",
-    "Runic.Core.JoshuaGenders": "1.0.0"
+    "Runic.Core": "0.0.2"
   },
 
   "frameworks": {

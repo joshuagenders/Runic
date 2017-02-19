@@ -2,7 +2,7 @@
 using Runic.Core.Attributes;
 using Runic.Data;
 using Runic.Orchestration;
-using Runic.Core.Messaging;
+using Runic.Core.Models;
 using Runic.Core;
 using System;
 using System.Collections.Generic;

@@ -1,5 +1,5 @@
 ﻿using Runic.Core.Attributes;
-using Runic.Core.Messaging;
+using Runic.Core.Models;
 using System.Collections.Generic;
 
 namespace Runic.SystemTest.Runes

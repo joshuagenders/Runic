@@ -1,4 +1,4 @@
-﻿using Runic.Core.Messaging;
+﻿using Runic.Core.Models;
 using Runic.Core.Attributes;
 using Runic.Data;
 using Runic.Exceptions;
