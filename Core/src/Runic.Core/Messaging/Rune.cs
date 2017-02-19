@@ -9,7 +9,7 @@ namespace Runic.Core.Messaging
 
         public Rune(string name)
         {
-            RuneExpiry = DateTime.Now.AddDays(1);
+            RuneExpiry = DateTime.Now.AddDays(30);
             Name = name;
         }
     }
