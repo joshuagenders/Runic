@@ -1,15 +1,12 @@
-﻿using Runic.Agent.AssemblyManagement;
-using System;
+﻿using System;
 using System.Threading;
+using Runic.Agent.AssemblyManagement;
 
 namespace Runic.Agent.Harness
 {
     public class VirtualUser : IDisposable
     {
-        private TestHarness _harness { get; set; }
-        private CancellationToken _ct { get; set; }
-        private ManualResetEvent _completionEvent { get; set; }
-        private TestOptions _options { get; set; }
+        private readonly TestOptions _options;
 
         public VirtualUser(TestOptions options, string testType)
         {
@@ -17,14 +14,22 @@ namespace Runic.Agent.Harness
             _options = options;
         }
 
+        private TestHarness _harness { get; }
+        private CancellationToken _ct { get; set; }
+        private ManualResetEvent _completionEvent { get; set; }
+
+        public void Dispose()
+        {
+            StopThread();
+        }
+
         public async void StartThread(CancellationToken ct, ManualResetEvent completionEvent)
         {
             _ct = ct;
             _completionEvent = completionEvent;
             _completionEvent.Reset();
-            
+
             while (!ct.IsCancellationRequested)
-            {
                 try
                 {
                     Thread.Sleep(_options.StepDelayMilliseconds);
@@ -34,9 +39,7 @@ namespace Runic.Agent.Harness
                 {
                     // TODO log
                 }
-            }
             StopThread();
-            
         }
 
         public async void StopThread()
@@ -44,11 +47,6 @@ namespace Runic.Agent.Harness
             _completionEvent.Set();
             await _harness.TeardownTest();
             await _harness.TeardownClass();
-        }
-
-        public void Dispose()
-        {
-            StopThread();
         }
     }
 }

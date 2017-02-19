@@ -1,14 +1,14 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using Newtonsoft.Json;
+using Runic.Core;
 using Runic.Core.Attributes;
+using Runic.Core.Models;
 using Runic.Data;
 using Runic.Orchestration;
-using Runic.Core.Models;
-using Runic.Core;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
 using Runic.SystemTest.Runes;
-using System.Linq;
 
 namespace Runic.ExampleTest.Functions
 {
@@ -18,21 +18,23 @@ namespace Runic.ExampleTest.Functions
         [RequiresLinkedRunes("CustomerId", "AuthenticatedUser", "BasketCreated")]
         public async void PlaceOrder()
         {
-            var runeQuery = new RuneQuery()
+            var runeQuery = new RuneQuery
             {
                 RuneName = "AuthenticatedUser",
                 RequiredProperties =
-                    new Dictionary<string, string>() {
-                        { "CustomerName", "$fakeuser.*" }
+                    new Dictionary<string, string>
+                    {
+                        {"CustomerName", "$fakeuser.*"}
                     },
                 RequiredLinks =
-                    new List<RuneQuery>() {
-                        new RuneQuery()
+                    new List<RuneQuery>
+                    {
+                        new RuneQuery
                         {
                             RuneName = "BasketCreated",
-                            RequiredProperties = new Dictionary<string, string>()
+                            RequiredProperties = new Dictionary<string, string>
                             {
-                                { "Active", "true" }
+                                {"Active", "true"}
                             }
                         }
                     }
@@ -53,7 +55,7 @@ namespace Runic.ExampleTest.Functions
             {
                 try
                 {
-                    var postBody = JsonConvert.SerializeObject(new { basketId = basketId, userId = userId });
+                    var postBody = JsonConvert.SerializeObject(new {basketId, userId});
                     client.BaseAddress = new Uri("http://myexample.com");
                     var response = await client.PostAsync($"/order", new StringContent(postBody));
                 }

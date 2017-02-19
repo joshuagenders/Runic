@@ -1,59 +1,84 @@
-﻿using Runic.Configuration;
-using StatsN;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Runic.Configuration;
+using StatsN;
 
 namespace Runic.Orchestration
 {
     public class TimedAction
     {
-        private string _actionName { get; set; }
-        private Delegate _action { get; set; }
-        private Stopwatch _stopwatch { get; set; }
-        private static Statsd _client = new Statsd(AppConfiguration.GetStatsdConfiguration);
+        /// <summary>
+        ///     The _client.
+        /// </summary>
+        private static readonly Statsd _client = new Statsd(AppConfiguration.GetStatsdConfiguration);
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="TimedAction" /> class.
+        /// </summary>
+        /// <param name="actionName">
+        ///     The action name.
+        /// </param>
+        /// <param name="action">
+        ///     The action.
+        /// </param>
         public TimedAction(string actionName, Action action)
         {
-            _action = action;
-            _actionName = actionName;
-            _stopwatch = new Stopwatch();
+            Action = action;
+            ActionName = actionName;
+            Stopwatch = new Stopwatch();
         }
 
         public TimedAction(string actionName, Func<object> action)
         {
-            _action = action;
-            _actionName = actionName;
-            _stopwatch = new Stopwatch();
+            Action = action;
+            ActionName = actionName;
+            Stopwatch = new Stopwatch();
         }
+
+        /// <summary>
+        ///     Gets the Action name.
+        /// </summary>
+        private string ActionName { get; }
+
+        /// <summary>
+        ///     Gets the action.
+        /// </summary>
+        private Delegate Action { get; }
+
+        /// <summary>
+        ///     Gets the stopwatch.
+        /// </summary>
+        private Stopwatch Stopwatch { get; }
 
         public async Task<ActionResult> Execute()
         {
             object result;
             try
             {
-                _stopwatch.Start();
-                result = await Task.Run(() => _action.DynamicInvoke());
+                Stopwatch.Start();
+                result = await Task.Run(() => Action.DynamicInvoke());
             }
             catch (Exception e)
             {
-                _client.Count($"{_actionName}.Exception.{e.GetType().FullName}");
-                return new ActionResult()
+                _client.Count($"{ActionName}.Exception.{e.GetType().FullName}");
+                return new ActionResult
                 {
-                    ElapsedMilliseconds = _stopwatch.ElapsedMilliseconds,
+                    ElapsedMilliseconds = Stopwatch.ElapsedMilliseconds,
                     ExecutionResult = e
                 };
             }
             finally
             {
-                _stopwatch.Stop();
+                Stopwatch.Stop();
             }
-            _client.Count($"{_actionName}.Success");
-            _client.Timing(_actionName, _stopwatch.ElapsedMilliseconds);
 
-            return new ActionResult()
+            _client.Count($"{ActionName}.Success");
+            _client.Timing(ActionName, Stopwatch.ElapsedMilliseconds);
+
+            return new ActionResult
             {
-                ElapsedMilliseconds = _stopwatch.ElapsedMilliseconds,
+                ElapsedMilliseconds = Stopwatch.ElapsedMilliseconds,
                 ExecutionResult = result
             };
         }

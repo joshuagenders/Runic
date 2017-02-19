@@ -10,11 +10,12 @@ namespace Runic.ExampleTest
             AuthCookie = 1,
             Area = 2
         }
-        public static Dictionary<int, string> Indexes = new Dictionary<int, string>()
+
+        public static Dictionary<int, string> Indexes = new Dictionary<int, string>
         {
-            { (int)Keys.AuthCookie, "AuthCookie" },
-            { (int)Keys.CustomerId, "CustomerId" },
-            { (int)Keys.Area, "Area" }
+            {(int) Keys.AuthCookie, "AuthCookie"},
+            {(int) Keys.CustomerId, "CustomerId"},
+            {(int) Keys.Area, "Area"}
         };
     }
 }

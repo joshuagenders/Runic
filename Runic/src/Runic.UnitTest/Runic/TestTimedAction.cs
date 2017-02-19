@@ -1,7 +1,7 @@
-﻿using Runic.Configuration;
-using Runic.Orchestration;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
+using Runic.Configuration;
+using Runic.Orchestration;
 using Xunit;
 
 namespace Runic.UnitTest.Runic
@@ -11,11 +11,11 @@ namespace Runic.UnitTest.Runic
         [Fact]
         public async void TestTimedActionResponse()
         {
-            AppConfiguration.BuildConfiguration(new Dictionary<string,string>()
+            AppConfiguration.BuildConfiguration(new Dictionary<string, string>
             {
-                { "Database:Host", "http://localhost" },
-                { "Database:Prefix", "Runic.Tests." },
-                { "Database:Port", "7878" }
+                {"Database:Host", "http://localhost"},
+                {"Database:Prefix", "Runic.Tests."},
+                {"Database:Port", "7878"}
             });
 
             var result = await new TimedAction("someaction", () =>

@@ -9,37 +9,40 @@ namespace Runic.Agent.AssemblyManagement
 {
     public class PluginManager
     {
-        private static readonly ConcurrentBag<Assembly> testPlugins = new ConcurrentBag<Assembly>();
-        private static volatile List<string> keyNames = new List<string>();
-        
+        private static readonly ConcurrentBag<Assembly> TestPlugins = new ConcurrentBag<Assembly>();
+        private static readonly List<string> KeyNames = new List<string>();
+
         public void LoadPlugin(string pluginAssemblyName, IPluginProvider provider)
         {
-            if (keyNames.Contains(pluginAssemblyName))
+            lock (KeyNames)
             {
-                return;
+                if (KeyNames.Contains(pluginAssemblyName))
+                    return;
             }
 
             provider.RetrieveSourceDll(pluginAssemblyName);
             var pluginPath = provider.GetFilepath(pluginAssemblyName);
             var loader = new AssemblyLoader(Path.GetDirectoryName(pluginPath));
-            lock (testPlugins)
+            lock (TestPlugins)
             {
-                testPlugins.Add(loader.LoadFromAssemblyName(new AssemblyName(pluginAssemblyName)));
+                TestPlugins.Add(loader.LoadFromAssemblyName(new AssemblyName(pluginAssemblyName)));
             }
-            lock (keyNames)
+            lock (KeyNames)
             {
-                keyNames.Add(pluginAssemblyName);
+                KeyNames.Add(pluginAssemblyName);
             }
         }
-      
+
         public static Type GetTestType(string testName)
         {
-            foreach (var assembly in testPlugins)
+            lock (TestPlugins)
             {
-                var types = assembly.GetTypes().Where(t => t.FullName == testName);
-                if (types.Any())
+                foreach (var assembly in TestPlugins)
                 {
-                    return types.First();
+                    var types = assembly.GetTypes().Where(t => t.FullName == testName);
+                    var enumerable = types as Type[] ?? types.ToArray();
+                    if (enumerable.Any())
+                        return enumerable.First();
                 }
             }
 

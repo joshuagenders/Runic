@@ -1,11 +1,11 @@
-﻿using EasyNetQ;
-using Newtonsoft.Json;
-using Runic.Core.Models;
-using System;
+﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using EasyNetQ;
 using Microsoft.Extensions.Configuration;
-using System.IO;
+using Newtonsoft.Json;
+using Runic.Core.Models;
 
 namespace Runic.QueryProcessingService
 {
@@ -18,12 +18,9 @@ namespace Runic.QueryProcessingService
         {
             AgentId = Guid.NewGuid().ToString("n");
             LoadConfig();
-            Program program = new Program();
-            CancellationToken token = new CancellationToken();
-            Task.Run(() =>
-            {
-                program.Run(token);
-            }).ContinueWith((_) =>
+            var program = new Program();
+            var token = new CancellationToken();
+            Task.Run(() => { program.Run(token); }).ContinueWith(_ =>
             {
                 if (_.Exception != null)
                 {
@@ -37,7 +34,7 @@ namespace Runic.QueryProcessingService
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", true, true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -49,15 +46,13 @@ namespace Runic.QueryProcessingService
             {
                 AssignResponders(bus);
                 while (!token.IsCancellationRequested)
-                {
                     Thread.Sleep(500);
-                }
             }
         }
 
         public void AssignResponders(IBus bus)
         {
-            bus.Respond<RuneQueryRequest, RuneQueryResponse>(request => 
+            bus.Respond<RuneQueryRequest, RuneQueryResponse>(request =>
                 new QueryProcessingService().ProcessRuneQuery(request));
         }
     }

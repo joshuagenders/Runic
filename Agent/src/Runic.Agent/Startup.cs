@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Runic.Agent.AssemblyManagement;
-using Runic.Agent.Configuration;
 
 namespace Runic.Agent
 {

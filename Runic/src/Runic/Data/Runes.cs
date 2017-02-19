@@ -1,6 +1,6 @@
-﻿using Runic.Clients;
+﻿using System.Threading.Tasks;
+using Runic.Clients;
 using Runic.Core.Models;
-using System.Threading.Tasks;
 
 namespace Runic.Data
 {
@@ -8,7 +8,7 @@ namespace Runic.Data
     {
         public static IRuneClient Client { get; set; }
 
-        public static async Task<RuneQuery> Retrieve(RuneQuery query) 
+        public static async Task<RuneQuery> Retrieve(RuneQuery query)
         {
             return await Client.RetrieveRunes(query);
         }

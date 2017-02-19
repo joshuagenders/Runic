@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Runic.Core.Models
+﻿namespace Runic.Core.Models
 {
     public class RuneQueryResponse
     {

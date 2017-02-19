@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Runic.Core.Models;
 using EasyNetQ;
+using Runic.Core.Models;
 
 namespace Runic.Clients
 {
@@ -15,14 +15,12 @@ namespace Runic.Clients
         {
             var request = new RuneQueryRequest();
             var task = Bus.RequestAsync<RuneQueryRequest, RuneQueryResponse>(request);
-            return task.ContinueWith(response => {
-                return response.Result.RuneQueryResult;
-            });
+            return task.ContinueWith(response => { return response.Result.RuneQueryResult; });
         }
 
         public void SendRunes<T>(params T[] runes)
         {
-            var request = new RuneStorageRequest<T>()
+            var request = new RuneStorageRequest<T>
             {
                 Runes = new List<T>(runes)
             };

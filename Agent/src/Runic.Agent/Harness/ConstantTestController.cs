@@ -5,23 +5,23 @@ namespace Runic.Agent.Harness
 {
     public class ConstantTestController : ITestController
     {
-        private SemaphoreSlim _semaphore { get; set; }
-        private int _threadCount { get; set; }
-
         public ConstantTestController(int threadCount)
         {
-            _threadCount = threadCount;
+            ThreadCount = threadCount;
         }
+
+        private SemaphoreSlim Semaphore { get; set; }
+        private int ThreadCount { get; }
 
         public async Task BeginTest(string testId, CancellationToken ct = default(CancellationToken))
         {
-            if (_semaphore == null) _semaphore = new SemaphoreSlim(_threadCount);
-            await _semaphore.WaitAsync(ct);
+            if (Semaphore == null) Semaphore = new SemaphoreSlim(ThreadCount);
+            await Semaphore.WaitAsync(ct);
         }
 
         public async Task EndTest(string testId, CancellationToken ct = default(CancellationToken))
         {
-            await Task.Run(() => _semaphore?.Release());
+            await Task.Run(() => Semaphore?.Release());
         }
     }
 }

@@ -1,14 +1,14 @@
-﻿using System.Reflection;
+﻿using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.Loader;
 using Microsoft.Extensions.DependencyModel;
-using System.IO;
-using System.Linq;
 
 namespace Runic.Agent.AssemblyManagement
-{    
+{
     public class AssemblyLoader : AssemblyLoadContext
     {
-        private string folderPath;
+        private readonly string folderPath;
 
         public AssemblyLoader(string folderPath)
         {
@@ -20,17 +20,13 @@ namespace Runic.Agent.AssemblyManagement
             var deps = DependencyContext.Default;
             var res = deps.CompileLibraries.Where(d => d.Name.Contains(assemblyName.Name)).ToList();
             if (res.Count > 0)
-            {
                 return Assembly.Load(new AssemblyName(res.First().Name));
-            }
-            else
+            var apiApplicationFileInfo =
+                new FileInfo($"{folderPath}{Path.DirectorySeparatorChar}{assemblyName.Name}.dll");
+            if (File.Exists(apiApplicationFileInfo.FullName))
             {
-                var apiApplicationFileInfo = new FileInfo($"{folderPath}{Path.DirectorySeparatorChar}{assemblyName.Name}.dll");
-                if (File.Exists(apiApplicationFileInfo.FullName))
-                {
-                    var asl = new AssemblyLoader(apiApplicationFileInfo.DirectoryName);
-                    return asl.LoadFromAssemblyPath(apiApplicationFileInfo.FullName);
-                }
+                var asl = new AssemblyLoader(apiApplicationFileInfo.DirectoryName);
+                return asl.LoadFromAssemblyPath(apiApplicationFileInfo.FullName);
             }
             throw new AssemblyNotFoundException();
         }

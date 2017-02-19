@@ -1,18 +1,19 @@
-﻿using Runic.Core.Attributes;
-using System.Reflection;
+﻿using System.Reflection;
+using Runic.Core.Attributes;
 using Xunit;
 
 namespace Runic.UnitTest.Runic
 {
     public class TestAttributes
     {
-        [RequiresRunes("123")]
+        [MinesRunes("123", "456")]
         [Fact]
-        public void TestRequiresRuneAttributeData()
+        public void TestMinesRuneAttributeData()
         {
-            var method = GetType().GetMethod("TestRequiresRuneAttributeData");
-            RequiresRunesAttribute attr = method.GetCustomAttribute<RequiresRunesAttribute>();
+            var method = GetType().GetMethod("TestMinesRuneAttributeData");
+            var attr = method.GetCustomAttribute<MinesRunesAttribute>();
             Assert.Equal("123", attr.Runes[0]);
+            Assert.Equal("456", attr.Runes[1]);
         }
 
         [MutableParameter("myInput", typeof(string))]
@@ -20,7 +21,7 @@ namespace Runic.UnitTest.Runic
         public void TestMutableParameterAttributeData()
         {
             var method = GetType().GetMethod("TestMutableParameterAttributeData");
-            MutableParameterAttribute attr = method.GetCustomAttribute<MutableParameterAttribute>();
+            var attr = method.GetCustomAttribute<MutableParameterAttribute>();
             Assert.Equal("myInput", attr.ParameterName);
             Assert.Equal(typeof(string), attr.ParameterType);
         }
@@ -30,19 +31,18 @@ namespace Runic.UnitTest.Runic
         public void TestRequiresLinkedRuneAttributeData()
         {
             var method = GetType().GetMethod("TestRequiresLinkedRuneAttributeData");
-            RequiresLinkedRunesAttribute attr = method.GetCustomAttribute<RequiresLinkedRunesAttribute>();
+            var attr = method.GetCustomAttribute<RequiresLinkedRunesAttribute>();
             Assert.Contains(attr.Runes, a => a == "Login");
             Assert.Contains(attr.Runes, a => a == "Search");
         }
 
-        [MinesRunes("123","456")]
+        [RequiresRunes("123")]
         [Fact]
-        public void TestMinesRuneAttributeData()
+        public void TestRequiresRuneAttributeData()
         {
-            var method = GetType().GetMethod("TestMinesRuneAttributeData");
-            MinesRunesAttribute attr = method.GetCustomAttribute<MinesRunesAttribute>();
+            var method = GetType().GetMethod("TestRequiresRuneAttributeData");
+            var attr = method.GetCustomAttribute<RequiresRunesAttribute>();
             Assert.Equal("123", attr.Runes[0]);
-            Assert.Equal("456", attr.Runes[1]);
         }
     }
 }

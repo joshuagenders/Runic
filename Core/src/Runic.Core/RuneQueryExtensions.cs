@@ -1,5 +1,5 @@
-﻿using Runic.Core.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Runic.Core.Models;
 
 namespace Runic.Core
 {
@@ -7,9 +7,10 @@ namespace Runic.Core
     {
         public static List<Rune> ToResultsList(this RuneQuery query)
         {
-            List<Rune> runes = new List<Rune>();
+            var runes = new List<Rune>();
             return TraverseTree(runes, query);
         }
+
         public static List<Rune> TraverseTree(List<Rune> runes, RuneQuery runeQuery)
         {
             //base case already visited
@@ -18,13 +19,9 @@ namespace Runic.Core
 
             runes.Add(runeQuery.Result);
             foreach (var query in runeQuery.RequiredLinks)
-            {
                 if (!runes.Contains(query.Result))
-                {
                     runes = TraverseTree(runes, query);
-                }
-            }
-            
+
             return runes;
         }
     }

@@ -13,17 +13,15 @@ namespace Runic.ExampleTest.Functions
         public async void Login(UserDetails userDetails = null)
         {
             if (userDetails == null)
-            {
                 userDetails = GetUserDetails();
-            }
             var result = await new TimedAction("Login", () => DoLogin(userDetails)).Execute();
-            var response = (ExampleResponse)result.ExecutionResult;
-            var rune = new AuthenticatedUser()
+            var response = (ExampleResponse) result.ExecutionResult;
+            var rune = new AuthenticatedUser
             {
                 Username = response.Username,
                 Password = "default"
             };
-            
+
             Runes.Mine(rune);
         }
 
@@ -37,13 +35,12 @@ namespace Runic.ExampleTest.Functions
             //get from file, db etc.
             //can pass run id to db so that client reservation works, create datastore function to manage core data
             //you can then set that as an input stream for a flow that you've constructed
-            return new UserDetails()
+            return new UserDetails
             {
                 UserName = "",
                 Password = ""
             };
         }
-        
     }
 
     public class UserDetails
