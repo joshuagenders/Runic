@@ -4,6 +4,10 @@ Below is a mind dump so far
 
 Runic is a test lab and framework for running distributed automated tests. The tool is designed to support functional and performance tests.
 
+## Basic Architecture
+
+![Runic Architecture](images/BasicArchitecture.png)
+
 ## The framework
 The Runic framework is designed around user interactions. It supports a data-driven model of testing. 
 Performing functions in the system produces data, and potentially back-end state, which can be surfaced and used in subsequent functions.
@@ -14,18 +18,9 @@ Functions can span across multiple pages, or APIs etc. to achieve its purpose. S
 
 When constructing a framework, careful thought should be given to how to break up functions and how to standardise runes. Functions should be constructed to enable the most control over their actions, but also ease of integration by well-designed dependencies. Data that cannot be sourced from runes can be passed into the tests from the test data store. The test should be able to function without this input wherever possible.
 
-Standard logic of a function:
+###Standard structure of a function:
 
- * Have I been passed overrides?
-   * Yes
-     * Retrieve runes if only required
-   * No
-     * Retrieve runes
- * Any remaining test inputs missing?
-    * Yes
-      * Generate them
- * Execute action
- * Store located runes
+![Runic Functions](images/FunctionDesign.png)
 
 ## Runic UI
 Runic UI provides user access to the test lab and oracle functionality. The UI can be used to design and construct workflows, create and execute test plans and manage test data. The oracle is used to analyse the test results in depth and perform functional checks. 
