@@ -1,7 +1,7 @@
-﻿using Runic.Core.Attributes;
-using Runic.Data;
+﻿using Runic.Clients;
+using Runic.Core.Attributes;
 using Runic.Orchestration;
-using Runic.SystemTest.Runes;
+using Runic.ExampleTest.Runes;
 
 namespace Runic.ExampleTest.Functions
 {
@@ -22,7 +22,7 @@ namespace Runic.ExampleTest.Functions
                 Password = "default"
             };
 
-            Runes.Mine(rune);
+            new RuneMessageClient().SendRunes(rune);
         }
 
         public ExampleResponse DoLogin(UserDetails userDetails)

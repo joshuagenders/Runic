@@ -5,6 +5,7 @@ using Autofac;
 using Newtonsoft.Json;
 using Runic.Agent.Configuration;
 using Runic.Agent.Harness;
+using Runic.Agent.Messaging;
 using Runic.Core.Models;
 
 namespace Runic.Agent
@@ -13,12 +14,12 @@ namespace Runic.Agent
     {
         public Program()
         {
-            _maxThreads = int.Parse(AgentConfiguration.Config["Agent:MaxThreads"]);
+            MaxThreads = int.Parse(AgentConfiguration.Config["Agent:MaxThreads"]);
         }
 
-        private int _maxThreads { get; }
+        private int MaxThreads { get; }
 
-        private static IContainer _container { get; set; }
+        private static IContainer Container { get; set; }
 
         public static void Main(string[] args)
         {
@@ -49,12 +50,12 @@ namespace Runic.Agent
 
         public async Task Execute(string[] args, IStartup startup, CancellationToken ct)
         {
-            _container = startup.RegisterDependencies();
+            Container = startup.RegisterDependencies();
             startup.ConfigureApplication();
 
             var events = GetCompletionEvents();
-            var tokenSources = new CancellationTokenSource[_maxThreads];
-            var executionService = _container.Resolve<IMessagingService>();
+            var tokenSources = new CancellationTokenSource[MaxThreads];
+            var executionService = Container.Resolve<IMessagingService>();
 
             while (!ct.IsCancellationRequested)
             {
@@ -88,8 +89,8 @@ namespace Runic.Agent
 
         public ManualResetEvent[] GetCompletionEvents()
         {
-            var events = new ManualResetEvent[_maxThreads];
-            for (var i = 0; i < _maxThreads; i++)
+            var events = new ManualResetEvent[MaxThreads];
+            for (var i = 0; i < MaxThreads; i++)
                 events[i] = new ManualResetEvent(true);
             return events;
         }

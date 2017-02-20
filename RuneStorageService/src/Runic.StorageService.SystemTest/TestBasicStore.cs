@@ -9,26 +9,26 @@ namespace Runic.RuneStorageService.SystemTest
     {
         public TestBasicStore()
         {
-            _testContext = new TestDatabaseContext();
-            _database = new ODatabase(TestConnection.ConnectionOptions);
+            TestContext = new TestDatabaseContext();
+            Database = new ODatabase(TestConnection.ConnectionOptions);
 
-            _database
+            Database
                 .Create.Class<ExampleRune>()
                 .Run();
         }
 
         public void Dispose()
         {
-            _database.Close();
+            Database.Close();
             TestConnection.DropTestDatabase();
-            _testContext.Dispose();
+            TestContext.Dispose();
         }
 
-        private TestDatabaseContext _testContext { get; }
-        private ODatabase _database { get; }
+        private TestDatabaseContext TestContext { get; }
+        private ODatabase Database { get; }
 
         [Fact]
-        public void TestStoreAndSQLRetrieve()
+        public void TestStoreAndSqlRetrieve()
         {
             var testRunes = new List<ExampleRune>
             {
@@ -40,7 +40,7 @@ namespace Runic.RuneStorageService.SystemTest
             };
             var service = new RuneStorageService();
             service.StoreRunes(testRunes);
-            var documents = _database
+            var documents = Database
                 .Select()
                 .From<ExampleRune>()
                 .ToList();

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using Newtonsoft.Json;
+using Runic.Clients;
 using Runic.Core;
 using Runic.Core.Attributes;
 using Runic.Core.Models;
-using Runic.Data;
+using Runic.ExampleTest.Runes;
 using Runic.Orchestration;
-using Runic.SystemTest.Runes;
 
 namespace Runic.ExampleTest.Functions
 {
@@ -39,12 +39,12 @@ namespace Runic.ExampleTest.Functions
                         }
                     }
             };
-            var queryResults = await Runes.Retrieve(runeQuery);
+            var queryResults = await new RuneMessageClient().RetrieveRunes(runeQuery);
             var results = queryResults.ToResultsList();
-            var user = results.Where(r => r.Name == typeof(AuthenticatedUser).Name).First() as AuthenticatedUser;
-            var customerId = user.Username;
-            var basket = results.Where(r => r.Name == typeof(BasketCreated).Name).First() as BasketCreated;
-            var basketId = basket.BasketId;
+            var user = results.First(r => r.Name == typeof(AuthenticatedUser).Name) as AuthenticatedUser;
+            var customerId = user?.Username;
+            var basket = results.First(r => r.Name == typeof(BasketCreated).Name) as BasketCreated;
+            var basketId = basket?.BasketId;
 
             await new TimedAction("PlaceOrder", () => DoPlaceOrder(basketId, customerId)).Execute();
         }
@@ -57,7 +57,7 @@ namespace Runic.ExampleTest.Functions
                 {
                     var postBody = JsonConvert.SerializeObject(new {basketId, userId});
                     client.BaseAddress = new Uri("http://myexample.com");
-                    var response = await client.PostAsync($"/order", new StringContent(postBody));
+                    await client.PostAsync("/order", new StringContent(postBody));
                 }
                 catch (HttpRequestException e)
                 {

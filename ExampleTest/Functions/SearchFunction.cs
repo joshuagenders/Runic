@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using Newtonsoft.Json;
+using Runic.Clients;
 using Runic.Core.Attributes;
-using Runic.Data;
-using Runic.SystemTest.Runes;
+using Runic.ExampleTest.Runes;
 
 namespace Runic.ExampleTest.Functions
 {
@@ -22,14 +22,14 @@ namespace Runic.ExampleTest.Functions
                 else
                     searchTerm = GenerateSearchTerm(searchType);
             SearchResults exampleResponse = null;
-            var stringResponse = string.Empty;
+
             using (var client = new HttpClient())
             {
                 try
                 {
                     client.BaseAddress = new Uri("http://myexample.com");
                     var response = await client.GetAsync($"/search?q={searchTerm}");
-                    stringResponse = await response.Content.ReadAsStringAsync();
+                    var stringResponse = await response.Content.ReadAsStringAsync();
                     exampleResponse = JsonConvert.DeserializeObject<SearchResults>(stringResponse);
                 }
                 catch (HttpRequestException e)
@@ -38,7 +38,7 @@ namespace Runic.ExampleTest.Functions
                 }
             }
 
-            Runes.Mine(exampleResponse);
+            new RuneMessageClient().SendRunes(exampleResponse);
         }
 
         public string GenerateSearchTerm()

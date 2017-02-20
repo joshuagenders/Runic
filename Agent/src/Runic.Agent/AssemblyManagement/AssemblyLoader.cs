@@ -8,11 +8,11 @@ namespace Runic.Agent.AssemblyManagement
 {
     public class AssemblyLoader : AssemblyLoadContext
     {
-        private readonly string folderPath;
+        private readonly string _folderPath;
 
         public AssemblyLoader(string folderPath)
         {
-            this.folderPath = folderPath;
+            _folderPath = folderPath;
         }
 
         protected override Assembly Load(AssemblyName assemblyName)
@@ -22,7 +22,7 @@ namespace Runic.Agent.AssemblyManagement
             if (res.Count > 0)
                 return Assembly.Load(new AssemblyName(res.First().Name));
             var apiApplicationFileInfo =
-                new FileInfo($"{folderPath}{Path.DirectorySeparatorChar}{assemblyName.Name}.dll");
+                new FileInfo($"{_folderPath}{Path.DirectorySeparatorChar}{assemblyName.Name}.dll");
             if (File.Exists(apiApplicationFileInfo.FullName))
             {
                 var asl = new AssemblyLoader(apiApplicationFileInfo.DirectoryName);

@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Runic.Core.Models;
 
-namespace Runic.Agent
+namespace Runic.Agent.Messaging
 {
     public interface IMessagingService
     {

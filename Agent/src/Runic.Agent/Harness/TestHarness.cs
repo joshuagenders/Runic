@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using Runic.Core.Attributes;
@@ -10,16 +9,11 @@ namespace Runic.Agent.Harness
     {
         public TestHarness(Type testType)
         {
-            _testType = testType;
-            _uniqueTestRunId = Guid.NewGuid().ToString("s");
+            TestType = testType;
         }
 
-        private object _instance { get; set; }
-        private Type _testType { get; }
-        private string _testName { get; set; }
-        private Stopwatch _testWatch { get; set; }
-        private Stopwatch _stepWatch { get; set; }
-        private string _uniqueTestRunId { get; set; }
+        private object Instance { get; set; }
+        private Type TestType { get; }
 
         public async Task Execute()
         {
@@ -31,18 +25,18 @@ namespace Runic.Agent.Harness
 
         public async Task InitialiseTestClass()
         {
-            _instance = Activator.CreateInstance(_testType, false);
+            Instance = Activator.CreateInstance(TestType, false);
             await ExecuteMethodWithAttribute(typeof(ClassInitialiseAttribute));
         }
 
         private async Task ExecuteMethodWithAttribute(Type attributeType)
         {
-            var methods = _instance.GetType().GetRuntimeMethods();
+            var methods = Instance.GetType().GetRuntimeMethods();
             foreach (var method in methods)
             {
                 var attribute = method.GetCustomAttribute(attributeType);
                 if (attribute != null)
-                    await Task.Run(() => method.Invoke(_instance, null));
+                    await Task.Run(() => method.Invoke(Instance, null));
             }
         }
 

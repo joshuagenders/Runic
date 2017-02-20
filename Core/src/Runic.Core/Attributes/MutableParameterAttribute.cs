@@ -11,8 +11,8 @@ namespace Runic.Core.Attributes
             _parameterType = parameterType;
         }
 
-        private string _parameterName { get; set; }
-        private Type _parameterType { get; set; }
+        private string _parameterName;
+        private Type _parameterType;
 
         public string ParameterName
         {

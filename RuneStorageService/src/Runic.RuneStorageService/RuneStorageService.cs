@@ -11,14 +11,14 @@ namespace Runic.RuneStorageService
     {
         public RuneStorageService()
         {
-            _database = new ODatabase(new ConnectionOptions());
+            Database = new ODatabase(new ConnectionOptions());
         }
 
-        private ODatabase _database { get; }
+        private ODatabase Database { get; }
 
         public void Dispose()
         {
-            _database.Close();
+            Database.Close();
         }
 
         public void StoreRunes<T>(List<T> runes) where T : Rune
@@ -29,7 +29,7 @@ namespace Runic.RuneStorageService
                 document.OClassName = rune.Name;
                 document = TransferProperties(document, rune);
 
-                var createdDocument = _database
+                Database
                     .Create.Document(document)
                     .Run();
             }

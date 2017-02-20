@@ -11,7 +11,7 @@ namespace Runic.Orchestration
         /// <summary>
         ///     The _client.
         /// </summary>
-        private static readonly Statsd _client = new Statsd(AppConfiguration.GetStatsdConfiguration);
+        private static readonly Statsd Client = new Statsd(AppConfiguration.GetStatsdConfiguration);
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="TimedAction" /> class.
@@ -61,7 +61,7 @@ namespace Runic.Orchestration
             }
             catch (Exception e)
             {
-                _client.Count($"{ActionName}.Exception.{e.GetType().FullName}");
+                Client.Count($"{ActionName}.Exception.{e.GetType().FullName}");
                 return new ActionResult
                 {
                     ElapsedMilliseconds = Stopwatch.ElapsedMilliseconds,
@@ -73,8 +73,8 @@ namespace Runic.Orchestration
                 Stopwatch.Stop();
             }
 
-            _client.Count($"{ActionName}.Success");
-            _client.Timing(ActionName, Stopwatch.ElapsedMilliseconds);
+            Client.Count($"{ActionName}.Success");
+            Client.Timing(ActionName, Stopwatch.ElapsedMilliseconds);
 
             return new ActionResult
             {

@@ -1,6 +1,6 @@
 ﻿using Runic.Core.Models;
 
-namespace Runic.SystemTest.Runes
+namespace Runic.ExampleTest.Runes
 {
     public class BasketCreated : Rune
     {

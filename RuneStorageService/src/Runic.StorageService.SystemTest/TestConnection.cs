@@ -12,11 +12,11 @@ namespace Runic.RuneStorageService.SystemTest
 
         private static readonly string _rootUserName = "root";
         private static readonly string _rootUserParssword = "root";
-        private static readonly OServer _server;
+        private static readonly OServer Server;
 
         static TestConnection()
         {
-            _server = new OServer(_hostname, _port, _rootUserName, _rootUserParssword);
+            Server = new OServer(_hostname, _port, _rootUserName, _rootUserParssword);
 
             GlobalTestDatabaseName = "RunicTest";
             GlobalTestDatabaseType = ODatabaseType.Document;
@@ -52,18 +52,18 @@ namespace Runic.RuneStorageService.SystemTest
         {
             DropTestDatabase();
 
-            _server.CreateDatabase(GlobalTestDatabaseName, GlobalTestDatabaseType, OStorageType.PLocal);
+            Server.CreateDatabase(GlobalTestDatabaseName, GlobalTestDatabaseType, OStorageType.PLocal);
         }
 
         public static void DropTestDatabase()
         {
-            if (_server.DatabaseExist(GlobalTestDatabaseName, OStorageType.PLocal))
-                _server.DropDatabase(GlobalTestDatabaseName, OStorageType.PLocal);
+            if (Server.DatabaseExist(GlobalTestDatabaseName, OStorageType.PLocal))
+                Server.DropDatabase(GlobalTestDatabaseName, OStorageType.PLocal);
         }
 
         public static OServer GetServer()
         {
-            return _server;
+            return Server;
         }
     }
 }

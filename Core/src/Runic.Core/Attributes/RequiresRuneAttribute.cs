@@ -10,7 +10,7 @@ namespace Runic.Core.Attributes
             _runes = runes;
         }
 
-        private string[] _runes { get; set; }
+        private string[] _runes;
 
         public string[] Runes
         {

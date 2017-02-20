@@ -10,13 +10,12 @@ namespace Runic.Agent.Harness
 
         public VirtualUser(TestOptions options, string testType)
         {
-            _harness = new TestHarness(PluginManager.GetTestType(testType));
+            Harness = new TestHarness(PluginManager.GetTestType(testType));
             _options = options;
         }
 
-        private TestHarness _harness { get; }
-        private CancellationToken _ct { get; set; }
-        private ManualResetEvent _completionEvent { get; set; }
+        private TestHarness Harness { get; }
+        private ManualResetEvent CompletionEvent { get; set; }
 
         public void Dispose()
         {
@@ -25,15 +24,14 @@ namespace Runic.Agent.Harness
 
         public async void StartThread(CancellationToken ct, ManualResetEvent completionEvent)
         {
-            _ct = ct;
-            _completionEvent = completionEvent;
-            _completionEvent.Reset();
+            CompletionEvent = completionEvent;
+            CompletionEvent.Reset();
 
             while (!ct.IsCancellationRequested)
                 try
                 {
                     Thread.Sleep(_options.StepDelayMilliseconds);
-                    await _harness.Execute();
+                    await Harness.Execute();
                 }
                 catch
                 {
@@ -44,9 +42,9 @@ namespace Runic.Agent.Harness
 
         public async void StopThread()
         {
-            _completionEvent.Set();
-            await _harness.TeardownTest();
-            await _harness.TeardownClass();
+            CompletionEvent.Set();
+            await Harness.TeardownTest();
+            await Harness.TeardownClass();
         }
     }
 }

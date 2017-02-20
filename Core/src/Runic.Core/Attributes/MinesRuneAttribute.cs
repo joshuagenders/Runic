@@ -5,12 +5,12 @@ namespace Runic.Core.Attributes
     [AttributeUsage(AttributeTargets.Method)]
     public class MinesRunesAttribute : Attribute
     {
+        private string[] _runes;
+
         public MinesRunesAttribute(params string[] runes)
         {
             _runes = runes;
         }
-
-        private string[] _runes { get; set; }
 
         public string[] Runes
         {

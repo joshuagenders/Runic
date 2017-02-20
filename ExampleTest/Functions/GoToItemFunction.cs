@@ -1,10 +1,10 @@
 ﻿using System;
+using Runic.Clients;
 using Runic.Core.Attributes;
 using Runic.Core.Models;
-using Runic.Data;
 using Runic.Exceptions;
 using Runic.Orchestration;
-using Runic.SystemTest.Runes;
+using Runic.ExampleTest.Runes;
 
 namespace Runic.ExampleTest.Functions
 {
@@ -17,9 +17,9 @@ namespace Runic.ExampleTest.Functions
         {
             if (itemId == null)
             {
-                var queryResults = await Runes.Retrieve(new RuneQuery());
+                var queryResults = await new RuneMessageClient().RetrieveRunes(new RuneQuery());
                 var searchResults = queryResults.Result as SearchResults;
-                if (searchResults.Results.Count == 0)
+                if (searchResults == null || searchResults.Results.Count == 0)
                     throw new InvalidRuneException("No item ids in search results");
                 itemId = searchResults.Results[new Random().Next(0, searchResults.Results.Count - 1)];
             }
