@@ -20,7 +20,7 @@ namespace Runic.QueryProcessingService
             LoadConfig();
             var program = new Program();
             var token = new CancellationToken();
-            Task.Run(() => { program.Run(token); }).ContinueWith(_ =>
+            Task.Run(() => { program.Run(token); }, token).ContinueWith(_ =>
             {
                 if (_.Exception != null)
                 {

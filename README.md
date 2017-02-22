@@ -62,7 +62,7 @@ Example Agent process:
    * execute aftereach
  * execute class teardown
 
-The agent will eventually have a data reservation function that can reserve an indexed field from use until a after a timeout period or until freed by the agent. As an example use case, any time an agent wants to use a customer id exclusively, it reserves the Id. The database rune query service can then exclude any runes for that customer id from use. This is not a full-proof solution but may be a handy tool.
+The agent will eventually have a data reservation function that can reserve an indexed field from use until a after a timeout period or until freed by the agent. As an example use case, any time an agent wants to use a customer id exclusively, it reserves the Id. The database rune query service can then exclude any runes for that customer id from use. This is not a foolproof solution but may be a handy tool.
 
 The agent will also provide standard test hooks such as ClassInit, ClassTeardown, BeforeEachFunction, AfterEachFunction.
 
