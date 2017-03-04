@@ -1,13 +1,11 @@
 ﻿using Autofac;
 using Newtonsoft.Json;
 using Runic.Agent.Configuration;
-using Runic.Agent.Harness;
 using Runic.Agent.Messaging;
-using Runic.Core.Models;
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Runic.Agent.Service;
 using Runic.Agent.Shell;
 
 namespace Runic.Agent
@@ -47,63 +45,26 @@ namespace Runic.Agent
                 }
                 Thread.Sleep(5000);
             }, cts.Token).Wait(cts.Token);
-
-            var shell = new AgentShell();
-            shell.ProcessCommands(cts.Token);
         }
 
        
         private async Task Execute(string[] args, IStartup startup, CancellationToken ct)
         {
             Container = startup.RegisterDependencies();
-            startup.ConfigureApplication();
+            
+            var messagingService = Container.Resolve<IMessagingService>();
+            var agentService = Container.Resolve<IAgentService>();
+            var shell = new AgentShell();
 
-            var events = GetCompletionEvents();
-            var tokenSources = new CancellationTokenSource[AgentConfiguration.MaxThreads];
-            var executionService = Container.Resolve<IMessagingService>();
+            var serviceCts = new CancellationTokenSource();
+            var agentTask = agentService.Run(messagingService, serviceCts.Token);
 
-            while (!ct.IsCancellationRequested)
+            var cmdTask = shell.ProcessCommands(ct).ContinueWith(result =>
             {
-                //wait for free thread slot
-                var index = WaitHandle.WaitAny(events);
-                var message = await executionService.ReceiveRequest(ct);
+                serviceCts.Cancel();
+            }, ct);
 
-                if (message == null)
-                    continue;
-
-                tokenSources[index] = new CancellationTokenSource();
-                tokenSources[index].CancelAfter(message.TimeoutMilliseconds);
-                RunTest(message, events[index], tokenSources[index].Token);
-            }
-
-            CancelAll(tokenSources);
-        }
-
-        private async void RunTest(ExecutionRequest message, ManualResetEvent completionEvent,
-            CancellationToken ct = default(CancellationToken))
-        {
-            var testOptions = new TestOptions
-            {
-                LockToThread = message.LockToThread,
-                StepDelayMilliseconds = message.StepDelayMilliseconds
-            };
-            var virtualUser = new VirtualUser(testOptions, message.TestName);
-
-            await Task.Run(() => { virtualUser.StartThread(ct, completionEvent); }, ct);
-        }
-
-        private ManualResetEvent[] GetCompletionEvents()
-        {
-            var events = new ManualResetEvent[AgentConfiguration.MaxThreads];
-            for (var i = 0; i < AgentConfiguration.MaxThreads; i++)
-                events[i] = new ManualResetEvent(true);
-            return events;
-        }
-
-        private void CancelAll(CancellationTokenSource[] tokenSources)
-        {
-            foreach (CancellationTokenSource t in tokenSources)
-                t?.Cancel();
+            await Task.WhenAll(cmdTask, agentTask);
         }
     }
 }

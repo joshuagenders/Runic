@@ -2,6 +2,7 @@
 
 namespace Runic.Core.Attributes
 {
+    [AttributeUsage(AttributeTargets.Method)]
     public class FunctionAttribute : Attribute
     {
         public FunctionAttribute(string name)

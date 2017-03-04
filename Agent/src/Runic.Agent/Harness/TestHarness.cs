@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Runic.Core.Attributes;
 
@@ -15,15 +16,30 @@ namespace Runic.Agent.Harness
         private object Instance { get; set; }
         private Type TestType { get; }
 
-        public async Task Execute()
+        public async Task Execute(CancellationToken ct)
         {
-            await InitialiseTestClass();
-            //TODO execute
-            await TeardownTest();
-            await TeardownClass();
+            try
+            {
+                await InitialiseFunctionClass();
+                while (!ct.IsCancellationRequested)
+                {
+                    await BeforeEach();
+                    await ExecuteFunction();
+                    await AfterEach();
+                }
+            }
+            finally
+            {
+                await TeardownFunctionClass();
+            }
         }
 
-        public async Task InitialiseTestClass()
+        private Task ExecuteFunction()
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task InitialiseFunctionClass()
         {
             Instance = Activator.CreateInstance(TestType, false);
             await ExecuteMethodWithAttribute(typeof(ClassInitialiseAttribute));
@@ -40,12 +56,17 @@ namespace Runic.Agent.Harness
             }
         }
 
-        public async Task TeardownTest()
+        private async Task BeforeEach()
         {
-            await ExecuteMethodWithAttribute(typeof(TestTeardownAttribute));
+            await ExecuteMethodWithAttribute(typeof(BeforeEachAttribute));
         }
 
-        public async Task TeardownClass()
+        private async Task AfterEach()
+        {
+            await ExecuteMethodWithAttribute(typeof(AfterEachAttribute));
+        }
+
+        private async Task TeardownFunctionClass()
         {
             await ExecuteMethodWithAttribute(typeof(ClassTeardownAttribute));
         }

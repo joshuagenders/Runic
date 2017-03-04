@@ -3,7 +3,7 @@
 namespace Runic.Core.Attributes
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public class TestInitialiseAttribute : Attribute
+    public class AfterEachAttribute : Attribute
     {
     }
 }

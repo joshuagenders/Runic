@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 
 namespace Runic.Agent.Harness
 {
-    public class ConstantTestController : ITestController
+    public class FlowController : ITestController
     {
-        public ConstantTestController(int threadCount)
+        public FlowController(int threadCount)
         {
             ThreadCount = threadCount;
         }

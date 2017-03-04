@@ -31,7 +31,7 @@ namespace Runic.Agent.Harness
                 try
                 {
                     Thread.Sleep(_options.StepDelayMilliseconds);
-                    await Harness.Execute();
+                    await Harness.Execute(ct);
                 }
                 catch
                 {
@@ -43,8 +43,6 @@ namespace Runic.Agent.Harness
         public async void StopThread()
         {
             CompletionEvent.Set();
-            await Harness.TeardownTest();
-            await Harness.TeardownClass();
         }
     }
 }

@@ -1,41 +1,103 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using Runic.Agent.AssemblyManagement;
+using static Runic.Agent.Shell.AgentShell.ReturnCodes;
 
 namespace Runic.Agent.Shell
 {
     public class AgentShell
     {
-        public int ProcessCommands(CancellationToken ct)
+        public enum ReturnCodes
         {
-            while (!ct.IsCancellationRequested)
+            SUCCESS = 0,
+            ERROR = 1
+        }
+
+        private Dictionary<string, Func<string[], Task<int>>> _handlers { get; set; }
+        private bool _return { get; set; }
+
+        public AgentShell()
+        {
+            _return = false;
+            RegisterHandlers();
+        }
+
+        /// <summary>
+        /// setthread plan=OrderFlow threadcount=1 [pluginprovider=Runic.Agent.AssemblyManagement.FilePluginProvider] [pluginkey=Runic.ExampleTest] 
+        /// runfunc name=Login [pluginprovider=Runic.Agent.AssemblyManagement.FilePluginProvider] [pluginkey=Runic.ExampleTest]
+        /// load pluginprovider=Runic.Agent.AssemblyManagement.FilePluginProvider pluginkey=Runic.ExampleTest
+        /// unload Runic.ExampleTest
+        /// lf (list functions)
+        /// lp (list plugins)
+        /// </summary>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        public async Task<int> ProcessCommands(CancellationToken ct)
+        {
+            while (!ct.IsCancellationRequested && !_return)
             {
                 try
                 {
-                    var input = Console.ReadLine().Split();
-                    if (input.Any())
+                    string[] input = Console.ReadLine().Split();
+                    if (!input.Any()) continue;
+                    if (_handlers.ContainsKey(input[0]))
                     {
-                        switch (input[0])
-                        {
-                            case "run":
-                                SetThreadLevel(input);
-                                break;
-                        }
+                        await _handlers[input[0]](input);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"No handler was found for the given command '{input[0]}'");
                     }
                 }
-                catch
+                catch (Exception e)
                 {
-                    return 1;
+                    Console.WriteLine("Encountered error");
                 }
 
             }
 
-            return 0;
+            return (int)SUCCESS;
         }
 
-        private void SetThreadLevel(string[] input)
+        public void RegisterHandlers()
+        {
+            _handlers = new Dictionary<string, Func<string[], Task<int>>>()
+            {
+                {
+                    "setthread", async (input) =>
+                    {
+                        var vals = input.ToKeywordDictionary();
+                        
+                        if (vals.ContainsKey("pluginkey"))
+                        {
+                            await LoadPlugin(vals["pluginkey"], vals["pluginprovider"]);
+                        }
+
+                        return await SetThreadLevel(vals["plan"], int.Parse(vals["threadCount"]));
+                    }
+                },
+                {
+                    "exit", async (input) => 
+                    {
+                        await Task.Run(() => _return = true);
+                        return (int) SUCCESS;
+                    }
+                }
+            };
+        }
+
+        private async Task LoadPlugin(string pluginKey, string pluginProvider)
+        {
+        }
+
+        private async Task<int> SetThreadLevel(string plan, int threadCount)
         {
             //todo
+            await Task.Run(() => { });
+            return (int)SUCCESS;
         }
     }
 }

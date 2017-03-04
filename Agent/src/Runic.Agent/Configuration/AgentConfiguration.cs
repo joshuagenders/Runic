@@ -14,6 +14,10 @@ namespace Runic.Agent.Configuration
         public static int MaxThreads => int.Parse(Configuration["Agent:MaxThreads"]);
         public static int LifetimeSeconds => int.Parse(Configuration["Agent:LifetimeSeconds"]);
         public static string ClientConnectionConfiguration => Configuration["Client:MQConnectionString"];
+        public static int StatsdPort => int.Parse(Configuration["Statsd:Port"]);
+        public static string StatsdHost => Configuration["Statsd:Host"];
+        public static string StatsdPrefix => Configuration["Statsd:Prefix"];
+
 
         public static void LoadConfiguration(string[] args)
         {
