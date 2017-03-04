@@ -1,4 +1,4 @@
-﻿namespace Runic.Agent.DTO
+﻿namespace Runic.Core.Models
 {
     public class SetThreadLevelRequest
     {

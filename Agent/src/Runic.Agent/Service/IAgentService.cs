@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Runic.Agent.DTO;
 using Runic.Agent.Messaging;
 using Runic.Core.Models;
 

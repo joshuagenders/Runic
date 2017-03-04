@@ -54,7 +54,7 @@ namespace Runic.Agent
             
             var messagingService = Container.Resolve<IMessagingService>();
             var agentService = Container.Resolve<IAgentService>();
-            var shell = new AgentShell();
+            var shell = new AgentShell(agentService);
 
             var serviceCts = new CancellationTokenSource();
             var agentTask = agentService.Run(messagingService, serviceCts.Token);

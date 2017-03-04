@@ -11,5 +11,10 @@ namespace Runic.Agent.FlowManagement
         {
             _flows.AddOrUpdate(flow.Name, flow, (key, val) => flow);
         }
+
+        public static Flow GetFlow(string name)
+        {
+            return _flows[name];
+        }
     }
 }

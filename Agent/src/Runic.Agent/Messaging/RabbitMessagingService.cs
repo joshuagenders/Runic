@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using EasyNetQ;
 using Runic.Agent.Configuration;
-using Runic.Agent.DTO;
 using Runic.Core.Models;
 
 namespace Runic.Agent.Messaging

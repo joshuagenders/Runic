@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Runic.Agent.AssemblyManagement;
+using Runic.Agent.Service;
 using static Runic.Agent.Shell.AgentShell.ReturnCodes;
 
 namespace Runic.Agent.Shell
@@ -18,10 +19,11 @@ namespace Runic.Agent.Shell
 
         private Dictionary<string, Func<string[], Task<int>>> _handlers { get; set; }
         private bool _return { get; set; }
-
-        public AgentShell()
+        private IAgentService _agentService { get; set; }
+        public AgentShell(IAgentService agentService)
         {
             _return = false;
+            _agentService = agentService;
             RegisterHandlers();
         }
 

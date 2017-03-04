@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Runic.Agent.DTO;
 using Runic.Agent.FlowManagement;
 using Runic.Agent.Harness;
 using Runic.Agent.Messaging;
@@ -14,56 +13,63 @@ namespace Runic.Agent.Service
     {
         private IMessagingService _messagingService { get; }
         private ExecutionContext _executionContext { get; set; }
-        private Dictionary<string, ITestController> _flowControllers { get; set; }
-
+        private CancellationToken _ct { get; set; }
         public AgentService(IMessagingService messagingService)
         {
             _messagingService = messagingService;
         }
 
+        private void RegisterHandlers(CancellationToken handlerCt)
+        {
+            _messagingService.RegisterThreadLevelHandler<SetThreadLevelRequest>(Guid.NewGuid().ToString("n"),
+                (message) => SetThreadLevel(message, handlerCt));
+
+            _messagingService.RegisterFlowUpdateHandler<AddUpdateFlowRequest>(Guid.NewGuid().ToString("n"),
+                (message) => Task.Run(() => Flows.AddUpdateFlow(message.Flow), handlerCt));
+        }
+
         public async Task Run(IMessagingService service, CancellationToken ct)
         {
             _executionContext = new ExecutionContext();
-            _flowControllers = new Dictionary<string, ITestController>();
+            _ct = ct;
 
-            _messagingService.RegisterThreadLevelHandler<SetThreadLevelRequest>(Guid.NewGuid().ToString("n"), 
-                (message) => SetThreadLevel(message, ct));
-
-            _messagingService.RegisterFlowUpdateHandler<AddUpdateFlowRequest>(Guid.NewGuid().ToString("n"),
-                (message) => Task.Run(() => Flows.AddUpdateFlow(message.Flow), ct));
+            RegisterHandlers(ct);
 
             while (!ct.IsCancellationRequested)
+                Thread.Sleep(5000);
+        }
+
+        private void StartFlow(FlowContext flowContext)
+        {
+            var harness = new FlowHarness();
+            _executionContext.FlowContexts.Add(flowContext.FlowName, flowContext);
+            flowContext.Task = harness.Execute(flowContext.Flow, new ThreadControl(flowContext.ThreadCount), _ct);
+            flowContext.CancellationToken = _ct;
+        }
+
+        public async Task AddUpdateFlow(Flow flow, CancellationToken ct)
+        {
+            await Task.Run(() => Flows.AddUpdateFlow(flow), ct);
+        }
+
+        public async Task SetThreadLevel(SetThreadLevelRequest request, CancellationToken ct)
+        {
+            if (!_executionContext.ThreadsAreAvailable(request.ThreadLevel, request.FlowName))
+                throw new NotEnoughThreadsAvailableException();
+
+            if (_executionContext.FlowHarnesses.ContainsKey(request.FlowName))
             {
-                foreach (var flowContext in _executionContext.FlowContexts)
+                _executionContext.FlowHarnesses[request.FlowName].UpdateThreads(request.ThreadLevel);
+            }
+            else
+            {
+                await Task.Run(() => StartFlow(new FlowContext()
                 {
-                    if (_flowControllers.ContainsKey(flowContext.Key))
-                    {
-
-                    }
-                    else
-                    {
-                        
-                    }
-                }
+                    FlowName = request.FlowName,
+                    ThreadCount = request.ThreadLevel,
+                    Flow = Flows.GetFlow(request.FlowName)
+                }), ct);
             }
-        }
-
-        private void CreateFlowController(FlowContext flowContext)
-        {
-            lock (_flowControllers)
-            {
-                _flowControllers.Add(flowContext.FlowName, new FlowController(flowContext.ThreadCount));
-            }
-        }
-
-        public Task AddUpdateFlow(Flow flow, CancellationToken ct)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SetThreadLevel(SetThreadLevelRequest request, CancellationToken ct)
-        {
-            throw new NotImplementedException();
         }
     }
 }
