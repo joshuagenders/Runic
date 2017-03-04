@@ -14,17 +14,20 @@ namespace Runic.Agent.Service
         private IMessagingService _messagingService { get; }
         private ExecutionContext _executionContext { get; set; }
         private CancellationToken _ct { get; set; }
+        private string _subscriberId { get; }
+
         public AgentService(IMessagingService messagingService)
         {
             _messagingService = messagingService;
+            _subscriberId = Guid.NewGuid().ToString("n");
         }
 
         private void RegisterHandlers(CancellationToken handlerCt)
         {
-            _messagingService.RegisterThreadLevelHandler<SetThreadLevelRequest>(Guid.NewGuid().ToString("n"),
+            _messagingService.RegisterThreadLevelHandler<SetThreadLevelRequest>(_subscriberId,
                 (message) => SetThreadLevel(message, handlerCt));
 
-            _messagingService.RegisterFlowUpdateHandler<AddUpdateFlowRequest>(Guid.NewGuid().ToString("n"),
+            _messagingService.RegisterFlowUpdateHandler<AddUpdateFlowRequest>(_subscriberId,
                 (message) => Task.Run(() => Flows.AddUpdateFlow(message.Flow), handlerCt));
         }
 
@@ -36,7 +39,9 @@ namespace Runic.Agent.Service
             RegisterHandlers(ct);
 
             while (!ct.IsCancellationRequested)
-                Thread.Sleep(5000);
+            {
+                await Task.Run(() => Thread.Sleep(5000), ct);
+            }
         }
 
         private void StartFlow(FlowContext flowContext)
@@ -50,19 +55,23 @@ namespace Runic.Agent.Service
         public async Task AddUpdateFlow(Flow flow, CancellationToken ct)
         {
             await Task.Run(() => Flows.AddUpdateFlow(flow), ct);
+            //todo update running flow
         }
 
         public async Task SetThreadLevel(SetThreadLevelRequest request, CancellationToken ct)
         {
+            //if not enough threads then error
             if (!_executionContext.ThreadsAreAvailable(request.ThreadLevel, request.FlowName))
                 throw new NotEnoughThreadsAvailableException();
 
             if (_executionContext.FlowHarnesses.ContainsKey(request.FlowName))
             {
+                //flow harness found - update the thread
                 _executionContext.FlowHarnesses[request.FlowName].UpdateThreads(request.ThreadLevel);
             }
             else
             {
+                //no harness found, start the threads
                 await Task.Run(() => StartFlow(new FlowContext()
                 {
                     FlowName = request.FlowName,

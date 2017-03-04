@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
+using Runic.Agent.AssemblyManagement;
+using Runic.Core.Attributes;
 using Runic.Core.Models;
 
 namespace Runic.Agent.Harness
 {
     public class FlowHarness
     {
-        private object _instance { get; set; }
+        private Dictionary<string,object> _instances { get; set; }
         private ThreadControl _threadControl { get; set; }
         private List<CancellationTokenSource> _cancellationSources { get; set; }
         private Flow _flow { get; set; }
@@ -19,40 +24,54 @@ namespace Runic.Agent.Harness
             _cancellationSources = new List<CancellationTokenSource>();
             _flow = flow;
 
-            InitialiseFunction();
-
             var trackedTasks = new List<Task>();
 
             while (!ct.IsCancellationRequested)
             {
-                trackedTasks.Add(ExecuteFlow());
+                trackedTasks.Add(ExecuteFlow(ct));
             }
             await Task.WhenAll(trackedTasks);
 
             _cancellationSources.ForEach(c => c.Cancel());
         }
 
-        private async Task ExecuteFlow()
+        private async Task ExecuteFlow(CancellationToken ct)
         {
             var cts = new CancellationTokenSource();
             _cancellationSources.Add(cts);
             await _threadControl.BeginTest(cts.Token);
-            foreach (var step in _flow.Steps)
+            while (!ct.IsCancellationRequested)
             {
-                //load the library if needed
-
-                //instantiate the class if needed
-
-                //execute with function harness
-
-                //move next or move start
+                //todo handle complex flows
+                foreach (var step in _flow.Steps)
+                {
+                    //load the library if needed
+                    LoadLibrary(step);
+                    //instantiate the class if needed
+                    InitialiseFunction(step);
+                    //execute with function harness
+                    var instance = _instances[step.TestName];
+                    instance
+                        .GetType()
+                        .GetMethods()
+                        .Single(m => m.GetCustomAttribute<FunctionAttribute>()?.Name == step.TestName)
+                        .Invoke(instance, null);
+                }
             }
-            
         }
 
-        private void InitialiseFunction()
+        private void LoadLibrary(Step step)
         {
-            
+            PluginManager.LoadPlugin(step.TestAssemblyName);
+        }
+
+        private void InitialiseFunction(Step step)
+        {
+            if (_instances.ContainsKey(step.TestName))
+                return;
+
+            var type = PluginManager.GetTestType(step.TestName);
+            _instances.Add(step.TestName, Activator.CreateInstance(type, null));
         }
 
         private void CancelAllThreads()

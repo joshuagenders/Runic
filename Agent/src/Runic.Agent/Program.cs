@@ -12,7 +12,7 @@ namespace Runic.Agent
 {
     public class Program
     {
-        private static IContainer Container { get; set; }
+        public static IContainer Container { get; private set; }
 
         public static void Main(string[] args)
         {

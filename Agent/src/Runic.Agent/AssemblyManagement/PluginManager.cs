@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Autofac;
 using NLog;
 
 namespace Runic.Agent.AssemblyManagement
@@ -13,9 +14,12 @@ namespace Runic.Agent.AssemblyManagement
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private static readonly ConcurrentBag<Assembly> TestPlugins = new ConcurrentBag<Assembly>();
         private static readonly List<string> KeyNames = new List<string>();
-
-        public void LoadPlugin(string pluginAssemblyName, IPluginProvider provider)
+        
+        public static void LoadPlugin(string pluginAssemblyName, IPluginProvider provider = null)
         {
+            if (provider == null)
+                provider = Program.Container.Resolve<IPluginProvider>();
+
             _logger.Info($"Loading plugin {pluginAssemblyName}");
             lock (KeyNames)
             {
