@@ -9,11 +9,11 @@ namespace Runic.Agent.Configuration
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private static IConfigurationRoot Config { get; set; }
+        private static IConfigurationRoot Configuration { get; set; }
 
-        public static int MaxThreads => int.Parse(Config["Agent:MaxThreads"]);
-        public static int LifetimeSeconds => int.Parse(Config["Agent:LifetimeSeconds"]);
-        public static string ClientConnectionConfiguration => Config["Client:MQConnectionString"];
+        public static int MaxThreads => int.Parse(Configuration["Agent:MaxThreads"]);
+        public static int LifetimeSeconds => int.Parse(Configuration["Agent:LifetimeSeconds"]);
+        public static string ClientConnectionConfiguration => Configuration["Client:MQConnectionString"];
 
         public static void LoadConfiguration(string[] args)
         {
@@ -23,7 +23,7 @@ namespace Runic.Agent.Configuration
             builder.SetBasePath(Directory.GetCurrentDirectory());
             builder.AddJsonFile("appsettings.json");
 
-            Config = builder.Build();
+            Configuration = builder.Build();
 
             _logger.Info($"args:{args.ToList().Select(t => $"| {t} ")}");
             _logger.Info($"MaxThreads:{MaxThreads}");

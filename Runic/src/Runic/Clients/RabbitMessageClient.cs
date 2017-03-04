@@ -16,7 +16,7 @@ namespace Runic.Clients
 
         public RabbitMessageClient()
         {
-            _bus = RabbitHutch.CreateBus(AppConfiguration.ClientConnectionConfiguration);
+            _bus = RabbitHutch.CreateBus(RunicConfiguration.ClientConnectionConfiguration);
             _subscriberId = Guid.NewGuid().ToString("n");
             _logger.Info($"SubscriberId: {_subscriberId}");
         }

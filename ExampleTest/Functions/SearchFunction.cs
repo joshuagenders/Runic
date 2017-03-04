@@ -38,7 +38,7 @@ namespace Runic.ExampleTest.Functions
                 }
             }
 
-            new RuneMessageClient().SendRunes(exampleResponse);
+            new RabbitMessageClient().SendRunes(exampleResponse);
         }
 
         public string GenerateSearchTerm()

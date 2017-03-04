@@ -11,7 +11,7 @@ namespace Runic.Orchestration
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private static readonly Statsd Client = new Statsd(AppConfiguration.GetStatsdConfiguration);
+        private static readonly Statsd Client = new Statsd(RunicConfiguration.GetStatsdConfiguration);
 
         public TimedAction(string actionName, Action action)
         {

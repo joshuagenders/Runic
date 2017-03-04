@@ -6,7 +6,7 @@ using StatsN;
 
 namespace Runic.Configuration
 {
-    public static class AppConfiguration
+    public static class RunicConfiguration
     {
         public static IConfigurationRoot Configuration { get; set; }
         public static IContainer Container { get; set; }

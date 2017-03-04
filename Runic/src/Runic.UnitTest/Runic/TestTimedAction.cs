@@ -11,7 +11,7 @@ namespace Runic.UnitTest.Runic
         [Fact]
         public async void TestTimedActionResponse()
         {
-            AppConfiguration.BuildConfiguration(new Dictionary<string, string>
+            RunicConfiguration.BuildConfiguration(new Dictionary<string, string>
             {
                 {"Database:Host", "http://localhost"},
                 {"Database:Prefix", "Runic.Tests."},

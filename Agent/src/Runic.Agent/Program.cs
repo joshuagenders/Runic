@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Runic.Agent.Shell;
 
 namespace Runic.Agent
 {
@@ -47,36 +48,11 @@ namespace Runic.Agent
                 Thread.Sleep(5000);
             }, cts.Token).Wait(cts.Token);
 
-            ProcessCommands(cts.Token);
+            var shell = new AgentShell();
+            shell.ProcessCommands(cts.Token);
         }
 
-        private static int ProcessCommands(CancellationToken cts)
-        {
-            while (!cts.IsCancellationRequested)
-            {
-                try
-                {
-                    var input = Console.ReadLine().Split();
-                    if (input.Any())
-                    {
-                        switch (input[0])
-                        {
-                            case "setthread":
-
-                                break;
-                        }
-                    }
-                }
-                catch
-                {
-                    return 1;
-                }
-
-            }
-
-            return 0;
-        }
-
+       
         private async Task Execute(string[] args, IStartup startup, CancellationToken ct)
         {
             Container = startup.RegisterDependencies();
