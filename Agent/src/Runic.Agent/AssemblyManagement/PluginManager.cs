@@ -4,16 +4,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using NLog;
 
 namespace Runic.Agent.AssemblyManagement
 {
     public class PluginManager
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private static readonly ConcurrentBag<Assembly> TestPlugins = new ConcurrentBag<Assembly>();
         private static readonly List<string> KeyNames = new List<string>();
 
         public void LoadPlugin(string pluginAssemblyName, IPluginProvider provider)
         {
+            _logger.Info($"Loading plugin {pluginAssemblyName}");
             lock (KeyNames)
             {
                 if (KeyNames.Contains(pluginAssemblyName))

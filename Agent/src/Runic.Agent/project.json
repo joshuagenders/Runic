@@ -13,7 +13,9 @@
       "type": "platform",
       "version": "1.0.1"
     },
-    "Runic.Core": "0.0.2",
+    "EasyNetQ": "2.0.3-unstable0055",
+    "NLog.Web.AspNetCore": "4.3.0",
+    "Runic.Core": "1.0.0",
     "System.Runtime.Loader": "4.0.0"
   },
 

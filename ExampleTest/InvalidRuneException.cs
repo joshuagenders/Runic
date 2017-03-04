@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Runic.Exceptions
+namespace Runic.ExampleTest.Functions
 {
-    public class InvalidRuneException : Exception
+    internal class InvalidRuneException : Exception
     {
         public InvalidRuneException()
         {

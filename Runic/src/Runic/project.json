@@ -12,9 +12,10 @@
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
     "RabbitMQ.Client": "4.1.1",
     "EasyNetQ": "2.0.3-unstable0055",
-    "Runic.Core": "0.0.2"
+    "Runic.Core": "1.0.0",
+    "Autofac": "4.3.0",
+    "NLog.Web.AspNetCore": "4.3.1"
   },
-
   "frameworks": {
     "netstandard1.6": {
       "imports": "dnxcore50"

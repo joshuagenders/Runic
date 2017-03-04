@@ -2,7 +2,6 @@
 using Runic.Clients;
 using Runic.Core.Attributes;
 using Runic.Core.Models;
-using Runic.Exceptions;
 using Runic.Orchestration;
 using Runic.ExampleTest.Runes;
 
@@ -27,7 +26,7 @@ namespace Runic.ExampleTest.Functions
             await new TimedAction("Login", () => OpenItem(itemId)).Execute();
         }
 
-        public string OpenItem(string itemId)
+        private string OpenItem(string itemId)
         {
             return "";
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using NLog;
 using Runic.Configuration;
 using StatsN;
 
@@ -8,20 +9,10 @@ namespace Runic.Orchestration
 {
     public class TimedAction
     {
-        /// <summary>
-        ///     The _client.
-        /// </summary>
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         private static readonly Statsd Client = new Statsd(AppConfiguration.GetStatsdConfiguration);
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="TimedAction" /> class.
-        /// </summary>
-        /// <param name="actionName">
-        ///     The action name.
-        /// </param>
-        /// <param name="action">
-        ///     The action.
-        /// </param>
         public TimedAction(string actionName, Action action)
         {
             Action = action;
@@ -36,23 +27,13 @@ namespace Runic.Orchestration
             Stopwatch = new Stopwatch();
         }
 
-        /// <summary>
-        ///     Gets the Action name.
-        /// </summary>
         private string ActionName { get; }
-
-        /// <summary>
-        ///     Gets the action.
-        /// </summary>
         private Delegate Action { get; }
-
-        /// <summary>
-        ///     Gets the stopwatch.
-        /// </summary>
         private Stopwatch Stopwatch { get; }
 
         public async Task<ActionResult> Execute()
         {
+            _logger.Info("Executing action");
             object result;
             try
             {
@@ -62,6 +43,7 @@ namespace Runic.Orchestration
             catch (Exception e)
             {
                 Client.Count($"{ActionName}.Exception.{e.GetType().FullName}");
+                _logger.Error(e);
                 return new ActionResult
                 {
                     ElapsedMilliseconds = Stopwatch.ElapsedMilliseconds,
@@ -75,6 +57,7 @@ namespace Runic.Orchestration
 
             Client.Count($"{ActionName}.Success");
             Client.Timing(ActionName, Stopwatch.ElapsedMilliseconds);
+            _logger.Info("Action complete");
 
             return new ActionResult
             {

@@ -1,38 +1,38 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using Newtonsoft.Json;
 using Runic.Agent.Configuration;
 using Runic.Agent.Harness;
 using Runic.Agent.Messaging;
 using Runic.Core.Models;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Runic.Agent
 {
     public class Program
     {
-        public Program()
-        {
-            MaxThreads = int.Parse(AgentConfiguration.Config["Agent:MaxThreads"]);
-        }
-
-        private int MaxThreads { get; }
-
         private static IContainer Container { get; set; }
 
         public static void Main(string[] args)
         {
-            var cts = new CancellationTokenSource();
             AgentConfiguration.LoadConfiguration(args);
 
+            var cts = new CancellationTokenSource();
+            try
+            {
+                var lifetimeMilliseconds = AgentConfiguration.LifetimeSeconds * 1000;
+                if (lifetimeMilliseconds != 0)
+                    cts.CancelAfter(lifetimeMilliseconds);
+            }
+            catch (OverflowException)
+            {
+                cts.CancelAfter(int.MaxValue);
+            }
+
             var startup = new Startup();
-
-            var lifetimeMilliseconds = int.Parse(AgentConfiguration.Config["Agent:LifetimeSeconds"]) * 1000;
-            if (lifetimeMilliseconds != 0)
-                cts.CancelAfter(lifetimeMilliseconds);
-
-            new Program().Execute(args, startup, cts.Token).ContinueWith(t =>
+            Task.Run(() => new Program().Execute(args, startup, cts.Token), cts.Token).ContinueWith(t =>
             {
                 if (t.Exception != null)
                 {
@@ -45,23 +45,52 @@ namespace Runic.Agent
                     Console.WriteLine("Load testing completed. Exiting.");
                 }
                 Thread.Sleep(5000);
-            }).Wait();
+            }, cts.Token).Wait(cts.Token);
+
+            ProcessCommands(cts.Token);
         }
 
-        public async Task Execute(string[] args, IStartup startup, CancellationToken ct)
+        private static int ProcessCommands(CancellationToken cts)
+        {
+            while (!cts.IsCancellationRequested)
+            {
+                try
+                {
+                    var input = Console.ReadLine().Split();
+                    if (input.Any())
+                    {
+                        switch (input[0])
+                        {
+                            case "setthread":
+
+                                break;
+                        }
+                    }
+                }
+                catch
+                {
+                    return 1;
+                }
+
+            }
+
+            return 0;
+        }
+
+        private async Task Execute(string[] args, IStartup startup, CancellationToken ct)
         {
             Container = startup.RegisterDependencies();
             startup.ConfigureApplication();
 
             var events = GetCompletionEvents();
-            var tokenSources = new CancellationTokenSource[MaxThreads];
+            var tokenSources = new CancellationTokenSource[AgentConfiguration.MaxThreads];
             var executionService = Container.Resolve<IMessagingService>();
 
             while (!ct.IsCancellationRequested)
             {
                 //wait for free thread slot
                 var index = WaitHandle.WaitAny(events);
-                var message = await executionService.ReceiveRequest();
+                var message = await executionService.ReceiveRequest(ct);
 
                 if (message == null)
                     continue;
@@ -74,7 +103,7 @@ namespace Runic.Agent
             CancelAll(tokenSources);
         }
 
-        public async void RunTest(ExecutionRequest message, ManualResetEvent completionEvent,
+        private async void RunTest(ExecutionRequest message, ManualResetEvent completionEvent,
             CancellationToken ct = default(CancellationToken))
         {
             var testOptions = new TestOptions
@@ -84,21 +113,21 @@ namespace Runic.Agent
             };
             var virtualUser = new VirtualUser(testOptions, message.TestName);
 
-            await Task.Run(() => { virtualUser.StartThread(ct, completionEvent); });
+            await Task.Run(() => { virtualUser.StartThread(ct, completionEvent); }, ct);
         }
 
-        public ManualResetEvent[] GetCompletionEvents()
+        private ManualResetEvent[] GetCompletionEvents()
         {
-            var events = new ManualResetEvent[MaxThreads];
-            for (var i = 0; i < MaxThreads; i++)
+            var events = new ManualResetEvent[AgentConfiguration.MaxThreads];
+            for (var i = 0; i < AgentConfiguration.MaxThreads; i++)
                 events[i] = new ManualResetEvent(true);
             return events;
         }
 
-        public void CancelAll(CancellationTokenSource[] tokenSources)
+        private void CancelAll(CancellationTokenSource[] tokenSources)
         {
-            for (var i = 0; i < tokenSources.Length; i++)
-                tokenSources[i]?.Cancel();
+            foreach (CancellationTokenSource t in tokenSources)
+                t?.Cancel();
         }
     }
 }
