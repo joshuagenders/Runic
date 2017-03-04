@@ -1,38 +1,24 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
-using EasyNetQ;
-using Runic.Agent.Configuration;
+using Autofac;
+using RawRabbit;
+using RawRabbit.Context;
 using Runic.Core.Models;
 
 namespace Runic.Agent.Messaging
 {
     public class RabbitMessagingService : IMessagingService
     {
-        private static readonly IBus _bus = RabbitHutch.CreateBus(AgentConfiguration.ClientConnectionConfiguration);
+        private static readonly IBusClient _bus = Program.Container.Resolve<IBusClient>();
 
-        public void RegisterThreadLevelHandler<T>(string subscriptionId, Func<SetThreadLevelRequest, Task> handler)
+        public void RegisterThreadLevelHandler(Func<SetThreadLevelRequest, MessageContext, Task> handler)
         {
-            _bus.SubscribeAsync(subscriptionId, handler);
+            _bus.SubscribeAsync(handler);
         }
 
-        public void RegisterFlowUpdateHandler<T>(string subscriptionId, Func<AddUpdateFlowRequest, Task> handler)
+        public void RegisterFlowUpdateHandler(Func<AddUpdateFlowRequest, MessageContext, Task> handler)
         {
-            _bus.SubscribeAsync(subscriptionId, handler);
-        }
-
-        public async Task<SetThreadLevelRequest> ReceiveThreadLevelRequest(CancellationToken ct)
-        {
-            SetThreadLevelRequest request = null;
-            await Task.Run(() => _bus.Receive<SetThreadLevelRequest>(typeof(SetThreadLevelRequest).Name, result => { request = result; }), ct);
-            return request;
-        }
-
-        public async Task<AddUpdateFlowRequest> ReceiveUpdateFlowRequest(CancellationToken ct)
-        {
-            AddUpdateFlowRequest request = null;
-            await Task.Run(() => _bus.Receive<AddUpdateFlowRequest>(typeof(AddUpdateFlowRequest).Name, result => { request = result; }), ct);
-            return request;
+            _bus.SubscribeAsync(handler);
         }
     }
 }

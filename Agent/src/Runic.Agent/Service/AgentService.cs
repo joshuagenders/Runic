@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using NLog;
 using Runic.Agent.FlowManagement;
 using Runic.Agent.Harness;
 using Runic.Agent.Messaging;
@@ -14,21 +15,19 @@ namespace Runic.Agent.Service
         private IMessagingService _messagingService { get; }
         private ExecutionContext _executionContext { get; set; }
         private CancellationToken _ct { get; set; }
-        private string _subscriberId { get; }
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
 
         public AgentService(IMessagingService messagingService)
         {
             _messagingService = messagingService;
-            _subscriberId = Guid.NewGuid().ToString("n");
         }
 
         private void RegisterHandlers(CancellationToken handlerCt)
         {
-            _messagingService.RegisterThreadLevelHandler<SetThreadLevelRequest>(_subscriberId,
-                (message) => SetThreadLevel(message, handlerCt));
-
-            _messagingService.RegisterFlowUpdateHandler<AddUpdateFlowRequest>(_subscriberId,
-                (message) => Task.Run(() => Flows.AddUpdateFlow(message.Flow), handlerCt));
+            _messagingService.RegisterThreadLevelHandler((message, context) => SetThreadLevel(message, handlerCt));
+            _messagingService.RegisterFlowUpdateHandler((message, context) => Task.Run(() => Flows.AddUpdateFlow(message.Flow), handlerCt));
+            _logger.Info("Registered message handlers");
         }
 
         public async Task Run(IMessagingService service, CancellationToken ct)
@@ -46,6 +45,7 @@ namespace Runic.Agent.Service
 
         private void StartFlow(FlowContext flowContext)
         {
+            _logger.Info($"Starting flow {flowContext.FlowName} at {flowContext.ThreadCount} threads");
             var harness = new FlowHarness();
             _executionContext.FlowContexts.Add(flowContext.FlowName, flowContext);
             flowContext.Task = harness.Execute(flowContext.Flow, new ThreadControl(flowContext.ThreadCount), _ct);
@@ -54,12 +54,14 @@ namespace Runic.Agent.Service
 
         public async Task AddUpdateFlow(Flow flow, CancellationToken ct)
         {
+            _logger.Info($"Updating {flow.Name}");
             await Task.Run(() => Flows.AddUpdateFlow(flow), ct);
             //todo update running flow
         }
 
         public async Task SetThreadLevel(SetThreadLevelRequest request, CancellationToken ct)
         {
+            _logger.Info($"Setting thread level to {request.ThreadLevel} for {request.FlowName}");
             //if not enough threads then error
             if (!_executionContext.ThreadsAreAvailable(request.ThreadLevel, request.FlowName))
                 throw new NotEnoughThreadsAvailableException();

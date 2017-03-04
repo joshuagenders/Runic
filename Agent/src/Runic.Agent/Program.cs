@@ -5,6 +5,7 @@ using Runic.Agent.Messaging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using NLog;
 using Runic.Agent.Service;
 using Runic.Agent.Shell;
 
@@ -13,6 +14,7 @@ namespace Runic.Agent
     public class Program
     {
         public static IContainer Container { get; private set; }
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public static void Main(string[] args)
         {
@@ -27,6 +29,7 @@ namespace Runic.Agent
             }
             catch (OverflowException)
             {
+                _logger.Warn("Overflow on agent lifetime timeout value. using max int value.");
                 cts.CancelAfter(int.MaxValue);
             }
 
@@ -35,15 +38,14 @@ namespace Runic.Agent
             {
                 if (t.Exception != null)
                 {
-                    Console.WriteLine(JsonConvert.SerializeObject(t.Exception));
-
+                    _logger.Error(t.Exception);
                     Console.WriteLine("An error occured. Exiting.");
                 }
                 else
                 {
                     Console.WriteLine("Load testing completed. Exiting.");
                 }
-                Thread.Sleep(5000);
+                Thread.Sleep(15000);
             }, cts.Token).Wait(cts.Token);
         }
 

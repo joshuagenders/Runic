@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using EasyNetQ;
 using NLog;
+using RawRabbit;
+using RawRabbit.Common;
+using RawRabbit.Configuration;
 using Runic.Configuration;
 using Runic.Core.Models;
 
@@ -11,12 +13,11 @@ namespace Runic.Clients
     public class RabbitMessageClient : IRuneClient
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private IBus _bus { get; }
+        private IBusClient _bus { get; }
         private string _subscriberId { get; }
 
         public RabbitMessageClient()
         {
-            _bus = RabbitHutch.CreateBus(RunicConfiguration.ClientConnectionConfiguration);
             _subscriberId = Guid.NewGuid().ToString("n");
             _logger.Info($"SubscriberId: {_subscriberId}");
         }
@@ -48,7 +49,8 @@ namespace Runic.Clients
             {
                 Runes = new List<T>(runes)
             };
-            _bus.Publish(request);
+
+            _bus.PublishAsync(request);
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
+using NLog;
 using Runic.Agent.AssemblyManagement;
 using Runic.Core.Attributes;
 using Runic.Core.Models;
@@ -17,9 +18,11 @@ namespace Runic.Agent.Harness
         private ThreadControl _threadControl { get; set; }
         private List<CancellationTokenSource> _cancellationSources { get; set; }
         private Flow _flow { get; set; }
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public async Task Execute(Flow flow, ThreadControl threadControl, CancellationToken ct)
         {
+            _logger.Info($"Executing flow {flow.Name}");
             _threadControl = threadControl;
             _cancellationSources = new List<CancellationTokenSource>();
             _flow = flow;

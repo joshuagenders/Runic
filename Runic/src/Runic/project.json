@@ -10,8 +10,8 @@
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
     "Microsoft.Extensions.Logging.Debug": "1.0.0",
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
-    "RabbitMQ.Client": "4.1.1",
-    "EasyNetQ": "2.0.3-unstable0055",
+    "RawRabbit": "1.10.3",
+    "RawRabbit.DependencyInjection.Autofac": "1.10.3",
     "Runic.Core": "1.0.0",
     "Autofac": "4.3.0",
     "NLog.Web.AspNetCore": "4.3.1"

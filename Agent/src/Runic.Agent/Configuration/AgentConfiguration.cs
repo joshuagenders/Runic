@@ -25,13 +25,18 @@ namespace Runic.Agent.Configuration
 
             builder.AddCommandLine(args);
             builder.SetBasePath(Directory.GetCurrentDirectory());
-            builder.AddJsonFile("appsettings.json");
+            if (File.Exists("appsettings.json"))
+                builder.AddJsonFile("appsettings.json");
 
             Configuration = builder.Build();
 
             _logger.Info($"args:{args.ToList().Select(t => $"| {t} ")}");
             _logger.Info($"MaxThreads:{MaxThreads}");
             _logger.Info($"LifetimeSeconds:{LifetimeSeconds}");
+            _logger.Info($"StatsdHost:{StatsdHost}");
+            _logger.Info($"StatsdPort:{StatsdPort}");
+            _logger.Info($"StatsdPrefix:{StatsdPrefix}");
+            _logger.Info($"ClientConnectionConfiguration:{ClientConnectionConfiguration}");
         }
     }
 }

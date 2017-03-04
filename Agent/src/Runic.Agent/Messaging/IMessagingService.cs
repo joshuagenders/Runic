@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
+using RawRabbit.Context;
 using Runic.Core.Models;
 
 namespace Runic.Agent.Messaging
 {
     public interface IMessagingService
     {
-        void RegisterThreadLevelHandler<T>(string subscriptionId, Func<SetThreadLevelRequest, Task> handler);
-        void RegisterFlowUpdateHandler<T>(string subscriptionId, Func<AddUpdateFlowRequest, Task> handler);
-        Task<SetThreadLevelRequest> ReceiveThreadLevelRequest(CancellationToken ct);
-        Task<AddUpdateFlowRequest> ReceiveUpdateFlowRequest(CancellationToken ct);
+        void RegisterThreadLevelHandler(Func<SetThreadLevelRequest, MessageContext, Task> handler);
+        void RegisterFlowUpdateHandler(Func<AddUpdateFlowRequest, MessageContext, Task> handler);
     }
 }
