@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Runic.Core.Models;
 
-namespace Runic.Clients
+namespace Runic.Framework.Clients
 {
     public interface IRuneClient
     {

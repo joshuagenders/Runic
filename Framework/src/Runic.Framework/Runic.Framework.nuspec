@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0"?>
 <package>
   <metadata>
-    <id>Runic</id>
+    <id>Runic.Framework</id>
     <version>1.0.0</version>
     <title>Runic</title>
     <authors>Joshua Genders</authors>
@@ -14,7 +14,7 @@
   <files>
     <file src="bin\Debug\netstandard1.6\Runic.Core.dll" target="lib\netstandard1.6\Runic.Core.dll" />
   	<file src="bin\Debug\netstandard1.6\Runic.Core.xml" target="lib\netstandard1.6\Runic.Core.xml" />
-  	<file src="bin\Debug\netstandard1.6\Runic.Core.dll" target="lib\netstandard1.6\Runic.Core.dll" />
+  	<file src="bin\Debug\netstandard1.6\Runic.dll" target="lib\netstandard1.6\Runic.dll" />
   	<file src="bin\Debug\netstandard1.6\Runic.xml" target="lib\netstandard1.6\Runic.xml" />
   </files>
 </package>

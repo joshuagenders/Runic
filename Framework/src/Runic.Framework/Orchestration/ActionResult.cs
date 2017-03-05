@@ -1,4 +1,4 @@
-﻿namespace Runic.Orchestration
+﻿namespace Runic.Framework.Orchestration
 {
     public class ActionResult
     {

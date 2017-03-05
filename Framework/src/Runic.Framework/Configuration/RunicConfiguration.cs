@@ -4,7 +4,7 @@ using Autofac;
 using Microsoft.Extensions.Configuration;
 using StatsN;
 
-namespace Runic.Configuration
+namespace Runic.Framework.Configuration
 {
     public static class RunicConfiguration
     {

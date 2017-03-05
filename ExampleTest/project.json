@@ -4,8 +4,8 @@
   "dependencies": {
     "NETStandard.Library": "1.6.0",
     "Newtonsoft.Json": "9.0.1",
-    "Runic": "1.0.0-*",
-    "Runic.Core": "0.0.2",  
+    "Runic.Framework": "1.0.0",
+    "Runic.Core": "1.0.0",  
     "System.Net.Requests": "4.0.11"
   },
 

@@ -5,7 +5,7 @@ using NLog;
 using RawRabbit;
 using Runic.Core.Models;
 
-namespace Runic.Clients
+namespace Runic.Framework.Clients
 {
     public class RabbitMessageClient : IRuneClient
     {

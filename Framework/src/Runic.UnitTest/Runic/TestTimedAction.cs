@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
-using Runic.Configuration;
-using Runic.Orchestration;
+using Runic.Framework.Configuration;
+using Runic.Framework.Orchestration;
 using Xunit;
 
 namespace Runic.UnitTest.Runic

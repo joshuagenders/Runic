@@ -2,10 +2,10 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using NLog;
-using Runic.Configuration;
+using Runic.Framework.Configuration;
 using StatsN;
 
-namespace Runic.Orchestration
+namespace Runic.Framework.Orchestration
 {
     public class TimedAction
     {
