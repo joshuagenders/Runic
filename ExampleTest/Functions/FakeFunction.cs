@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Runic.Core.Attributes;
 
-namespace Runic.Agent.UnitTest
+namespace Runic.ExampleTest
 {
     public class FakeFunction
     {
@@ -32,6 +32,28 @@ namespace Runic.Agent.UnitTest
                 InvocationTime = DateTime.Now,
                 StackTrace = Environment.StackTrace,
                 InvocationTarget = "Login"
+            });
+        }
+
+        [Function("Add")]
+        public void DoSomeTask2()
+        {
+            CallList.Add(new InvocationInformation()
+            {
+                InvocationTime = DateTime.Now,
+                StackTrace = Environment.StackTrace,
+                InvocationTarget = "Add"
+            });
+        }
+
+        [Function("Subtract")]
+        public void DoSomeTask3()
+        {
+            CallList.Add(new InvocationInformation()
+            {
+                InvocationTime = DateTime.Now,
+                StackTrace = Environment.StackTrace,
+                InvocationTarget = "Subtract"
             });
         }
 

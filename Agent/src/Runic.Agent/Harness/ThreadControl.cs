@@ -14,6 +14,11 @@ namespace Runic.Agent.Harness
             _semaphore = new SemaphoreSlim(_threadCount);
         }
 
+        public int GetThreadCount()
+        {
+            return _threadCount;
+        }
+
         public async Task UpdateThreadCount(int threadCount, CancellationToken ctx = default(CancellationToken))
         {
             await Task.Run(() =>

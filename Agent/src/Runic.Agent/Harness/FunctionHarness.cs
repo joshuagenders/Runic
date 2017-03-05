@@ -15,10 +15,14 @@ namespace Runic.Agent.Harness
             _instance = functionInstance;
         }
         
-        public async Task Execute(string functionName, CancellationToken ct)
+        public async Task Execute(string functionName, CancellationToken ctx = default(CancellationToken))
         {
             await BeforeEach();
+            if (ctx.IsCancellationRequested)
+                return;
             await ExecuteFunction(functionName);
+            if (ctx.IsCancellationRequested)
+                return;
             await AfterEach();
         }
 
