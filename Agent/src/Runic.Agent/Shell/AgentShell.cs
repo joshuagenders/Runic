@@ -74,7 +74,7 @@ namespace Runic.Agent.Shell
                 {
                     "setthread", async (input) =>
                     {
-                        var vals = input.ToKeywordDictionary();
+                        var vals = input.FromKeywordToDictionary();
                         
                         if (vals.ContainsKey("pluginkey"))
                         {
@@ -87,7 +87,7 @@ namespace Runic.Agent.Shell
                 {
                     "load", async (input) =>
                     {
-                        var vals = input.ToKeywordDictionary();
+                        var vals = input.FromKeywordToDictionary();
                         await LoadPlugin(vals["pluginkey"], _cancellationToken);
                         return (int) SUCCESS;
                     }

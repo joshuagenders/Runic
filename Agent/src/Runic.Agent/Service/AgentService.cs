@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
 using NLog;
 using Runic.Agent.FlowManagement;
 using Runic.Agent.Harness;
@@ -46,7 +47,7 @@ namespace Runic.Agent.Service
         private void StartFlow(FlowContext flowContext)
         {
             _logger.Info($"Starting flow {flowContext.FlowName} at {flowContext.ThreadCount} threads");
-            var harness = new FlowHarness();
+            var harness = Program.Container.Resolve<IFlowHarness>();
             _executionContext.FlowContexts.Add(flowContext.FlowName, flowContext);
             flowContext.Task = harness.Execute(flowContext.Flow, new ThreadControl(flowContext.ThreadCount), _ct);
             flowContext.CancellationToken = _ct;

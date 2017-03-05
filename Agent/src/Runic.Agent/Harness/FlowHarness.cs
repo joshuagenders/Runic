@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using NLog;
 using Runic.Agent.AssemblyManagement;
-using Runic.Core.Attributes;
 using Runic.Core.Models;
 
 namespace Runic.Agent.Harness
 {
-    public class FlowHarness
+    public class FlowHarness : IFlowHarness
     {
         private Dictionary<string,object> _instances { get; set; }
         private ThreadControl _threadControl { get; set; }
@@ -20,7 +17,7 @@ namespace Runic.Agent.Harness
         private Flow _flow { get; set; }
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public async Task Execute(Flow flow, ThreadControl threadControl, CancellationToken ct)
+        public async Task Execute(Flow flow, ThreadControl threadControl, CancellationToken ctx = default(CancellationToken))
         {
             _logger.Info($"Executing flow {flow.Name}");
             _threadControl = threadControl;
@@ -29,21 +26,21 @@ namespace Runic.Agent.Harness
 
             var trackedTasks = new List<Task>();
 
-            while (!ct.IsCancellationRequested)
+            while (!ctx.IsCancellationRequested)
             {
-                trackedTasks.Add(ExecuteFlow(ct));
+                trackedTasks.Add(ExecuteFlow(ctx));
             }
             await Task.WhenAll(trackedTasks);
 
             _cancellationSources.ForEach(c => c.Cancel());
         }
 
-        private async Task ExecuteFlow(CancellationToken ct)
+        private async Task ExecuteFlow(CancellationToken ctx = default(CancellationToken))
         {
             var cts = new CancellationTokenSource();
             _cancellationSources.Add(cts);
             await _threadControl.BeginTest(cts.Token);
-            while (!ct.IsCancellationRequested)
+            while (!ctx.IsCancellationRequested)
             {
                 //todo handle complex flows
                 foreach (var step in _flow.Steps)
@@ -53,39 +50,37 @@ namespace Runic.Agent.Harness
                     //instantiate the class if needed
                     InitialiseFunction(step);
                     //execute with function harness
-                    var instance = _instances[step.TestName];
-                    instance
-                        .GetType()
-                        .GetMethods()
-                        .Single(m => m.GetCustomAttribute<FunctionAttribute>()?.Name == step.TestName)
-                        .Invoke(instance, null);
+                    var instance = _instances[step.FunctionName];
+                    var functionHarness = Program.Container.Resolve<IFunctionHarness>();
+                    functionHarness.Bind(instance);
+                    functionHarness.Execute(step.FunctionName, cts.Token);
                 }
             }
         }
 
+        public async Task UpdateThreads(int threadCount, CancellationToken ctx = default(CancellationToken))
+        {
+            CancelAllThreads();
+            await _threadControl.UpdateThreadCount(threadCount, ctx);
+        }
+
         private void LoadLibrary(Step step)
         {
-            PluginManager.LoadPlugin(step.TestAssemblyName);
+            PluginManager.LoadPlugin(step.FunctionAssemblyName);
         }
 
         private void InitialiseFunction(Step step)
         {
-            if (_instances.ContainsKey(step.TestName))
+            if (_instances.ContainsKey(step.FunctionName))
                 return;
 
-            var type = PluginManager.GetTestType(step.TestName);
-            _instances.Add(step.TestName, Activator.CreateInstance(type, null));
+            var type = PluginManager.GetFunctionType(step.FunctionName);
+            _instances.Add(step.FunctionName, Activator.CreateInstance(type, null));
         }
 
         private void CancelAllThreads()
         {
-            _cancellationSources.ForEach(t =>t.Cancel());   
-        }
-
-        public async void UpdateThreads(int threadCount)
-        {
-            CancelAllThreads();
-            await _threadControl.UpdateThreadCount(threadCount);
+            _cancellationSources.ForEach(t => t.Cancel());   
         }
     }
 

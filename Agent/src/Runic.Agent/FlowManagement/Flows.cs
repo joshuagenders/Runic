@@ -5,7 +5,8 @@ namespace Runic.Agent.FlowManagement
 {
     public class Flows
     {
-        private static ConcurrentDictionary<string, Flow> _flows { get; set; }
+        //todo replace with a proper management system
+        private static ConcurrentDictionary<string, Flow> _flows = new ConcurrentDictionary<string, Flow>();
 
         public static void AddUpdateFlow(Flow flow)
         {

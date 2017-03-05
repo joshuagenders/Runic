@@ -6,20 +6,20 @@ using Runic.Core.Attributes;
 
 namespace Runic.Agent.Harness
 {
-    public class FunctionHarness<T>
+    public class FunctionHarness : IFunctionHarness
     {
-        public FunctionHarness(T instance)
-        {
-            _instance = instance;
-        }
+        private object _instance { get; set; }
 
-        private T _instance { get; set; }
-        
-        public async Task Execute(CancellationToken ct, string functionName)
+        public void Bind(object functionInstance)
         {
-            await BeforeEach()
-                    .ContinueWith((_) => ExecuteFunction(functionName))
-                    .ContinueWith((_) => AfterEach());
+            _instance = functionInstance;
+        }
+        
+        public async Task Execute(string functionName, CancellationToken ct)
+        {
+            await BeforeEach();
+            await ExecuteFunction(functionName);
+            await AfterEach();
         }
 
         private async Task ExecuteFunction(string name)
@@ -52,11 +52,6 @@ namespace Runic.Agent.Harness
         private async Task AfterEach()
         {
             await ExecuteMethodWithAttribute(typeof(AfterEachAttribute));
-        }
-
-        private async Task TeardownFunctionClass()
-        {
-            await ExecuteMethodWithAttribute(typeof(ClassTeardownAttribute));
         }
     }
 }

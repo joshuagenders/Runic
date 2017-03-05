@@ -19,18 +19,19 @@ namespace Runic.Agent.Configuration
         public static string StatsdPrefix => Configuration["Statsd:Prefix"];
 
 
-        public static void LoadConfiguration(string[] args)
+        public static void LoadConfiguration(string[] args = null)
         {
             var builder = new ConfigurationBuilder();
+            if (args != null)
+                builder.AddCommandLine(args);
 
-            builder.AddCommandLine(args);
             builder.SetBasePath(Directory.GetCurrentDirectory());
             if (File.Exists("appsettings.json"))
                 builder.AddJsonFile("appsettings.json");
 
             Configuration = builder.Build();
 
-            _logger.Info($"args:{args.ToList().Select(t => $"| {t} ")}");
+            _logger.Info($"args:{args?.ToList().Select(t => $"| {t} ")}");
             _logger.Info($"MaxThreads:{MaxThreads}");
             _logger.Info($"LifetimeSeconds:{LifetimeSeconds}");
             _logger.Info($"StatsdHost:{StatsdHost}");

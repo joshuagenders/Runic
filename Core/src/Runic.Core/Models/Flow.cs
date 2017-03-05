@@ -10,11 +10,8 @@ namespace Runic.Core.Models
 
     public class Step
     {
-        /// <summary>
-        /// </summary>
-        public string TestName { get; set; }
-
-        public string TestAssemblyName { get; set; }
+        public string FunctionName { get; set; }
+        public string FunctionAssemblyName { get; set; }
         public string InputDatasource { get; set; }
         public Dictionary<string, string> DatasourceMapping { get; set; }
         public int Repeat { get; set; }

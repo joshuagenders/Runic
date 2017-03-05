@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NLog;
 using RawRabbit;
-using RawRabbit.Common;
-using RawRabbit.Configuration;
-using Runic.Configuration;
 using Runic.Core.Models;
 
 namespace Runic.Clients
