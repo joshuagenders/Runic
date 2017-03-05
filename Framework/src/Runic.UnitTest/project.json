@@ -1,9 +1,10 @@
 ﻿{
   "version": "1.0.0-*",
-  "testRunner": "xunit",
+  "testRunner": "nunit",
   "dependencies": {
-    "xunit": "2.2.0-beta2-build3300",
-    "dotnet-test-xunit": "2.2.0-preview2-build1029",
+    "NUnit": "3.6.1",
+    "dotnet-test-nunit": "3.4.0-beta-3",
+    "Microsoft.DotNet.InternalAbstractions": "1.0.0",
     "moq": "4.7.1",
     "Runic.Framework": "1.0.0"
   },

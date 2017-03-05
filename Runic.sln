@@ -7,19 +7,15 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.Agent", "Agent\src\Ru
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.ExampleTest", "ExampleTest\Runic.ExampleTest.xproj", "{C77E3224-824F-452C-9482-F8772E8EDB92}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.QueryProcessingService", "QueryProcessingService\src\Runic.QueryProcessingService\Runic.QueryProcessingService.xproj", "{854702F6-85F8-43EC-977C-244CBECFEF2B}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.QueryProcessingService.UnitTest", "QueryProcessingService\src\Runic.QueryProcessingService.UnitTest\Runic.QueryProcessingService.UnitTest.xproj", "{6A3FF094-3935-4C65-8F57-EC9DA0DD76FE}"
-EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.RuneStorageService", "RuneStorageService\src\Runic.RuneStorageService\Runic.RuneStorageService.xproj", "{E0497E8E-37C8-46BB-89A1-DDE3293EAA5B}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.RuneStorageService.UnitTest", "RuneStorageService\src\Runic.RuneStorageService.UnitTest\Runic.RuneStorageService.UnitTest.xproj", "{6F79F9DE-A6D1-4AC9-B8C1-CD0E0CA5CA14}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.RuneStorageService.SystemTest", "RuneStorageService\src\Runic.StorageService.SystemTest\Runic.RuneStorageService.SystemTest.xproj", "{5892F40B-E496-4F9C-A80D-90C7093F7D11}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.Framework", "Framework\src\Runic.Framework\Runic.Framework.xproj", "{EE281C69-F006-4A43-AF96-AD6F771BDC20}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.Framework.UnitTest", "Framework\src\Runic.UnitTest\Runic.Framework.UnitTest.xproj", "{DACD2D61-AD9A-4857-80E3-2254B7BBF039}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.Agent.UnitTest", "Agent\src\Runic.Agent.UnitTest\Runic.Agent.UnitTest.xproj", "{D3E674C5-8ACD-40E8-9D3A-01C5B3A20444}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,22 +31,10 @@ Global
 		{C77E3224-824F-452C-9482-F8772E8EDB92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C77E3224-824F-452C-9482-F8772E8EDB92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C77E3224-824F-452C-9482-F8772E8EDB92}.Release|Any CPU.Build.0 = Release|Any CPU
-		{854702F6-85F8-43EC-977C-244CBECFEF2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{854702F6-85F8-43EC-977C-244CBECFEF2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{854702F6-85F8-43EC-977C-244CBECFEF2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{854702F6-85F8-43EC-977C-244CBECFEF2B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6A3FF094-3935-4C65-8F57-EC9DA0DD76FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6A3FF094-3935-4C65-8F57-EC9DA0DD76FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6A3FF094-3935-4C65-8F57-EC9DA0DD76FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6A3FF094-3935-4C65-8F57-EC9DA0DD76FE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E0497E8E-37C8-46BB-89A1-DDE3293EAA5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E0497E8E-37C8-46BB-89A1-DDE3293EAA5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0497E8E-37C8-46BB-89A1-DDE3293EAA5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0497E8E-37C8-46BB-89A1-DDE3293EAA5B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6F79F9DE-A6D1-4AC9-B8C1-CD0E0CA5CA14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6F79F9DE-A6D1-4AC9-B8C1-CD0E0CA5CA14}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6F79F9DE-A6D1-4AC9-B8C1-CD0E0CA5CA14}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6F79F9DE-A6D1-4AC9-B8C1-CD0E0CA5CA14}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5892F40B-E496-4F9C-A80D-90C7093F7D11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5892F40B-E496-4F9C-A80D-90C7093F7D11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5892F40B-E496-4F9C-A80D-90C7093F7D11}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -63,6 +47,10 @@ Global
 		{DACD2D61-AD9A-4857-80E3-2254B7BBF039}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DACD2D61-AD9A-4857-80E3-2254B7BBF039}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DACD2D61-AD9A-4857-80E3-2254B7BBF039}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3E674C5-8ACD-40E8-9D3A-01C5B3A20444}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3E674C5-8ACD-40E8-9D3A-01C5B3A20444}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3E674C5-8ACD-40E8-9D3A-01C5B3A20444}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3E674C5-8ACD-40E8-9D3A-01C5B3A20444}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

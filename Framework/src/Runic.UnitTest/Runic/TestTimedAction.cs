@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Runic.Framework.Configuration;
 using Runic.Framework.Orchestration;
-using Xunit;
+using NUnit.Framework;
 
 namespace Runic.UnitTest.Runic
 {
     public class TestTimedAction
     {
-        [Fact]
-        public async void TestTimedActionResponse()
+        [Test]
+        public async Task TestTimedActionResponse()
         {
             RunicConfiguration.BuildConfiguration(new Dictionary<string, string>
             {
@@ -24,8 +25,8 @@ namespace Runic.UnitTest.Runic
                 return "result";
             }).Execute();
 
-            Assert.Equal(result.ExecutionResult, "result");
-            Assert.True(result.ElapsedMilliseconds > 0);
+            Assert.AreEqual(result.ExecutionResult, "result");
+            Assert.IsTrue(result.ElapsedMilliseconds > 0);
         }
     }
 }
