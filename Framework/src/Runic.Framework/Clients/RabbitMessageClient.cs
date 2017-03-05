@@ -11,17 +11,9 @@ namespace Runic.Framework.Clients
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private IBusClient _bus { get; }
-        private string _subscriberId { get; }
-
-        public RabbitMessageClient()
-        {
-            _subscriberId = Guid.NewGuid().ToString("n");
-            _logger.Info($"SubscriberId: {_subscriberId}");
-        }
-
+        
         public Task<RuneQuery> RetrieveRunes(RuneQuery queries)
         {
-            _logger.Info($"SubscriberId: {_subscriberId}");
             var request = new RuneQueryRequest()
             {
                 RuneQuery = queries,
@@ -33,15 +25,13 @@ namespace Runic.Framework.Clients
                 new
                 {
                     Message = "query_result",
-                    SubscriberId = _subscriberId,
                     Result = result
                 });
             return result;
         }
 
-        public void SendRunes<T>(params T[] runes)
+        public void SendRunes<T>(params T[] runes) where T : Rune
         {
-            _logger.Info($"SubscriberId: {_subscriberId}");
             var request = new RuneStorageRequest<T>
             {
                 Runes = new List<T>(runes)
