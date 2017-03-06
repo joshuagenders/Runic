@@ -71,37 +71,20 @@ namespace Runic.Agent.AssemblyManagement
             throw new ClassNotFoundInAssemblyException();
         }
 
-        public static Type GetFunctionType(string functionName)
+        public static Type GetFunctionType(string functionFullyQualifiedName)
         {
-            Type type = null;
+            _logger.Debug($"Searching assemblies for function");
             lock (_testPlugins)
             {
                 foreach (var assembly in _testPlugins)
                 {
-                    _logger.Debug($"Searching assembly for function");
-
-                    var types = assembly.GetTypes();
-                    _logger.Debug($"Retrieved types from assembly");
-
-                    var matchingTypes = types.Where(t => t.GetMethods()
-                                                          .Select(m => m.GetCustomAttributes<FunctionAttribute>()
-                                                          .Where(c => c.Name == functionName)).Any())
-                                             .ToList();
-                    _logger.Debug($"Attempted to retrieve matching types");
-
-                    if (matchingTypes.Any())
-                    {
-                        _logger.Debug($"Type found for {functionName}");
-                        type = matchingTypes.First();
-                        break;
-                    }
+                    var type = assembly.GetType(functionFullyQualifiedName);
+                    if (type != null)
+                        return type;
                 }
             }
 
-            if (type != null)
-                return type;
-
-            throw new ClassNotFoundInAssemblyException();
+            throw new ClassNotFoundInAssemblyException(functionFullyQualifiedName);
         }
     }
 }
