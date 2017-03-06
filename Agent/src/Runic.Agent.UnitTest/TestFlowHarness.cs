@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using NUnit.Compatibility;
 using NUnit.Framework;
 using Runic.Agent.Configuration;
 using Runic.Agent.FlowManagement;
@@ -26,7 +27,7 @@ namespace Runic.Agent.UnitTest
                 "Statsd:Prefix=MyPrefix"
             };
             AgentConfiguration.LoadConfiguration(cli);
-            Program.Container = new Startup().RegisterDependencies();
+            IoC.RegisterDependencies(new Startup());
 
             var harness = new FlowHarness();
             var flow = new Flow()
@@ -37,26 +38,32 @@ namespace Runic.Agent.UnitTest
                     new Step()
                     {
                         FunctionName = "Login",
-                        FunctionAssemblyName = "ExampleTest"
+                        FunctionAssemblyName = "ExampleTest",
+                        FunctionFullyQualifiedName = "Runic.ExampleTest.Functions.FakeFunction"
                     }
                 }
             };
 
-            Flows.AddUpdateFlow(flow);
-
             CancellationTokenSource cts = new CancellationTokenSource();
-            cts.CancelAfter(10000);
-            var ex = harness.Execute(flow, 1, cts.Token);
-            var tasks = harness.GetTasks();
-            Thread.Sleep(2000);
-
-            Console.WriteLine(tasks.Count);
-            Console.WriteLine(string.Join(",", tasks.Select(t => t.Status).ToList()));
+            cts.CancelAfter(500);
+            var task = harness.Execute(flow, 1, cts.Token).ConfigureAwait(false);
+            Thread.Sleep(20);
             Assert.AreEqual(0, harness.GetSemaphoreCurrentCount());
             Assert.AreEqual(1, harness.GetRunningThreadCount());
-            cts.Cancel();
-            await ex;
-            Assert.AreEqual(0, harness.GetRunningThreadCount());
+            
+            try
+            {
+                cts.Cancel();
+                await task;
+            }
+            catch (TaskCanceledException)
+            {
+                Console.WriteLine("Caught TaskCanceledException");
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("Caught OperationCanceledException");
+            }
         }
     }
 }

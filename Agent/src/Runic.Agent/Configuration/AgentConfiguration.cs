@@ -32,13 +32,13 @@ namespace Runic.Agent.Configuration
             Configuration = builder.Build();
 
             if (args != null)
-                _logger.Info($"args:{args.ToList().Select(t => $"| {t} ")}");
-            _logger.Info($"MaxThreads:{MaxThreads}");
-            _logger.Info($"LifetimeSeconds:{LifetimeSeconds}");
-            _logger.Info($"StatsdHost:{StatsdHost}");
-            _logger.Info($"StatsdPort:{StatsdPort}");
-            _logger.Info($"StatsdPrefix:{StatsdPrefix}");
-            _logger.Info($"ClientConnectionConfiguration:{ClientConnectionConfiguration}");
+                _logger.Debug($"args:{args.ToList().Select(t => $"| {t} ")}");
+            _logger.Debug($"MaxThreads:{MaxThreads}");
+            _logger.Debug($"LifetimeSeconds:{LifetimeSeconds}");
+            _logger.Debug($"StatsdHost:{StatsdHost}");
+            _logger.Debug($"StatsdPort:{StatsdPort}");
+            _logger.Debug($"StatsdPrefix:{StatsdPrefix}");
+            _logger.Debug($"ClientConnectionConfiguration:{ClientConnectionConfiguration}");
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Runic.Core.Attributes;
 
-namespace Runic.ExampleTest
+namespace Runic.ExampleTest.Functions
 {
     public class FakeFunction
     {

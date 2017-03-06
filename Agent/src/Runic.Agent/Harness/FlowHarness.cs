@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using NLog;
+using NLog.Filters;
 using Runic.Agent.AssemblyManagement;
 using Runic.Core.Models;
 
@@ -30,7 +31,7 @@ namespace Runic.Agent.Harness
 
         public async Task Execute(Flow flow, int threadCount, CancellationToken ctx = default(CancellationToken))
         {
-            _logger.Info($"Executing flow {flow.Name}");
+            _logger.Debug($"Executing flow {flow.Name}");
             InstantiateCollections();
 
             _flow = flow;
@@ -42,7 +43,7 @@ namespace Runic.Agent.Harness
                 //get thread permission
                 await _semaphore.WaitAsync(ctx);
 
-                _logger.Info($"Starting thread for {flow.Name}");
+                _logger.Debug($"Starting thread for {flow.Name}");
                 var cts = new CancellationTokenSource();
                 _cancellationSources.Add(cts);
                 _trackedTasks.Add(ExecuteFlow(cts.Token).ContinueWith((_) =>
@@ -58,7 +59,7 @@ namespace Runic.Agent.Harness
             }
             _cancellationSources.ForEach(c => c.Cancel());
             await Task.WhenAll(_trackedTasks);
-            _logger.Info($"Completed flow execution for {flow.Name}");
+            _logger.Debug($"Completed flow execution for {flow.Name}");
         }
 
         public List<Task> GetTasks ()
@@ -68,7 +69,13 @@ namespace Runic.Agent.Harness
 
         public int GetRunningThreadCount()
         {
-            return _trackedTasks.Count(t => t.Status == TaskStatus.Running);
+            var completedStatuses = new[]
+            {
+                TaskStatus.RanToCompletion,
+                TaskStatus.Canceled,
+                TaskStatus.Faulted
+            };
+            return _trackedTasks.Count(t => !completedStatuses.Contains(t.Status));
         }
 
         public int GetSemaphoreCurrentCount()
@@ -83,21 +90,21 @@ namespace Runic.Agent.Harness
 
         private async Task ExecuteFlow(CancellationToken ctx = default(CancellationToken))
         {
-            Console.WriteLine("Executing flow");
             foreach (var step in _flow.Steps)
             {
                 try
                 {
                     //load the library if needed
                     LoadLibrary(step);
+                    //instantiate the class if needed
+                    InitialiseFunction(step);
                 }
                 catch (Exception e)
                 {
                     _logger.Error($"Encountered error initialising flow {_flow.Name}");
                     _logger.Error(e);
                 }
-                //instantiate the class if needed
-                InitialiseFunction(step);
+                
             }
 
             while (!ctx.IsCancellationRequested)
@@ -107,11 +114,18 @@ namespace Runic.Agent.Harness
                 {
                     //execute with function harness
                     var instance = _instances[step.FunctionName];
-                    var functionHarness = Program.Container.Resolve<IFunctionHarness>();
+                    var functionHarness = IoC.Container.Resolve<IFunctionHarness>();
                     functionHarness.Bind(instance);
 
-                    _logger.Info($"Executing step for {_flow.Name}");
-                    await functionHarness.Execute(step.FunctionName, ctx);
+                    _logger.Debug($"Executing step for {_flow.Name}");
+                    try
+                    {
+                        await functionHarness.Execute(step.FunctionName, ctx);
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.Error(e);
+                    }
                 }
             }
         }
@@ -125,33 +139,33 @@ namespace Runic.Agent.Harness
 
         public async Task UpdateThreads(int threadCount, CancellationToken ctx = default(CancellationToken))
         {
-            _logger.Info($"Updating threads for {_flow.Name} from {GetRunningThreadCount()} to {threadCount}");
+            _logger.Debug($"Updating threads for {_flow.Name} from {GetRunningThreadCount()} to {threadCount}");
             //todo if < > ==
             await Task.Run(() => RestartThreads(threadCount), ctx);
         }
 
         private void LoadLibrary(Step step)
         {
-            _logger.Info($"Attempting to load library for {step.FunctionName} in {step.FunctionAssemblyName}");
+            _logger.Debug($"Attempting to load library for {step.FunctionName} in {step.FunctionAssemblyName}");
             PluginManager.LoadPlugin(step.FunctionAssemblyName);
         }
 
         private void InitialiseFunction(Step step)
         {
-            _logger.Info($"Initialising {step.FunctionName} in {step.FunctionAssemblyName}");
+            _logger.Debug($"Initialising {step.FunctionName} in {step.FunctionAssemblyName}");
             if (_instances.ContainsKey(step.FunctionName))
                 return;
 
-            _logger.Info($"Retrieving function type");
+            _logger.Debug($"Retrieving function type");
 
-            var type = PluginManager.GetFunctionType(step.FunctionName);
+            var type = PluginManager.GetFunctionType(step.FunctionFullyQualifiedName);
             if (type == null)
                 throw new FunctionTypeNotFoundException();
 
-            _logger.Info($"type found {type.AssemblyQualifiedName}");
+            _logger.Debug($"type found {type.AssemblyQualifiedName}");
 
             _instances[step.FunctionName] = Activator.CreateInstance(type);
-            _logger.Info($"{step.FunctionName} in {step.FunctionAssemblyName} initialised");
+            _logger.Debug($"{step.FunctionName} in {step.FunctionAssemblyName} initialised");
         }
 
         private void CancelAllThreads()

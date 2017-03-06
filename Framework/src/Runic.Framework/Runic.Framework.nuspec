@@ -12,9 +12,7 @@
     <copyright>Copyright 2017 (c) Joshua Genders. All rights reserved.</copyright>
   </metadata>
   <files>
-    <file src="bin\Debug\netstandard1.6\Runic.Core.dll" target="lib\netstandard1.6\Runic.Core.dll" />
-  	<file src="bin\Debug\netstandard1.6\Runic.Core.xml" target="lib\netstandard1.6\Runic.Core.xml" />
-  	<file src="bin\Debug\netstandard1.6\Runic.dll" target="lib\netstandard1.6\Runic.dll" />
-  	<file src="bin\Debug\netstandard1.6\Runic.xml" target="lib\netstandard1.6\Runic.xml" />
+  	<file src="bin\Debug\netstandard1.6\Runic.Framework.dll" target="lib\netstandard1.6\Runic.Framework.dll" />
+  	<file src="bin\Debug\netstandard1.6\Runic.Framework.xml" target="lib\netstandard1.6\Runic.Framework.xml" />
   </files>
 </package>

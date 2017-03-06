@@ -1,6 +1,6 @@
-﻿using Runic.Clients;
+﻿using Runic.Framework.Clients;
 using Runic.Core.Attributes;
-using Runic.Orchestration;
+using Runic.Framework.Orchestration;
 using Runic.ExampleTest.Runes;
 
 namespace Runic.ExampleTest.Functions

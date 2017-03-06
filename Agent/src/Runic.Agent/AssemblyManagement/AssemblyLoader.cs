@@ -19,7 +19,7 @@ namespace Runic.Agent.AssemblyManagement
 
         protected override Assembly Load(AssemblyName assemblyName)
         {
-            _logger.Info($"Loading assembly {assemblyName.FullName}");
+            _logger.Debug($"Loading assembly {assemblyName.FullName}");
             var deps = DependencyContext.Default;
             var res = deps.CompileLibraries.Where(d => d.Name.Contains(assemblyName.Name)).ToList();
 

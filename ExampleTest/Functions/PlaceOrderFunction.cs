@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using Newtonsoft.Json;
-using Runic.Clients;
+using Runic.Framework.Clients;
 using Runic.Core;
 using Runic.Core.Attributes;
 using Runic.Core.Models;
 using Runic.ExampleTest.Runes;
-using Runic.Orchestration;
+using Runic.Framework.Orchestration;
 
 namespace Runic.ExampleTest.Functions
 {

@@ -13,12 +13,12 @@ namespace Runic.Agent
 {
     public class Program
     {
-        public static IContainer Container { get; set; }
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public static void Main(string[] args)
         {
             AgentConfiguration.LoadConfiguration(args);
+            IoC.RegisterDependencies(new Startup());
 
             var cts = new CancellationTokenSource();
             try
@@ -32,9 +32,8 @@ namespace Runic.Agent
                 _logger.Warn("Overflow on agent lifetime timeout value. using max int value.");
                 cts.CancelAfter(int.MaxValue);
             }
-
-            var startup = new Startup();
-            Task.Run(() => new Program().Execute(args, startup, cts.Token), cts.Token).ContinueWith(t =>
+            
+            Task.Run(() => new Program().Execute(args, cts.Token), cts.Token).ContinueWith(t =>
             {
                 if (t.Exception != null)
                 {
@@ -50,12 +49,10 @@ namespace Runic.Agent
         }
 
        
-        private async Task Execute(string[] args, IStartup startup, CancellationToken ct)
-        {
-            Container = startup.RegisterDependencies();
-            
-            var messagingService = Container.Resolve<IMessagingService>();
-            var agentService = Container.Resolve<IAgentService>();
+        private async Task Execute(string[] args, CancellationToken ct)
+        {   
+            var messagingService = IoC.Container.Resolve<IMessagingService>();
+            var agentService = IoC.Container.Resolve<IAgentService>();
             var shell = new AgentShell(agentService);
 
             var serviceCts = new CancellationTokenSource();

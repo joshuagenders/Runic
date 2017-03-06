@@ -10,7 +10,7 @@ namespace Runic.Agent.UnitTest
         public void TestFunctionTypeRetrieve()
         {
             PluginManager.LoadPlugin("ExampleTest", new FilePluginProvider(null));
-            var type = PluginManager.GetFunctionType("Runic.ExampleTest.FakeAction");
+            var type = PluginManager.GetFunctionType("Runic.ExampleTest.Functions.FakeFunction");
             Assert.IsNotNull(type);
             Assert.AreEqual(type.Name, "FakeFunction");
         }

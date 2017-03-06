@@ -31,9 +31,9 @@ namespace Runic.Agent.AssemblyManagement
         {
             //todo use a better pattern for di
             if (provider == null)
-                provider = Program.Container.Resolve<IPluginProvider>();
+                provider = IoC.Container.Resolve<IPluginProvider>();
 
-            _logger.Info($"Loading plugin {pluginAssemblyName}");
+            _logger.Debug($"Loading plugin {pluginAssemblyName}");
             lock (_keyNames)
             {
                 if (_keyNames.Contains(pluginAssemblyName))

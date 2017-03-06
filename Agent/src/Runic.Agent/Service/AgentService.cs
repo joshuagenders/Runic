@@ -26,7 +26,7 @@ namespace Runic.Agent.Service
         {
             _messagingService.RegisterThreadLevelHandler((message, context) => SetThreadLevel(message, handlerCt));
             _messagingService.RegisterFlowUpdateHandler((message, context) => Task.Run(() => Flows.AddUpdateFlow(message.Flow), handlerCt));
-            _logger.Info("Registered message handlers");
+            _logger.Debug("Registered message handlers");
         }
 
         public async Task Run(IMessagingService service, CancellationToken ct)
@@ -44,8 +44,8 @@ namespace Runic.Agent.Service
 
         private void StartFlow(FlowContext flowContext)
         {
-            _logger.Info($"Starting flow {flowContext.FlowName} at {flowContext.ThreadCount} threads");
-            var harness = Program.Container.Resolve<IFlowHarness>();
+            _logger.Debug($"Starting flow {flowContext.FlowName} at {flowContext.ThreadCount} threads");
+            var harness = IoC.Container.Resolve<IFlowHarness>();
             _executionContext.FlowContexts.Add(flowContext.FlowName, flowContext);
             flowContext.Task = harness.Execute(flowContext.Flow, flowContext.ThreadCount, _ct);
             flowContext.CancellationToken = _ct;
@@ -53,14 +53,14 @@ namespace Runic.Agent.Service
 
         public async Task AddUpdateFlow(Flow flow, CancellationToken ct)
         {
-            _logger.Info($"Updating {flow.Name}");
+            _logger.Debug($"Updating {flow.Name}");
             await Task.Run(() => Flows.AddUpdateFlow(flow), ct);
             //todo update running flow
         }
 
         public async Task SetThreadLevel(SetThreadLevelRequest request, CancellationToken ct)
         {
-            _logger.Info($"Setting thread level to {request.ThreadLevel} for {request.FlowName}");
+            _logger.Debug($"Setting thread level to {request.ThreadLevel} for {request.FlowName}");
             //if not enough threads then error
             if (!_executionContext.ThreadsAreAvailable(request.ThreadLevel, request.FlowName))
                 throw new NotEnoughThreadsAvailableException();
