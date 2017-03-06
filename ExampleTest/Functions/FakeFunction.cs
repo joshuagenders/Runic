@@ -24,7 +24,7 @@ namespace Runic.ExampleTest
             });
         }
 
-        [Function("Login")]
+        [Function("FakeAction")]
         public void DoSomeTask1()
         {
             CallList.Add(new InvocationInformation()

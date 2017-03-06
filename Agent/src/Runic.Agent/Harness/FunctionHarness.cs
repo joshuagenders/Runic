@@ -3,12 +3,14 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Runic.Core.Attributes;
+using NLog;
 
 namespace Runic.Agent.Harness
 {
     public class FunctionHarness : IFunctionHarness
     {
         private object _instance { get; set; }
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public void Bind(object functionInstance)
         {
@@ -17,13 +19,38 @@ namespace Runic.Agent.Harness
         
         public async Task Execute(string functionName, CancellationToken ctx = default(CancellationToken))
         {
-            await BeforeEach();
-            if (ctx.IsCancellationRequested)
-                return;
-            await ExecuteFunction(functionName);
-            if (ctx.IsCancellationRequested)
-                return;
-            await AfterEach();
+            try
+            {
+                await BeforeEach();
+                if (ctx.IsCancellationRequested)
+                    return;
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"Error executing before each for {functionName}");
+                _logger.Error(e);
+            }
+            try
+            {
+                await ExecuteFunction(functionName);
+                if (ctx.IsCancellationRequested)
+                    return;
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"Error executing {functionName}");
+                _logger.Error(e);
+            }
+
+            try
+            {
+                await AfterEach();
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"Error executing {functionName}");
+                _logger.Error(e);
+            }
         }
 
         private async Task ExecuteFunction(string name)

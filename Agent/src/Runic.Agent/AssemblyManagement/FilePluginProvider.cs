@@ -13,7 +13,8 @@ namespace Runic.Agent.AssemblyManagement
 
         public string GetFilepath(string key)
         {
-            return Path.Combine(FolderPath ?? Directory.GetCurrentDirectory(), $"{key}.dll");
+            return 
+                Path.Combine(FolderPath ?? Directory.GetCurrentDirectory(), "Plugins", $"{key}.dll");
         }
 
         public void RetrieveSourceDll(string key)

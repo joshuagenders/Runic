@@ -7,6 +7,15 @@ namespace Runic.Agent.UnitTest
     public class TestAssemblyManagement
     {
         [Test]
+        public void TestFunctionTypeRetrieve()
+        {
+            PluginManager.LoadPlugin("ExampleTest", new FilePluginProvider(null));
+            var type = PluginManager.GetFunctionType("FakeAction");
+            Assert.IsNotNull(type);
+            Assert.AreEqual(type.Name, "FakeFunction");
+        }
+
+        [Test]
         public void TestLoadAssembly()
         {
             PluginManager.LoadPlugin("ExampleTest", new FilePluginProvider(Directory.GetCurrentDirectory()));

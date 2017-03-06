@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using Autofac;
 using NLog;
 using Runic.Core.Attributes;
@@ -41,15 +42,17 @@ namespace Runic.Agent.AssemblyManagement
 
             provider.RetrieveSourceDll(pluginAssemblyName);
             var pluginPath = provider.GetFilepath(pluginAssemblyName);
-            var loader = new AssemblyLoader(Path.GetDirectoryName(pluginPath));
-            lock (_testPlugins)
-            {
-                _testPlugins.Add(loader.LoadFromAssemblyName(new AssemblyName(pluginAssemblyName)));
-            }
+            //var loader = new AssemblyLoader(Path.GetDirectoryName(pluginPath));
             lock (_keyNames)
             {
                 _keyNames.Add(pluginAssemblyName);
             }
+            lock (_testPlugins)
+            {
+                //_testPlugins.Add(loader.LoadFromAssemblyName(new AssemblyName(pluginAssemblyName)));
+                _testPlugins.Add(AssemblyLoadContext.Default.LoadFromAssemblyPath(pluginPath));
+            }
+            
         }
 
         public static Type GetClassType(string className)
@@ -70,21 +73,33 @@ namespace Runic.Agent.AssemblyManagement
 
         public static Type GetFunctionType(string functionName)
         {
+            Type type = null;
             lock (_testPlugins)
             {
                 foreach (var assembly in _testPlugins)
                 {
-                    var types = assembly.GetTypes()
-                                        .Where(t => t.GetMethods()
-                                                     .Select(m => m.GetCustomAttributes<FunctionAttribute>()
-                                                     .Where(c => c.Name == functionName)
-                                        ).Any());
+                    _logger.Debug($"Searching assembly for function");
 
-                    var enumerable = types as Type[] ?? types.ToArray();
-                    if (enumerable.Any())
-                        return enumerable.First();
+                    var types = assembly.GetTypes();
+                    _logger.Debug($"Retrieved types from assembly");
+
+                    var matchingTypes = types.Where(t => t.GetMethods()
+                                                          .Select(m => m.GetCustomAttributes<FunctionAttribute>()
+                                                          .Where(c => c.Name == functionName)).Any())
+                                             .ToList();
+                    _logger.Debug($"Attempted to retrieve matching types");
+
+                    if (matchingTypes.Any())
+                    {
+                        _logger.Debug($"Type found for {functionName}");
+                        type = matchingTypes.First();
+                        break;
+                    }
                 }
             }
+
+            if (type != null)
+                return type;
 
             throw new ClassNotFoundInAssemblyException();
         }

@@ -1,4 +1,7 @@
 ﻿{
+  "buildOptions": {
+    "copyToOutput": [ "Plugins" ]
+  },
   "version": "1.0.0-*",
   "testRunner": "nunit",
   "dependencies": {

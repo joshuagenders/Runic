@@ -13,7 +13,7 @@ namespace Runic.Agent
 {
     public class Program
     {
-        public static IContainer Container { get; private set; }
+        public static IContainer Container { get; set; }
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public static void Main(string[] args)

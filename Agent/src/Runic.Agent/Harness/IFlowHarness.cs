@@ -6,7 +6,7 @@ namespace Runic.Agent.Harness
 {
     public interface IFlowHarness
     {
-        Task Execute(Flow flow, ThreadControl threadControl, CancellationToken ctx = default(CancellationToken));
+        Task Execute(Flow flow, int threadCount, CancellationToken ctx = default(CancellationToken));
         Task UpdateThreads(int threadCount, CancellationToken ctx = default(CancellationToken));
     }
 }

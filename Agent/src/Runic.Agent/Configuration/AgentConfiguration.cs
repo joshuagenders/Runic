@@ -31,7 +31,8 @@ namespace Runic.Agent.Configuration
 
             Configuration = builder.Build();
 
-            _logger.Info($"args:{args?.ToList().Select(t => $"| {t} ")}");
+            if (args != null)
+                _logger.Info($"args:{args.ToList().Select(t => $"| {t} ")}");
             _logger.Info($"MaxThreads:{MaxThreads}");
             _logger.Info($"LifetimeSeconds:{LifetimeSeconds}");
             _logger.Info($"StatsdHost:{StatsdHost}");

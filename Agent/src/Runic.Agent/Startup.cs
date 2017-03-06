@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System.IO;
+using Autofac;
 using RawRabbit.DependencyInjection.Autofac;
 using Runic.Agent.AssemblyManagement;
 using Runic.Agent.Configuration;
@@ -24,7 +25,9 @@ namespace Runic.Agent
             var builder = new ContainerBuilder();
 
             builder.RegisterInstance(statsd);
-            builder.RegisterType<FilePluginProvider>().As<IPluginProvider>();
+            builder.RegisterType<FilePluginProvider>()
+                    .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
+                    .As<IPluginProvider>();
             builder.RegisterType<AgentService>().As<IAgentService>();
             builder.RegisterType<RabbitMessagingService>().As<IMessagingService>();
             builder.RegisterType<FlowHarness>().As<IFlowHarness>();

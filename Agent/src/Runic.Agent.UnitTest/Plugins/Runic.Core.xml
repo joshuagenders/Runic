@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Runic.Core</name>
+    </assembly>
+    <members>
+        <member name="P:Runic.Core.Models.Step.TestName">
+            <summary>
+            </summary>
+        </member>
+    </members>
+</doc>
