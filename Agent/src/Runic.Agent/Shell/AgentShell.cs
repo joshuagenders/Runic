@@ -17,7 +17,8 @@ namespace Runic.Agent.Shell
         public enum ReturnCodes
         {
             SUCCESS = 0,
-            ERROR = 1
+            EXIT_ERROR = 1,
+            EXIT_SUCCESS = 2
         }
 
         private Dictionary<string, Func<string[], Task<int>>> _handlers { get; set; }
@@ -33,9 +34,6 @@ namespace Runic.Agent.Shell
         }
 
         /// <summary>
-        /// setthread plan=OrderFlow threadcount=1 [pluginprovider=Runic.Agent.AssemblyManagement.FilePluginProvider] [pluginkey=Runic.ExampleTest] 
-        /// runfunc name=Login [pluginprovider=Runic.Agent.AssemblyManagement.FilePluginProvider] [pluginkey=Runic.ExampleTest]
-        /// load pluginprovider=Runic.Agent.AssemblyManagement.FilePluginProvider pluginkey=Runic.ExampleTest
         /// unload Runic.ExampleTest
         /// lf (list functions)
         /// lp (list plugins)
@@ -53,7 +51,11 @@ namespace Runic.Agent.Shell
                     if (!input.Any()) continue;
                     if (_handlers.ContainsKey(input[0]))
                     {
-                        await _handlers[input[0]](input);
+                        var result = await _handlers[input[0]](input);
+                        if (result == (int)EXIT_SUCCESS || result == (int)EXIT_ERROR)
+                        {
+                            return;
+                        }
                     }
                     else
                     {
@@ -81,7 +83,7 @@ namespace Runic.Agent.Shell
                             await LoadPlugin(vals["pluginkey"], _cancellationToken);
                         }
 
-                        return await SetThreadLevel(vals["plan"], int.Parse(vals["threadCount"]),_cancellationToken);
+                        return await SetThreadLevel(vals["flow"], int.Parse(vals["threadcount"]),_cancellationToken);
                     }
                 },
                 {
@@ -95,7 +97,19 @@ namespace Runic.Agent.Shell
                 {
                     "help", async (input) =>
                     {
-                        await Task.Run(() => Console.WriteLine("load, help, exit, setthread"), _cancellationToken);
+                        await Task.Run(() =>
+                        {
+                            Console.WriteLine("setthread pluginkey=[string] flow=[filename] threadcount=[int]");
+                            Console.WriteLine("sets the thread level for a flow");
+                            Console.WriteLine("Starts or stops a flow when threadCount moves to and from 0");
+                            Console.WriteLine("load pluginkey=");
+                            Console.WriteLine("Loads an assembly using the IPluginProvider configured in the assembly");
+                            Console.WriteLine("flows - list the available flows");
+                            Console.WriteLine("functions - list the available functions");
+                            Console.WriteLine("help - display available command formats");
+                            Console.WriteLine("exit - Stop all threads and exit the agent");
+                            
+                        }, _cancellationToken);
                         return (int)SUCCESS;
                     }
                 },
@@ -103,7 +117,7 @@ namespace Runic.Agent.Shell
                     "exit", async (input) => 
                     {
                         await Task.Run(() => _return = true);
-                        return (int) SUCCESS;
+                        return (int) EXIT_SUCCESS;
                     }
                 }
             };

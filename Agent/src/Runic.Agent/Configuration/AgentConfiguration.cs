@@ -18,7 +18,6 @@ namespace Runic.Agent.Configuration
         public static string StatsdHost => Configuration["Statsd:Host"];
         public static string StatsdPrefix => Configuration["Statsd:Prefix"];
 
-
         public static void LoadConfiguration(string[] args = null)
         {
             var builder = new ConfigurationBuilder();

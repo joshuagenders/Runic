@@ -22,9 +22,9 @@ namespace Runic.Agent.UnitTest
                 "Agent:MaxThreads=321",
                 "Agent:LifetimeSeconds=123",
                 "Client:MQConnectionString=MyExampleConnection",
-                "Statsd:Port=8000",
-                "Statsd:Host=TestHost",
-                "Statsd:Prefix=MyPrefix"
+                "Statsd:Port=8125",
+                "Statsd:Host=localhost",
+                "Statsd:Prefix=Runic.Stats."
             };
             AgentConfiguration.LoadConfiguration(cli);
             IoC.RegisterDependencies(new Startup());

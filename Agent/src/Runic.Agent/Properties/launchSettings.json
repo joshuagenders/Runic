@@ -2,7 +2,7 @@
   "profiles": {
     "Runic.Agent": {
       "commandName": "Project",
-      "commandLineArgs": "Agent:MaxThreads=10 Agent:LifetimeSeconds=120 Client:MQConnectionString=\"guest:guest@localhost:5672/\" Statsd:Port=8125 Statsd:Host=localhost Statsd:Prefix=Runic.Agent."
+      "commandLineArgs": "Agent:MaxThreads=10 Agent:LifetimeSeconds=300 Client:MQConnectionString=\"guest:guest@localhost:5672/\" Statsd:Port=8125 Statsd:Host=localhost Statsd:Prefix=Runic.Agent."
     }
   }
 }

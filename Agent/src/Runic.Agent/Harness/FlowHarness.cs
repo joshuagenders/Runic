@@ -9,18 +9,22 @@ using NLog;
 using NLog.Filters;
 using Runic.Agent.AssemblyManagement;
 using Runic.Core.Models;
+using StatsN;
 
 namespace Runic.Agent.Harness
 {
     public class FlowHarness : IFlowHarness
     {
-        private Dictionary<string,object> _instances { get; set; }
-        private List<CancellationTokenSource> _cancellationSources { get; set; }
-        private Flow _flow { get; set; }
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private ConcurrentBag<Task> _trackedTasks { get; set; }
+        private IStatsd _statsd { get; }
+
+        private Flow _flow { get; set; }
         private int _threadCount { get; set; }
+
         private SemaphoreSlim _semaphore { get; set; }
+        private ConcurrentBag<Task> _trackedTasks { get; set; }
+        private Dictionary<string, object> _instances { get; set; }
+        private List<CancellationTokenSource> _cancellationSources { get; set; }
 
         public void InstantiateCollections()
         {
@@ -29,21 +33,29 @@ namespace Runic.Agent.Harness
             _trackedTasks = new ConcurrentBag<Task>();
         }
 
+        public FlowHarness()
+        {
+            _statsd = IoC.Container.Resolve<IStatsd>();
+            InstantiateCollections();
+        }
+
         public async Task Execute(Flow flow, int threadCount, CancellationToken ctx = default(CancellationToken))
         {
             _logger.Debug($"Executing flow {flow.Name}");
+            _statsd.Count($"{flow.Name}.flowStarted");
             InstantiateCollections();
 
             _flow = flow;
             _threadCount = threadCount;
             _semaphore = new SemaphoreSlim(_threadCount, _threadCount);
 
-            while (!ctx.IsCancellationRequested)
+            while (!ctx.IsCancellationRequested && threadCount > 0)
             {
                 //get thread permission
                 await _semaphore.WaitAsync(ctx);
 
                 _logger.Debug($"Starting thread for {flow.Name}");
+                _statsd.Count($"{flow.Name}.threadStarted");
                 var cts = new CancellationTokenSource();
                 _cancellationSources.Add(cts);
                 _trackedTasks.Add(ExecuteFlow(cts.Token).ContinueWith((_) =>
@@ -60,6 +72,7 @@ namespace Runic.Agent.Harness
             _cancellationSources.ForEach(c => c.Cancel());
             await Task.WhenAll(_trackedTasks);
             _logger.Debug($"Completed flow execution for {flow.Name}");
+            _statsd.Count($"{flow.Name}.flowCompleted");
         }
 
         public List<Task> GetTasks ()

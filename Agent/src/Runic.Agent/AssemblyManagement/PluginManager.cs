@@ -7,15 +7,16 @@ using System.Reflection;
 using System.Runtime.Loader;
 using Autofac;
 using NLog;
-using Runic.Core.Attributes;
+using StatsN;
 
 namespace Runic.Agent.AssemblyManagement
 {
-    public class PluginManager
+    public static class PluginManager
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private static readonly ConcurrentBag<Assembly> _testPlugins = new ConcurrentBag<Assembly>();
         private static readonly List<string> _keyNames = new List<string>();
+        private static IStatsd _statsd = IoC.Container.Resolve<IStatsd>();
 
         public static List<Assembly> GetAssemblies()
         {
@@ -52,7 +53,7 @@ namespace Runic.Agent.AssemblyManagement
                 //_testPlugins.Add(loader.LoadFromAssemblyName(new AssemblyName(pluginAssemblyName)));
                 _testPlugins.Add(AssemblyLoadContext.Default.LoadFromAssemblyPath(pluginPath));
             }
-            
+            _statsd.Count("pluginLoaded");
         }
 
         public static Type GetClassType(string className)
