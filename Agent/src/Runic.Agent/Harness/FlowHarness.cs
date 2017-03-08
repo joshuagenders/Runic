@@ -35,7 +35,9 @@ namespace Runic.Agent.Harness
 
         public FlowHarness()
         {
-            _statsd = IoC.Container.Resolve<IStatsd>();
+            IStatsd statsd;
+            if (IoC.Container.TryResolve<IStatsd>(out statsd))
+                _statsd = statsd;
             InstantiateCollections();
         }
 
@@ -72,7 +74,7 @@ namespace Runic.Agent.Harness
             _cancellationSources.ForEach(c => c.Cancel());
             await Task.WhenAll(_trackedTasks);
             _logger.Debug($"Completed flow execution for {flow.Name}");
-            _statsd.Count($"{flow.Name}.flowCompleted");
+            _statsd?.Count($"{flow.Name}.flowCompleted");
         }
 
         public List<Task> GetTasks ()

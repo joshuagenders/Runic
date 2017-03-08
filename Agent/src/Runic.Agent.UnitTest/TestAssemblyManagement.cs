@@ -1,11 +1,19 @@
 ﻿using System.IO;
 using Runic.Agent.AssemblyManagement;
 using NUnit.Framework;
+using Runic.Core.Attributes;
 
 namespace Runic.Agent.UnitTest
 {
     public class TestAssemblyManagement
     {
+
+        [ClassInitialise]
+        public void Init()
+        {
+            IoC.RegisterDependencies(new Startup());
+        }
+
         [Test]
         public void TestFunctionTypeRetrieve()
         {

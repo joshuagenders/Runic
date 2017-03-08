@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -13,11 +12,10 @@ namespace Runic.Agent.AssemblyManagement
 {
     public static class PluginManager
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private static readonly ConcurrentBag<Assembly> _testPlugins = new ConcurrentBag<Assembly>();
-        private static readonly List<string> _keyNames = new List<string>();
-        private static IStatsd _statsd = IoC.Container.Resolve<IStatsd>();
-
+        private static readonly Logger _logger = LogManager.GetLogger("Runic.Agent.AssemblyManagement.PluginManager");
+        private static ConcurrentBag<Assembly> _testPlugins = new ConcurrentBag<Assembly>();
+        private static ConcurrentDictionary<string, bool> _assembliesLoaded = new ConcurrentDictionary<string, bool>();
+        
         public static List<Assembly> GetAssemblies()
         {
             List<Assembly> assemblyList;
@@ -35,25 +33,28 @@ namespace Runic.Agent.AssemblyManagement
                 provider = IoC.Container.Resolve<IPluginProvider>();
 
             _logger.Debug($"Loading plugin {pluginAssemblyName}");
-            lock (_keyNames)
+            bool loaded;
+            lock (_assembliesLoaded)
             {
-                if (_keyNames.Contains(pluginAssemblyName))
-                    return;
+                _assembliesLoaded.TryGetValue(pluginAssemblyName, out loaded);
             }
+            if (loaded)
+                return;            
 
             provider.RetrieveSourceDll(pluginAssemblyName);
             var pluginPath = provider.GetFilepath(pluginAssemblyName);
-            //var loader = new AssemblyLoader(Path.GetDirectoryName(pluginPath));
-            lock (_keyNames)
-            {
-                _keyNames.Add(pluginAssemblyName);
-            }
+
             lock (_testPlugins)
             {
                 //_testPlugins.Add(loader.LoadFromAssemblyName(new AssemblyName(pluginAssemblyName)));
                 _testPlugins.Add(AssemblyLoadContext.Default.LoadFromAssemblyPath(pluginPath));
             }
-            _statsd.Count("pluginLoaded");
+            lock (_assembliesLoaded)
+            {
+                _assembliesLoaded[pluginAssemblyName] = true;
+            }
+            var statsd = IoC.Container?.Resolve<IStatsd>();
+            statsd?.Count("pluginLoaded");
         }
 
         public static Type GetClassType(string className)
@@ -74,7 +75,7 @@ namespace Runic.Agent.AssemblyManagement
 
         public static Type GetFunctionType(string functionFullyQualifiedName)
         {
-            _logger.Debug($"Searching assemblies for function");
+            //_logger.Debug($"Searching assemblies for function");
             lock (_testPlugins)
             {
                 foreach (var assembly in _testPlugins)
