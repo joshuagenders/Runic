@@ -13,14 +13,14 @@ namespace Runic.Agent.FlowManagement
         public static void AddUpdateFlow(Flow flow)
         {
             _flows.AddOrUpdate(flow.Name, flow, (key, val) => flow);
-            var statsd = IoC.Container.Resolve<IStatsd>();
-            statsd.Count("{flow.Name}.AddOrUpdated");
+            var statsd = IoC.Container?.Resolve<IStatsd>();
+            statsd?.Count("{flow.Name}.AddOrUpdated");
         }
 
         public static Flow GetFlow(string name)
         {
-            var statsd = IoC.Container.Resolve<IStatsd>();
-            statsd.Count("{flow.Name}.get");
+            var statsd = IoC.Container?.Resolve<IStatsd>();
+            statsd?.Count("{flow.Name}.get");
             return _flows[name];
         }
     }

@@ -51,12 +51,11 @@ namespace Runic.Agent
        
         private async Task Execute(string[] args, CancellationToken ct)
         {   
-            var messagingService = IoC.Container.Resolve<IMessagingService>();
             var agentService = IoC.Container.Resolve<IAgentService>();
             var shell = new AgentShell(agentService);
 
             var serviceCts = new CancellationTokenSource();
-            var agentTask = agentService.Run(messagingService, serviceCts.Token);
+            var agentTask = agentService.Run(ct: serviceCts.Token);
 
             var cmdTask = shell.ProcessCommands(ct).ContinueWith(result =>
             {

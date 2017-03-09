@@ -10,8 +10,13 @@ namespace Runic.Agent.Messaging
 {
     public class RabbitMessagingService : IMessagingService
     {
-        private static readonly IBusClient _bus = IoC.Container.Resolve<IBusClient>();
+        private IBusClient _bus { get; }
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+
+        public RabbitMessagingService()
+        {
+            _bus = IoC.Container.Resolve<IBusClient>();
+        }
 
         public void RegisterThreadLevelHandler(Func<SetThreadLevelRequest, MessageContext, Task> handler)
         {

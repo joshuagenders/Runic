@@ -16,25 +16,20 @@ namespace Runic.Agent.Service
         private CancellationToken _ct { get; set; }
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-
-        public AgentService(IMessagingService messagingService)
+        private void RegisterHandlers(IMessagingService messagingService = null, CancellationToken ct = default(CancellationToken))
         {
-            _messagingService = messagingService;
-        }
-
-        private void RegisterHandlers(CancellationToken handlerCt)
-        {
-            _messagingService.RegisterThreadLevelHandler((message, context) => SetThreadLevel(message, handlerCt));
-            _messagingService.RegisterFlowUpdateHandler((message, context) => Task.Run(() => Flows.AddUpdateFlow(message.Flow), handlerCt));
+            if (messagingService == null)
+                messagingService = IoC.Container.Resolve<IMessagingService>();
+            messagingService.RegisterThreadLevelHandler((message, context) => SetThreadLevel(message, ct));
+            messagingService.RegisterFlowUpdateHandler((message, context) => Task.Run(() => Flows.AddUpdateFlow(message.Flow), ct));
             _logger.Debug("Registered message handlers");
         }
 
-        public async Task Run(IMessagingService service, CancellationToken ct)
+        public async Task Run(IMessagingService messagingService, CancellationToken ct = default(CancellationToken))
         {
             _executionContext = new ExecutionContext();
             _ct = ct;
-
-            RegisterHandlers(ct);
+            RegisterHandlers(messagingService, ct);
 
             while (!ct.IsCancellationRequested)
             {
@@ -56,6 +51,16 @@ namespace Runic.Agent.Service
             _logger.Debug($"Updating {flow.Name}");
             await Task.Run(() => Flows.AddUpdateFlow(flow), ct);
             //todo update running flow
+        }
+
+        public int? GetThreadLevel(string flow)
+        {
+            FlowContext context;
+            if (_executionContext.FlowContexts.TryGetValue(flow, out context))
+            {
+                return context.ThreadCount;
+            }
+            return null;
         }
 
         public async Task SetThreadLevel(SetThreadLevelRequest request, CancellationToken ct)
