@@ -23,7 +23,7 @@ namespace Runic.Agent
             var cts = new CancellationTokenSource();
             try
             {
-                var lifetimeMilliseconds = AgentConfiguration.LifetimeSeconds * 1000;
+                var lifetimeMilliseconds = AgentConfiguration.Instance.LifetimeSeconds * 1000;
                 if (lifetimeMilliseconds != 0)
                     cts.CancelAfter(lifetimeMilliseconds);
             }

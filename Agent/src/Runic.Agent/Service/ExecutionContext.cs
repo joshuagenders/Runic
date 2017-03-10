@@ -16,7 +16,7 @@ namespace Runic.Agent.Service
         {
             FlowContexts = new Dictionary<string, FlowContext>();
             FlowHarnesses = new Dictionary<string, IFlowHarness>();
-            MaxThreadCount = AgentConfiguration.MaxThreads;
+            MaxThreadCount = AgentConfiguration.Instance.MaxThreads;
         }
 
         public bool ThreadsAreAvailable(int requestedThreadCount, string flow)

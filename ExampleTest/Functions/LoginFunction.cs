@@ -22,7 +22,7 @@ namespace Runic.ExampleTest.Functions
                 Password = "default"
             };
 
-            new RabbitMessageClient().SendRunes(rune);
+            RunicIoC.RuneClient.SendRunes(rune);
         }
 
         public ExampleResponse DoLogin(UserDetails userDetails)

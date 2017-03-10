@@ -17,10 +17,7 @@ namespace Runic.ExampleTest.Functions
         public async void Search(string searchTerm = null, string searchType = null)
         {
             if (searchTerm == null)
-                if (searchType == null)
-                    searchTerm = GenerateSearchTerm();
-                else
-                    searchTerm = GenerateSearchTerm(searchType);
+                searchTerm = searchType == null ? GenerateSearchTerm() : GenerateSearchTerm(searchType);
             SearchResults exampleResponse = null;
 
             using (var client = new HttpClient())
@@ -38,7 +35,7 @@ namespace Runic.ExampleTest.Functions
                 }
             }
 
-            new RabbitMessageClient().SendRunes(exampleResponse);
+            RunicIoC.RuneClient.SendRunes(exampleResponse);
         }
 
         public string GenerateSearchTerm()

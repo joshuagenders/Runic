@@ -37,20 +37,13 @@ namespace Runic.Agent.Service
             }
         }
 
-        private void StartFlow(FlowContext flowContext)
+        public void StartFlow(FlowContext flowContext)
         {
             _logger.Debug($"Starting flow {flowContext.FlowName} at {flowContext.ThreadCount} threads");
             var harness = IoC.Container.Resolve<IFlowHarness>();
             _executionContext.FlowContexts.Add(flowContext.FlowName, flowContext);
             flowContext.Task = harness.Execute(flowContext.Flow, flowContext.ThreadCount, _ct);
             flowContext.CancellationToken = _ct;
-        }
-
-        public async Task AddUpdateFlow(Flow flow, CancellationToken ct)
-        {
-            _logger.Debug($"Updating {flow.Name}");
-            await Task.Run(() => Flows.AddUpdateFlow(flow), ct);
-            //todo update running flow
         }
 
         public int? GetThreadLevel(string flow)
@@ -63,20 +56,31 @@ namespace Runic.Agent.Service
             return null;
         }
 
-        public async Task SetThreadLevel(SetThreadLevelRequest request, CancellationToken ct)
+        public async Task SetThreadLevel(SetThreadLevelRequest request, CancellationToken ct = default(CancellationToken))
         {
-            _logger.Debug($"Setting thread level to {request.ThreadLevel} for {request.FlowName}");
+            _logger.Debug($"Attempting to update thread level to {request.ThreadLevel} for {request.FlowName}");
+
+            if (_executionContext == null)
+            {
+                _executionContext = new ExecutionContext();
+            }
+
             //if not enough threads then error
             if (!_executionContext.ThreadsAreAvailable(request.ThreadLevel, request.FlowName))
+            {
+                _logger.Error($"Not enough available threads.");
                 throw new NotEnoughThreadsAvailableException();
+            }
 
             if (_executionContext.FlowHarnesses.ContainsKey(request.FlowName))
             {
+                _logger.Debug($"Update thread level to {request.ThreadLevel} for {request.FlowName}");
                 //flow harness found - update the thread
-                _executionContext.FlowHarnesses[request.FlowName].UpdateThreads(request.ThreadLevel);
+                await _executionContext.FlowHarnesses[request.FlowName].UpdateThreads(request.ThreadLevel, ct);
             }
             else
             {
+                _logger.Debug($"Starting new flow {request.FlowName} at {request.ThreadLevel} threads");
                 //no harness found, start the threads
                 await Task.Run(() => StartFlow(new FlowContext()
                 {

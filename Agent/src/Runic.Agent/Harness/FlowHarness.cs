@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using NLog;
-using NLog.Filters;
 using Runic.Agent.AssemblyManagement;
 using Runic.Core.Models;
 using StatsN;

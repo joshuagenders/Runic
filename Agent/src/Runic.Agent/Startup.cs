@@ -16,9 +16,9 @@ namespace Runic.Agent
         {            
             IStatsd statsd = Statsd.New<Udp>(options =>
             {
-                options.Port = AgentConfiguration.StatsdPort;
-                options.HostOrIp = AgentConfiguration.StatsdHost;
-                options.Prefix = AgentConfiguration.StatsdPrefix;
+                options.Port = AgentConfiguration.Instance.StatsdPort;
+                options.HostOrIp = AgentConfiguration.Instance.StatsdHost;
+                options.Prefix = AgentConfiguration.Instance.StatsdPrefix;
                 options.BufferMetrics = true;
             });
 
@@ -33,7 +33,7 @@ namespace Runic.Agent
             builder.RegisterType<FlowHarness>().As<IFlowHarness>();
             builder.RegisterType<FunctionHarness>().As<IFunctionHarness>();
 
-            builder.RegisterRawRabbit(AgentConfiguration.ClientConnectionConfiguration);
+            builder.RegisterRawRabbit(AgentConfiguration.Instance.ClientConnectionConfiguration);
 
             return builder.Build();
         }

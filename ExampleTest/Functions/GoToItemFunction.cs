@@ -16,7 +16,7 @@ namespace Runic.ExampleTest.Functions
         {
             if (itemId == null)
             {
-                var queryResults = await new RabbitMessageClient().RetrieveRunes(new RuneQuery());
+                var queryResults = await RunicIoC.RuneClient.RetrieveRunes(new RuneQuery());
                 var searchResults = queryResults.Result as SearchResults;
                 if (searchResults == null || searchResults.Results.Count == 0)
                     throw new InvalidRuneException("No item ids in search results");

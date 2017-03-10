@@ -39,7 +39,7 @@ namespace Runic.ExampleTest.Functions
                         }
                     }
             };
-            var queryResults = await new RabbitMessageClient().RetrieveRunes(runeQuery);
+            var queryResults = await RunicIoC.RuneClient.RetrieveRunes(runeQuery);
             var results = queryResults.ToResultsList();
             var user = results.First(r => r.Name == typeof(AuthenticatedUser).Name) as AuthenticatedUser;
             var customerId = user?.Username;
