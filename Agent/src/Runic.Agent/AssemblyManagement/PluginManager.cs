@@ -7,6 +7,7 @@ using System.Runtime.Loader;
 using Autofac;
 using NLog;
 using StatsN;
+using Runic.Framework.Clients;
 
 namespace Runic.Agent.AssemblyManagement
 {
@@ -44,17 +45,38 @@ namespace Runic.Agent.AssemblyManagement
             provider.RetrieveSourceDll(pluginAssemblyName);
             var pluginPath = provider.GetFilepath(pluginAssemblyName);
 
+            Assembly assembly = null;
             lock (_testPlugins)
             {
-                //_testPlugins.Add(loader.LoadFromAssemblyName(new AssemblyName(pluginAssemblyName)));
-                _testPlugins.Add(AssemblyLoadContext.Default.LoadFromAssemblyPath(pluginPath));
+                assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(pluginPath);
+                _testPlugins.Add(assembly);
             }
             lock (_assembliesLoaded)
             {
                 _assembliesLoaded[pluginAssemblyName] = true;
             }
+
+            PopulateStaticInterfaces(assembly);
+
             var statsd = IoC.Container?.Resolve<IStatsd>();
             statsd?.Count("pluginLoaded");
+        }
+
+        private static void PopulateStaticInterfaces(Assembly assembly)
+        {
+            var statsd = IoC.Container?.Resolve<IStatsd>();
+            var runeClient = IoC.Container?.Resolve<IRuneClient>();
+
+            foreach (var type in assembly.GetTypes())
+            {
+                var staticFields = type.GetFields(BindingFlags.Static | BindingFlags.Public);
+                staticFields.Where(f => f.GetType() == typeof(IStatsd))
+                            .ToList()
+                            .ForEach(f => f.SetValue(type, statsd));
+                staticFields.Where(f => f.GetType() == typeof(IRuneClient))
+                            .ToList()
+                            .ForEach(f => f.SetValue(type, runeClient));
+            }
         }
 
         public static Type GetClassType(string className)
@@ -75,7 +97,7 @@ namespace Runic.Agent.AssemblyManagement
 
         public static Type GetFunctionType(string functionFullyQualifiedName)
         {
-            //_logger.Debug($"Searching assemblies for function");
+            _logger.Debug($"Searching assemblies for function");
             lock (_testPlugins)
             {
                 foreach (var assembly in _testPlugins)

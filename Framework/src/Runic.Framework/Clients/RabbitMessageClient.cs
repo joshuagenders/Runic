@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NLog;
 using RawRabbit;
-using Runic.Core.Models;
+using Runic.Framework.Models;
 
 namespace Runic.Framework.Clients
 {

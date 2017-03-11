@@ -1,13 +1,15 @@
 ﻿using System.Reflection;
-using Runic.Core.Attributes;
-using NUnit.Framework;
+using Runic.Framework.Attributes;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 
 namespace Runic.UnitTest.Runic
 {
+    [TestClass]
     public class TestAttributes
     {
         [MinesRunes("123", "456")]
-        [Test]
+        [TestMethod]
         public void TestMinesRuneAttributeData()
         {
             var method = GetType().GetMethod("TestMinesRuneAttributeData");
@@ -17,7 +19,7 @@ namespace Runic.UnitTest.Runic
         }
 
         [MutableParameter("myInput", typeof(string))]
-        [Test]
+        [TestMethod]
         public void TestMutableParameterAttributeData()
         {
             var method = GetType().GetMethod("TestMutableParameterAttributeData");
@@ -27,17 +29,17 @@ namespace Runic.UnitTest.Runic
         }
 
         [RequiresLinkedRunes("Login", "Search")]
-        [Test]
+        [TestMethod]
         public void TestRequiresLinkedRuneAttributeData()
         {
             var method = GetType().GetMethod("TestRequiresLinkedRuneAttributeData");
             var attr = method.GetCustomAttribute<RequiresLinkedRunesAttribute>();
-            Assert.Contains("Login", attr.Runes);
-            Assert.Contains("Search", attr.Runes);
+            Assert.IsTrue(attr.Runes.ToList().Contains("Login"));
+            Assert.IsTrue(attr.Runes.ToList().Contains("Search"));
         }
 
         [RequiresRunes("123")]
-        [Test]
+        [TestMethod]
         public void TestRequiresRuneAttributeData()
         {
             var method = GetType().GetMethod("TestRequiresRuneAttributeData");

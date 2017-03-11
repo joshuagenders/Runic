@@ -4,6 +4,28 @@ Below is a mind dump so far
 
 Runic is a test lab and framework for running distributed automated tests. The tool is designed to support functional and performance tests.
 
+What I want to achieve:
+ - Make it easier
+   - Build out a polished framework where the engineer can not only create tests efficiently, but also use the framework to perform exploratory testing.
+ - Fine grained control
+   - Create, alter and schedule tests real-time
+   - Control test data feeds real-time
+ - A synthetic user generation framework
+   - Able to simulate real system interactions
+   - Promote modular and flexible test design to enhance code re-use, maintainability
+ - Is highly-scalable
+   - Dockerized and performant
+ - Support Continuous Testing
+   - Enabling real-time feedback loops for functional and non-functional attributes
+ - Flexible
+   - Tests written in .NET core, meaning tests have the control to exercise the SUT at many levels   
+ 
+Principles:
+  - Continuous testing
+  - Modular test design
+  - Well defined data dependencies for tests
+  - Robust and flexible tests
+  
 ## Basic Architecture
 
 ![Runic Architecture](images/BasicArchitecture.png)
@@ -24,12 +46,9 @@ When constructing a framework, careful thought should be given to how to break u
 
 ## Runic UI
 Runic UI provides user access to the test lab and oracle functionality. The UI can be used to design and construct workflows, create and execute test plans and manage test data. The oracle is used to analyse the test results in depth and perform functional checks. 
-React will be used for the UI framework. 
-
-As a later feature, I may also add the ability create scheduled test plans.
+Angular2 or React are likely choices for the UI. 
 
 ![Runic UI](images/ExampleTestComposer.png)
-
 
 ## The Oracle
 The oracle is (most likely a group of services) responsible for analysing the results from tests executed in a Runic test lab. The oracle should be designed so that the user can express the pre-conditions and expected outcomes for a test. The test can then be executed against any runes which match the pre-conditions. There may be a need to support several methods of expression, including external script execution. Possibly the use of hamstring matchers.
@@ -43,8 +62,9 @@ Some types of verification to support are:
 I will introduce more templated analytics at a later stage, that can also utilise the performance outputs from the framework.
 
 ## The Agent 
-The Agent is responsible for executing the functions or tests. The agent loads the required executables dynamically. The agent also reports all timing related statistics to graphite. The agent executes functions or tests based on messages received from a controller, and works on a pull mechanism. Agents support multiple threads, however a test dll will only be loaded once. When retrieving runes, a local cache of runes will be checked first to improve performance. The agent is also responsible for querying and sourcing the test data required to execute the test. The order of preference of inputs to function is: 
+The Agent is responsible for executing the functions or tests. The agent loads the required executables dynamically. The agent also reports all timing related statistics to graphite. The agent executes functions or tests based on messages received from a controller. Agents support multiple threads, however a test dll will only be loaded once. When retrieving runes, a local cache of runes will be checked first to improve performance. 
 
+The order of preference of inputs to function is: 
 Overidden parameters static > Overriden parameters datastore > Cached Rune > Database Rune
 
 Example Agent process:
@@ -65,6 +85,10 @@ Example Agent process:
 The agent will eventually have a data reservation function that can reserve an indexed field from use until a after a timeout period or until freed by the agent. As an example use case, any time an agent wants to use a customer id exclusively, it reserves the Id. The database rune query service can then exclude any runes for that customer id from use. This is not a foolproof solution but may be a handy tool.
 
 The agent will also provide standard test hooks such as ClassInit, ClassTeardown, BeforeEachFunction, AfterEachFunction.
+
+Registering transforms
+Runic functions can have data fed to them from various sources through a single input queue, allowing real-time control of test data.
+Where an appropriate rune cannot be found for a test, if a transform can be found that converts an existing rune then it will be parsed.
 
 ## The Controller
 Many agents can be deployed which execute the tests based on messages from the controller. The controller orchestrates the tests based on defined parameters. The controller can control exactly how many of each function are executed, and which test inputs are used. This is designed to create a flexible framework for composing tests.
@@ -114,9 +138,5 @@ The user can map tables, stored procedures or queries through to inputs for test
 A possible function is to create an event system to synchronize changes to test data. The data store could subscribe to certain tests/functions or runes and update state based on the results. Although this approach does assume that the data surfaced on the front end; in the case of bugs the data may need to be sanitized. As a precaution, data could be set with expiry so only relatively new state is used for tests.
 The other model is to regularly update the data store with state from the target system’s database.
 
-## OrientDb
-I'm using the document capabilities of OrientDb for the rune database. 
-There will also need to be a process for regularly cleaning out expired runes.
-
 ## Kamon
-I will use kamon for Graphana functionality.
+For Graphana functionality.

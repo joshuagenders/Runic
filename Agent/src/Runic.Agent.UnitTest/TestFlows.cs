@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
-using NUnit.Framework;
 using Runic.Agent.FlowManagement;
 using Runic.Core.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Runic.Agent.UnitTest
-{
+namespace Runic.Agent.UnitTest {
+
+    [TestClass]
     public class TestFlows
     {
-        [Test]
+        [TestMethod]
         public void TestUpdate()
         {
             var inputFlow = new Flow
@@ -31,7 +32,7 @@ namespace Runic.Agent.UnitTest
             Assert.IsNull(flow.Steps);
         }
 
-        [Test]
+        [TestMethod]
         public void TestStoreAndGet()
         {
             var inputFlow = new Flow { Name = "Test" };

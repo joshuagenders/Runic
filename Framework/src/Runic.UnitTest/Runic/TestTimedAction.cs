@@ -3,13 +3,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Runic.Framework.Configuration;
 using Runic.Framework.Orchestration;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Runic.UnitTest.Runic
 {
+    [TestClass]
     public class TestTimedAction
     {
-        [Test]
+        [TestMethod]
         public async Task TestTimedActionResponse()
         {
             RunicConfiguration.BuildConfiguration(new Dictionary<string, string>

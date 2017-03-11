@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Compatibility;
-using NUnit.Framework;
 using Runic.Agent.Configuration;
-using Runic.Agent.FlowManagement;
 using Runic.Agent.Harness;
 using Runic.Core.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Runic.Agent.UnitTest
 {
+    [TestClass]
     public class TestFlowHarness
     {
-        [Test]
+        [TestMethod]
         public async Task TestSingleFunctionFlow()
         {
             var cli = new[]

@@ -1,21 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.Agent", "Agent\src\Runic.Agent\Runic.Agent.xproj", "{9DCF05D9-2285-4058-9202-87FF3D987C79}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.RuneStorageService", "RuneStorageService\src\Runic.RuneStorageService\Runic.RuneStorageService.csproj", "{E0497E8E-37C8-46BB-89A1-DDE3293EAA5B}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.ExampleTest", "ExampleTest\Runic.ExampleTest.xproj", "{C77E3224-824F-452C-9482-F8772E8EDB92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent", "Agent\src\Runic.Agent\Runic.Agent.csproj", "{6D329D8D-DEED-4F8A-9501-289B4B9C390A}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.RuneStorageService", "RuneStorageService\src\Runic.RuneStorageService\Runic.RuneStorageService.xproj", "{E0497E8E-37C8-46BB-89A1-DDE3293EAA5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Framework", "Framework\src\Runic.Framework\Runic.Framework.csproj", "{21E69807-F702-4DC7-BC3B-B0E2D7D78090}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.RuneStorageService.SystemTest", "RuneStorageService\src\Runic.StorageService.SystemTest\Runic.RuneStorageService.SystemTest.xproj", "{5892F40B-E496-4F9C-A80D-90C7093F7D11}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Core", "Core\src\Runic.Core\Runic.Core.csproj", "{B6921420-6F1D-402E-A160-9AE5004E5835}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.Framework", "Framework\src\Runic.Framework\Runic.Framework.xproj", "{EE281C69-F006-4A43-AF96-AD6F771BDC20}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.Framework.UnitTest", "Framework\src\Runic.UnitTest\Runic.Framework.UnitTest.xproj", "{DACD2D61-AD9A-4857-80E3-2254B7BBF039}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Runic.Agent.UnitTest", "Agent\src\Runic.Agent.UnitTest\Runic.Agent.UnitTest.xproj", "{D3E674C5-8ACD-40E8-9D3A-01C5B3A20444}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleTest", "ExampleTest\ExampleTest.csproj", "{E7C7C2BC-AC7B-4B79-9340-728AC12D99D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,34 +19,26 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9DCF05D9-2285-4058-9202-87FF3D987C79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9DCF05D9-2285-4058-9202-87FF3D987C79}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9DCF05D9-2285-4058-9202-87FF3D987C79}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9DCF05D9-2285-4058-9202-87FF3D987C79}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C77E3224-824F-452C-9482-F8772E8EDB92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C77E3224-824F-452C-9482-F8772E8EDB92}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C77E3224-824F-452C-9482-F8772E8EDB92}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C77E3224-824F-452C-9482-F8772E8EDB92}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E0497E8E-37C8-46BB-89A1-DDE3293EAA5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E0497E8E-37C8-46BB-89A1-DDE3293EAA5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0497E8E-37C8-46BB-89A1-DDE3293EAA5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0497E8E-37C8-46BB-89A1-DDE3293EAA5B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5892F40B-E496-4F9C-A80D-90C7093F7D11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5892F40B-E496-4F9C-A80D-90C7093F7D11}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5892F40B-E496-4F9C-A80D-90C7093F7D11}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5892F40B-E496-4F9C-A80D-90C7093F7D11}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EE281C69-F006-4A43-AF96-AD6F771BDC20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EE281C69-F006-4A43-AF96-AD6F771BDC20}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EE281C69-F006-4A43-AF96-AD6F771BDC20}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EE281C69-F006-4A43-AF96-AD6F771BDC20}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DACD2D61-AD9A-4857-80E3-2254B7BBF039}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DACD2D61-AD9A-4857-80E3-2254B7BBF039}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DACD2D61-AD9A-4857-80E3-2254B7BBF039}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DACD2D61-AD9A-4857-80E3-2254B7BBF039}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D3E674C5-8ACD-40E8-9D3A-01C5B3A20444}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D3E674C5-8ACD-40E8-9D3A-01C5B3A20444}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D3E674C5-8ACD-40E8-9D3A-01C5B3A20444}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D3E674C5-8ACD-40E8-9D3A-01C5B3A20444}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D329D8D-DEED-4F8A-9501-289B4B9C390A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D329D8D-DEED-4F8A-9501-289B4B9C390A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D329D8D-DEED-4F8A-9501-289B4B9C390A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D329D8D-DEED-4F8A-9501-289B4B9C390A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21E69807-F702-4DC7-BC3B-B0E2D7D78090}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21E69807-F702-4DC7-BC3B-B0E2D7D78090}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21E69807-F702-4DC7-BC3B-B0E2D7D78090}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21E69807-F702-4DC7-BC3B-B0E2D7D78090}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6921420-6F1D-402E-A160-9AE5004E5835}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6921420-6F1D-402E-A160-9AE5004E5835}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6921420-6F1D-402E-A160-9AE5004E5835}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6921420-6F1D-402E-A160-9AE5004E5835}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7C7C2BC-AC7B-4B79-9340-728AC12D99D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7C7C2BC-AC7B-4B79-9340-728AC12D99D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7C7C2BC-AC7B-4B79-9340-728AC12D99D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7C7C2BC-AC7B-4B79-9340-728AC12D99D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

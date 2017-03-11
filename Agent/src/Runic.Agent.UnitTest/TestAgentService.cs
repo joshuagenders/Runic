@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Moq;
-using NUnit.Framework;
-using RawRabbit.Context;
 using Runic.Agent.Configuration;
 using Runic.Agent.FlowManagement;
-using Runic.Agent.Messaging;
 using Runic.Agent.Service;
-using Runic.Core.Attributes;
 using Runic.Core.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Runic.Agent.UnitTest
 {
+    [TestClass]
     public class TestAgentService
     {
-        [Test]
+        [TestMethod]
         public void TestStartThread()
         {
             var cli = new[]
@@ -58,7 +54,7 @@ namespace Runic.Agent.UnitTest
             Assert.AreEqual(1, agent.GetThreadLevel("FakeFlow"));
         }
 
-        [Test]
+        [TestMethod]
         public async Task TestSetThreadLevel()
         {
             var cli = new[]
@@ -110,11 +106,11 @@ namespace Runic.Agent.UnitTest
             }
         }
 
-        [Test]
+        [TestMethod]
         public void TestExecutionContext()
         {
             var executionContext = new Service.ExecutionContext();
-            Assert.Greater(executionContext.MaxThreadCount, 0);
+            Assert.IsTrue(executionContext.MaxThreadCount > 0);
         }
     }
 }

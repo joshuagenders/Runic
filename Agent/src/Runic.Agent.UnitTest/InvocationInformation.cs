@@ -1,6 +1,5 @@
 ﻿using System;
 
-
 namespace Runic.Agent.UnitTest
 {
     public class InvocationInformation

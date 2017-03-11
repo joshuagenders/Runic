@@ -1,11 +1,12 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.Configuration;
 
 namespace Runic.Agent.UnitTest
 {
+    [TestClass]
     public class TestAgentConfiguration
     {
-        [Test]
+        [TestMethod]
         public void TestCommandLineInputs()
         {
             var cli = new[]

@@ -7,6 +7,7 @@ using Runic.Agent.Harness;
 using Runic.Agent.Messaging;
 using Runic.Agent.Service;
 using StatsN;
+using RawRabbit;
 
 namespace Runic.Agent
 {
@@ -29,11 +30,11 @@ namespace Runic.Agent
                     .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                     .As<IPluginProvider>();
             builder.RegisterType<AgentService>().As<IAgentService>();
-            builder.RegisterType<RabbitMessagingService>().As<IMessagingService>();
             builder.RegisterType<FlowHarness>().As<IFlowHarness>();
             builder.RegisterType<FunctionHarness>().As<IFunctionHarness>();
-
-            builder.RegisterRawRabbit(AgentConfiguration.Instance.ClientConnectionConfiguration);
+            builder.RegisterRawRabbit();
+            builder.RegisterType<BusClient>().As<IBusClient>();
+            builder.RegisterType<RabbitMessagingService>().As<IMessagingService>();
 
             return builder.Build();
         }

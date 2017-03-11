@@ -1,13 +1,14 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.Harness;
 
 namespace Runic.Agent.UnitTest
 {
+    [TestClass]
     public class TestFunctionHarness
     {
-        [Test]
+        [TestMethod]
         public async Task TestBindAndExecute()
         {
             var fakeFunction = new FakeFunction();

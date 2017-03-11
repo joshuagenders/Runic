@@ -16,6 +16,11 @@ namespace Runic.Agent.Service
         private CancellationToken _ct { get; set; }
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
+        public AgentService()
+        {
+            _executionContext = new ExecutionContext();
+        }
+
         private void RegisterHandlers(IMessagingService messagingService = null, CancellationToken ct = default(CancellationToken))
         {
             if (messagingService == null)
@@ -27,7 +32,6 @@ namespace Runic.Agent.Service
 
         public async Task Run(IMessagingService messagingService, CancellationToken ct = default(CancellationToken))
         {
-            _executionContext = new ExecutionContext();
             _ct = ct;
             RegisterHandlers(messagingService, ct);
 

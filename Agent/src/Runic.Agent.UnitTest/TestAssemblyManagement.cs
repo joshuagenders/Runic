@@ -1,20 +1,20 @@
 ﻿using System.IO;
 using Runic.Agent.AssemblyManagement;
-using NUnit.Framework;
-using Runic.Core.Attributes;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Runic.Agent.UnitTest
 {
+    [TestClass]
     public class TestAssemblyManagement
     {
 
-        [ClassInitialise]
+        [TestInitialize]
         public void Init()
         {
             IoC.RegisterDependencies(new Startup());
         }
 
-        [Test]
+        [TestMethod]
         public void TestFunctionTypeRetrieve()
         {
             PluginManager.LoadPlugin("ExampleTest", new FilePluginProvider(null));
@@ -23,14 +23,14 @@ namespace Runic.Agent.UnitTest
             Assert.AreEqual(type.Name, "FakeFunction");
         }
 
-        [Test]
+        [TestMethod]
         public void TestLoadAssembly()
         {
             PluginManager.LoadPlugin("ExampleTest", new FilePluginProvider(Directory.GetCurrentDirectory()));
             Assert.AreEqual(PluginManager.GetAssemblies().Count, 1);
         }
 
-        [Test]
+        [TestMethod]
         public void TestDualLoadIsSafe()
         {
             PluginManager.LoadPlugin("ExampleTest", new FilePluginProvider(Directory.GetCurrentDirectory()));
