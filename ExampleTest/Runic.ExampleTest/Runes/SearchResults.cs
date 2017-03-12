@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Runic.Core.Attributes;
-using Runic.Core.Models;
+using Runic.Framework.Attributes;
+using Runic.Framework.Models;
 
 namespace Runic.ExampleTest.Runes
 {

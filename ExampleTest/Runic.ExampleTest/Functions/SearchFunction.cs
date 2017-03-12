@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using Newtonsoft.Json;
 using Runic.Framework.Clients;
-using Runic.Core.Attributes;
+using Runic.Framework.Attributes;
 using Runic.ExampleTest.Runes;
 
 namespace Runic.ExampleTest.Functions

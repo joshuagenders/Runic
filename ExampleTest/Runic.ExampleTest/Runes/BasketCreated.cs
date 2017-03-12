@@ -1,4 +1,4 @@
-﻿using Runic.Core.Models;
+﻿using Runic.Framework.Models;
 
 namespace Runic.ExampleTest.Runes
 {

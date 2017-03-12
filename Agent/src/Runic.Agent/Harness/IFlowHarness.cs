@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Runic.Core.Models;
+using Runic.Framework.Models;
 
 namespace Runic.Agent.Harness
 {

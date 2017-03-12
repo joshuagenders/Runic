@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using RawRabbit.Context;
-using Runic.Core.Models;
+using Runic.Framework.Models;
 
 namespace Runic.Agent.Messaging
 {

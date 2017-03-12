@@ -5,7 +5,7 @@ using NLog;
 using Runic.Agent.FlowManagement;
 using Runic.Agent.Harness;
 using Runic.Agent.Messaging;
-using Runic.Core.Models;
+using Runic.Framework.Models;
 
 namespace Runic.Agent.Service
 {

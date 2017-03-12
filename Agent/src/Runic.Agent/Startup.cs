@@ -8,6 +8,7 @@ using Runic.Agent.Messaging;
 using Runic.Agent.Service;
 using StatsN;
 using RawRabbit;
+using Runic.Framework.Clients;
 
 namespace Runic.Agent
 {
@@ -35,6 +36,7 @@ namespace Runic.Agent
             builder.RegisterRawRabbit();
             builder.RegisterType<BusClient>().As<IBusClient>();
             builder.RegisterType<RabbitMessagingService>().As<IMessagingService>();
+            builder.RegisterType<RabbitMessageClient>().As<IRuneClient>();
 
             return builder.Build();
         }

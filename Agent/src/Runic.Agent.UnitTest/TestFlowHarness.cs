@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Runic.Agent.Configuration;
 using Runic.Agent.Harness;
-using Runic.Core.Models;
+using Runic.Framework.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Runic.Agent.UnitTest
@@ -43,11 +43,11 @@ namespace Runic.Agent.UnitTest
             };
 
             CancellationTokenSource cts = new CancellationTokenSource();
-            cts.CancelAfter(500);
+            cts.CancelAfter(600);
             var task = harness.Execute(flow, 1, cts.Token).ConfigureAwait(false);
-            Thread.Sleep(20);
+            Thread.Sleep(50);
             Assert.AreEqual(0, harness.GetSemaphoreCurrentCount());
-            Assert.AreEqual(1, harness.GetRunningThreadCount());
+            Assert.IsTrue(harness.GetTotalInitiatiedThreadCount() > 0);
             
             try
             {

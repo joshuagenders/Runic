@@ -17,7 +17,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="1.0.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="1.1.0" />
-    <PackageReference Include="Runic.Core" Version="1.0.0" />
     <PackageReference Include="RawRabbit" Version="1.10.3" />
     <PackageReference Include="RawRabbit.DependencyInjection.Autofac" Version="1.10.3" />
     <PackageReference Include="RawRabbit.Extensions" Version="1.10.3" />

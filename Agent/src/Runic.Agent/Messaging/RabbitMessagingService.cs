@@ -4,7 +4,7 @@ using Autofac;
 using NLog;
 using RawRabbit;
 using RawRabbit.Context;
-using Runic.Core.Models;
+using Runic.Framework.Models;
 
 namespace Runic.Agent.Messaging
 {

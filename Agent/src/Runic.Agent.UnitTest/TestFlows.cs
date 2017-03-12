@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using Runic.Agent.FlowManagement;
-using Runic.Core.Models;
+using Runic.Framework.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Runic.Agent.UnitTest {
-
+namespace Runic.Agent.UnitTest
+{
     [TestClass]
     public class TestFlows
     {

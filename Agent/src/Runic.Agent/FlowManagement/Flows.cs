@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using Autofac;
-using Runic.Core.Models;
+using Runic.Framework.Models;
 using StatsN;
 
 namespace Runic.Agent.FlowManagement

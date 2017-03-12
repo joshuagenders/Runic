@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Runic.Core.Attributes;
+using Runic.Framework.Attributes;
 using NLog;
 
 namespace Runic.Agent.Harness

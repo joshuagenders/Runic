@@ -4,9 +4,9 @@ using System.Linq;
 using System.Net.Http;
 using Newtonsoft.Json;
 using Runic.Framework.Clients;
-using Runic.Core;
-using Runic.Core.Attributes;
-using Runic.Core.Models;
+using Runic.Framework;
+using Runic.Framework.Attributes;
+using Runic.Framework.Models;
 using Runic.ExampleTest.Runes;
 using Runic.Framework.Orchestration;
 

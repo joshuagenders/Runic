@@ -44,7 +44,19 @@ namespace Runic.Agent.AssemblyManagement
 
             provider.RetrieveSourceDll(pluginAssemblyName);
             var pluginPath = provider.GetFilepath(pluginAssemblyName);
+            _logger.Debug($"Plugin path {pluginPath}");
 
+            Assembly assembly = null;
+            LoadAssemblies(pluginPath, pluginAssemblyName);
+            
+            PopulateStaticInterfaces(assembly);
+
+            var statsd = IoC.Container?.Resolve<IStatsd>();
+            statsd?.Count("pluginLoaded");
+        }
+
+        public static void LoadAssemblies(string pluginPath, string pluginAssemblyName)
+        {
             Assembly assembly = null;
             lock (_testPlugins)
             {
@@ -56,27 +68,33 @@ namespace Runic.Agent.AssemblyManagement
                 _assembliesLoaded[pluginAssemblyName] = true;
             }
 
-            PopulateStaticInterfaces(assembly);
+            //foreach (var refAssembly in assembly.GetReferencedAssemblies())
+            //{
+            //    assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(pluginPath);
+            //}
+        }
 
-            var statsd = IoC.Container?.Resolve<IStatsd>();
-            statsd?.Count("pluginLoaded");
+        public static void ClearAssemblies()
+        {
+            _assembliesLoaded = new ConcurrentDictionary<string, bool>();
+            _testPlugins = new ConcurrentBag<Assembly>();
         }
 
         private static void PopulateStaticInterfaces(Assembly assembly)
         {
             var statsd = IoC.Container?.Resolve<IStatsd>();
             var runeClient = IoC.Container?.Resolve<IRuneClient>();
-
-            foreach (var type in assembly.GetTypes())
-            {
-                var staticFields = type.GetFields(BindingFlags.Static | BindingFlags.Public);
-                staticFields.Where(f => f.GetType() == typeof(IStatsd))
-                            .ToList()
-                            .ForEach(f => f.SetValue(type, statsd));
-                staticFields.Where(f => f.GetType() == typeof(IRuneClient))
-                            .ToList()
-                            .ForEach(f => f.SetValue(type, runeClient));
-            }
+            //todo fix
+            //foreach (var type in assembly.DefinedTypes)
+            //{
+            //    var staticFields = type.GetFields(BindingFlags.Static | BindingFlags.Public);
+            //    staticFields.Where(f => f.GetType() == typeof(IStatsd))
+            //                .ToList()
+            //                .ForEach(f => f.SetValue(type, statsd));
+            //    staticFields.Where(f => f.GetType() == typeof(IRuneClient))
+            //                .ToList()
+            //                .ForEach(f => f.SetValue(type, runeClient));
+            //}
         }
 
         public static Type GetClassType(string className)

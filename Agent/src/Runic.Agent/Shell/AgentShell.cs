@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Runic.Agent.AssemblyManagement;
 using Runic.Agent.Service;
-using Runic.Core.Models;
+using Runic.Framework.Models;
 using static Runic.Agent.Shell.AgentShell.ReturnCodes;
 
 namespace Runic.Agent.Shell

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.Harness;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Runic.Agent.UnitTest
 {

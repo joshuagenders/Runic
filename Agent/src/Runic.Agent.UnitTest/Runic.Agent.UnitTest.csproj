@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.0</TargetFramework>
+    <DebugType Condition="'$(TargetFramework)' != '' AND '$(TargetFramework)' != 'netcoreapp1.0'">Full</DebugType>
     <AssemblyName>Runic.Agent.UnitTest</AssemblyName>
     <PackageId>Runic.Agent.UnitTest</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
@@ -20,7 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Runic.Agent\Runic.Agent.csproj" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0-preview-20170106-08" />
     <PackageReference Include="Microsoft.DotNet.InternalAbstractions" Version="1.0.0" />
@@ -28,7 +29,6 @@
     <PackageReference Include="MSTest.TestAdapter" Version="1.1.13" />
     <PackageReference Include="MSTest.TestFramework" Version="1.1.13" />
     <PackageReference Include="Runic.Framework" Version="1.0.0" />
-    <PackageReference Include="Runic.Core" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>

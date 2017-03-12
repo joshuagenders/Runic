@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Runic.Core.Attributes;
+using Runic.Framework.Attributes;
 
 namespace Runic.Agent.UnitTest
 {

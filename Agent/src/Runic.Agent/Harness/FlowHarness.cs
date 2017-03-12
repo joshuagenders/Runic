@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Autofac;
 using NLog;
 using Runic.Agent.AssemblyManagement;
-using Runic.Core.Models;
+using Runic.Framework.Models;
 using StatsN;
 
 namespace Runic.Agent.Harness
@@ -79,6 +79,11 @@ namespace Runic.Agent.Harness
         public List<Task> GetTasks ()
         {
             return _trackedTasks.ToList();
+        }
+
+        public int GetTotalInitiatiedThreadCount()
+        {
+            return _trackedTasks.Count();
         }
 
         public int GetRunningThreadCount()
