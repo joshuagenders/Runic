@@ -8,21 +8,23 @@ using Autofac;
 using NLog;
 using StatsN;
 using Runic.Framework.Clients;
+using Runic.Framework.Attributes;
+using Runic.Framework.Models;
 
 namespace Runic.Agent.AssemblyManagement
 {
     public static class PluginManager
     {
         private static readonly Logger _logger = LogManager.GetLogger("Runic.Agent.AssemblyManagement.PluginManager");
-        private static ConcurrentBag<Assembly> _testPlugins = new ConcurrentBag<Assembly>();
+        private static ConcurrentBag<Assembly> _assemblies = new ConcurrentBag<Assembly>();
         private static ConcurrentDictionary<string, bool> _assembliesLoaded = new ConcurrentDictionary<string, bool>();
         
         public static List<Assembly> GetAssemblies()
         {
             List<Assembly> assemblyList;
-            lock (_testPlugins)
+            lock (_assemblies)
             {
-                assemblyList = _testPlugins.ToList();
+                assemblyList = _assemblies.ToList();
             }
             return assemblyList;
         }
@@ -58,10 +60,10 @@ namespace Runic.Agent.AssemblyManagement
         public static void LoadAssemblies(string pluginPath, string pluginAssemblyName)
         {
             Assembly assembly = null;
-            lock (_testPlugins)
+            lock (_assemblies)
             {
                 assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(pluginPath);
-                _testPlugins.Add(assembly);
+                _assemblies.Add(assembly);
             }
             lock (_assembliesLoaded)
             {
@@ -77,7 +79,34 @@ namespace Runic.Agent.AssemblyManagement
         public static void ClearAssemblies()
         {
             _assembliesLoaded = new ConcurrentDictionary<string, bool>();
-            _testPlugins = new ConcurrentBag<Assembly>();
+            _assemblies = new ConcurrentBag<Assembly>();
+        }
+
+        public static List<FunctionInformation> GetAvailableFunctions()
+        {
+            var functions = new List<FunctionInformation>();
+            foreach (var assembly in _assemblies)
+            {
+                foreach (var type in assembly.DefinedTypes)
+                {
+                    var methods = type.AsType().GetRuntimeMethods();
+                    foreach (var method in methods)
+                    {
+                        var attribute = method.GetCustomAttribute<FunctionAttribute>();
+                        if (attribute != null)
+                        {
+                            // todo add params and runes
+                            functions.Add(new FunctionInformation()
+                            {
+                                AssemblyName = assembly.FullName,
+                                AssemblyQualifiedClassName = type.FullName,
+                                FunctionName = attribute.Name
+                            });
+                        }
+                    }
+                }
+            }
+            return functions;
         }
 
         private static void PopulateStaticInterfaces(Assembly assembly)
@@ -99,9 +128,9 @@ namespace Runic.Agent.AssemblyManagement
 
         public static Type GetClassType(string className)
         {
-            lock (_testPlugins)
+            lock (_assemblies)
             {
-                foreach (var assembly in _testPlugins)
+                foreach (var assembly in _assemblies)
                 {
                     var types = assembly.GetTypes().Where(t => t.FullName == className);
                     var enumerable = types as Type[] ?? types.ToArray();
@@ -116,9 +145,9 @@ namespace Runic.Agent.AssemblyManagement
         public static Type GetFunctionType(string functionFullyQualifiedName)
         {
             _logger.Debug($"Searching assemblies for function");
-            lock (_testPlugins)
+            lock (_assemblies)
             {
-                foreach (var assembly in _testPlugins)
+                foreach (var assembly in _assemblies)
                 {
                     var type = assembly.GetType(functionFullyQualifiedName);
                     if (type != null)

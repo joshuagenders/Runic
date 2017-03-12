@@ -36,9 +36,12 @@ namespace Runic.Agent.UnitTest
                 {
                     new Step()
                     {
-                        FunctionName = "Login",
-                        FunctionAssemblyName = "ExampleTest",
-                        FunctionFullyQualifiedName = "Runic.ExampleTest.Functions.FakeFunction"
+                        Function = new FunctionInformation()
+                        {
+                            AssemblyName = "ExampleTest",
+                            AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.FakeFunction",
+                            FunctionName = "FakeFunction"
+                        }
                     }
                 }
             };

@@ -132,7 +132,7 @@ namespace Runic.Agent.Harness
                 foreach (var step in _flow.Steps)
                 {
                     //execute with function harness
-                    var instance = _instances[step.FunctionName];
+                    var instance = _instances[step.Function.FunctionName];
                     var functionHarness = IoC.Container.Resolve<IFunctionHarness>();
                     functionHarness.Bind(instance);
 
@@ -140,7 +140,7 @@ namespace Runic.Agent.Harness
                     _logger.Debug($"Executing step for {_flow.Name}");
                     try
                     {
-                        await functionHarness.Execute(step.FunctionName, ctx);
+                        await functionHarness.Execute(step.Function.FunctionName, ctx);
                     }
                     catch (Exception e)
                     {
@@ -166,26 +166,26 @@ namespace Runic.Agent.Harness
 
         private void LoadLibrary(Step step)
         {
-            _logger.Debug($"Attempting to load library for {step.FunctionName} in {step.FunctionAssemblyName}");
-            PluginManager.LoadPlugin(step.FunctionAssemblyName);
+            _logger.Debug($"Attempting to load library for {step.Function.FunctionName} in {step.Function.AssemblyName}");
+            PluginManager.LoadPlugin(step.Function.AssemblyName);
         }
 
         private void InitialiseFunction(Step step)
         {
-            _logger.Debug($"Initialising {step.FunctionName} in {step.FunctionAssemblyName}");
-            if (_instances.ContainsKey(step.FunctionName))
+            _logger.Debug($"Initialising {step.Function.FunctionName} in {step.Function.AssemblyName}");
+            if (_instances.ContainsKey(step.Function.FunctionName))
                 return;
 
             _logger.Debug($"Retrieving function type");
 
-            var type = PluginManager.GetFunctionType(step.FunctionFullyQualifiedName);
+            var type = PluginManager.GetFunctionType(step.Function.FunctionName);
             if (type == null)
                 throw new FunctionTypeNotFoundException();
 
             _logger.Debug($"type found {type.AssemblyQualifiedName}");
 
-            _instances[step.FunctionName] = Activator.CreateInstance(type);
-            _logger.Debug($"{step.FunctionName} in {step.FunctionAssemblyName} initialised");
+            _instances[step.Function.FunctionName] = Activator.CreateInstance(type);
+            _logger.Debug($"{step.Function.FunctionName} in {step.Function.AssemblyName} initialised");
         }
 
         private void CancelAllThreads()

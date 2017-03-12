@@ -11,9 +11,7 @@ namespace Runic.Framework.Models
 
     public class Step
     {
-        public string FunctionName { get; set; }
-        public string FunctionFullyQualifiedName { get; set; }
-        public string FunctionAssemblyName { get; set; }
+        public FunctionInformation Function { get; set; }
         public string InputDatasource { get; set; }
         public Dictionary<string, string> DatasourceMapping { get; set; }
         public int Repeat { get; set; }
