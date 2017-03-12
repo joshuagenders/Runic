@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using Newtonsoft.Json;
-using Runic.Framework.Clients;
 using Runic.Framework;
 using Runic.Framework.Attributes;
 using Runic.Framework.Models;
@@ -51,19 +47,7 @@ namespace Runic.ExampleTest.Functions
 
         public async void DoPlaceOrder(string basketId, string userId)
         {
-            using (var client = new HttpClient())
-            {
-                try
-                {
-                    var postBody = JsonConvert.SerializeObject(new {basketId, userId});
-                    client.BaseAddress = new Uri("http://myexample.com");
-                    await client.PostAsync("/order", new StringContent(postBody));
-                }
-                catch (HttpRequestException e)
-                {
-                    Console.WriteLine($"Request exception: {e.Message}");
-                }
-            }
+            
         }
     }
 }

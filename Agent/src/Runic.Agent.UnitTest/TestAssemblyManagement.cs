@@ -1,7 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.AssemblyManagement;
 using Runic.Agent.Configuration;
+using System;
 using System.IO;
+using System.Linq;
 
 namespace Runic.Agent.UnitTest
 {
@@ -50,6 +52,14 @@ namespace Runic.Agent.UnitTest
         {
             PluginManager.LoadPlugin("Runic.ExampleTest", new FilePluginProvider(wd));
             Assert.AreEqual(PluginManager.GetAssemblies().Count, 1);
+        }
+
+        [TestMethod]
+        public void TestGetFunctionInfo()
+        {
+            PluginManager.LoadPlugin("Runic.ExampleTest", new FilePluginProvider(wd));
+            var functions = PluginManager.GetAvailableFunctions();
+            Assert.IsTrue(functions.Any());
         }
 
         [TestMethod]

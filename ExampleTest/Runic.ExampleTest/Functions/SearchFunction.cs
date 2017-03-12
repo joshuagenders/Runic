@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using Newtonsoft.Json;
-using Runic.Framework.Clients;
 using Runic.Framework.Attributes;
 using Runic.ExampleTest.Runes;
 
@@ -18,22 +15,8 @@ namespace Runic.ExampleTest.Functions
         {
             if (searchTerm == null)
                 searchTerm = searchType == null ? GenerateSearchTerm() : GenerateSearchTerm(searchType);
-            SearchResults exampleResponse = null;
 
-            using (var client = new HttpClient())
-            {
-                try
-                {
-                    client.BaseAddress = new Uri("http://myexample.com");
-                    var response = await client.GetAsync($"/search?q={searchTerm}");
-                    var stringResponse = await response.Content.ReadAsStringAsync();
-                    exampleResponse = JsonConvert.DeserializeObject<SearchResults>(stringResponse);
-                }
-                catch (HttpRequestException e)
-                {
-                    Console.WriteLine($"Request exception: {e.Message}");
-                }
-            }
+            SearchResults exampleResponse = null;
 
             RunicIoC.RuneClient.SendRunes(exampleResponse);
         }
