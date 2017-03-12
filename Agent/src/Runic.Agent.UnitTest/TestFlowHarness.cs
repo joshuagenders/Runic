@@ -21,7 +21,7 @@ namespace Runic.Agent.UnitTest
                 "Agent:LifetimeSeconds=123",
                 "Client:MQConnectionString=MyExampleConnection",
                 "Statsd:Port=8125",
-                "Statsd:Host=localhost",
+                "Statsd:Host=192.168.99.100",
                 "Statsd:Prefix=Runic.Stats."
             };
             AgentConfiguration.LoadConfiguration(cli);
@@ -31,6 +31,7 @@ namespace Runic.Agent.UnitTest
             var flow = new Flow()
             {
                 Name = "ExampleFlow",
+                StepDelayMilliseconds = 200,
                 Steps = new List<Step>()
                 {
                     new Step()

@@ -43,7 +43,7 @@ namespace Runic.Agent.Harness
         public async Task Execute(Flow flow, int threadCount, CancellationToken ctx = default(CancellationToken))
         {
             _logger.Debug($"Executing flow {flow.Name}");
-            _statsd.Count($"{flow.Name}.flowStarted");
+            _statsd.Count($"flows.{flow.Name}.flowStarted");
             InstantiateCollections();
 
             _flow = flow;
@@ -56,7 +56,7 @@ namespace Runic.Agent.Harness
                 await _semaphore.WaitAsync(ctx);
 
                 _logger.Debug($"Starting thread for {flow.Name}");
-                _statsd.Count($"{flow.Name}.threadStarted");
+                _statsd.Count($"flows.{flow.Name}.threadStarted");
                 var cts = new CancellationTokenSource();
                 _cancellationSources.Add(cts);
                 _trackedTasks.Add(ExecuteFlow(cts.Token).ContinueWith((_) =>
@@ -73,7 +73,7 @@ namespace Runic.Agent.Harness
             _cancellationSources.ForEach(c => c.Cancel());
             await Task.WhenAll(_trackedTasks);
             _logger.Debug($"Completed flow execution for {flow.Name}");
-            _statsd?.Count($"{flow.Name}.flowCompleted");
+            _statsd?.Count($"flows.{flow.Name}.flowCompleted");
         }
 
         public List<Task> GetTasks ()
@@ -136,6 +136,7 @@ namespace Runic.Agent.Harness
                     var functionHarness = IoC.Container.Resolve<IFunctionHarness>();
                     functionHarness.Bind(instance);
 
+                    Thread.Sleep(_flow.StepDelayMilliseconds);
                     _logger.Debug($"Executing step for {_flow.Name}");
                     try
                     {

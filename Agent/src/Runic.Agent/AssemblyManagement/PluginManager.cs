@@ -52,7 +52,7 @@ namespace Runic.Agent.AssemblyManagement
             PopulateStaticInterfaces(assembly);
 
             var statsd = IoC.Container?.Resolve<IStatsd>();
-            statsd?.Count("pluginLoaded");
+            statsd?.Count("plugins.pluginLoaded");
         }
 
         public static void LoadAssemblies(string pluginPath, string pluginAssemblyName)

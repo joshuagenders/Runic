@@ -5,6 +5,7 @@ namespace Runic.Framework.Models
     public class Flow
     {
         public string Name { get; set; }
+        public int StepDelayMilliseconds { get; set; }
         public List<Step> Steps { get; set; }
     }
 
