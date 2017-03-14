@@ -26,19 +26,19 @@ namespace Runic.Agent.Harness
 
         private IPluginProvider _provider { get; set; }
 
+        //TODO split this class out
+        public FlowHarness(IPluginProvider pluginProvider)
+        {
+            InstantiateCollections();
+        }
+
         public void InstantiateCollections()
         {
             _instances = new Dictionary<string, object>();
             _cancellationSources = new List<CancellationTokenSource>();
             _trackedTasks = new ConcurrentBag<Task>();
         }
-
-        public FlowHarness(IPluginProvider pluginProvider)
-        {
-            //todo replace functionharness with functionharnessfactory
-            InstantiateCollections();
-        }
-
+        
         public async Task Execute(Flow flow, int threadCount, CancellationToken ctx = default(CancellationToken))
         {
             _logger.Debug($"Executing flow {flow.Name}");
