@@ -3,8 +3,6 @@ using Autofac;
 using RawRabbit.DependencyInjection.Autofac;
 using Runic.Agent.AssemblyManagement;
 using Runic.Agent.Configuration;
-using Runic.Agent.Harness;
-using Runic.Agent.Messaging;
 using Runic.Agent.Service;
 using StatsN;
 using Runic.Framework.Clients;

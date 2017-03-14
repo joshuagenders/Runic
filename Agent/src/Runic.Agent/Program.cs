@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Newtonsoft.Json;
 using Runic.Agent.Configuration;
 using Runic.Agent.Messaging;
 using System;
@@ -8,8 +7,6 @@ using System.Threading.Tasks;
 using NLog;
 using Runic.Agent.Service;
 using Runic.Agent.Shell;
-using Runic.Agent.Harness;
-using Runic.Agent.FlowManagement;
 using Runic.Agent.AssemblyManagement;
 
 namespace Runic.Agent
@@ -55,20 +52,24 @@ namespace Runic.Agent
        
         private async Task Execute(string[] args, IContainer container, CancellationToken ct)
         {
-
+            // resolve ioc
             var pluginProvider = container.Resolve<IPluginProvider>();
             var messagingService = container.Resolve<IMessagingService>();
 
+            // start agent
             var agentService = new AgentService(pluginProvider);
             var serviceCts = new CancellationTokenSource();
             var agentTask = agentService.Run(messagingService, ct: serviceCts.Token);
 
+            // start shell
             var shell = new AgentShell(agentService);
             var cmdTask = shell.ProcessCommands(ct).ContinueWith(result =>
             {
+                // cancel agent when shell exits
                 serviceCts.Cancel();
             }, ct);
 
+            // wait for shell and agent to complete
             await Task.WhenAll(cmdTask, agentTask);
         }
     }

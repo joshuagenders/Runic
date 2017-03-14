@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac;
 using NLog;
 using Runic.Agent.AssemblyManagement;
 using Runic.Framework.Models;

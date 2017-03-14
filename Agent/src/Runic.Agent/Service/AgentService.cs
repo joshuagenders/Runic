@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Autofac;
 using NLog;
 using Runic.Agent.FlowManagement;
 using Runic.Agent.Harness;

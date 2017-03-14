@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
-using Autofac;
 using NLog;
 using StatsN;
 using Runic.Framework.Clients;
@@ -72,6 +71,7 @@ namespace Runic.Agent.AssemblyManagement
                 _assembliesLoaded[pluginAssemblyName] = true;
             }
             return assembly;
+            
             //foreach (var refAssembly in assembly.GetReferencedAssemblies())
             //{
             //    assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(pluginPath);
