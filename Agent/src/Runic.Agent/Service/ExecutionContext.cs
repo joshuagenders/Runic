@@ -7,15 +7,15 @@ namespace Runic.Agent.Service
 {
     public class ExecutionContext
     {
-        public Dictionary<string,FlowContext> FlowContexts { get; }
-        public Dictionary<string, IFlowHarness> FlowHarnesses { get; }
+        public Dictionary<string, FlowContext> FlowContexts { get; }
+        public Dictionary<string, FlowHarness> FlowHarnesses { get; }
 
         public int MaxThreadCount { get; }
 
         public ExecutionContext()
         {
             FlowContexts = new Dictionary<string, FlowContext>();
-            FlowHarnesses = new Dictionary<string, IFlowHarness>();
+            FlowHarnesses = new Dictionary<string, FlowHarness>();
             MaxThreadCount = AgentConfiguration.Instance.MaxThreads;
         }
 

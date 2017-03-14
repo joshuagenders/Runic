@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using NLog;
 using Runic.Agent.Service;
 using Runic.Agent.Shell;
+using Runic.Agent.Harness;
+using Runic.Agent.FlowManagement;
+using Runic.Agent.AssemblyManagement;
 
 namespace Runic.Agent
 {
@@ -18,7 +21,8 @@ namespace Runic.Agent
         public static void Main(string[] args)
         {
             AgentConfiguration.LoadConfiguration(args);
-            IoC.RegisterDependencies(new Startup());
+            var startup = new Startup();
+            var container = startup.RegisterDependencies();
 
             var cts = new CancellationTokenSource();
             try
@@ -33,7 +37,7 @@ namespace Runic.Agent
                 cts.CancelAfter(int.MaxValue);
             }
             
-            Task.Run(() => new Program().Execute(args, cts.Token), cts.Token).ContinueWith(t =>
+            Task.Run(() => new Program().Execute(args, container, cts.Token), cts.Token).ContinueWith(t =>
             {
                 if (t.Exception != null)
                 {
@@ -49,14 +53,17 @@ namespace Runic.Agent
         }
 
        
-        private async Task Execute(string[] args, CancellationToken ct)
-        {   
-            var agentService = IoC.Container.Resolve<IAgentService>();
-            var shell = new AgentShell(agentService);
+        private async Task Execute(string[] args, IContainer container, CancellationToken ct)
+        {
 
+            var pluginProvider = container.Resolve<IPluginProvider>();
+            var messagingService = container.Resolve<IMessagingService>();
+
+            var agentService = new AgentService(pluginProvider);
             var serviceCts = new CancellationTokenSource();
-            var agentTask = agentService.Run(ct: serviceCts.Token);
+            var agentTask = agentService.Run(messagingService, ct: serviceCts.Token);
 
+            var shell = new AgentShell(agentService);
             var cmdTask = shell.ProcessCommands(ct).ContinueWith(result =>
             {
                 serviceCts.Cancel();

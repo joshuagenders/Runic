@@ -6,6 +6,7 @@ using Runic.Agent.FlowManagement;
 using Runic.Agent.Harness;
 using Runic.Agent.Messaging;
 using Runic.Framework.Models;
+using Runic.Agent.AssemblyManagement;
 
 namespace Runic.Agent.Service
 {
@@ -14,17 +15,21 @@ namespace Runic.Agent.Service
         private IMessagingService _messagingService { get; }
         private ExecutionContext _executionContext { get; set; }
         private CancellationToken _ct { get; set; }
+        private FlowHarness _flowHarness { get; set; }
+
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public AgentService()
+        public readonly Flows Flows;
+
+        public AgentService(IPluginProvider pluginProvider)
         {
             _executionContext = new ExecutionContext();
+            _flowHarness = new FlowHarness(pluginProvider);
+            Flows = new Flows();
         }
 
-        private void RegisterHandlers(IMessagingService messagingService = null, CancellationToken ct = default(CancellationToken))
+        private void RegisterHandlers(IMessagingService messagingService, CancellationToken ct = default(CancellationToken))
         {
-            if (messagingService == null)
-                messagingService = IoC.Container.Resolve<IMessagingService>();
             messagingService.RegisterThreadLevelHandler((message, context) => SetThreadLevel(message, ct));
             messagingService.RegisterFlowUpdateHandler((message, context) => Task.Run(() => Flows.AddUpdateFlow(message.Flow), ct));
             _logger.Debug("Registered message handlers");
@@ -44,9 +49,8 @@ namespace Runic.Agent.Service
         public void StartFlow(FlowContext flowContext)
         {
             _logger.Debug($"Starting flow {flowContext.FlowName} at {flowContext.ThreadCount} threads");
-            var harness = IoC.Container.Resolve<IFlowHarness>();
             _executionContext.FlowContexts.Add(flowContext.FlowName, flowContext);
-            flowContext.Task = harness.Execute(flowContext.Flow, flowContext.ThreadCount, _ct);
+            flowContext.Task = _flowHarness.Execute(flowContext.Flow, flowContext.ThreadCount, _ct);
             flowContext.CancellationToken = _ct;
         }
 

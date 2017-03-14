@@ -10,14 +10,13 @@ namespace Runic.Agent.UnitTest
     [TestClass]
     public class TestAssemblyManagement
     {
-        private string wd { get; set; }
+        //bad hack because nunit 3 doesn't work yet and mstest doesnt set cwd to deployment dir
+        // and mstestv2 test context has removed the deployment metadata
+        private const string wd = "C:\\code\\Runic\\Agent\\src\\Runic.Agent.UnitTest\\bin\\Debug\\netcoreapp1.0";
 
         [TestInitialize]
         public void Init()
         {
-            //bad hack because nunit 3 doesn't work yet and mstest doesnt set cwd to deployment dir
-            // and mstestv2 test context has removed the deployment metadata
-            wd = "C:\\code\\Runic\\Agent\\src\\Runic.Agent.UnitTest\\bin\\Debug\\netcoreapp1.0";
             var cli = new[]
             {
                 "Agent:MaxThreads=321",
@@ -29,7 +28,7 @@ namespace Runic.Agent.UnitTest
             };
             AgentConfiguration.LoadConfiguration(cli);
 
-            IoC.RegisterDependencies(new Startup());
+            var container = new Startup().RegisterDependencies();
         }
 
         [TestCleanup]

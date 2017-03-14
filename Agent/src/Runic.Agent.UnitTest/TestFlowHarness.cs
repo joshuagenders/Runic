@@ -6,12 +6,18 @@ using Runic.Agent.Configuration;
 using Runic.Agent.Harness;
 using Runic.Framework.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Runic.Agent.AssemblyManagement;
+using System.IO;
 
 namespace Runic.Agent.UnitTest
 {
     [TestClass]
     public class TestFlowHarness
     {
+        //bad hack because nunit 3 doesn't work yet and mstest doesnt set cwd to deployment dir
+        // and mstestv2 test context has removed the deployment metadata
+        private const string wd = "C:\\code\\Runic\\Agent\\src\\Runic.Agent.UnitTest\\bin\\Debug\\netcoreapp1.0";
+
         [TestMethod]
         public async Task TestSingleFunctionFlow()
         {
@@ -25,9 +31,9 @@ namespace Runic.Agent.UnitTest
                 "Statsd:Prefix=Runic.Stats."
             };
             AgentConfiguration.LoadConfiguration(cli);
-            IoC.RegisterDependencies(new Startup());
+            var container = new Startup().RegisterDependencies();
 
-            var harness = new FlowHarness();
+            var harness = new FlowHarness(new FilePluginProvider(wd));
             var flow = new Flow()
             {
                 Name = "ExampleFlow",

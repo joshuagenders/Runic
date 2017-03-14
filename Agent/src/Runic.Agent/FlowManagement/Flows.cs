@@ -1,24 +1,28 @@
 ﻿using System.Collections.Concurrent;
-using Autofac;
 using Runic.Framework.Models;
 using StatsN;
+using Runic.Agent.Metrics;
 
 namespace Runic.Agent.FlowManagement
 {
-    public static class Flows
+    public class Flows
     {
-        //todo replace with a proper management system
-        private static ConcurrentDictionary<string, Flow> _flows = new ConcurrentDictionary<string, Flow>();
+        private ConcurrentDictionary<string, Flow> _flows { get; set; }
         
-        public static void AddUpdateFlow(Flow flow)
+        public Flows()
         {
-            _flows[flow.Name] = flow;
-            IoC.Container?.Resolve<IStatsd>()?.Count($"{flow.Name}.AddOrUpdated");
+            _flows = new ConcurrentDictionary<string, Flow>();
         }
 
-        public static Flow GetFlow(string name)
+        public void AddUpdateFlow(Flow flow)
         {
-            IoC.Container?.Resolve<IStatsd>()?.Count($"{name}.get");
+            _flows[flow.Name] = flow;
+            Clients.Statsd?.Count($"{flow.Name}.AddOrUpdated");
+        }
+
+        public Flow GetFlow(string name)
+        {
+            Clients.Statsd?.Count($"{name}.get");
             return _flows[name];
         }
     }

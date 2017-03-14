@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Autofac;
 using NLog;
 using RawRabbit;
 using RawRabbit.Context;
 using Runic.Framework.Models;
+using RawRabbit.Configuration;
+using RawRabbit.vNext;
 
 namespace Runic.Agent.Messaging
 {
@@ -15,7 +16,15 @@ namespace Runic.Agent.Messaging
 
         public RabbitMessagingService()
         {
-            _bus = IoC.Container.Resolve<IBusClient>();
+            var busConfig = new RawRabbitConfiguration
+            {
+                Username = "guest",
+                Password = "guest",
+                Port = 5672,
+                VirtualHost = "/",
+                Hostnames = { "localhost" }
+            };
+            _bus = BusClientFactory.CreateDefault(busConfig);
         }
 
         public void RegisterThreadLevelHandler(Func<SetThreadLevelRequest, MessageContext, Task> handler)

@@ -7,8 +7,8 @@ using Runic.Agent.Harness;
 using Runic.Agent.Messaging;
 using Runic.Agent.Service;
 using StatsN;
-using RawRabbit;
 using Runic.Framework.Clients;
+using Runic.Agent.Metrics;
 
 namespace Runic.Agent
 {
@@ -23,19 +23,19 @@ namespace Runic.Agent
                 options.Prefix = AgentConfiguration.Instance.StatsdPrefix;
                 options.BufferMetrics = true;
             });
+            Clients.Statsd = statsd;
 
+            return BuildContainer();
+        }
+
+        private IContainer BuildContainer()
+        {
             var builder = new ContainerBuilder();
-
-            builder.RegisterInstance(statsd);
             builder.RegisterType<FilePluginProvider>()
                     .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                     .As<IPluginProvider>();
             builder.RegisterType<AgentService>().As<IAgentService>();
-            builder.RegisterType<FlowHarness>().As<IFlowHarness>();
-            builder.RegisterType<FunctionHarness>().As<IFunctionHarness>();
             builder.RegisterRawRabbit();
-            builder.RegisterType<BusClient>().As<IBusClient>();
-            builder.RegisterType<RabbitMessagingService>().As<IMessagingService>();
             builder.RegisterType<RabbitMessageClient>().As<IRuneClient>();
 
             return builder.Build();

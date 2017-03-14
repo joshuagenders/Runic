@@ -8,14 +8,13 @@ using Autofac;
 using NLog;
 using Runic.Agent.AssemblyManagement;
 using Runic.Framework.Models;
-using StatsN;
+using Runic.Agent.Metrics;
 
 namespace Runic.Agent.Harness
 {
-    public class FlowHarness : IFlowHarness
+    public class FlowHarness
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private IStatsd _statsd { get; }
 
         private Flow _flow { get; set; }
         private int _threadCount { get; set; }
@@ -25,6 +24,8 @@ namespace Runic.Agent.Harness
         private Dictionary<string, object> _instances { get; set; }
         private List<CancellationTokenSource> _cancellationSources { get; set; }
 
+        private IPluginProvider _provider { get; set; }
+
         public void InstantiateCollections()
         {
             _instances = new Dictionary<string, object>();
@@ -32,18 +33,16 @@ namespace Runic.Agent.Harness
             _trackedTasks = new ConcurrentBag<Task>();
         }
 
-        public FlowHarness()
+        public FlowHarness(IPluginProvider pluginProvider)
         {
-            IStatsd statsd;
-            if (IoC.Container.TryResolve<IStatsd>(out statsd))
-                _statsd = statsd;
+            //todo replace functionharness with functionharnessfactory
             InstantiateCollections();
         }
 
         public async Task Execute(Flow flow, int threadCount, CancellationToken ctx = default(CancellationToken))
         {
             _logger.Debug($"Executing flow {flow.Name}");
-            _statsd.Count($"flows.{flow.Name}.flowStarted");
+            Clients.Statsd?.Count($"flows.{flow.Name}.flowStarted");
             InstantiateCollections();
 
             _flow = flow;
@@ -56,7 +55,7 @@ namespace Runic.Agent.Harness
                 await _semaphore.WaitAsync(ctx);
 
                 _logger.Debug($"Starting thread for {flow.Name}");
-                _statsd.Count($"flows.{flow.Name}.threadStarted");
+                Clients.Statsd?.Count($"flows.{flow.Name}.threadStarted");
                 var cts = new CancellationTokenSource();
                 _cancellationSources.Add(cts);
                 _trackedTasks.Add(ExecuteFlow(cts.Token).ContinueWith((_) =>
@@ -73,7 +72,7 @@ namespace Runic.Agent.Harness
             _cancellationSources.ForEach(c => c.Cancel());
             await Task.WhenAll(_trackedTasks);
             _logger.Debug($"Completed flow execution for {flow.Name}");
-            _statsd?.Count($"flows.{flow.Name}.flowCompleted");
+            Clients.Statsd?.Count($"flows.{flow.Name}.flowCompleted");
         }
 
         public List<Task> GetTasks ()
@@ -107,7 +106,8 @@ namespace Runic.Agent.Harness
             return _flow;
         }
 
-        private async Task ExecuteFlow(CancellationToken ctx = default(CancellationToken))
+        private async Task ExecuteFlow(
+            CancellationToken ctx = default(CancellationToken))
         {
             foreach (var step in _flow.Steps)
             {
@@ -133,7 +133,7 @@ namespace Runic.Agent.Harness
                 {
                     //execute with function harness
                     var instance = _instances[step.Function.FunctionName];
-                    var functionHarness = IoC.Container.Resolve<IFunctionHarness>();
+                    var functionHarness = new FunctionHarness();
                     functionHarness.Bind(instance);
 
                     Thread.Sleep(_flow.StepDelayMilliseconds);
@@ -167,7 +167,7 @@ namespace Runic.Agent.Harness
         private void LoadLibrary(Step step)
         {
             _logger.Debug($"Attempting to load library for {step.Function.FunctionName} in {step.Function.AssemblyName}");
-            PluginManager.LoadPlugin(step.Function.AssemblyName);
+            PluginManager.LoadPlugin(step.Function.AssemblyName, _provider);
         }
 
         private void InitialiseFunction(Step step)

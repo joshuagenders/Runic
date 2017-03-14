@@ -25,9 +25,10 @@ namespace Runic.Agent.UnitTest
                 Steps = null
             };
 
-            Flows.AddUpdateFlow(inputFlow);
-            Flows.AddUpdateFlow(updatedInput);
-            var flow = Flows.GetFlow("Test");
+            var flows = new Flows();
+            flows.AddUpdateFlow(inputFlow);
+            flows.AddUpdateFlow(updatedInput);
+            var flow = flows.GetFlow("Test");
             Assert.AreEqual("Test", flow.Name);
             Assert.IsNull(flow.Steps);
         }
@@ -36,8 +37,9 @@ namespace Runic.Agent.UnitTest
         public void TestStoreAndGet()
         {
             var inputFlow = new Flow { Name = "Test" };
-            Flows.AddUpdateFlow(inputFlow);
-            var flow = Flows.GetFlow("Test");
+            var flows = new Flows();
+            flows.AddUpdateFlow(inputFlow);
+            var flow = flows.GetFlow("Test");
             Assert.AreEqual(inputFlow, flow);
             Assert.AreEqual("Test", flow.Name);
         }

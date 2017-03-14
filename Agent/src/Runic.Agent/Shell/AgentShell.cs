@@ -9,6 +9,7 @@ using Runic.Agent.AssemblyManagement;
 using Runic.Agent.Service;
 using Runic.Framework.Models;
 using static Runic.Agent.Shell.AgentShell.ReturnCodes;
+using System.IO;
 
 namespace Runic.Agent.Shell
 {
@@ -125,7 +126,10 @@ namespace Runic.Agent.Shell
 
         private async Task LoadPlugin(string pluginKey, CancellationToken ct)
         {
-            await Task.Run(() => PluginManager.LoadPlugin(pluginKey), ct);
+            await Task.Run(() => 
+                PluginManager.LoadPlugin(
+                    pluginKey, 
+                    new FilePluginProvider(Directory.GetCurrentDirectory())), ct);
         }
 
         private async Task<int> SetThreadLevel(string flowName, int threadCount, CancellationToken ct)

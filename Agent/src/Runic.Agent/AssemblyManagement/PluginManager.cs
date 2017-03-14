@@ -10,6 +10,7 @@ using StatsN;
 using Runic.Framework.Clients;
 using Runic.Framework.Attributes;
 using Runic.Framework.Models;
+using Runic.Agent.Metrics;
 
 namespace Runic.Agent.AssemblyManagement
 {
@@ -18,7 +19,9 @@ namespace Runic.Agent.AssemblyManagement
         private static readonly Logger _logger = LogManager.GetLogger("Runic.Agent.AssemblyManagement.PluginManager");
         private static ConcurrentBag<Assembly> _assemblies = new ConcurrentBag<Assembly>();
         private static ConcurrentDictionary<string, bool> _assembliesLoaded = new ConcurrentDictionary<string, bool>();
-        
+        private static IRuneClient _runeClient { get; set; }
+
+
         public static List<Assembly> GetAssemblies()
         {
             List<Assembly> assemblyList;
@@ -29,12 +32,13 @@ namespace Runic.Agent.AssemblyManagement
             return assemblyList;
         }
 
-        public static void LoadPlugin(string pluginAssemblyName, IPluginProvider provider = null)
+        public static void RegisterRuneClient(IRuneClient runeClient)
         {
-            //todo use a better pattern for di
-            if (provider == null)
-                provider = IoC.Container.Resolve<IPluginProvider>();
+            _runeClient = runeClient;
+        }
 
+        public static void LoadPlugin(string pluginAssemblyName, IPluginProvider provider)
+        {
             _logger.Debug($"Loading plugin {pluginAssemblyName}");
             bool loaded;
             lock (_assembliesLoaded)
@@ -48,16 +52,14 @@ namespace Runic.Agent.AssemblyManagement
             var pluginPath = provider.GetFilepath(pluginAssemblyName);
             _logger.Debug($"Plugin path {pluginPath}");
 
-            Assembly assembly = null;
-            LoadAssemblies(pluginPath, pluginAssemblyName);
+            Assembly assembly = LoadAssembly(pluginPath, pluginAssemblyName);
             
             PopulateStaticInterfaces(assembly);
 
-            var statsd = IoC.Container?.Resolve<IStatsd>();
-            statsd?.Count("plugins.pluginLoaded");
+            Clients.Statsd?.Count("plugins.pluginLoaded");
         }
 
-        public static void LoadAssemblies(string pluginPath, string pluginAssemblyName)
+        public static Assembly LoadAssembly(string pluginPath, string pluginAssemblyName)
         {
             Assembly assembly = null;
             lock (_assemblies)
@@ -69,7 +71,7 @@ namespace Runic.Agent.AssemblyManagement
             {
                 _assembliesLoaded[pluginAssemblyName] = true;
             }
-
+            return assembly;
             //foreach (var refAssembly in assembly.GetReferencedAssemblies())
             //{
             //    assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(pluginPath);
@@ -111,19 +113,17 @@ namespace Runic.Agent.AssemblyManagement
 
         private static void PopulateStaticInterfaces(Assembly assembly)
         {
-            var statsd = IoC.Container?.Resolve<IStatsd>();
-            var runeClient = IoC.Container?.Resolve<IRuneClient>();
             //todo fix
-            //foreach (var type in assembly.DefinedTypes)
-            //{
-            //    var staticFields = type.GetFields(BindingFlags.Static | BindingFlags.Public);
-            //    staticFields.Where(f => f.GetType() == typeof(IStatsd))
-            //                .ToList()
-            //                .ForEach(f => f.SetValue(type, statsd));
-            //    staticFields.Where(f => f.GetType() == typeof(IRuneClient))
-            //                .ToList()
-            //                .ForEach(f => f.SetValue(type, runeClient));
-            //}
+            foreach (var type in assembly.DefinedTypes)
+            {
+                var staticFields = type.GetFields(BindingFlags.Static | BindingFlags.Public);
+                staticFields.Where(f => f.GetType() == typeof(IStatsd))
+                            .ToList()
+                            .ForEach(f => f.SetValue(type, Clients.Statsd));
+                staticFields.Where(f => f.GetType() == typeof(IRuneClient))
+                            .ToList()
+                            .ForEach(f => f.SetValue(type, _runeClient));
+            }
         }
 
         public static Type GetClassType(string className)

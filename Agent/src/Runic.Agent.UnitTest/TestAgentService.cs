@@ -7,12 +7,19 @@ using Runic.Agent.FlowManagement;
 using Runic.Agent.Service;
 using Runic.Framework.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Runic.Agent.Harness;
+using System.IO;
+using Runic.Agent.AssemblyManagement;
 
 namespace Runic.Agent.UnitTest
 {
     [TestClass]
     public class TestAgentService
     {
+        //bad hack because nunit 3 doesn't work yet and mstest doesnt set cwd to deployment dir
+        // and mstestv2 test context has removed the deployment metadata
+        private const string wd = "C:\\code\\Runic\\Agent\\src\\Runic.Agent.UnitTest\\bin\\Debug\\netcoreapp1.0";
+        
         [TestMethod]
         public void TestStartThread()
         {
@@ -26,9 +33,10 @@ namespace Runic.Agent.UnitTest
                 "Statsd:Prefix=Runic.Stats."
             };
             AgentConfiguration.LoadConfiguration(cli);
-            IoC.RegisterDependencies(new Startup());
+            var container = new Startup().RegisterDependencies();
 
-            Flows.AddUpdateFlow(new Flow()
+            var flows = new Flows();
+            flows.AddUpdateFlow(new Flow()
             {
                 Name = "FakeFlow",
                 StepDelayMilliseconds = 200,
@@ -46,11 +54,12 @@ namespace Runic.Agent.UnitTest
                 }
             });
 
-            var agent = new AgentService();
+            var agent = new AgentService(new FilePluginProvider(wd));
+
             agent.StartFlow(new FlowContext()
             {
                 FlowName = "FakeFlow",
-                Flow = Flows.GetFlow("FakeFlow"),
+                Flow = flows.GetFlow("FakeFlow"),
                 ThreadCount = 1
             });
 
@@ -70,12 +79,12 @@ namespace Runic.Agent.UnitTest
                 "Statsd:Prefix=Runic.Stats."
             };
             AgentConfiguration.LoadConfiguration(cli);
-            IoC.RegisterDependencies(new Startup());
-
-            var agent = new AgentService();
+            var container = new Startup().RegisterDependencies();
+            var agent = new AgentService(new FilePluginProvider(wd));
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
-            Flows.AddUpdateFlow(new Flow()
+            
+            agent.Flows.AddUpdateFlow(new Flow()
             {
                 Name = "FakeFlow",
                 StepDelayMilliseconds = 200,
@@ -126,8 +135,7 @@ namespace Runic.Agent.UnitTest
                 "Statsd:Prefix=Runic.Stats."
             };
             AgentConfiguration.LoadConfiguration(cli);
-            IoC.RegisterDependencies(new Startup());
-
+            var container = new Startup().RegisterDependencies();
             var executionContext = new Service.ExecutionContext();
             Assert.IsTrue(executionContext.MaxThreadCount > 0);
         }
