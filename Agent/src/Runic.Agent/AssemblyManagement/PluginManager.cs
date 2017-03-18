@@ -71,11 +71,6 @@ namespace Runic.Agent.AssemblyManagement
                 _assembliesLoaded[pluginAssemblyName] = true;
             }
             return assembly;
-            
-            //foreach (var refAssembly in assembly.GetReferencedAssemblies())
-            //{
-            //    assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(pluginPath);
-            //}
         }
 
         public static void ClearAssemblies()
