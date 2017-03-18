@@ -6,25 +6,17 @@ using System.Threading.Tasks;
 using Runic.Agent.AssemblyManagement;
 using Runic.Agent.Service;
 using Runic.Framework.Models;
-using static Runic.Agent.Shell.AgentShell.ReturnCodes;
 using System.IO;
 
 namespace Runic.Agent.Shell
 {
     public class AgentShell
     {
-        public enum ReturnCodes
-        {
-            SUCCESS = 0,
-            EXIT_ERROR = 1,
-            EXIT_SUCCESS = 2
-        }
-
-        private Dictionary<string, Func<string[], Task<int>>> _handlers { get; set; }
+        private Dictionary<string, Func<string[], Task>> _handlers { get; set; }
         private bool _return { get; set; }
         private IAgentService _agentService { get; }
         private CancellationToken _cancellationToken { get; set; }
-
+        
         public AgentShell(IAgentService agentService)
         {
             _return = false;
@@ -48,13 +40,11 @@ namespace Runic.Agent.Shell
                 {
                     string[] input = Console.ReadLine().Split();
                     if (!input.Any()) continue;
+                    if (input[0] == "exit") return;
+
                     if (_handlers.ContainsKey(input[0]))
                     {
-                        var result = await _handlers[input[0]](input);
-                        if (result == (int)EXIT_SUCCESS || result == (int)EXIT_ERROR)
-                        {
-                            return;
-                        }
+                        await _handlers[input[0]](input);
                     }
                     else
                     {
@@ -70,7 +60,7 @@ namespace Runic.Agent.Shell
 
         private void RegisterHandlers()
         {
-            _handlers = new Dictionary<string, Func<string[], Task<int>>>()
+            _handlers = new Dictionary<string, Func<string[], Task>>()
             {
                 {
                     "setthread", async (input) =>
@@ -82,7 +72,7 @@ namespace Runic.Agent.Shell
                             await LoadPlugin(vals["pluginkey"], _cancellationToken);
                         }
 
-                        return await SetThreadLevel(vals["flow"], int.Parse(vals["threadcount"]),_cancellationToken);
+                        await SetThreadLevel(vals["flow"], int.Parse(vals["threadcount"]),_cancellationToken);
                     }
                 },
                 {
@@ -90,7 +80,6 @@ namespace Runic.Agent.Shell
                     {
                         var vals = input.FromKeywordToDictionary();
                         await LoadPlugin(vals["pluginkey"], _cancellationToken);
-                        return (int) SUCCESS;
                     }
                 },
                 {
@@ -109,14 +98,6 @@ namespace Runic.Agent.Shell
                             Console.WriteLine("exit - Stop all threads and exit the agent");
                             
                         }, _cancellationToken);
-                        return (int)SUCCESS;
-                    }
-                },
-                {
-                    "exit", async (input) => 
-                    {
-                        await Task.Run(() => _return = true);
-                        return (int) EXIT_SUCCESS;
                     }
                 }
             };
@@ -130,14 +111,13 @@ namespace Runic.Agent.Shell
                     new FilePluginProvider(Directory.GetCurrentDirectory())), ct);
         }
 
-        private async Task<int> SetThreadLevel(string flowName, int threadCount, CancellationToken ct)
+        private async Task SetThreadLevel(string flowName, int threadCount, CancellationToken ct)
         {
             await _agentService.SetThreadLevel(new SetThreadLevelRequest()
             {
                 FlowName = flowName,
                 ThreadLevel = threadCount
             }, ct);
-            return (int)SUCCESS;
         }
     }
 }

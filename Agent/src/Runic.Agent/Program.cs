@@ -34,7 +34,7 @@ namespace Runic.Agent
                 cts.CancelAfter(int.MaxValue);
             }
             
-            Task.Run(() => new Program().Execute(args, container, cts.Token), cts.Token).ContinueWith(t =>
+            Task.Run(() => new Program().Execute(container, cts.Token), cts.Token).ContinueWith(t =>
             {
                 if (t.Exception != null)
                 {
@@ -50,7 +50,7 @@ namespace Runic.Agent
         }
 
        
-        private async Task Execute(string[] args, IContainer container, CancellationToken ct)
+        private async Task Execute(IContainer container, CancellationToken ct)
         {
             // resolve ioc
             var pluginProvider = container.Resolve<IPluginProvider>();

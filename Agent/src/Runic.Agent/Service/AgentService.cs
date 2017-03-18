@@ -53,14 +53,14 @@ namespace Runic.Agent.Service
             flowContext.CancellationToken = _ct;
         }
 
-        public int? GetThreadLevel(string flow)
+        public int GetThreadLevel(string flow)
         {
             FlowContext context;
             if (_executionContext.FlowContexts.TryGetValue(flow, out context))
             {
                 return context.ThreadCount;
             }
-            return null;
+            return 0;
         }
 
         public async Task SetThreadLevel(SetThreadLevelRequest request, CancellationToken ct = default(CancellationToken))

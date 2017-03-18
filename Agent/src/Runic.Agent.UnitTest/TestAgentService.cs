@@ -108,7 +108,7 @@ namespace Runic.Agent.UnitTest
                 ThreadLevel = 1
             }, cts.Token);
 
-            Thread.Sleep(50);
+            Thread.Sleep(80);
             Assert.AreEqual(1, agent.GetThreadLevel("FakeFlow"));
 
             try
