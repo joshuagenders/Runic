@@ -3,6 +3,7 @@ using Runic.Agent.AssemblyManagement;
 using Runic.Framework.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Runic.Agent.Harness
 {
@@ -12,12 +13,12 @@ namespace Runic.Agent.Harness
 
         private Flow _flow { get; set; }
         private Dictionary<string, object> _assemblies { get; set; }
-        private int _lastStep { get; set; }
+        private string _lastStep { get; set; }
 
         public FlowNavigator(Flow flow)
         {
             _flow = flow;
-            _lastStep = 0;
+            _lastStep = String.Empty;
         }
 
         public FunctionHarness GetNextFunction()
@@ -25,15 +26,17 @@ namespace Runic.Agent.Harness
             return CreateFunction(GetNextStep());
         }
 
-        private Step GetNextStep()
+        private Step GetNextStep(bool lastStepResultSuccess = true)
         {
-            _lastStep++;
-            if (_flow.Steps.Count > _lastStep)
+            if (string.IsNullOrEmpty(_lastStep))
+                return _flow.Steps[0];
+
+            var lastStep = _flow.Steps.Where(s => s.StepName == _lastStep).Single();
+            if (!lastStepResultSuccess)
             {
-                _lastStep = 0;
+                return _flow.Steps.Where(s => s.StepName == lastStep.NextStepOnFailure).Single();
             }
-            var step = _flow.Steps[_lastStep];
-            return step;
+            return _flow.Steps.Where(s => s.StepName == lastStep.NextStepOnSuccess).Single();
         }
 
         public FunctionHarness CreateFunction(Step step)

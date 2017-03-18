@@ -44,12 +44,15 @@ namespace Runic.Agent.UnitTest
                 {
                     new Step()
                     {
+                        StepName = "Step1", 
                         Function = new FunctionInformation()
                         {
                             AssemblyName = "ExampleTest",
                             AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.FakeFunction",
                             FunctionName = "FakeFunction"
-                        }
+                        },
+                        NextStepOnFailure = "Step1",
+                        NextStepOnSuccess = "Step1"
                     }
                 }
             });
@@ -84,23 +87,27 @@ namespace Runic.Agent.UnitTest
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
             
-            agent.Flows.AddUpdateFlow(new Flow()
-            {
-                Name = "FakeFlow",
-                StepDelayMilliseconds = 200,
-                Steps = new List<Step>()
+            agent.Flows.AddUpdateFlow(
+                new Flow()
                 {
-                    new Step()
+                    Name = "FakeFlow",
+                    StepDelayMilliseconds = 200,
+                    Steps = new List<Step>()
                     {
-                        Function = new FunctionInformation()
+                        new Step()
                         {
-                            AssemblyName = "ExampleTest",
-                            AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.FakeFunction",
-                            FunctionName = "FakeFunction"
+                            StepName = "Step1",
+                            Function = new FunctionInformation()
+                            {
+                                AssemblyName = "ExampleTest",
+                                AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.FakeFunction",
+                                FunctionName = "FakeFunction"
+                            },
+                            NextStepOnFailure = "Step1",
+                            NextStepOnSuccess = "Step1"
                         }
                     }
-                }
-            });
+                });
             
             var agentTask = agent.SetThreadLevel(new SetThreadLevelRequest()
             {
