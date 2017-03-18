@@ -18,9 +18,10 @@ namespace Runic.Agent.Harness
         {
             var navigator = new FlowNavigator(flow);
             FunctionHarness function = null;
+            bool lastStepSuccess = false;
             while (!ctx.IsCancellationRequested)
             {
-                function = navigator.GetNextFunction();
+                function = navigator.GetNextFunction(lastStepSuccess);
                 //execute with function harness
                 
                 Thread.Sleep(flow.StepDelayMilliseconds);
@@ -28,9 +29,18 @@ namespace Runic.Agent.Harness
                 try
                 {
                     await function.Execute(ctx);
+                    if (function.Status == "Complete")
+                    {  
+                        lastStepSuccess = true;
+                    }
+                    else
+                    { 
+                        lastStepSuccess = false;
+                    }
                 }
                 catch (Exception e)
                 {
+                    lastStepSuccess = false;
                     _logger.Error(e);
                 }
             }

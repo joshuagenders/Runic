@@ -13,11 +13,12 @@ namespace Runic.Agent.Harness
         private object _instance { get; set; }
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private string _functionName { get; set; }
-
+        public string Status { get; set; }
         public void Bind(object functionInstance, string functionName)
         {
             _instance = functionInstance;
             _functionName = functionName;
+            Status = "FunctionBound";
         }
 
         public async Task Execute(CancellationToken ctx = default(CancellationToken))
@@ -33,6 +34,7 @@ namespace Runic.Agent.Harness
             }
             catch (Exception e)
             {
+                Status = "Failure";
                 _logger.Error($"Error executing {_functionName}");
                 _logger.Error(e);
                 Clients.Statsd?.Count($"functions.{_functionName}.actions.execute.error");
@@ -43,6 +45,7 @@ namespace Runic.Agent.Harness
 
         private async Task ExecuteFunction()
         {
+            Status = "ExecuteFunction";
             var methods = _instance.GetType().GetRuntimeMethods();
             foreach (var method in methods)
             {
@@ -65,6 +68,7 @@ namespace Runic.Agent.Harness
 
         private async Task BeforeEach(CancellationToken ctx = default(CancellationToken))
         {
+            Status = "BeforeEach";
             try
             {
                 await ExecuteMethodWithAttribute(typeof(BeforeEachAttribute));
@@ -82,9 +86,11 @@ namespace Runic.Agent.Harness
 
         private async Task AfterEach(CancellationToken ctx = default(CancellationToken))
         {
+            Status = "AfterEach";
             try
             {
                 await ExecuteMethodWithAttribute(typeof(AfterEachAttribute));
+                Status = "Complete";
                 Clients.Statsd?.Count($"functions.{_functionName}.actions.afterEach.success");
                 if (ctx.IsCancellationRequested)
                     return;

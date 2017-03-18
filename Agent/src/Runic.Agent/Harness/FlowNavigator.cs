@@ -21,12 +21,12 @@ namespace Runic.Agent.Harness
             _lastStep = String.Empty;
         }
 
-        public FunctionHarness GetNextFunction()
+        public FunctionHarness GetNextFunction(bool lastStepSuccess)
         {
-            return CreateFunction(GetNextStep());
+            return CreateFunction(GetNextStep(lastStepSuccess));
         }
 
-        private Step GetNextStep(bool lastStepResultSuccess = true)
+        private Step GetNextStep(bool lastStepResultSuccess)
         {
             if (string.IsNullOrEmpty(_lastStep))
                 return _flow.Steps[0];
