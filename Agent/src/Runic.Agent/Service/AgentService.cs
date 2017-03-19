@@ -13,7 +13,6 @@ namespace Runic.Agent.Service
     {
         private IMessagingService _messagingService { get; }
         private ExecutionContext _executionContext { get; set; }
-        private CancellationToken _ct { get; set; }
         private FlowHarness _flowHarness { get; set; }
         private readonly Flows _flows;
         private readonly PluginManager _pluginManager;
@@ -38,7 +37,6 @@ namespace Runic.Agent.Service
 
         public async Task Run(IMessagingService messagingService, CancellationToken ct = default(CancellationToken))
         {
-            _ct = ct;
             RegisterHandlers(messagingService, ct);
 
             //wait for cancellation
@@ -47,15 +45,15 @@ namespace Runic.Agent.Service
                 var mre = new ManualResetEventSlim(false);
                 ct.Register(() => mre.Set());
                 mre.Wait();
-            });
+            }, ct);
         }
 
-        public void StartFlow(FlowContext flowContext)
+        public void StartFlow(FlowContext flowContext, CancellationToken ct = default(CancellationToken))
         {
             _logger.Debug($"Starting flow {flowContext.FlowName} at {flowContext.ThreadCount} threads");
             _executionContext.FlowContexts.Add(flowContext.FlowName, flowContext);
-            flowContext.Task = _flowHarness.Execute(flowContext.Flow, flowContext.ThreadCount, _ct);
-            flowContext.CancellationToken = _ct;
+            flowContext.Task = _flowHarness.Execute(flowContext.Flow, flowContext.ThreadCount, ct);
+            flowContext.CancellationToken = ct;
         }
 
         public int GetThreadLevel(string flow)
