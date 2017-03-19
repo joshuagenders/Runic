@@ -75,7 +75,7 @@
   },
   "refresh": "5s",
   "schemaVersion": 13,
-  "version": 10,
+  "version": 12,
   "links": [],
   "gnetId": null,
   "rows": [
@@ -157,7 +157,7 @@
         },
         {
           "aliasColors": {},
-          "bars": false,
+          "bars": true,
           "datasource": "${DS_LOCAL_GRAPHITE}",
           "editable": true,
           "error": false,
@@ -172,7 +172,7 @@
             "total": false,
             "values": false
           },
-          "lines": true,
+          "lines": false,
           "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
@@ -229,7 +229,7 @@
         },
         {
           "id": 4,
-          "title": "Functions",
+          "title": "Functions by Action",
           "error": false,
           "span": 4,
           "editable": true,
@@ -312,7 +312,7 @@
         },
         {
           "aliasColors": {},
-          "bars": false,
+          "bars": true,
           "datasource": "${DS_LOCAL_GRAPHITE}",
           "editable": true,
           "error": false,
@@ -327,7 +327,7 @@
             "total": false,
             "values": false
           },
-          "lines": true,
+          "lines": false,
           "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
@@ -382,6 +382,78 @@
             }
           ],
           "decimals": 0
+        },
+        {
+          "id": 5,
+          "title": "Functions Executed",
+          "error": false,
+          "span": 8,
+          "editable": true,
+          "type": "graph",
+          "targets": [
+            {
+              "target": "stats.counters.Runic.Stats.functions.*.actions.execute.success.count",
+              "refId": "A",
+              "textEditor": false
+            }
+          ],
+          "datasource": "${DS_LOCAL_GRAPHITE}",
+          "renderer": "flot",
+          "yaxes": [
+            {
+              "label": null,
+              "show": true,
+              "logBase": 1,
+              "min": null,
+              "max": null,
+              "format": "short"
+            },
+            {
+              "label": null,
+              "show": true,
+              "logBase": 1,
+              "min": null,
+              "max": null,
+              "format": "short"
+            }
+          ],
+          "xaxis": {
+            "show": true,
+            "mode": "time",
+            "name": null,
+            "values": []
+          },
+          "lines": false,
+          "fill": 1,
+          "linewidth": 1,
+          "points": false,
+          "pointradius": 5,
+          "bars": true,
+          "stack": true,
+          "percentage": false,
+          "legend": {
+            "show": true,
+            "values": false,
+            "min": false,
+            "max": false,
+            "current": false,
+            "total": false,
+            "avg": false
+          },
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "individual",
+            "shared": true,
+            "sort": 1,
+            "msResolution": false
+          },
+          "timeFrom": null,
+          "timeShift": null,
+          "aliasColors": {},
+          "seriesOverrides": [],
+          "thresholds": [],
+          "links": []
         }
       ],
       "showTitle": false,
