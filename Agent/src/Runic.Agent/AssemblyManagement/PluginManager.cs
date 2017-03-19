@@ -103,12 +103,16 @@ namespace Runic.Agent.AssemblyManagement
                         var attribute = method.GetCustomAttribute<FunctionAttribute>();
                         if (attribute != null)
                         {
-                            // todo add params and runes
                             functions.Add(new FunctionInformation()
                             {
                                 AssemblyName = assembly.FullName,
                                 AssemblyQualifiedClassName = type.FullName,
-                                FunctionName = attribute.Name
+                                FunctionName = attribute.Name,
+                                Parameters = method.GetParameters()
+                                                    .ToDictionary(p=> p.Name, p => p.ParameterType),
+                                RequiredRunes = method.GetCustomAttributes<RequiresRunesAttribute>()
+                                                     ?.SelectMany(s => s.Runes)
+                                                      .ToList()
                             });
                         }
                     }
@@ -119,7 +123,6 @@ namespace Runic.Agent.AssemblyManagement
 
         private void PopulateStaticInterfaces(Assembly assembly)
         {
-            //todo fix
             foreach (var type in assembly.DefinedTypes)
             {
                 var staticFields = type.GetFields(BindingFlags.Static | BindingFlags.Public);

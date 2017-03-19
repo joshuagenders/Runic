@@ -40,11 +40,14 @@ namespace Runic.Agent.Service
         {
             _ct = ct;
             RegisterHandlers(messagingService, ct);
-            //todo use better pattern
-            while (!ct.IsCancellationRequested)
+
+            //wait for cancellation
+            await Task.Run(() => 
             {
-                await Task.Run(() => Thread.Sleep(5000), ct);
-            }
+                var mre = new ManualResetEventSlim(false);
+                ct.Register(() => mre.Set());
+                mre.Wait();
+            });
         }
 
         public void StartFlow(FlowContext flowContext)

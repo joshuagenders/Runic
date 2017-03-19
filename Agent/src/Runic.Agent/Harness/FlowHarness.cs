@@ -116,7 +116,11 @@ namespace Runic.Agent.Harness
         public async Task UpdateThreads(int threadCount, CancellationToken ctx = default(CancellationToken))
         {
             _logger.Debug($"Updating threads for {_flow.Name} from {GetRunningThreadCount()} to {threadCount}");
-            //todo if < > ==
+            //todo if < > (dont cancel all)
+            if (threadCount == _threadCount)
+            {
+                return;
+            }
             await Task.Run(() => RestartThreads(threadCount), ctx);
         }
 
