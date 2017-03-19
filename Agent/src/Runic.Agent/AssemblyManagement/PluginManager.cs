@@ -10,6 +10,7 @@ using Runic.Framework.Clients;
 using Runic.Framework.Attributes;
 using Runic.Framework.Models;
 using Runic.Agent.Metrics;
+using System.IO;
 
 namespace Runic.Agent.AssemblyManagement
 {
@@ -60,6 +61,11 @@ namespace Runic.Agent.AssemblyManagement
             _provider.RetrieveSourceDll(pluginAssemblyName);
             var pluginPath = _provider.GetFilepath(pluginAssemblyName);
             _logger.Debug($"Plugin path {pluginPath}");
+            if (!File.Exists(pluginPath))
+            {
+                Console.WriteLine($"Could not find file {pluginPath}");
+                return;
+            }
 
             Assembly assembly = LoadAssembly(pluginPath, pluginAssemblyName);
             
