@@ -33,7 +33,10 @@ namespace Runic.Agent.UnitTest
             AgentConfiguration.LoadConfiguration(cli);
             var container = new Startup().RegisterDependencies();
 
-            var harness = new FlowHarness(new FilePluginProvider(wd));
+            var pluginManager = new PluginManager();
+            pluginManager.RegisterProvider(new FilePluginProvider(wd));
+            var harness = new FlowHarness(pluginManager);
+
             var flow = new Flow()
             {
                 Name = "ExampleFlow",

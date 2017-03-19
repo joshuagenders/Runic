@@ -24,7 +24,7 @@ namespace Runic.Agent.Service
         public AgentService(PluginManager pluginManager, Flows flows)
         {
             _executionContext = new ExecutionContext();
-            _flowHarness = new FlowHarness();
+            _flowHarness = new FlowHarness(pluginManager);
             _flows = flows;
             _pluginManager = pluginManager;
         }

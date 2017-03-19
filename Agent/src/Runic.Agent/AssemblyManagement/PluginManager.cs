@@ -19,6 +19,7 @@ namespace Runic.Agent.AssemblyManagement
         private ConcurrentBag<Assembly> _assemblies = new ConcurrentBag<Assembly>();
         private ConcurrentDictionary<string, bool> _assembliesLoaded = new ConcurrentDictionary<string, bool>();
         private IRuneClient _runeClient { get; set; }
+        private IPluginProvider _provider { get; set; }
 
         public List<Assembly> GetAssemblies()
         {
@@ -40,7 +41,12 @@ namespace Runic.Agent.AssemblyManagement
             _runeClient = runeClient;
         }
 
-        public void LoadPlugin(string pluginAssemblyName, IPluginProvider provider)
+        public void RegisterProvider(IPluginProvider provider)
+        {
+            _provider = provider;
+        }
+
+        public void LoadPlugin(string pluginAssemblyName)
         {
             _logger.Debug($"Loading plugin {pluginAssemblyName}");
             bool loaded;
@@ -51,8 +57,8 @@ namespace Runic.Agent.AssemblyManagement
             if (loaded)
                 return;            
 
-            provider.RetrieveSourceDll(pluginAssemblyName);
-            var pluginPath = provider.GetFilepath(pluginAssemblyName);
+            _provider.RetrieveSourceDll(pluginAssemblyName);
+            var pluginPath = _provider.GetFilepath(pluginAssemblyName);
             _logger.Debug($"Plugin path {pluginPath}");
 
             Assembly assembly = LoadAssembly(pluginPath, pluginAssemblyName);

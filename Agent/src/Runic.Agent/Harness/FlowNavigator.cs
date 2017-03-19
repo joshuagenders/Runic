@@ -14,11 +14,13 @@ namespace Runic.Agent.Harness
         private Flow _flow { get; set; }
         private Dictionary<string, object> _assemblies { get; set; }
         private string _lastStep { get; set; }
+        private readonly PluginManager _pluginManager;
 
-        public FlowNavigator(Flow flow)
+        public FlowNavigator(Flow flow, PluginManager pluginManager)
         {
             _flow = flow;
             _lastStep = String.Empty;
+            _pluginManager = pluginManager;
         }
 
         public FunctionHarness GetNextFunction(bool lastStepSuccess)
@@ -44,7 +46,7 @@ namespace Runic.Agent.Harness
             _logger.Debug($"Initialising {step.Function.FunctionName} in {step.Function.AssemblyName}");
             _logger.Debug($"Retrieving function type");
 
-            var type = PluginManager.GetFunctionType(step.Function.FunctionName);
+            var type = _pluginManager.GetFunctionType(step.Function.FunctionName);
             if (type == null)
                 throw new FunctionTypeNotFoundException();
 

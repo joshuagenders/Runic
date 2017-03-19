@@ -57,13 +57,16 @@ namespace Runic.Agent
             var pluginProvider = container.Resolve<IPluginProvider>();
             var messagingService = container.Resolve<IMessagingService>();
             var flows = container.Resolve<Flows>();
+            var pluginManager = container.Resolve<PluginManager>();
+            pluginManager.RegisterProvider(pluginProvider);
+
             // start agent
-            var agentService = new AgentService(pluginProvider, flows);
+            var agentService = new AgentService(pluginManager, flows);
             var serviceCts = new CancellationTokenSource();
             var agentTask = agentService.Run(messagingService, ct: serviceCts.Token);
 
             // start shell
-            var shell = new AgentShell(agentService);
+            var shell = new AgentShell(agentService, flows, pluginManager);
             var cmdTask = shell.ProcessCommands(ct).ContinueWith(result =>
             {
                 // cancel agent when shell exits

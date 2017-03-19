@@ -195,10 +195,7 @@ namespace Runic.Agent.Shell
 
         private async Task LoadPlugin(string pluginKey, CancellationToken ct)
         {
-            await Task.Run(() => 
-                _pluginManager.LoadPlugin(
-                    pluginKey, 
-                    new FilePluginProvider(Directory.GetCurrentDirectory())), ct);
+            await Task.Run(() => _pluginManager.LoadPlugin(pluginKey));
         }
 
         private async Task SetThreadLevel(string flowName, int threadCount, CancellationToken ct)

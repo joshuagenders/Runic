@@ -1,4 +1,5 @@
 ﻿using NLog;
+using Runic.Agent.AssemblyManagement;
 using Runic.Framework.Models;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,17 @@ namespace Runic.Agent.Harness
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private Dictionary<string, Assembly> _assemblies { get; set; }
+        private readonly PluginManager _pluginManager;
+        private readonly Flow _flow;
 
-        public async Task ExecuteFlow(Flow flow, CancellationToken ctx = default(CancellationToken))
+        public FlowExecutor(Flow flow, PluginManager pluginManager)
         {
-            var navigator = new FlowNavigator(flow);
+            _pluginManager = pluginManager;
+            _flow = flow;
+        }
+        public async Task ExecuteFlow(CancellationToken ctx = default(CancellationToken))
+        {
+            var navigator = new FlowNavigator(_flow, _pluginManager);
             FunctionHarness function = null;
             bool lastStepSuccess = false;
             while (!ctx.IsCancellationRequested)
@@ -24,8 +32,8 @@ namespace Runic.Agent.Harness
                 function = navigator.GetNextFunction(lastStepSuccess);
                 //execute with function harness
                 
-                Thread.Sleep(flow.StepDelayMilliseconds);
-                _logger.Debug($"Executing step for {flow.Name}");
+                Thread.Sleep(_flow.StepDelayMilliseconds);
+                _logger.Debug($"Executing step for {_flow.Name}");
                 try
                 {
                     await function.Execute(ctx);

@@ -8,15 +8,21 @@ namespace Runic.Agent.Harness
     public class FlowInitialiser
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly PluginManager _pluginManager;
 
-        public void InitialiseFlow(Flow flow, IPluginProvider provider)
+        public FlowInitialiser(PluginManager pluginManager)
+        {
+            _pluginManager = pluginManager;
+        }
+
+        public void InitialiseFlow(Flow flow)
         {
             foreach (var step in flow.Steps)
             {
                 try
                 {
                     //load the library if needed
-                    LoadLibrary(step, provider);
+                    LoadLibrary(step);
                 }
                 catch (Exception e)
                 {
@@ -26,10 +32,10 @@ namespace Runic.Agent.Harness
             }
         }
 
-        private void LoadLibrary(Step step, IPluginProvider provider)
+        private void LoadLibrary(Step step)
         {
             _logger.Debug($"Attempting to load library for {step.Function.FunctionName} in {step.Function.AssemblyName}");
-            PluginManager.LoadPlugin(step.Function.AssemblyName, provider);
+            _pluginManager.LoadPlugin(step.Function.AssemblyName);
         }
     }
 }

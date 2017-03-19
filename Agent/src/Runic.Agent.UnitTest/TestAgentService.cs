@@ -57,7 +57,7 @@ namespace Runic.Agent.UnitTest
                 }
             });
 
-            var agent = new AgentService(new FilePluginProvider(wd), new Flows());
+            var agent = new AgentService(new PluginManager(), new Flows());
 
             agent.StartFlow(new FlowContext()
             {
@@ -107,7 +107,7 @@ namespace Runic.Agent.UnitTest
                     }
                 });
 
-            var agent = new AgentService(new FilePluginProvider(wd), flows);
+            var agent = new AgentService(new PluginManager(), flows);
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
 

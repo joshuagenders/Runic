@@ -21,11 +21,12 @@ namespace Runic.Agent.Harness
         private ConcurrentBag<Task> _trackedTasks { get; set; }
         private List<CancellationTokenSource> _cancellationSources { get; set; }
 
-        private IPluginProvider _provider { get; set; }
+        private readonly PluginManager _pluginManager;
 
-        public FlowHarness()
+        public FlowHarness(PluginManager pluginManager)
         {
             InstantiateCollections();
+            _pluginManager = pluginManager;
         }
 
         public void InstantiateCollections()
@@ -55,7 +56,7 @@ namespace Runic.Agent.Harness
                 _cancellationSources.Add(cts);
                 
                 _trackedTasks.Add(
-                    new FlowExecutor().ExecuteFlow(flow, cts.Token).ContinueWith((_) =>
+                    new FlowExecutor(flow, _pluginManager).ExecuteFlow(cts.Token).ContinueWith((_) =>
                     {
                         if (_.Exception != null)
                             _logger.Error(_.Exception);
