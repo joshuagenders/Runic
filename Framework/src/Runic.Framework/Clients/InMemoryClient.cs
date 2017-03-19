@@ -21,9 +21,10 @@ namespace Runic.Framework.Clients
             return await Task.Run(() => _store.Retrieve(query));
         }
 
-        public async void SendRunes<T>(params T[] runes) where T : Rune
+        public async Task SendRunes<T>(params T[] runes) where T : Rune
         {
-            await Task.Run(() => _store.Store(runes.ToList() as List<Rune>));
+            List<Rune> runesList = new List<Rune>(runes);
+            await Task.Run(() => _store.Store(runesList));
         }
     }
 }

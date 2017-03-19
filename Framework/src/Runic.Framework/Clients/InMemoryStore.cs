@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace Runic.Framework.Clients
 {
@@ -19,34 +18,22 @@ namespace Runic.Framework.Clients
 
         public RuneQuery Retrieve(RuneQuery query)
         {
-            lock (Runes)
-            {
+            lock (Runes) {
                 var runes = Runes.Where(r => r.Name == query.RuneName).ToList();
                 List<Rune> filteredRunes = new List<Rune>();
                 if (query.RequiredProperties.Any())
                 {
-                    foreach (var rune in runes)
-                    {
-                        bool hasProperties = true;
-                        foreach (var prop in query.RequiredProperties)
-                        {
-                            if (!rune.GetType()
-                                    .GetProperties(BindingFlags.Public)
-                                    .Where(p => p.Name == prop.Key && p.GetValue(rune).ToString() == prop.Value)
-                                    .Any())
-                            {
-                                hasProperties = false;
-                                break;
-                            }
-                        }
-                        if (hasProperties)
-                            filteredRunes.Add(rune);
-                    }
+                    //todo filter on properties
+                    filteredRunes = runes;
                 }
                 else
                 {
                     filteredRunes = runes;
                 }
+
+                if (!filteredRunes.Any())
+                    return query;
+
                 query.Result = filteredRunes[new Random().Next(0, filteredRunes.Count - 1)];
             }
             return query;
@@ -54,6 +41,9 @@ namespace Runic.Framework.Clients
 
         public void Store(List<Rune> runes)
         {
+            if (runes == null || !runes.Any())
+                return;
+
             lock (Runes) {
                 Runes.AddRange(runes);
                 if (runes.Count > MaxObjects)

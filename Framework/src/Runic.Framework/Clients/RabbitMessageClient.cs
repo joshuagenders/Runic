@@ -12,32 +12,34 @@ namespace Runic.Framework.Clients
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private IBusClient _bus { get; }
         
-        public Task<RuneQuery> RetrieveRunes(RuneQuery queries)
+        public async Task<RuneQuery> RetrieveRunes(RuneQuery queries)
         {
             var request = new RuneQueryRequest()
             {
                 RuneQuery = queries,
                 Id = Guid.NewGuid().ToString("n")
             };
-            var task = _bus.RequestAsync<RuneQueryRequest, RuneQueryResponse>(request);
-            var result = task.ContinueWith(response => response.GetAwaiter().GetResult().RuneQueryResult);
+
+            var result = await _bus.RequestAsync<RuneQueryRequest, RuneQueryResponse>(request);
+
             _logger.Info(
                 new
                 {
                     Message = "query_result",
-                    Result = result
+                    Result = result.RuneQueryResult
                 });
-            return result;
+
+            return result.RuneQueryResult;
         }
 
-        public void SendRunes<T>(params T[] runes) where T : Rune
+        public async Task SendRunes<T>(params T[] runes) where T : Rune
         {
             var request = new RuneStorageRequest<T>
             {
                 Runes = new List<T>(runes)
             };
 
-            _bus.PublishAsync(request);
+            await _bus.PublishAsync(request);
         }
     }
 }

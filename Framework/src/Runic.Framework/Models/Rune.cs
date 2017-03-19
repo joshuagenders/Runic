@@ -6,6 +6,7 @@ namespace Runic.Framework.Models
     {
         public Rune()
         {
+            //todo config
             RuneExpiry = DateTime.Now.AddDays(30);
         }
 

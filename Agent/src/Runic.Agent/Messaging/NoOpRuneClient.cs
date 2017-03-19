@@ -8,11 +8,12 @@ namespace Runic.Agent.Messaging
     {
         public Task<RuneQuery> RetrieveRunes(RuneQuery query)
         {
-            return null;
+            return Task.FromResult(query);
         }
 
-        public void SendRunes<T>(params T[] runes) where T : Rune
+        public Task SendRunes<T>(params T[] runes) where T : Rune
         {
+            return Task.CompletedTask;
         }
     }
 }
