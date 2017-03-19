@@ -20,7 +20,7 @@ namespace Runic.Agent
         {
             AgentConfiguration.LoadConfiguration(args);
             var startup = new Startup();
-            var container = startup.RegisterDependencies();
+            var container = startup.Register();
 
             var cts = new CancellationTokenSource();
             try

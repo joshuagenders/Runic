@@ -36,7 +36,7 @@ namespace Runic.ExampleTest.Functions
             var result = await openAction.TimedExecute("OpenFirstLink");
 
             // store rune
-            RunicIoC.RuneClient.SendRunes(
+            await RunicIoC.RuneClient.SendRunes(
                 new SearchResultsRune()
                 {
                     SearchTerm = firstLink,

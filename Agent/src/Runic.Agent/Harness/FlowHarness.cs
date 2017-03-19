@@ -17,7 +17,7 @@ namespace Runic.Agent.Harness
         private Flow _flow { get; set; }
         private int _threadCount { get; set; }
 
-        private SemaphoreSlim _semaphore { get; set; }
+        private Semaphore _semaphore { get; set; }
         private ConcurrentBag<Task> _trackedTasks { get; set; }
         private List<CancellationTokenSource> _cancellationSources { get; set; }
 
@@ -43,13 +43,13 @@ namespace Runic.Agent.Harness
 
             _flow = flow;
             _threadCount = threadCount;
-            _semaphore = new SemaphoreSlim(_threadCount, _threadCount);
+            _semaphore = new Semaphore(_threadCount,_threadCount);
 
             while (!ctx.IsCancellationRequested && threadCount > 0)
             {
+                _semaphore.WaitOne();
+                Thread.Sleep(400);
                 //get thread permission
-                await _semaphore.WaitAsync(ctx);
-
                 _logger.Debug($"Starting thread for {flow.Name}");
                 Clients.Statsd?.Count($"flows.{flow.Name}.threadStarted");
                 var cts = new CancellationTokenSource();
@@ -66,6 +66,7 @@ namespace Runic.Agent.Harness
                         //free thread
                         _semaphore.Release();
                     }, ctx));
+                
             }
 
             _cancellationSources.ForEach(c => c.Cancel());
@@ -96,10 +97,10 @@ namespace Runic.Agent.Harness
             return _trackedTasks.Count(t => !completedStatuses.Contains(t.Status));
         }
 
-        public int GetSemaphoreCurrentCount()
-        {
-            return _semaphore.CurrentCount;
-        }
+        //public int GetSemaphoreCurrentCount()
+        //{
+        //    return _semaphore.;
+        //}
 
         public Flow GetRunningFlow()
         {
@@ -110,7 +111,7 @@ namespace Runic.Agent.Harness
         {
             CancelAllThreads();
             _threadCount = threadCount;
-            _semaphore = new SemaphoreSlim(_threadCount);
+            _semaphore = new Semaphore(_threadCount, _threadCount);
         }
 
         public async Task UpdateThreads(int threadCount, CancellationToken ctx = default(CancellationToken))

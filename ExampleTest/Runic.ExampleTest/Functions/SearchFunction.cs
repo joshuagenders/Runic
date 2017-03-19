@@ -25,7 +25,7 @@ namespace Runic.ExampleTest.Functions
 
             var result = await searchAction.TimedExecute("Search");
 
-            RunicIoC.RuneClient.SendRunes(
+            await RunicIoC.RuneClient.SendRunes(
                 new SearchResultsRune()
                 {
                     SearchTerm = searchTerm,

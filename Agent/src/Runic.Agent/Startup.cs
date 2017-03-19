@@ -14,35 +14,33 @@ namespace Runic.Agent
 {
     public class Startup : IStartup
     {
-        public IContainer RegisterDependencies()
-        {            
+        public IContainer Register()
+        {
+            var builder = new ContainerBuilder();
+
             IStatsd statsd = Statsd.New<Udp>(options =>
             {
                 options.Port = AgentConfiguration.Instance.StatsdPort;
                 options.HostOrIp = AgentConfiguration.Instance.StatsdHost;
                 options.Prefix = AgentConfiguration.Instance.StatsdPrefix;
-                options.BufferMetrics = true;
+                options.BufferMetrics = false;
             });
             Clients.Statsd = statsd;
 
-            return BuildContainer();
-        }
+            builder.RegisterInstance(new Flows());
+            builder.RegisterInstance(new PluginManager());
 
-        private IContainer BuildContainer()
-        {
-            var builder = new ContainerBuilder();
+            builder.RegisterType<AgentService>().As<IAgentService>();
+            builder.RegisterType<NoOpMessagingService>().As<IMessagingService>();
+            builder.RegisterType<InMemoryClient>().As<IRuneClient>();
             builder.RegisterType<FilePluginProvider>()
                     .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                     .As<IPluginProvider>();
-            builder.RegisterType<AgentService>().As<IAgentService>();
-            builder.RegisterInstance(new Flows());
+
             //builder.RegisterRawRabbit();
             //builder.RegisterType<RabbitMessageClient>().As<IRuneClient>();
             //builder.RegisterType<RabbitMessagingService>().As<IMessagingService>();
 
-            builder.RegisterInstance(new PluginManager());
-            builder.RegisterType<NoOpMessagingService>().As<IMessagingService>();
-            builder.RegisterType<NoOpRuneClient>().As<IRuneClient>();
             return builder.Build();
         }
     }

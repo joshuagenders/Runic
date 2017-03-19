@@ -2,7 +2,10 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.AssemblyManagement;
 using Runic.Agent.Configuration;
+using Runic.Framework.Clients;
+using System;
 using System.Linq;
+using System.Reflection;
 
 namespace Runic.Agent.UnitTest
 {
@@ -28,7 +31,7 @@ namespace Runic.Agent.UnitTest
             };
             AgentConfiguration.LoadConfiguration(cli);
 
-            var container = new Startup().RegisterDependencies();
+            var container = new Startup().Register();
             _pluginManager = container.Resolve<PluginManager>();
             _pluginManager.RegisterProvider(new FilePluginProvider(wd));
         }
@@ -47,6 +50,12 @@ namespace Runic.Agent.UnitTest
         {
             _pluginManager.LoadPlugin("Runic.ExampleTest");
             Assert.AreEqual(_pluginManager.GetAssemblies().Count, 1);
+            var assembly = _pluginManager.GetAssemblies().Single();
+            var iocType = assembly.GetType("Runic.ExampleTest.RunicIoC");
+            var runeClient = iocType.GetProperties(BindingFlags.Static | BindingFlags.Public)
+                                    .Where(t => t.PropertyType.IsAssignableTo<IRuneClient>())
+                                    .Select(t => t.GetValue(iocType));
+            Assert.IsNotNull(runeClient);
         }
 
         [TestMethod]
@@ -63,6 +72,12 @@ namespace Runic.Agent.UnitTest
             _pluginManager.LoadPlugin("Runic.ExampleTest");
             _pluginManager.LoadPlugin("Runic.ExampleTest");
             Assert.AreEqual(_pluginManager.GetAssemblies().Count, 1);
+        }
+
+        [TestMethod]
+        public void TestGetClassType()
+        {
+            throw new NotImplementedException();
         }
     }
 }

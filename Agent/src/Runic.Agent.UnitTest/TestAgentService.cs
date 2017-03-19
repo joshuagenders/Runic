@@ -21,6 +21,79 @@ namespace Runic.Agent.UnitTest
         private const string wd = "C:\\code\\Runic\\Agent\\src\\Runic.Agent.UnitTest\\bin\\Debug\\netcoreapp1.0";
         
         [TestMethod]
+        [TestCategory("SystemTest")]
+        public void TestWikipedia()
+        {
+            var cli = new[]
+            {
+                "Agent:MaxThreads=321",
+                "Agent:LifetimeSeconds=123",
+                "Client:MQConnectionString=MyExampleConnection",
+                "Statsd:Port=8125",
+                "Statsd:Host=192.168.99.100",
+                "Statsd:Prefix=Runic.Stats."
+            };
+            AgentConfiguration.LoadConfiguration(cli);
+            var container = new Startup().Register();
+
+            var flows = new Flows();
+            flows.AddUpdateFlow(new Flow()
+            {
+                Name = "Wikipedia Flow",
+                StepDelayMilliseconds = 700,
+                Steps = new List<Step>()
+                {
+                    new Step()
+                    {
+                        StepName = "GetHome",
+                        Function = new FunctionInformation()
+                        {
+                            AssemblyName = "ExampleTest",
+                            AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.ViewHomepageFunction",
+                            FunctionName = "OpenFirstLinkFunction"
+                        },
+                        NextStepOnFailure = "GetHome",
+                        NextStepOnSuccess = "Search"
+                    },
+                    new Step()
+                    {
+                        StepName = "Search",
+                        Function = new FunctionInformation()
+                        {
+                            AssemblyName = "ExampleTest",
+                            AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.SearchFunction",
+                            FunctionName = "OpenFirstLinkFunction"
+                        },
+                        NextStepOnFailure = "GetHome",
+                        NextStepOnSuccess = "OpenLink"
+                    },
+                    new Step()
+                    {
+                        StepName = "OpenLink",
+                        Function = new FunctionInformation()
+                        {
+                            AssemblyName = "ExampleTest",
+                            AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.OpenFirstLinkFunction",
+                            FunctionName = "OpenFirstLinkFunction"
+                        },
+                        NextStepOnFailure = "Search",
+                        NextStepOnSuccess = "OpenLink"
+                    }
+                }
+            });
+
+            var agent = new AgentService(new PluginManager(), flows);
+
+            agent.StartFlow(new FlowContext()
+            {
+                FlowName = "Wikipedia Flow",
+                Flow = flows.GetFlow("Wikipedia Flow"),
+                ThreadCount = 1
+            });
+            Thread.Sleep(5000);
+        }
+
+        [TestMethod]
         public void TestStartThread()
         {
             var cli = new[]
@@ -33,7 +106,7 @@ namespace Runic.Agent.UnitTest
                 "Statsd:Prefix=Runic.Stats."
             };
             AgentConfiguration.LoadConfiguration(cli);
-            var container = new Startup().RegisterDependencies();
+            var container = new Startup().Register();
 
             var flows = new Flows();
             flows.AddUpdateFlow(new Flow()
@@ -82,7 +155,7 @@ namespace Runic.Agent.UnitTest
                 "Statsd:Prefix=Runic.Stats."
             };
             AgentConfiguration.LoadConfiguration(cli);
-            var container = new Startup().RegisterDependencies();
+            var container = new Startup().Register();
             var flows = new Flows();
             
             flows.AddUpdateFlow(
@@ -144,7 +217,7 @@ namespace Runic.Agent.UnitTest
                 "Statsd:Prefix=Runic.Stats."
             };
             AgentConfiguration.LoadConfiguration(cli);
-            var container = new Startup().RegisterDependencies();
+            var container = new Startup().Register();
             var executionContext = new Service.ExecutionContext();
             Assert.IsTrue(executionContext.MaxThreadCount > 0);
         }

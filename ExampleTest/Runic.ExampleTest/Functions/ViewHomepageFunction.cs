@@ -21,7 +21,7 @@ namespace Runic.ExampleTest.Functions
 
             var result = await openAction.TimedExecute("OpenHomepage");
 
-            RunicIoC.RuneClient.SendRunes(
+            await RunicIoC.RuneClient.SendRunes(
                 new HomepageRune()
                 {
                     ResponseHtml = result.ExecutionResult

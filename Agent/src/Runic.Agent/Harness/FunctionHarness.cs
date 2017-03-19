@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Runic.Framework.Attributes;
 using NLog;
 using Runic.Agent.Metrics;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Runic.Agent.Harness
 {
@@ -45,14 +47,33 @@ namespace Runic.Agent.Harness
 
         private async Task ExecuteFunction()
         {
+            //todo pass overrides
             Status = "ExecuteFunction";
             var methods = _instance.GetType().GetRuntimeMethods();
             foreach (var method in methods)
             {
                 var attribute = method.GetCustomAttribute<FunctionAttribute>();
                 if (attribute != null && attribute.Name == _functionName)
-                    await Task.Run(() => method.Invoke(_instance, null));
+                {
+                    if (IsAsyncMethod(method))
+                    {
+                        var task = (Task)method.Invoke(_instance, null);
+                        await task;
+                    }
+                    else
+                    {
+                        await Task.Run(() => method.Invoke(_instance, null));
+                    }
+                }
             }
+        }
+
+        private bool IsAsyncMethod (MethodInfo method)
+        {
+            return method.ReturnType.IsAssignableFrom(typeof(Task)) ||
+                        method.ReturnTypeCustomAttributes
+                              .GetCustomAttributes(false)
+                              .Any(c => c.GetType() == typeof(AsyncStateMachineAttribute));
         }
 
         private async Task ExecuteMethodWithAttribute(Type attributeType)
