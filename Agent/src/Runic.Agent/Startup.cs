@@ -8,6 +8,7 @@ using StatsN;
 using Runic.Framework.Clients;
 using Runic.Agent.Metrics;
 using Runic.Agent.Messaging;
+using Runic.Agent.FlowManagement;
 
 namespace Runic.Agent
 {
@@ -34,7 +35,7 @@ namespace Runic.Agent
                     .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                     .As<IPluginProvider>();
             builder.RegisterType<AgentService>().As<IAgentService>();
-
+            builder.RegisterInstance(new Flows());
             //builder.RegisterRawRabbit();
             //builder.RegisterType<RabbitMessageClient>().As<IRuneClient>();
             //builder.RegisterType<RabbitMessagingService>().As<IMessagingService>();

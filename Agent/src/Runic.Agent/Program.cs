@@ -8,6 +8,7 @@ using NLog;
 using Runic.Agent.Service;
 using Runic.Agent.Shell;
 using Runic.Agent.AssemblyManagement;
+using Runic.Agent.FlowManagement;
 
 namespace Runic.Agent
 {
@@ -55,9 +56,9 @@ namespace Runic.Agent
             // resolve ioc
             var pluginProvider = container.Resolve<IPluginProvider>();
             var messagingService = container.Resolve<IMessagingService>();
-
+            var flows = container.Resolve<Flows>();
             // start agent
-            var agentService = new AgentService(pluginProvider);
+            var agentService = new AgentService(pluginProvider, flows);
             var serviceCts = new CancellationTokenSource();
             var agentTask = agentService.Run(messagingService, ct: serviceCts.Token);
 

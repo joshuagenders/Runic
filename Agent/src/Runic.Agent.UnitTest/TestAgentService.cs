@@ -57,7 +57,7 @@ namespace Runic.Agent.UnitTest
                 }
             });
 
-            var agent = new AgentService(new FilePluginProvider(wd));
+            var agent = new AgentService(new FilePluginProvider(wd), new Flows());
 
             agent.StartFlow(new FlowContext()
             {
@@ -83,11 +83,9 @@ namespace Runic.Agent.UnitTest
             };
             AgentConfiguration.LoadConfiguration(cli);
             var container = new Startup().RegisterDependencies();
-            var agent = new AgentService(new FilePluginProvider(wd));
-            var cts = new CancellationTokenSource();
-            cts.CancelAfter(5000);
+            var flows = new Flows();
             
-            agent.Flows.AddUpdateFlow(
+            flows.AddUpdateFlow(
                 new Flow()
                 {
                     Name = "FakeFlow",
@@ -108,7 +106,11 @@ namespace Runic.Agent.UnitTest
                         }
                     }
                 });
-            
+
+            var agent = new AgentService(new FilePluginProvider(wd), flows);
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(5000);
+
             var agentTask = agent.SetThreadLevel(new SetThreadLevelRequest()
             {
                 FlowName = "FakeFlow",

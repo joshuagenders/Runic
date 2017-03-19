@@ -1,7 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using Runic.Framework.Models;
-using StatsN;
 using Runic.Agent.Metrics;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Runic.Agent.FlowManagement
 {
@@ -24,6 +25,11 @@ namespace Runic.Agent.FlowManagement
         {
             Clients.Statsd?.Count($"{name}.get");
             return _flows[name];
+        }
+
+        public List<Flow> GetFlows()
+        {
+            return _flows.Values.ToList();
         }
     }
 }

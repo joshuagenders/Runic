@@ -23,7 +23,7 @@ namespace Runic.Agent.Harness
 
         private IPluginProvider _provider { get; set; }
 
-        public FlowHarness(IPluginProvider pluginProvider)
+        public FlowHarness()
         {
             InstantiateCollections();
         }

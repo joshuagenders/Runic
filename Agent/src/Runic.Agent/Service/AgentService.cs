@@ -15,22 +15,24 @@ namespace Runic.Agent.Service
         private ExecutionContext _executionContext { get; set; }
         private CancellationToken _ct { get; set; }
         private FlowHarness _flowHarness { get; set; }
+        private readonly Flows _flows;
+        private readonly PluginManager _pluginManager;
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public readonly Flows Flows;
 
-        public AgentService(IPluginProvider pluginProvider)
+        public AgentService(PluginManager pluginManager, Flows flows)
         {
             _executionContext = new ExecutionContext();
-            _flowHarness = new FlowHarness(pluginProvider);
-            Flows = new Flows();
+            _flowHarness = new FlowHarness();
+            _flows = flows;
+            _pluginManager = pluginManager;
         }
 
         private void RegisterHandlers(IMessagingService messagingService, CancellationToken ct = default(CancellationToken))
         {
             messagingService.RegisterThreadLevelHandler((message, context) => SetThreadLevel(message, ct));
-            messagingService.RegisterFlowUpdateHandler((message, context) => Task.Run(() => Flows.AddUpdateFlow(message.Flow), ct));
+            messagingService.RegisterFlowUpdateHandler((message, context) => Task.Run(() => _flows.AddUpdateFlow(message.Flow), ct));
             _logger.Debug("Registered message handlers");
         }
 
@@ -38,7 +40,7 @@ namespace Runic.Agent.Service
         {
             _ct = ct;
             RegisterHandlers(messagingService, ct);
-
+            //todo use better pattern
             while (!ct.IsCancellationRequested)
             {
                 await Task.Run(() => Thread.Sleep(5000), ct);
@@ -93,7 +95,7 @@ namespace Runic.Agent.Service
                 {
                     FlowName = request.FlowName,
                     ThreadCount = request.ThreadLevel,
-                    Flow = Flows.GetFlow(request.FlowName)
+                    Flow = _flows.GetFlow(request.FlowName)
                 }), ct);
             }
         }

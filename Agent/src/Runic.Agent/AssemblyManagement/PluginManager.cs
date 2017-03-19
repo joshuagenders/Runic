@@ -13,15 +13,14 @@ using Runic.Agent.Metrics;
 
 namespace Runic.Agent.AssemblyManagement
 {
-    public static class PluginManager
+    public class PluginManager
     {
-        private static readonly Logger _logger = LogManager.GetLogger("Runic.Agent.AssemblyManagement.PluginManager");
-        private static ConcurrentBag<Assembly> _assemblies = new ConcurrentBag<Assembly>();
-        private static ConcurrentDictionary<string, bool> _assembliesLoaded = new ConcurrentDictionary<string, bool>();
-        private static IRuneClient _runeClient { get; set; }
+        private readonly Logger _logger = LogManager.GetLogger("Runic.Agent.AssemblyManagement.PluginManager");
+        private ConcurrentBag<Assembly> _assemblies = new ConcurrentBag<Assembly>();
+        private ConcurrentDictionary<string, bool> _assembliesLoaded = new ConcurrentDictionary<string, bool>();
+        private IRuneClient _runeClient { get; set; }
 
-
-        public static List<Assembly> GetAssemblies()
+        public List<Assembly> GetAssemblies()
         {
             List<Assembly> assemblyList;
             lock (_assemblies)
@@ -31,12 +30,17 @@ namespace Runic.Agent.AssemblyManagement
             return assemblyList;
         }
 
-        public static void RegisterRuneClient(IRuneClient runeClient)
+        public List<string> GetAssemblyKeys()
+        {
+            return _assembliesLoaded.Where(t => t.Value).Select(t => t.Key).ToList();
+        }
+
+        public void RegisterRuneClient(IRuneClient runeClient)
         {
             _runeClient = runeClient;
         }
 
-        public static void LoadPlugin(string pluginAssemblyName, IPluginProvider provider)
+        public void LoadPlugin(string pluginAssemblyName, IPluginProvider provider)
         {
             _logger.Debug($"Loading plugin {pluginAssemblyName}");
             bool loaded;
@@ -58,7 +62,7 @@ namespace Runic.Agent.AssemblyManagement
             Clients.Statsd?.Count("plugins.pluginLoaded");
         }
 
-        public static Assembly LoadAssembly(string pluginPath, string pluginAssemblyName)
+        public Assembly LoadAssembly(string pluginPath, string pluginAssemblyName)
         {
             Assembly assembly = null;
             lock (_assemblies)
@@ -70,16 +74,11 @@ namespace Runic.Agent.AssemblyManagement
             {
                 _assembliesLoaded[pluginAssemblyName] = true;
             }
+
             return assembly;
         }
 
-        public static void ClearAssemblies()
-        {
-            _assembliesLoaded = new ConcurrentDictionary<string, bool>();
-            _assemblies = new ConcurrentBag<Assembly>();
-        }
-
-        public static List<FunctionInformation> GetAvailableFunctions()
+        public List<FunctionInformation> GetAvailableFunctions()
         {
             var functions = new List<FunctionInformation>();
             foreach (var assembly in _assemblies)
@@ -106,7 +105,7 @@ namespace Runic.Agent.AssemblyManagement
             return functions;
         }
 
-        private static void PopulateStaticInterfaces(Assembly assembly)
+        private void PopulateStaticInterfaces(Assembly assembly)
         {
             //todo fix
             foreach (var type in assembly.DefinedTypes)
@@ -121,7 +120,7 @@ namespace Runic.Agent.AssemblyManagement
             }
         }
 
-        public static Type GetClassType(string className)
+        public Type GetClassType(string className)
         {
             lock (_assemblies)
             {
@@ -137,7 +136,7 @@ namespace Runic.Agent.AssemblyManagement
             throw new ClassNotFoundInAssemblyException();
         }
 
-        public static Type GetFunctionType(string functionFullyQualifiedName)
+        public Type GetFunctionType(string functionFullyQualifiedName)
         {
             _logger.Debug($"Searching assemblies for function");
             lock (_assemblies)
