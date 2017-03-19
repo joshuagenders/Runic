@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Runic.Framework.Configuration;
-using Runic.Framework.Orchestration;
+using Runic.Framework.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 

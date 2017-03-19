@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Runic.Framework.Orchestration
+namespace Runic.Framework.Extensions
 {
     public class ActionResult
     {

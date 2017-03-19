@@ -5,9 +5,9 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Runic.Framework.Orchestration
+namespace Runic.Framework.Extensions
 {
-    public static class Extensions
+    public static class ActionExtensions
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 

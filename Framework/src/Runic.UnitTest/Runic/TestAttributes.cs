@@ -18,16 +18,6 @@ namespace Runic.UnitTest.Runic
             Assert.AreEqual("456", attr.Runes[1]);
         }
 
-        [MutableParameter("myInput", typeof(string))]
-        [TestMethod]
-        public void TestMutableParameterAttributeData()
-        {
-            var method = GetType().GetMethod("TestMutableParameterAttributeData");
-            var attr = method.GetCustomAttribute<MutableParameterAttribute>();
-            Assert.AreEqual("myInput", attr.ParameterName);
-            Assert.AreEqual(typeof(string), attr.ParameterType);
-        }
-
         [RequiresLinkedRunes("Login", "Search")]
         [TestMethod]
         public void TestRequiresLinkedRuneAttributeData()

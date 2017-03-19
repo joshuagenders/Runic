@@ -129,5 +129,4 @@ namespace Runic.Agent.Harness
             _cancellationSources.ForEach(t => t.Cancel());   
         }
     }
-
 }

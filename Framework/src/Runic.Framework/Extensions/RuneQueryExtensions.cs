@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Runic.Framework.Models;
 
-namespace Runic.Framework
+namespace Runic.Framework.Extensions
 {
     public static class RuneQueryExtensions
     {
