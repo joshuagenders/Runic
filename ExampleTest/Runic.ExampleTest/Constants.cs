@@ -2,8 +2,10 @@
 
 namespace Runic.ExampleTest
 {
-    public class Ref
+    public class Constants
     {
+        public const string BaseAddress = "https://en.wikipedia.org";
+
         public enum Keys
         {
             CustomerId = 0,

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Runic.Framework.Configuration;
 using Runic.Framework.Orchestration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace Runic.UnitTest.Runic
 {
@@ -20,11 +21,13 @@ namespace Runic.UnitTest.Runic
                 {"Database:Port", "7878"}
             });
 
-            var result = await new TimedAction("someaction", () =>
+            Func <string> action = () =>
             {
+                
                 Thread.Sleep(1);
                 return "result";
-            }).Execute();
+            };
+            var result = await action.TimedExecute("sleep_one_millisecond");
 
             Assert.AreEqual(result.ExecutionResult, "result");
             Assert.IsTrue(result.ElapsedMilliseconds > 0);

@@ -4,10 +4,9 @@ namespace Runic.Framework.Models
 {
     public class Rune
     {
-        public Rune(string name)
+        public Rune()
         {
             RuneExpiry = DateTime.Now.AddDays(30);
-            Name = name;
         }
 
         public string Name { get; set; }
