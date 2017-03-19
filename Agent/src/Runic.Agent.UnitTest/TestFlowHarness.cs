@@ -7,7 +7,6 @@ using Runic.Agent.Harness;
 using Runic.Framework.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.AssemblyManagement;
-using System.IO;
 
 namespace Runic.Agent.UnitTest
 {
