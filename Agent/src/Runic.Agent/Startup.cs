@@ -7,6 +7,7 @@ using Runic.Agent.Service;
 using StatsN;
 using Runic.Framework.Clients;
 using Runic.Agent.Metrics;
+using Runic.Agent.Messaging;
 
 namespace Runic.Agent
 {
@@ -33,9 +34,12 @@ namespace Runic.Agent
                     .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                     .As<IPluginProvider>();
             builder.RegisterType<AgentService>().As<IAgentService>();
-            builder.RegisterRawRabbit();
-            builder.RegisterType<RabbitMessageClient>().As<IRuneClient>();
 
+            //builder.RegisterRawRabbit();
+            //builder.RegisterType<RabbitMessageClient>().As<IRuneClient>();
+            //builder.RegisterType<RabbitMessagingService>().As<IMessagingService>();
+            builder.RegisterType<NoOpMessagingService>().As<IMessagingService>();
+            builder.RegisterType<NoOpRuneClient>().As<IRuneClient>();
             return builder.Build();
         }
     }

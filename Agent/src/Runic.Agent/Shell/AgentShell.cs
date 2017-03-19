@@ -7,6 +7,7 @@ using Runic.Agent.AssemblyManagement;
 using Runic.Agent.Service;
 using Runic.Framework.Models;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace Runic.Agent.Shell
 {
@@ -54,6 +55,7 @@ namespace Runic.Agent.Shell
                 catch (Exception e)
                 {
                     Console.WriteLine("Encountered error");
+                    Console.WriteLine(JsonConvert.SerializeObject(e));
                 }
             }
         }
@@ -79,6 +81,10 @@ namespace Runic.Agent.Shell
                     "load", async (input) =>
                     {
                         var vals = input.FromKeywordToDictionary();
+                        if (!vals.ContainsKey("pluginkey")){
+                            Console.WriteLine("missing parameter 'pluginkey'");
+                            return;
+                        }
                         await LoadPlugin(vals["pluginkey"], _cancellationToken);
                     }
                 },

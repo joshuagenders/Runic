@@ -7,7 +7,21 @@ namespace Runic.Agent.Shell
     {
         public static Dictionary<string, string> FromKeywordToDictionary(this string[] val)
         {
-            return val.Select(s => s.Split('=')).ToDictionary(split => split[0], split => split[1]);
+            var result = new Dictionary<string, string>();
+            val.ToList()
+               .ForEach(i =>
+            {
+                if (i.Contains("="))
+                {
+                    var split = i.Split('=');
+                    result[split[0]] = split[1];
+                }
+                else
+                {
+                    result[i] = i;
+                }
+            });
+            return result;
         }
     }
 }
