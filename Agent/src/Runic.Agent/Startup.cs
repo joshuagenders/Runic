@@ -39,6 +39,8 @@ namespace Runic.Agent
             //builder.RegisterRawRabbit();
             //builder.RegisterType<RabbitMessageClient>().As<IRuneClient>();
             //builder.RegisterType<RabbitMessagingService>().As<IMessagingService>();
+
+            builder.RegisterInstance(new PluginManager());
             builder.RegisterType<NoOpMessagingService>().As<IMessagingService>();
             builder.RegisterType<NoOpRuneClient>().As<IRuneClient>();
             return builder.Build();

@@ -13,6 +13,7 @@ namespace Runic.Agent.UnitTest
         // and mstestv2 test context has removed the deployment metadata
         private const string wd = "C:\\code\\Runic\\Agent\\src\\Runic.Agent.UnitTest\\bin\\Debug\\netcoreapp1.0";
         private PluginManager _pluginManager { get; set; }
+
         [TestInitialize]
         public void Init()
         {
