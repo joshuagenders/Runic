@@ -16,6 +16,7 @@ namespace Runic.Agent.Harness
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private string _functionName { get; set; }
         public string Status { get; set; }
+
         public void Bind(object functionInstance, string functionName)
         {
             _instance = functionInstance;
@@ -50,22 +51,19 @@ namespace Runic.Agent.Harness
             //todo pass overrides
             Status = "ExecuteFunction";
             var methods = _instance.GetType().GetRuntimeMethods();
+            MethodInfo functionMethod = null;
             foreach (var method in methods)
             {
                 var attribute = method.GetCustomAttribute<FunctionAttribute>();
                 if (attribute != null && attribute.Name == _functionName)
                 {
-                    if (IsAsyncMethod(method))
-                    {
-                        var task = (Task)method.Invoke(_instance, null);
-                        await task;
-                    }
-                    else
-                    {
-                        await Task.Run(() => method.Invoke(_instance, null));
-                    }
+                    functionMethod = method;
                 }
             }
+            if (functionMethod == null)
+                throw new FunctionMethodNotFoundException();
+
+            await ExecuteMethod(functionMethod);
         }
 
         private bool IsAsyncMethod (MethodInfo method)
@@ -76,6 +74,19 @@ namespace Runic.Agent.Harness
                               .Any(c => c.GetType() == typeof(AsyncStateMachineAttribute));
         }
 
+        private async Task ExecuteMethod(MethodInfo method)
+        {
+            if (IsAsyncMethod(method))
+            {
+                var task = (Task)method.Invoke(_instance, null);
+                await task;
+            }
+            else
+            {
+                await Task.Run(() => method.Invoke(_instance, null));
+            }
+        }
+        
         private async Task ExecuteMethodWithAttribute(Type attributeType)
         {
             var methods = _instance.GetType().GetRuntimeMethods();
@@ -83,7 +94,7 @@ namespace Runic.Agent.Harness
             {
                 var attribute = method.GetCustomAttribute(attributeType);
                 if (attribute != null)
-                    await Task.Run(() => method.Invoke(_instance, null));
+                    await ExecuteMethod(method);
             }
         }
 

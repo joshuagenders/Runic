@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Runic.Agent.Harness;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
 
 namespace Runic.Agent.UnitTest
 {
@@ -18,6 +19,20 @@ namespace Runic.Agent.UnitTest
             Assert.AreEqual(fakeFunction.CallList.Count, 3);
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "BeforeEach"));
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "Login"));
+            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "AfterEach"));
+        }
+
+        [TestMethod]
+        public async Task TestAsyncFunctionWaitsUntilCompletion()
+        {
+            var fakeFunction = new FakeFunction();
+            var functionHarness = new FunctionHarness();
+            functionHarness.Bind(fakeFunction, "AsyncWait");
+            await functionHarness.Execute();
+            Assert.IsTrue(fakeFunction.AsyncTask.IsCompleted);
+            Assert.AreEqual(3, fakeFunction.CallList.Count);
+            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "BeforeEach"));
+            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "AsyncWait"));
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "AfterEach"));
         }
     }

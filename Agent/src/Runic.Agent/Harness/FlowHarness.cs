@@ -17,7 +17,7 @@ namespace Runic.Agent.Harness
         private Flow _flow { get; set; }
         private int _threadCount { get; set; }
 
-        private Semaphore _semaphore { get; set; }
+        private SemaphoreSlim _semaphore { get; set; }
         private ConcurrentBag<Task> _trackedTasks { get; set; }
         private List<CancellationTokenSource> _cancellationSources { get; set; }
 
@@ -43,12 +43,12 @@ namespace Runic.Agent.Harness
 
             _flow = flow;
             _threadCount = threadCount;
-            _semaphore = new Semaphore(_threadCount,_threadCount);
+            _semaphore = new SemaphoreSlim(_threadCount);
 
             while (!ctx.IsCancellationRequested && threadCount > 0)
             {
-                _semaphore.WaitOne();
-                Thread.Sleep(400);
+                await _semaphore.WaitAsync();
+                Thread.Sleep(200);
                 //get thread permission
                 _logger.Debug($"Starting thread for {flow.Name}");
                 Clients.Statsd?.Count($"flows.{flow.Name}.threadStarted");
@@ -97,10 +97,10 @@ namespace Runic.Agent.Harness
             return _trackedTasks.Count(t => !completedStatuses.Contains(t.Status));
         }
 
-        //public int GetSemaphoreCurrentCount()
-        //{
-        //    return _semaphore.;
-        //}
+        public int GetSemaphoreCurrentCount()
+        {
+            return _semaphore.CurrentCount;
+        }
 
         public Flow GetRunningFlow()
         {
@@ -109,15 +109,15 @@ namespace Runic.Agent.Harness
 
         private void RestartThreads(int threadCount)
         {
+            //todo graceful increase/decrease
             CancelAllThreads();
             _threadCount = threadCount;
-            _semaphore = new Semaphore(_threadCount, _threadCount);
+            _semaphore = new SemaphoreSlim(_threadCount);
         }
 
         public async Task UpdateThreads(int threadCount, CancellationToken ctx = default(CancellationToken))
         {
             _logger.Debug($"Updating threads for {_flow.Name} from {GetRunningThreadCount()} to {threadCount}");
-            //todo if < > (dont cancel all)
             if (threadCount == _threadCount)
             {
                 return;

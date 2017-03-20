@@ -62,7 +62,7 @@ namespace Runic.Agent.UnitTest
             var task = harness.Execute(flow, 1, cts.Token).ConfigureAwait(false);
             Thread.Sleep(50);
             //todo
-            //Assert.AreEqual(0, harness.GetSemaphoreCurrentCount());
+            Assert.AreEqual(0, harness.GetSemaphoreCurrentCount());
             Assert.IsTrue(harness.GetTotalInitiatiedThreadCount() > 0);
             
             try
