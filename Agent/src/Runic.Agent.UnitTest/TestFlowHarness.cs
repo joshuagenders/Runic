@@ -13,28 +13,18 @@ namespace Runic.Agent.UnitTest
     [TestClass]
     public class TestFlowHarness
     {
-        //bad hack because nunit 3 doesn't work yet and mstest doesnt set cwd to deployment dir
-        // and mstestv2 test context has removed the deployment metadata
-        private const string wd = "C:\\code\\Runic\\Agent\\src\\Runic.Agent.UnitTest\\bin\\Debug\\netcoreapp1.0";
+        private AgentWorld _world { get; set; }
+
+        [TestInitialize]
+        public void Init()
+        {
+            _world = new AgentWorld();
+        }
 
         [TestMethod]
         public async Task TestSingleFunctionFlow()
         {
-            var cli = new[]
-            {
-                "Agent:MaxThreads=321",
-                "Agent:LifetimeSeconds=123",
-                "Client:MQConnectionString=MyExampleConnection",
-                "Statsd:Port=8125",
-                "Statsd:Host=192.168.99.100",
-                "Statsd:Prefix=Runic.Stats."
-            };
-            AgentConfiguration.LoadConfiguration(cli);
-            var container = new Startup().Register();
-
-            var pluginManager = new PluginManager();
-            pluginManager.RegisterProvider(new FilePluginProvider(wd));
-            var harness = new FlowHarness(pluginManager);
+            var harness = new FlowHarness(_world.PluginManager);
 
             var flow = new Flow()
             {

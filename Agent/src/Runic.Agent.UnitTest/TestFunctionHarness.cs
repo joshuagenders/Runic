@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Runic.Agent.Harness;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Threading;
 
 namespace Runic.Agent.UnitTest
 {

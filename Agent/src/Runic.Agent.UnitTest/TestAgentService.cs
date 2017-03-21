@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Runic.Agent.Configuration;
 using Runic.Agent.FlowManagement;
 using Runic.Agent.Service;
 using Runic.Framework.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Runic.Agent.Harness;
-using System.IO;
 using Runic.Agent.AssemblyManagement;
 
 namespace Runic.Agent.UnitTest
@@ -16,26 +12,17 @@ namespace Runic.Agent.UnitTest
     [TestClass]
     public class TestAgentService
     {
-        //bad hack because nunit 3 doesn't work yet and mstest doesnt set cwd to deployment dir
-        // and mstestv2 test context has removed the deployment metadata
-        private const string wd = "C:\\code\\Runic\\Agent\\src\\Runic.Agent.UnitTest\\bin\\Debug\\netcoreapp1.0";
-        
+        private AgentWorld _world { get; set; }
+
+        [TestInitialize]
+        public void Init()
+        {
+            _world = new AgentWorld();
+        }
         //[TestMethod]
         //[TestCategory("SystemTest")]
         public void TestWikipedia()
         {
-            var cli = new[]
-            {
-                "Agent:MaxThreads=321",
-                "Agent:LifetimeSeconds=123",
-                "Client:MQConnectionString=MyExampleConnection",
-                "Statsd:Port=8125",
-                "Statsd:Host=192.168.99.100",
-                "Statsd:Prefix=Runic.Stats."
-            };
-            AgentConfiguration.LoadConfiguration(cli);
-            var container = new Startup().Register();
-
             var flows = new Flows();
             flows.AddUpdateFlow(new Flow()
             {
@@ -96,18 +83,6 @@ namespace Runic.Agent.UnitTest
         [TestMethod]
         public void TestStartThread()
         {
-            var cli = new[]
-            {
-                "Agent:MaxThreads=321",
-                "Agent:LifetimeSeconds=123",
-                "Client:MQConnectionString=MyExampleConnection",
-                "Statsd:Port=8125",
-                "Statsd:Host=192.168.99.100",
-                "Statsd:Prefix=Runic.Stats."
-            };
-            AgentConfiguration.LoadConfiguration(cli);
-            var container = new Startup().Register();
-
             var flows = new Flows();
             flows.AddUpdateFlow(new Flow()
             {
@@ -145,17 +120,6 @@ namespace Runic.Agent.UnitTest
         [TestMethod]
         public async Task TestSetThreadLevel()
         {
-            var cli = new[]
-            {
-                "Agent:MaxThreads=321",
-                "Agent:LifetimeSeconds=123",
-                "Client:MQConnectionString=MyExampleConnection",
-                "Statsd:Port=8125",
-                "Statsd:Host=192.168.99.100",
-                "Statsd:Prefix=Runic.Stats."
-            };
-            AgentConfiguration.LoadConfiguration(cli);
-            var container = new Startup().Register();
             var flows = new Flows();
             
             flows.AddUpdateFlow(
@@ -207,17 +171,6 @@ namespace Runic.Agent.UnitTest
         [TestMethod]
         public void TestExecutionContext()
         {
-            var cli = new[]
-            {
-                "Agent:MaxThreads=321",
-                "Agent:LifetimeSeconds=123",
-                "Client:MQConnectionString=MyExampleConnection",
-                "Statsd:Port=8125",
-                "Statsd:Host=192.168.99.100",
-                "Statsd:Prefix=Runic.Stats."
-            };
-            AgentConfiguration.LoadConfiguration(cli);
-            var container = new Startup().Register();
             var executionContext = new Service.ExecutionContext();
             Assert.IsTrue(executionContext.MaxThreadCount > 0);
         }

@@ -14,26 +14,14 @@ namespace Runic.Agent.UnitTest
     [TestClass]
     public class TestFlowInitialiser
     {
-        private PluginManager _pluginManager { get; set; }
+        private AgentWorld _world { get; set; }
 
         [TestInitialize]
         public void Init()
         {
-            var cli = new[]
-            {
-                "Agent:MaxThreads=321",
-                "Agent:LifetimeSeconds=123",
-                "Client:MQConnectionString=MyExampleConnection",
-                "Statsd:Port=8125",
-                "Statsd:Host=192.168.99.100",
-                "Statsd:Prefix=Runic.Stats."
-            };
-            AgentConfiguration.LoadConfiguration(cli);
-            var container = new Startup().Register();
-
-            _pluginManager = new PluginManager();
-            _pluginManager.RegisterProvider(container.Resolve<IPluginProvider>());
+            _world = new AgentWorld();
         }
+
         [TestMethod]
         public void TestLibraryLoads()
         {
@@ -57,12 +45,11 @@ namespace Runic.Agent.UnitTest
             };
 
             
-            var flowInitialiser = new FlowInitialiser(_pluginManager);
+            var flowInitialiser = new FlowInitialiser(_world.PluginManager);
             flowInitialiser.InitialiseFlow(flow);
 
-            Assert.IsTrue(_pluginManager.GetAssemblies().Any());
-            //Assert.IsTrue(_pluginManager.GetAssemblyKeys().Any(k => k == "Runic.ExampleTest"));
-
+            Assert.IsTrue(_world.PluginManager.GetAssemblies().Any());
+            Assert.IsTrue(_world.PluginManager.GetAssemblyKeys().Any(k => k == "Runic.ExampleTest"));
         }
     }
 }
