@@ -53,7 +53,7 @@ namespace Runic.Agent.UnitTest
                         },
                         NextStepOnFailure = "Step1",
                         NextStepOnSuccess = "Step1",
-                        Repeat = 1
+                        Repeat = 2
                     }
                 }
             };
@@ -64,7 +64,7 @@ namespace Runic.Agent.UnitTest
             Thread.Sleep(50);
             //todo
             Assert.AreEqual(0, harness.GetSemaphoreCurrentCount());
-            Assert.IsTrue(harness.GetTotalInitiatiedThreadCount() > 0);
+            Assert.IsTrue(harness.GetTotalInitiatiedThreadCount() == 1);
             
             try
             {
