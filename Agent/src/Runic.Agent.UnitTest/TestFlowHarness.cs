@@ -47,19 +47,20 @@ namespace Runic.Agent.UnitTest
                         StepName = "Step1",
                         Function = new FunctionInformation()
                         {
-                            AssemblyName = "ExampleTest",
+                            AssemblyName = "Runic.ExampleTest",
                             AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.FakeFunction",
                             FunctionName = "FakeFunction"
                         },
                         NextStepOnFailure = "Step1",
-                        NextStepOnSuccess = "Step1"
+                        NextStepOnSuccess = "Step1",
+                        Repeat = 1
                     }
                 }
             };
 
             CancellationTokenSource cts = new CancellationTokenSource();
             cts.CancelAfter(600);
-            var task = harness.Execute(flow, 1, cts.Token).ConfigureAwait(false);
+            var task = harness.Execute(flow, 1, cts.Token);
             Thread.Sleep(50);
             //todo
             Assert.AreEqual(0, harness.GetSemaphoreCurrentCount());

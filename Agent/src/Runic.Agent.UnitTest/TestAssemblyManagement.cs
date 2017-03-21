@@ -40,7 +40,7 @@ namespace Runic.Agent.UnitTest
         public void TestFunctionTypeRetrieve()
         {
             _pluginManager.LoadPlugin("Runic.ExampleTest");
-            var type = _pluginManager.GetFunctionType("Runic.ExampleTest.Functions.FakeFunction");
+            var type = _pluginManager.GetClassType("Runic.ExampleTest.Functions.FakeFunction");
             Assert.IsNotNull(type);
             Assert.AreEqual(type.Name, "FakeFunction");
         }
@@ -72,12 +72,6 @@ namespace Runic.Agent.UnitTest
             _pluginManager.LoadPlugin("Runic.ExampleTest");
             _pluginManager.LoadPlugin("Runic.ExampleTest");
             Assert.AreEqual(_pluginManager.GetAssemblies().Count, 1);
-        }
-
-        [TestMethod]
-        public void TestGetClassType()
-        {
-            throw new NotImplementedException();
         }
     }
 }

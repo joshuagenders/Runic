@@ -13,13 +13,14 @@ namespace Runic.Agent.Harness
 
         private Flow _flow { get; set; }
         private Dictionary<string, object> _assemblies { get; set; }
-        private string _lastStep { get; set; }
+        private Step _lastStep { get; set; }
+        private int _lastStepCount { get; set; }
+
         private readonly PluginManager _pluginManager;
 
         public FlowNavigator(Flow flow, PluginManager pluginManager)
         {
             _flow = flow;
-            _lastStep = String.Empty;
             _pluginManager = pluginManager;
         }
 
@@ -30,15 +31,30 @@ namespace Runic.Agent.Harness
 
         private Step GetNextStep(bool lastStepResultSuccess)
         {
-            if (string.IsNullOrEmpty(_lastStep))
+            if (_lastStep == null)
                 return _flow.Steps[0];
 
-            var lastStep = _flow.Steps.Where(s => s.StepName == _lastStep).Single();
-            if (!lastStepResultSuccess)
+            //if repeat is not set or repeat count is met, return next step based on success
+            if (_lastStep.Repeat == 0 && _lastStepCount >= _lastStep.Repeat)
             {
-                return _flow.Steps.Where(s => s.StepName == lastStep.NextStepOnFailure).Single();
+                _lastStepCount = 0;
+                _lastStep = lastStepResultSuccess
+                    ? GetStepByName(_lastStep.NextStepOnSuccess)
+                    : GetStepByName(_lastStep.NextStepOnFailure);
             }
-            return _flow.Steps.Where(s => s.StepName == lastStep.NextStepOnSuccess).Single();
+
+            _lastStepCount++;
+            return _lastStep;
+        }
+
+        private Step GetStepByName(string name)
+        {
+            if (string.IsNullOrEmpty(_lastStep.NextStepOnFailure) &&
+                string.IsNullOrEmpty(_lastStep.NextStepOnSuccess))
+            {
+                return null;
+            }
+            return _flow.Steps.Where(s => s.StepName == name).Single();
         }
 
         public FunctionHarness CreateFunction(Step step)
@@ -46,7 +62,7 @@ namespace Runic.Agent.Harness
             _logger.Debug($"Initialising {step.Function.FunctionName} in {step.Function.AssemblyName}");
             _logger.Debug($"Retrieving function type");
 
-            var type = _pluginManager.GetFunctionType(step.Function.FunctionName);
+            var type = _pluginManager.GetClassType(step.Function.AssemblyQualifiedClassName);
             if (type == null)
                 throw new FunctionTypeNotFoundException();
 

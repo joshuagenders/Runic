@@ -30,28 +30,26 @@ namespace Runic.Agent.Harness
             while (!ctx.IsCancellationRequested)
             {
                 function = navigator.GetNextFunction(lastStepSuccess);
+                if (function == null)
+                    break;
                 //execute with function harness
-                
-                Thread.Sleep(_flow.StepDelayMilliseconds);
-                _logger.Debug($"Executing step for {_flow.Name}");
-                try
-                {
-                    await function.Execute(ctx);
-                    if (function.Status == "Complete")
-                    {  
-                        lastStepSuccess = true;
-                    }
-                    else
-                    { 
-                        lastStepSuccess = false;
-                    }
-                }
-                catch (Exception e)
-                {
-                    lastStepSuccess = false;
-                    _logger.Error(e);
-                }
+                lastStepSuccess = await Execute(function, ctx);
             }
+        }
+        private async Task<bool> Execute(FunctionHarness function, CancellationToken ctx = default(CancellationToken))
+        {
+            Thread.Sleep(_flow.StepDelayMilliseconds);
+            _logger.Debug($"Executing step for {_flow.Name}");
+            try
+            {
+                await function.Execute(ctx);
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+                return false;
+            }
+            return function.Status == "Complete";
         }
     }
 }

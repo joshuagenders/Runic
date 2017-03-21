@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Runic.Framework.Attributes;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Runic.ExampleTest.Functions
 {
@@ -24,6 +26,18 @@ namespace Runic.ExampleTest.Functions
             });
         }
 
+        [Function("AsyncWait")]
+        public async Task Wait()
+        {
+            CallList.Add(new InvocationInformation()
+            {
+                InvocationTime = DateTime.Now,
+                StackTrace = Environment.StackTrace,
+                InvocationTarget = "AsyncWait"
+            });
+            await Task.Run(() => Thread.Sleep(500));
+        }
+
         [Function("FakeAction")]
         public void DoSomeTask1()
         {
@@ -31,7 +45,7 @@ namespace Runic.ExampleTest.Functions
             {
                 InvocationTime = DateTime.Now,
                 StackTrace = Environment.StackTrace,
-                InvocationTarget = "Login"
+                InvocationTarget = "FakeAction"
             });
         }
 

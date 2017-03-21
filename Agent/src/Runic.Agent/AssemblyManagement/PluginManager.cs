@@ -17,10 +17,16 @@ namespace Runic.Agent.AssemblyManagement
     public class PluginManager
     {
         private readonly Logger _logger = LogManager.GetLogger("Runic.Agent.AssemblyManagement.PluginManager");
-        private ConcurrentBag<Assembly> _assemblies = new ConcurrentBag<Assembly>();
-        private ConcurrentDictionary<string, bool> _assembliesLoaded = new ConcurrentDictionary<string, bool>();
+        private readonly ConcurrentBag<Assembly> _assemblies;
+        private readonly ConcurrentDictionary<string, bool> _assembliesLoaded;
         private IRuneClient _runeClient { get; set; }
         private IPluginProvider _provider { get; set; }
+
+        public PluginManager()
+        {
+            _assemblies = new ConcurrentBag<Assembly>();
+            _assembliesLoaded = new ConcurrentDictionary<string, bool>();
+        }
 
         public List<Assembly> GetAssemblies()
         {
@@ -64,11 +70,14 @@ namespace Runic.Agent.AssemblyManagement
             if (!File.Exists(pluginPath))
             {
                 Console.WriteLine($"Could not find file {pluginPath}");
-                return;
+                throw new FileNotFoundException($"Could not find file {pluginPath}");
             }
 
             Assembly assembly = LoadAssembly(pluginPath, pluginAssemblyName);
-            
+
+            if (assembly == null)
+                throw new AssemblyLoadException($"Could not load assembly {pluginPath}, {pluginAssemblyName}");
+
             PopulateStaticInterfaces(assembly);
 
             Clients.Statsd?.Count("plugins.pluginLoaded");
@@ -135,23 +144,7 @@ namespace Runic.Agent.AssemblyManagement
             }
         }
 
-        public Type GetClassType(string className)
-        {
-            lock (_assemblies)
-            {
-                foreach (var assembly in _assemblies)
-                {
-                    var types = assembly.GetTypes().Where(t => t.FullName == className);
-                    var enumerable = types as Type[] ?? types.ToArray();
-                    if (enumerable.Any())
-                        return enumerable.First();
-                }
-            }
-
-            throw new ClassNotFoundInAssemblyException();
-        }
-
-        public Type GetFunctionType(string functionFullyQualifiedName)
+        public Type GetClassType(string functionFullyQualifiedName)
         {
             _logger.Debug($"Searching assemblies for function");
             lock (_assemblies)

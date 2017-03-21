@@ -20,8 +20,8 @@ namespace Runic.Agent.UnitTest
         // and mstestv2 test context has removed the deployment metadata
         private const string wd = "C:\\code\\Runic\\Agent\\src\\Runic.Agent.UnitTest\\bin\\Debug\\netcoreapp1.0";
         
-        [TestMethod]
-        [TestCategory("SystemTest")]
+        //[TestMethod]
+        //[TestCategory("SystemTest")]
         public void TestWikipedia()
         {
             var cli = new[]
@@ -48,7 +48,7 @@ namespace Runic.Agent.UnitTest
                         StepName = "GetHome",
                         Function = new FunctionInformation()
                         {
-                            AssemblyName = "ExampleTest",
+                            AssemblyName = "Runic.ExampleTest",
                             AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.ViewHomepageFunction",
                             FunctionName = "OpenFirstLinkFunction"
                         },
@@ -60,7 +60,7 @@ namespace Runic.Agent.UnitTest
                         StepName = "Search",
                         Function = new FunctionInformation()
                         {
-                            AssemblyName = "ExampleTest",
+                            AssemblyName = "Runic.ExampleTest",
                             AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.SearchFunction",
                             FunctionName = "OpenFirstLinkFunction"
                         },
@@ -72,7 +72,7 @@ namespace Runic.Agent.UnitTest
                         StepName = "OpenLink",
                         Function = new FunctionInformation()
                         {
-                            AssemblyName = "ExampleTest",
+                            AssemblyName = "Runic.ExampleTest",
                             AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.OpenFirstLinkFunction",
                             FunctionName = "OpenFirstLinkFunction"
                         },
@@ -120,7 +120,7 @@ namespace Runic.Agent.UnitTest
                         StepName = "Step1", 
                         Function = new FunctionInformation()
                         {
-                            AssemblyName = "ExampleTest",
+                            AssemblyName = "Runic.ExampleTest",
                             AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.FakeFunction",
                             FunctionName = "FakeFunction"
                         },
@@ -170,7 +170,7 @@ namespace Runic.Agent.UnitTest
                             StepName = "Step1",
                             Function = new FunctionInformation()
                             {
-                                AssemblyName = "ExampleTest",
+                                AssemblyName = "Runic.ExampleTest",
                                 AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.FakeFunction",
                                 FunctionName = "FakeFunction"
                             },
