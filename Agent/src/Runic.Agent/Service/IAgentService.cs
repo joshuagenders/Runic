@@ -7,7 +7,7 @@ namespace Runic.Agent.Service
 {
     public interface IAgentService
     {
-        Task Run(IMessagingService service = null, CancellationToken ct = default(CancellationToken));
-        Task SetThreadLevel(SetThreadLevelRequest request, CancellationToken ct = default(CancellationToken));
+        Task Run(IMessagingService service, CancellationToken ct);
+        Task SetThreadLevel(SetThreadLevelRequest request, CancellationToken ct);
     }
 }

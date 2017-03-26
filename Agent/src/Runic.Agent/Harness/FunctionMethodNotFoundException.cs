@@ -2,17 +2,17 @@
 
 namespace Runic.Agent.Harness
 {
-    internal class FunctionMethodNotFoundException : Exception
+    internal class FunctionWithAttributeNotFoundException : Exception
     {
-        public FunctionMethodNotFoundException()
+        public FunctionWithAttributeNotFoundException()
         {
         }
 
-        public FunctionMethodNotFoundException(string message) : base(message)
+        public FunctionWithAttributeNotFoundException(string message) : base(message)
         {
         }
 
-        public FunctionMethodNotFoundException(string message, Exception innerException) : base(message, innerException)
+        public FunctionWithAttributeNotFoundException(string message, Exception innerException) : base(message, innerException)
         {
         }
     }

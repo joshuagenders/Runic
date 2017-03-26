@@ -1,15 +1,14 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Runic.Agent.FlowManagement;
 using Runic.Agent.Harness;
 using Runic.Framework.Models;
-using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Runic.Agent.UnitTest
 {
     [TestClass]
-    public class TestFlowExecutor
+    public class TestThreadManager
     {
         private AgentWorld _world { get; set; }
 
@@ -20,7 +19,7 @@ namespace Runic.Agent.UnitTest
         }
 
         [TestMethod]
-        public async Task TestSingleStepExecute()
+        public async Task TestUpdateThreads()
         {
             var flow = new Flow()
             {
@@ -36,20 +35,18 @@ namespace Runic.Agent.UnitTest
                             AssemblyName = "Runic.ExampleTest",
                             FunctionName = "AsyncWait",
                             AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.FakeFunction"
-                        }
+                        },
+                        Repeat = 1,
+                        EvaluateSuccessOnRepeat = false //todo
                     }
                 }
             };
 
-            var flowInit = new FlowInitialiser(_world.PluginManager);
-            flowInit.InitialiseFlow(flow);
-            var cts = new CancellationTokenSource();
-            cts.CancelAfter(300);
-            var flowExecutor = new FlowExecutor(flow, _world.PluginManager);
-            var flowTask = flowExecutor.ExecuteFlow(cts.Token);
-            await flowTask;
-            
-            Assert.IsNull(flowTask.Exception);
+            var manager = new ThreadManager(flow, _world.PluginManager);
+            await manager.SafeUpdateThreadCountAsync(1);
+            Assert.AreEqual(1, manager.GetCurrentThreadCount());
+            await manager.SafeUpdateThreadCountAsync(0);
+            Assert.AreEqual(0, manager.GetCurrentThreadCount());
         }
     }
 }

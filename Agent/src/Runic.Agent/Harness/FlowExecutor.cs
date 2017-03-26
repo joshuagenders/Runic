@@ -1,5 +1,6 @@
 ﻿using NLog;
 using Runic.Agent.AssemblyManagement;
+using Runic.Agent.Metrics;
 using Runic.Framework.Models;
 using System;
 using System.Collections.Generic;
@@ -22,34 +23,16 @@ namespace Runic.Agent.Harness
             _pluginManager = pluginManager;
             _flow = flow;
         }
-        public async Task ExecuteFlow(CancellationToken ctx = default(CancellationToken))
+        public async Task ExecuteFlow(CancellationToken ct)
         {
             var navigator = new FlowNavigator(_flow, _pluginManager);
             FunctionHarness function = null;
             bool lastStepSuccess = false;
-            while (!ctx.IsCancellationRequested)
+            while (!ct.IsCancellationRequested)
             {
                 function = navigator.GetNextFunction(lastStepSuccess);
-                if (function == null)
-                    break;
-                //execute with function harness
-                lastStepSuccess = await Execute(function, ctx);
+                lastStepSuccess = await function.Execute(ct);
             }
-        }
-        private async Task<bool> Execute(FunctionHarness function, CancellationToken ctx = default(CancellationToken))
-        {
-            Thread.Sleep(_flow.StepDelayMilliseconds);
-            _logger.Debug($"Executing step for {_flow.Name}");
-            try
-            {
-                await function.Execute(ctx);
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-                return false;
-            }
-            return function.Status == "Complete";
         }
     }
 }

@@ -6,36 +6,37 @@ using Runic.Agent.Harness;
 using Runic.Agent.Messaging;
 using Runic.Framework.Models;
 using Runic.Agent.AssemblyManagement;
+using System.Collections.Concurrent;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Runic.Agent.Service
 {
     public class AgentService : IAgentService
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         private IMessagingService _messagingService { get; }
-        private ExecutionContext _executionContext { get; set; }
-        private FlowHarness _flowHarness { get; set; }
         private readonly Flows _flows;
         private readonly PluginManager _pluginManager;
 
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-
+        private ConcurrentDictionary<string, ThreadManager> _flowThreadManagers { get; set; }
 
         public AgentService(PluginManager pluginManager, Flows flows)
         {
-            _executionContext = new ExecutionContext();
-            _flowHarness = new FlowHarness(pluginManager);
             _flows = flows;
             _pluginManager = pluginManager;
+            _flowThreadManagers = new ConcurrentDictionary<string, ThreadManager>();
         }
 
-        private void RegisterHandlers(IMessagingService messagingService, CancellationToken ct = default(CancellationToken))
+        private void RegisterHandlers(IMessagingService messagingService, CancellationToken ct)
         {
             messagingService.RegisterThreadLevelHandler((message, context) => SetThreadLevel(message, ct));
             messagingService.RegisterFlowUpdateHandler((message, context) => Task.Run(() => _flows.AddUpdateFlow(message.Flow), ct));
             _logger.Debug("Registered message handlers");
         }
 
-        public async Task Run(IMessagingService messagingService, CancellationToken ct = default(CancellationToken))
+        public async Task Run(IMessagingService messagingService, CancellationToken ct)
         {
             RegisterHandlers(messagingService, ct);
 
@@ -46,58 +47,42 @@ namespace Runic.Agent.Service
                 ct.Register(() => mre.Set());
                 mre.Wait();
             }, ct);
+            SafeCancelAll();
         }
 
-        public void StartFlow(FlowContext flowContext, CancellationToken ct = default(CancellationToken))
+        public void SafeCancelAll()
         {
-            _logger.Debug($"Starting flow {flowContext.FlowName} at {flowContext.ThreadCount} threads");
-            _executionContext.FlowContexts.Add(flowContext.FlowName, flowContext);
-            flowContext.Task = _flowHarness.Execute(flowContext.Flow, flowContext.ThreadCount, ct);
-            flowContext.CancellationToken = ct;
+            List<Task> updateTasks = new List<Task>();
+            lock (_flowThreadManagers)
+            {
+                _flowThreadManagers.ToList().ForEach(ftm => updateTasks.Add(ftm.Value.SafeUpdateThreadCountAsync(0)));
+            }
+            Task.WaitAll(updateTasks.ToArray());
         }
 
         public int GetThreadLevel(string flow)
         {
-            FlowContext context;
-            if (_executionContext.FlowContexts.TryGetValue(flow, out context))
+            if (_flowThreadManagers.TryGetValue(flow, out ThreadManager manager))
             {
-                return context.ThreadCount;
+                return manager.GetCurrentThreadCount();
             }
+
             return 0;
         }
 
-        public async Task SetThreadLevel(SetThreadLevelRequest request, CancellationToken ct = default(CancellationToken))
+        public async Task SetThreadLevel(SetThreadLevelRequest request, CancellationToken ct)
         {
+            //todo implement maxthreads
             _logger.Debug($"Attempting to update thread level to {request.ThreadLevel} for {request.FlowName}");
-
-            if (_executionContext == null)
+            if (_flowThreadManagers.TryGetValue(request.FlowName, out ThreadManager manager))
             {
-                _executionContext = new ExecutionContext();
-            }
-
-            //if not enough threads then error
-            if (!_executionContext.ThreadsAreAvailable(request.ThreadLevel, request.FlowName))
-            {
-                _logger.Error($"Not enough available threads.");
-                throw new NotEnoughThreadsAvailableException();
-            }
-
-            if (_executionContext.FlowHarnesses.ContainsKey(request.FlowName))
-            {
-                _logger.Debug($"Update thread level to {request.ThreadLevel} for {request.FlowName}");
-                //flow harness found - update the thread
-                await _executionContext.FlowHarnesses[request.FlowName].UpdateThreads(request.ThreadLevel, ct);
+                await manager.SafeUpdateThreadCountAsync(request.ThreadLevel);
             }
             else
             {
-                _logger.Debug($"Starting new flow {request.FlowName} at {request.ThreadLevel} threads");
-                //no harness found, start the threads
-                await Task.Run(() => StartFlow(new FlowContext()
-                {
-                    FlowName = request.FlowName,
-                    ThreadCount = request.ThreadLevel,
-                    Flow = _flows.GetFlow(request.FlowName)
-                }), ct);
+                var newThreadManager = new ThreadManager(_flows.GetFlow(request.FlowName), _pluginManager);
+                var resolvedManager = _flowThreadManagers.GetOrAdd(request.FlowName, newThreadManager);
+                await resolvedManager.SafeUpdateThreadCountAsync(request.ThreadLevel);
             }
         }
     }

@@ -49,10 +49,10 @@ namespace Runic.Agent.Harness
 
         private Step GetStepByName(string name)
         {
-            if (string.IsNullOrEmpty(_lastStep.NextStepOnFailure) &&
-                string.IsNullOrEmpty(_lastStep.NextStepOnSuccess))
+            //if no next step, restart
+            if (string.IsNullOrWhiteSpace(name))
             {
-                return null;
+                return _flow.Steps[0];
             }
             return _flow.Steps.Where(s => s.StepName == name).Single();
         }

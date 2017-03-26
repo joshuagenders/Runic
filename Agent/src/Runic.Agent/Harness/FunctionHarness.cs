@@ -12,44 +12,37 @@ namespace Runic.Agent.Harness
 {
     public class FunctionHarness
     {
-        private object _instance { get; set; }
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private string _functionName { get; set; }
-        public string Status { get; set; }
 
+        private object _instance { get; set; }
+        private string _functionName { get; set; }
+        
         public void Bind(object functionInstance, string functionName)
         {
             _instance = functionInstance;
             _functionName = functionName;
-            Status = "FunctionBound";
         }
 
-        public async Task Execute(CancellationToken ctx = default(CancellationToken))
+        public async Task<bool> Execute(CancellationToken ct)
         {
-            await BeforeEach(ctx);
-
             try
             {
-                await ExecuteFunction();
+                await ExecuteMethodWithAttribute(typeof(BeforeEachAttribute), ct);
+                await ExecuteFunction(ct);
+                await ExecuteMethodWithAttribute(typeof(AfterEachAttribute), ct);
                 Clients.Statsd?.Count($"functions.{_functionName}.actions.execute.success");
-                if (ctx.IsCancellationRequested)
-                    return;
+                return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Status = "Failure";
-                _logger.Error($"Error executing {_functionName}");
-                _logger.Error(e);
                 Clients.Statsd?.Count($"functions.{_functionName}.actions.execute.error");
+                return false;
             }
-
-            await AfterEach(ctx);
         }
 
-        private async Task ExecuteFunction()
+        public async Task ExecuteFunction(CancellationToken ct)
         {
             //todo pass overrides
-            Status = "ExecuteFunction";
             var methods = _instance.GetType().GetRuntimeMethods();
             MethodInfo functionMethod = null;
             foreach (var method in methods)
@@ -61,9 +54,9 @@ namespace Runic.Agent.Harness
                 }
             }
             if (functionMethod == null)
-                throw new FunctionMethodNotFoundException();
+                throw new FunctionWithAttributeNotFoundException(_functionName);
 
-            await ExecuteMethod(functionMethod);
+            await ExecuteMethod(functionMethod, ct);
         }
 
         private bool IsAsyncMethod (MethodInfo method)
@@ -74,65 +67,37 @@ namespace Runic.Agent.Harness
                               .Any(c => c.GetType() == typeof(AsyncStateMachineAttribute));
         }
 
-        private async Task ExecuteMethod(MethodInfo method)
+        public async Task ExecuteMethod(MethodInfo method, CancellationToken ct)
         {
             if (IsAsyncMethod(method))
             {
+                //await Task.Factory.StartNew(async () => await (Task)method.Invoke(_instance, null), ct);
                 var task = (Task)method.Invoke(_instance, null);
                 await task;
             }
             else
             {
-                await Task.Run(() => method.Invoke(_instance, null));
+                await Task.Run(() => method.Invoke(_instance, null), ct);
             }
         }
         
-        private async Task ExecuteMethodWithAttribute(Type attributeType)
+        public MethodInfo GetMethodWithAttribute(Type attributeType)
         {
-            var methods = _instance.GetType().GetRuntimeMethods();
+            var methods = _instance.GetType().GetMethods();
             foreach (var method in methods)
             {
                 var attribute = method.GetCustomAttribute(attributeType);
                 if (attribute != null)
-                    await ExecuteMethod(method);
+                    return method;
             }
+            return null;
         }
 
-        private async Task BeforeEach(CancellationToken ctx = default(CancellationToken))
+        private async Task ExecuteMethodWithAttribute(Type attributeType, CancellationToken ct)
         {
-            Status = "BeforeEach";
-            try
-            {
-                await ExecuteMethodWithAttribute(typeof(BeforeEachAttribute));
-                Clients.Statsd?.Count($"functions.{_functionName}.actions.beforeEach.success");
-                if (ctx.IsCancellationRequested)
-                    return;
-            }
-            catch (Exception e)
-            {
-                _logger.Error($"Error executing before each for {_functionName}");
-                _logger.Error(e);
-                Clients.Statsd?.Count($"functions.{_functionName}.actions.beforeEach.error");
-            }
-        }
-
-        private async Task AfterEach(CancellationToken ctx = default(CancellationToken))
-        {
-            Status = "AfterEach";
-            try
-            {
-                await ExecuteMethodWithAttribute(typeof(AfterEachAttribute));
-                Status = "Complete";
-                Clients.Statsd?.Count($"functions.{_functionName}.actions.afterEach.success");
-                if (ctx.IsCancellationRequested)
-                    return;
-            }
-            catch (Exception e)
-            {
-                _logger.Error($"Error executing after each for {_functionName}");
-                _logger.Error(e);
-                Clients.Statsd?.Count($"functions.{_functionName}.actions.afterEach.error");
-            }
+            var method = GetMethodWithAttribute(attributeType);
+            if (method != null)
+                await ExecuteMethod(method, ct);
         }
     }
 }

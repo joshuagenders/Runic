@@ -1,8 +1,7 @@
-﻿using Runic.Agent.AssemblyManagement;
+﻿using Moq;
+using Runic.Agent.AssemblyManagement;
 using Runic.Agent.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Runic.Agent.Messaging;
 
 namespace Runic.Agent.UnitTest
 {
@@ -10,6 +9,8 @@ namespace Runic.Agent.UnitTest
     {
         private const string wd = "C:\\code\\Runic\\Agent\\src\\Runic.Agent.UnitTest\\bin\\Debug\\netcoreapp1.0";
         public PluginManager PluginManager { get; set; }
+        public IMessagingService MessagingService { get; set; }
+
         public AgentWorld()
         {
             //init agent
@@ -27,6 +28,8 @@ namespace Runic.Agent.UnitTest
 
             PluginManager = new PluginManager();
             PluginManager.RegisterProvider(new FilePluginProvider(wd));
+
+            MessagingService = new Mock<IMessagingService>().Object;
         }
     }
 }
