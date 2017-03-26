@@ -45,9 +45,7 @@ namespace Runic.Agent.Harness
             else
             {
                 var cts = new CancellationTokenSource();
-                var flowTask = new FlowExecutor(_flow, _pluginManager)
-                                               .ExecuteFlow(cts.Token)
-                                               .ContinueWith(async (_) => await SafeRemoveTaskAsync(id));
+                var flowTask = ExecuteFlow(cts.Token).ContinueWith(async (_) => await SafeRemoveTaskAsync(id));
 
                 var cancellableTask = new CancellableTask(flowTask, cts);
                     _taskPool.AddOrUpdate(
@@ -57,6 +55,18 @@ namespace Runic.Agent.Harness
                         val.Cancel();
                         return cancellableTask;
                     });
+            }
+        }
+
+        private async Task ExecuteFlow(CancellationToken ct)
+        {
+            var factory = new FunctionFactory(_flow, _pluginManager);
+            FunctionHarness function = null;
+            bool lastStepSuccess = false;
+            while (!ct.IsCancellationRequested)
+            {
+                function = factory.GetNextFunction(lastStepSuccess);
+                lastStepSuccess = await function.Execute(ct);
             }
         }
 

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Runic.Agent.Harness
 {
-    public class FlowNavigator
+    public class FunctionFactory
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -18,7 +18,7 @@ namespace Runic.Agent.Harness
 
         private readonly PluginManager _pluginManager;
 
-        public FlowNavigator(Flow flow, PluginManager pluginManager)
+        public FunctionFactory(Flow flow, PluginManager pluginManager)
         {
             _flow = flow;
             _pluginManager = pluginManager;
