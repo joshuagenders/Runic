@@ -18,12 +18,11 @@ namespace Runic.Agent.FlowManagement
         public void AddUpdateFlow(Flow flow)
         {
             _flows[flow.Name] = flow;
-            Clients.Statsd?.Count($"{flow.Name}.AddOrUpdated");
+            Stats.CountFlowAdded(flow.Name);
         }
 
         public Flow GetFlow(string name)
         {
-            Clients.Statsd?.Count($"{name}.get");
             return _flows[name];
         }
 

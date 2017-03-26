@@ -24,7 +24,7 @@ namespace Runic.Agent
                 options.Prefix = AgentConfiguration.Instance.StatsdPrefix;
                 options.BufferMetrics = false;
             });
-            Clients.Statsd = statsd;
+            Stats.Statsd = statsd;
 
             builder.RegisterInstance(new Flows());
             builder.RegisterInstance(new PluginManager());

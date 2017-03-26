@@ -100,14 +100,14 @@ namespace Runic.Agent.Harness
                 Task.WaitAll(removalTasks.ToArray());
             }
             _currentThreadCount = threadCount;
-            Clients.Statsd?.Gauge($"flows.{_flow.Name}.threadLevel", threadCount);
+            Stats.SetThreadLevel(_flow.Name, threadCount);
         }
 
         public void Dispose()
         {
             UpdateThreads(0);
             if (_flow != null)
-                Clients.Statsd?.Gauge($"flows.{_flow.Name}.threadLevel", 0);
+                Stats.SetThreadLevel(_flow.Name, 0);
         }
     }
 }

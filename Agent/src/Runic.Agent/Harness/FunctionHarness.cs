@@ -30,12 +30,12 @@ namespace Runic.Agent.Harness
                 await ExecuteMethodWithAttribute(typeof(BeforeEachAttribute), ct);
                 await ExecuteFunction(ct);
                 await ExecuteMethodWithAttribute(typeof(AfterEachAttribute), ct);
-                Clients.Statsd?.Count($"functions.{_functionName}.actions.execute.success");
+                Stats.CountFunctionSuccess(_functionName);
                 return true;
             }
             catch (Exception)
             {
-                Clients.Statsd?.Count($"functions.{_functionName}.actions.execute.error");
+                Stats.CountFunctionFailure(_functionName);
                 return false;
             }
         }

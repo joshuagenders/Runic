@@ -80,7 +80,7 @@ namespace Runic.Agent.AssemblyManagement
 
             PopulateStaticInterfaces(assembly);
 
-            Clients.Statsd?.Count("plugins.pluginLoaded");
+            Stats.CountPluginLoaded();
         }
 
         public Assembly LoadAssembly(string pluginPath, string pluginAssemblyName)
@@ -137,7 +137,7 @@ namespace Runic.Agent.AssemblyManagement
                 var staticFields = type.GetFields(BindingFlags.Static | BindingFlags.Public);
                 staticFields.Where(f => f.GetType() == typeof(IStatsd))
                             .ToList()
-                            .ForEach(f => f.SetValue(type, Clients.Statsd));
+                            .ForEach(f => f.SetValue(type, Stats.Statsd));
                 staticFields.Where(f => f.GetType() == typeof(IRuneClient))
                             .ToList()
                             .ForEach(f => f.SetValue(type, _runeClient));
