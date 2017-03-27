@@ -9,6 +9,7 @@ using Runic.Agent.AssemblyManagement;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Collections.Generic;
+using Runic.Agent.ThreadPatterns;
 
 namespace Runic.Agent.Service
 {
@@ -68,6 +69,44 @@ namespace Runic.Agent.Service
             }
 
             return 0;
+        }
+
+        private async Task ExecutePattern(Flow flow, IThreadPattern pattern, CancellationToken ct)
+        {
+            _flows.AddUpdateFlow(flow);
+
+            pattern.RegisterThreadChangeHandler(async (threadLevel) =>
+            {
+                await SetThreadLevel(new SetThreadLevelRequest()
+                {
+                    FlowName = flow.Name,
+                    ThreadLevel = threadLevel
+                }, ct);
+            });
+            await pattern.Start(ct);
+        }
+
+        public async Task ExecuteFlow(GradualFlowExecutionRequest request, CancellationToken ct)
+        {
+            //todo use IDs so multiple instances of the same test are supported
+            var pattern = new GradualThreadPattern();
+            await ExecutePattern(request.Flow, pattern, ct);
+        }
+
+        public async Task ExecuteFlow(GraphFlowExecutionRequest request, CancellationToken ct)
+        {
+            var pattern = new GraphThreadPattern()
+            {
+                DurationSeconds = request.ThreadPattern.DurationSeconds,
+                Points = request.ThreadPattern.Points
+            };
+            await ExecutePattern(request.Flow, pattern, ct);
+        }
+
+        public async Task ExecuteFlow(ConstantFlowExecutionRequest request, CancellationToken ct)
+        {
+            var pattern = new ConstantThreadPattern();
+            await ExecutePattern(request.Flow, pattern, ct);
         }
 
         public async Task SetThreadLevel(SetThreadLevelRequest request, CancellationToken ct)

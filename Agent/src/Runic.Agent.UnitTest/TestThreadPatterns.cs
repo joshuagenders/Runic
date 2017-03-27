@@ -1,16 +1,17 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Runic.Framework.ThreadPatterns;
+using Runic.Agent.ThreadPatterns;
+using Runic.Framework.Models;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.UnitTest.Tests
+namespace Runic.Agent.UnitTest
 {
     [TestClass]
-    public class TestGraphThread
+    public class TestThreadPatterns
     {
         [TestMethod]
-        public async Task TestCallbacks()
+        public async Task TestGraphCallbacks()
         {
             var gtp = new GraphThreadPattern()
             {

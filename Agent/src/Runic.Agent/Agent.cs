@@ -43,6 +43,8 @@ namespace Runic.Agent
             // resolve ioc
             var pluginProvider = container.Resolve<IPluginProvider>();
             var messagingService = container.Resolve<IMessagingService>();
+            //todo subscribe message handlers
+
             var flows = container.Resolve<Flows>();
             var pluginManager = container.Resolve<PluginManager>();
             pluginManager.RegisterProvider(pluginProvider);

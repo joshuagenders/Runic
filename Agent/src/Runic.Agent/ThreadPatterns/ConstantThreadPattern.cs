@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Framework.ThreadPatterns
+namespace Runic.Agent.ThreadPatterns
 {
     public class ConstantThreadPattern : IThreadPattern
     {

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Runic.Framework.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Framework.ThreadPatterns
+namespace Runic.Agent.ThreadPatterns
 {
     public class GraphThreadPattern : IThreadPattern
     {

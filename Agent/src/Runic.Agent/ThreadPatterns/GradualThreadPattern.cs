@@ -1,18 +1,16 @@
-﻿using System;
+﻿using Runic.Framework.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Framework.ThreadPatterns
+namespace Runic.Agent.ThreadPatterns
 {
     public class GradualThreadPattern : GraphThreadPattern, IThreadPattern
     {
-        private List<Action<int>> _callbacks { get; set; }
-
         public int ThreadCount { get; set; }
         public double RampUpSeconds { get; set; }
         public double RampDownSeconds { get; set; }
-        public double DurationSeconds { get; set; }
         public int StepIntervalSeconds { get; set; }
 
         private DateTime _startTime { get; set; }
@@ -20,19 +18,6 @@ namespace Runic.Framework.ThreadPatterns
         private DateTime _rampdownStartTime { get; set; }
         private DateTime _endTime { get; set; }
         
-        private int _currentThreadCount { get; set; }
-        
-        public GradualThreadPattern()
-        {
-            _callbacks = new List<Action<int>>();
-            _currentThreadCount = 0;
-        }
-
-        public void RegisterThreadChangeHandler(Action<int> callback)
-        {
-            _callbacks.Add(callback);
-        }
-
         private void GenerateTimes()
         {
             _startTime = DateTime.Now;
@@ -84,7 +69,7 @@ namespace Runic.Framework.ThreadPatterns
             });
         }
 
-        public async Task Start(CancellationToken ct)
+        public override async Task Start(CancellationToken ct)
         {
             GenerateTimes();
             GeneratePoints();

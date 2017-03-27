@@ -5,7 +5,6 @@ using Runic.Agent.FlowManagement;
 using Runic.Agent.Service;
 using Runic.Framework.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Runic.Agent.AssemblyManagement;
 
 namespace Runic.Agent.UnitTest
 {

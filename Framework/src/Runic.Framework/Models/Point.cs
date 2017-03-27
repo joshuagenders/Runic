@@ -1,4 +1,4 @@
-﻿namespace Runic.Framework.ThreadPatterns
+﻿namespace Runic.Framework.Models
 {
     public struct Point
     {

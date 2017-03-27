@@ -27,7 +27,7 @@ namespace Runic.Agent.Messaging
             _bus = BusClientFactory.CreateDefault(busConfig);
         }
 
-        public void RegisterThreadLevelHandler(Func<SetThreadLevelRequest, MessageContext, Task> handler)
+        public void Subscribe<T>(Func<T, MessageContext, Task> handler)
         {
             try
             {
@@ -39,16 +39,29 @@ namespace Runic.Agent.Messaging
             }
         }
 
+        public void RegisterThreadLevelHandler(Func<SetThreadLevelRequest, MessageContext, Task> handler)
+        {
+            Subscribe(handler);   
+        }
+
         public void RegisterFlowUpdateHandler(Func<AddUpdateFlowRequest, MessageContext, Task> handler)
         {
-            try
-            {
-                _bus.SubscribeAsync(handler);
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-            }
+            Subscribe(handler);
+        }
+
+        public void RegisterConstantFlowHandler(Func<ConstantFlowExecutionRequest, MessageContext, Task> handler)
+        {
+            Subscribe(handler);
+        }
+
+        public void RegisterGraphFlowHandler(Func<GraphFlowExecutionRequest, MessageContext, Task> handler)
+        {
+            Subscribe(handler);
+        }
+
+        public void RegisterGradualFlowHandler(Func<GradualFlowExecutionRequest, MessageContext, Task> handler)
+        {
+            Subscribe(handler);
         }
     }
 }
