@@ -6,7 +6,7 @@ using Runic.Framework.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Runic.UnitTest.Runic
+namespace Runic.UnitTest.Tests
 {
     [TestClass]
     public class TestTimedAction

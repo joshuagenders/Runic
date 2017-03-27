@@ -3,7 +3,7 @@ using Runic.Framework.Attributes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
-namespace Runic.UnitTest.Runic
+namespace Runic.UnitTest.Tests
 {
     [TestClass]
     public class TestAttributes

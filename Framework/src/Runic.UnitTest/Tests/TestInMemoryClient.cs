@@ -4,7 +4,7 @@ using Runic.Framework.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Runic.UnitTest.Runic
+namespace Runic.UnitTest.Tests
 {
     [TestClass]
     public class TestInMemoryClient
