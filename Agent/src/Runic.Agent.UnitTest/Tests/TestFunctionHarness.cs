@@ -5,8 +5,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading;
 using System;
 using Runic.Framework.Attributes;
+using Runic.Agent.UnitTest.TestUtility;
 
-namespace Runic.Agent.UnitTest
+namespace Runic.Agent.UnitTest.Tests
 {
     [TestClass]
     public class TestFunctionHarness

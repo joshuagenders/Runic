@@ -3,7 +3,7 @@ using Runic.Agent.AssemblyManagement;
 using Runic.Agent.Configuration;
 using Runic.Agent.Messaging;
 
-namespace Runic.Agent.UnitTest
+namespace Runic.Agent.UnitTest.TestUtility
 {
     public class AgentWorld
     {

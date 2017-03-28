@@ -1,8 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.Configuration;
+using Runic.Agent.UnitTest.TestUtility;
 using StatsN;
 
-namespace Runic.Agent.UnitTest
+namespace Runic.Agent.UnitTest.Tests
 {
     [TestClass]
     public class TestStatsd

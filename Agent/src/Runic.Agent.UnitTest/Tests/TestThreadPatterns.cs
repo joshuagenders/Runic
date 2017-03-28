@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.UnitTest
+namespace Runic.Agent.UnitTest.Tests
 {
     [TestClass]
     public class TestThreadPatterns

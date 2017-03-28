@@ -3,7 +3,7 @@ using Runic.Agent.Harness;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.UnitTest
+namespace Runic.Agent.UnitTest.Tests
 {
     [TestClass]
     public class TestCancellableTask

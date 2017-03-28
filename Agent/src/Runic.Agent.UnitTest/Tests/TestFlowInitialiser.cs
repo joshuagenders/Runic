@@ -1,14 +1,14 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Runic.Agent.FlowManagement;
 using Runic.Agent.Harness;
+using Runic.Agent.UnitTest.TestUtility;
 using Runic.Framework.Models;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 
-namespace Runic.Agent.UnitTest
+namespace Runic.Agent.UnitTest.Tests
 {
     [TestClass]
-    public class TestThreadManager
+    public class TestFlowInitialiser
     {
         private AgentWorld _world { get; set; }
 
@@ -19,34 +19,33 @@ namespace Runic.Agent.UnitTest
         }
 
         [TestMethod]
-        public async Task TestUpdateThreads()
+        public void TestLibraryLoads()
         {
+
             var flow = new Flow()
             {
                 Name = "Test",
-                StepDelayMilliseconds = 100,
                 Steps = new List<Step>()
                 {
                     new Step()
                     {
-                        StepName = "Step1",
+                        StepName = "blah",
                         Function = new FunctionInformation()
                         {
                             AssemblyName = "Runic.ExampleTest",
-                            FunctionName = "AsyncWait",
+                            FunctionName = "FakeFunction",
                             AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.FakeFunction"
-                        },
-                        Repeat = 1,
-                        EvaluateSuccessOnRepeat = false //todo
+                        }
                     }
                 }
             };
 
-            var manager = new ThreadManager(flow, _world.PluginManager);
-            await manager.SafeUpdateThreadCountAsync(1);
-            Assert.AreEqual(1, manager.GetCurrentThreadCount());
-            await manager.SafeUpdateThreadCountAsync(0);
-            Assert.AreEqual(0, manager.GetCurrentThreadCount());
+            
+            var flowInitialiser = new FlowInitialiser(_world.PluginManager);
+            flowInitialiser.InitialiseFlow(flow);
+
+            Assert.IsTrue(_world.PluginManager.GetAssemblies().Any());
+            Assert.IsTrue(_world.PluginManager.GetAssemblyKeys().Any(k => k == "Runic.ExampleTest"));
         }
     }
 }

@@ -1,13 +1,13 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.FlowManagement;
 using Runic.Agent.Service;
+using Runic.Agent.UnitTest.TestUtility;
 using Runic.Framework.Models;
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.UnitTest
+namespace Runic.Agent.UnitTest.Tests
 {
     public class TestWikipedia
     {

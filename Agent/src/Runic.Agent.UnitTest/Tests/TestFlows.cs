@@ -3,7 +3,7 @@ using Runic.Agent.FlowManagement;
 using Runic.Framework.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Runic.Agent.UnitTest
+namespace Runic.Agent.UnitTest.Tests
 {
     [TestClass]
     public class TestFlows
