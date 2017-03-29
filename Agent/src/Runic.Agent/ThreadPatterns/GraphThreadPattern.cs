@@ -26,28 +26,19 @@ namespace Runic.Agent.ThreadPatterns
 
         public virtual async Task Start(CancellationToken ct)
         {
-            if (Points[Points.Count - 1].threadLevel != 0)
-            {
-                Points[Points.Count - 1] = new Point()
-                {
-                    threadLevel = 0,
-                    unitsFromStart = DurationSeconds
-                };
-            }
-
-            var maxX = Points.Max(p => p.unitsFromStart);
+            double maxX = Points.Max(p => p.unitsFromStart);
             for (int index = 0; index < Points.Count; index++)
             {
                 if (ct.IsCancellationRequested)
                     return;
                 var currentPoint = Points[index];
 
-                _callbacks.ToList().ForEach(setthread => setthread((int)currentPoint.threadLevel));
+                _callbacks.ToList().ForEach(setthread => setthread(currentPoint.threadLevel));
 
                 if (index < Points.Count - 1)
                 {
                     var nextPoint = Points[index + 1];
-                    var waitTimeSeconds = ((nextPoint.unitsFromStart - currentPoint.unitsFromStart) / maxX) * DurationSeconds;
+                    var waitTimeSeconds = ((nextPoint.unitsFromStart - currentPoint.unitsFromStart) * (DurationSeconds / maxX));
                     var cancelled = ct.WaitHandle.WaitOne(TimeSpan.FromSeconds(waitTimeSeconds));
                 }
             }

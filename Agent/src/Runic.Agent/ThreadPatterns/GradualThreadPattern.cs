@@ -86,7 +86,10 @@ namespace Runic.Agent.ThreadPatterns
                 rampdownIntervalCount = 1;
 
             var lastPoint = Points[Points.Count - 1];
-            var startX = lastPoint.unitsFromStart + 1;
+            var startX = DurationSeconds - RampDownSeconds > lastPoint.unitsFromStart 
+                ? DurationSeconds - RampDownSeconds 
+                : lastPoint.unitsFromStart + 1;
+
             if (startX <= 1)
                 startX = 1;
 
@@ -102,7 +105,7 @@ namespace Runic.Agent.ThreadPatterns
                 {
                     Points.Add(new Point()
                     {
-                        unitsFromStart = i + startX,
+                        unitsFromStart = (i * StepIntervalSeconds) + startX,
                         threadLevel = nextThreadCount
                     });
                     previousThreadCount = nextThreadCount;
