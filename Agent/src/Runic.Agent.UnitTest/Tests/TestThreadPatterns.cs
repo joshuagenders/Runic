@@ -37,5 +37,64 @@ namespace Runic.Agent.UnitTest.Tests
             Assert.AreEqual(5, calls[1]);
             Assert.AreEqual(0, calls[2]);
         }
+
+        [TestMethod]
+        public async Task TestConstantCallback()
+        {
+            var gtp = new ConstantThreadPattern()
+            {
+                ThreadCount = 4
+            };
+            var calls = new List<int>();
+            gtp.RegisterThreadChangeHandler((threadCount) =>
+            {
+                calls.Add(threadCount);
+            });
+
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(200);
+            await gtp.Start(cts.Token);
+            Assert.AreEqual(1, calls.Count);
+            Assert.AreEqual(4, calls[0]);
+        }
+
+        /*
+         todo test edge cases
+         var gtp = new GradualThreadPattern()
+            {
+                DurationSeconds = 10,
+                RampDownSeconds = 5,
+                RampUpSeconds = 5,
+                ThreadCount = 2
+            };
+             */
+
+        [TestMethod]
+        public async Task TestGradualCallback()
+        {
+            var gtp = new GradualThreadPattern()
+            {
+                DurationSeconds = 6,
+                RampDownSeconds = 2,
+                RampUpSeconds = 2,
+                ThreadCount = 6,
+                StepIntervalSeconds = 1
+            };
+            var calls = new List<int>();
+            gtp.RegisterThreadChangeHandler((threadCount) =>
+            {
+                calls.Add(threadCount);
+            });
+
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(6500);
+            await gtp.Start(cts.Token);
+            Assert.AreEqual(5, calls.Count);
+            Assert.AreEqual(0, calls[0]);
+            Assert.AreEqual(3, calls[1]);
+            Assert.AreEqual(6, calls[2]);
+            Assert.AreEqual(3, calls[3]);
+            Assert.AreEqual(0, calls[4]);
+        }
     }
 }

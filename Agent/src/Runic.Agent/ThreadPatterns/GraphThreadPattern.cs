@@ -9,9 +9,9 @@ namespace Runic.Agent.ThreadPatterns
 {
     public class GraphThreadPattern : IThreadPattern
     {
-        private List<Action<int>> _callbacks { get; set; }
+        private IList<Action<int>> _callbacks { get; set; }
 
-        public List<Point> Points { get; set; }
+        public IList<Point> Points { get; set; }
         public int DurationSeconds { get; set; }
 
         public GraphThreadPattern()
@@ -26,23 +26,30 @@ namespace Runic.Agent.ThreadPatterns
 
         public virtual async Task Start(CancellationToken ct)
         {
+            if (Points[Points.Count - 1].threadLevel != 0)
+            {
+                Points[Points.Count - 1] = new Point()
+                {
+                    threadLevel = 0,
+                    unitsFromStart = DurationSeconds
+                };
+            }
+
             var maxX = Points.Max(p => p.unitsFromStart);
-            for (int index = 0; index <= Points.Count; index++)
+            for (int index = 0; index < Points.Count; index++)
             {
                 if (ct.IsCancellationRequested)
                     return;
-                //overwrites last point with 0 threads for safety..think about this
-                if (index == Points.Count - 1)
-                {
-                    _callbacks.ForEach(setthread => setthread(0));
-                    break;
-                }
                 var currentPoint = Points[index];
-                _callbacks.ForEach(setthread => setthread((int)currentPoint.threadLevel));
 
-                var nextPoint = Points[index + 1];
-                var waitTimeSeconds = ((nextPoint.unitsFromStart - currentPoint.unitsFromStart) / maxX) * DurationSeconds;
-                var cancelled = ct.WaitHandle.WaitOne(TimeSpan.FromSeconds(waitTimeSeconds));
+                _callbacks.ToList().ForEach(setthread => setthread((int)currentPoint.threadLevel));
+
+                if (index < Points.Count - 1)
+                {
+                    var nextPoint = Points[index + 1];
+                    var waitTimeSeconds = ((nextPoint.unitsFromStart - currentPoint.unitsFromStart) / maxX) * DurationSeconds;
+                    var cancelled = ct.WaitHandle.WaitOne(TimeSpan.FromSeconds(waitTimeSeconds));
+                }
             }
         }
     }

@@ -3,8 +3,8 @@
     public struct Point
     {
         //time value, calculated as ratio of max x
-        public double unitsFromStart;
+        public int unitsFromStart;
         //thread level
-        public double threadLevel;
+        public int threadLevel;
     }
 }
