@@ -39,7 +39,7 @@ namespace Runic.Agent.ThreadPatterns
                 {
                     var nextPoint = Points[index + 1];
                     var waitTimeSeconds = ((nextPoint.unitsFromStart - currentPoint.unitsFromStart) * (DurationSeconds / maxX));
-                    var cancelled = ct.WaitHandle.WaitOne(TimeSpan.FromSeconds(waitTimeSeconds));
+                    await Task.Run(() => ct.WaitHandle.WaitOne(TimeSpan.FromSeconds(waitTimeSeconds)), ct);
                 }
             }
         }

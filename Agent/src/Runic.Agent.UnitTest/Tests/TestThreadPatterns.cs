@@ -11,7 +11,7 @@ namespace Runic.Agent.UnitTest.Tests
     public class TestThreadPatterns
     {
         [TestMethod]
-        public async Task TestGraphCallbacks()
+        public async Task TestShrinkingGraphCallbacks()
         {
             var gtp = new GraphThreadPattern()
             {
@@ -39,6 +39,34 @@ namespace Runic.Agent.UnitTest.Tests
         }
 
         [TestMethod]
+        public async Task TestExpandingGraphCallbacks()
+        {
+            var gtp = new GraphThreadPattern()
+            {
+                DurationSeconds = 5,
+                Points = new List<Point>()
+                {
+                   new Point(){ threadLevel = 2, unitsFromStart = 0 },
+                   new Point(){ threadLevel = 5, unitsFromStart = 1 },
+                   new Point(){ threadLevel = 0, unitsFromStart = 2 }
+                }
+            };
+            var calls = new List<int>();
+            gtp.RegisterThreadChangeHandler((threadCount) =>
+            {
+                calls.Add(threadCount);
+            });
+
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(5500);
+            await gtp.Start(cts.Token);
+            Assert.AreEqual(3, calls.Count);
+            Assert.AreEqual(2, calls[0]);
+            Assert.AreEqual(5, calls[1]);
+            Assert.AreEqual(0, calls[2]);
+        }
+
+        [TestMethod]
         public async Task TestConstantCallback()
         {
             var gtp = new ConstantThreadPattern()
@@ -56,6 +84,28 @@ namespace Runic.Agent.UnitTest.Tests
             await gtp.Start(cts.Token);
             Assert.AreEqual(1, calls.Count);
             Assert.AreEqual(4, calls[0]);
+        }
+
+        [TestMethod]
+        public async Task TestTimedConstantCallback()
+        {
+            var gtp = new ConstantThreadPattern()
+            {
+                ThreadCount = 4,
+                DurationSeconds = 2
+            };
+            var calls = new List<int>();
+            gtp.RegisterThreadChangeHandler((threadCount) =>
+            {
+                calls.Add(threadCount);
+            });
+
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(2200);
+            await gtp.Start(cts.Token);
+            Assert.AreEqual(2, calls.Count);
+            Assert.AreEqual(4, calls[0]);
+            Assert.AreEqual(0, calls[1]);
         }
 
         /*

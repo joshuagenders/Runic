@@ -10,6 +10,7 @@ namespace Runic.Agent.ThreadPatterns
         private List<Action<int>> _callbacks { get; set; }
 
         public int ThreadCount { get; set; }
+        public int DurationSeconds { get; set; }
 
         public ConstantThreadPattern()
         {
@@ -23,10 +24,19 @@ namespace Runic.Agent.ThreadPatterns
 
         public async Task Start(CancellationToken ct)
         {
-            await Task.Run(() =>
+            if (DurationSeconds == 0)
+            {
+                await Task.Run(() =>
+                {
+                    _callbacks.ForEach(c => c.Invoke(ThreadCount));
+                }, ct);
+            }
+            else
             {
                 _callbacks.ForEach(c => c.Invoke(ThreadCount));
-            }, ct);
+                await Task.Run(() => ct.WaitHandle.WaitOne(TimeSpan.FromSeconds(DurationSeconds)), ct);
+                _callbacks.ForEach(c => c.Invoke(0));
+            }
         }
     }
 }
