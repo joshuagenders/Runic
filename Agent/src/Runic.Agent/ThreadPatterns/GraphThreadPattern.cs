@@ -24,6 +24,16 @@ namespace Runic.Agent.ThreadPatterns
             _callbacks.Add(callback);
         }
 
+        public int GetMaxDurationSeconds()
+        {
+            return DurationSeconds;
+        }
+
+        public int GetMaxThreadCount()
+        {
+            return Points.Max(p => p.threadLevel);
+        }
+
         public virtual async Task Start(CancellationToken ct)
         {
             double maxX = Points.Max(p => p.unitsFromStart);
@@ -39,7 +49,7 @@ namespace Runic.Agent.ThreadPatterns
                 {
                     var nextPoint = Points[index + 1];
                     var waitTimeSeconds = ((nextPoint.unitsFromStart - currentPoint.unitsFromStart) * (DurationSeconds / maxX));
-                    await Task.Run(() => ct.WaitHandle.WaitOne(TimeSpan.FromSeconds(waitTimeSeconds)), ct);
+                    ct.WaitHandle.WaitOne(TimeSpan.FromSeconds(waitTimeSeconds));
                 }
             }
         }

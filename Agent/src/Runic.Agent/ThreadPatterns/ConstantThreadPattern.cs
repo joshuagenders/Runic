@@ -22,6 +22,16 @@ namespace Runic.Agent.ThreadPatterns
             _callbacks.Add(callback);
         }
 
+        public int GetMaxDurationSeconds()
+        {
+            return DurationSeconds;
+        }
+
+        public int GetMaxThreadCount()
+        {
+            return ThreadCount;
+        }
+
         public async Task Start(CancellationToken ct)
         {
             if (DurationSeconds == 0)

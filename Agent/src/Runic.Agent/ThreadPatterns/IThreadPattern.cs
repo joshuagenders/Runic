@@ -8,5 +8,7 @@ namespace Runic.Agent.ThreadPatterns
     {
         void RegisterThreadChangeHandler(Action<int> callback);
         Task Start(CancellationToken ct);
+        int GetMaxDurationSeconds();
+        int GetMaxThreadCount();
     }
 }

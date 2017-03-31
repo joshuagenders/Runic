@@ -52,7 +52,9 @@ namespace Runic.Agent.ThreadPatterns
             for (int i = 1; i <= rampupIntervalCount; i++)
             {    
                 nextThreadCount = stepAmount * i;
-                if (nextThreadCount != previousThreadCount)
+                if (nextThreadCount != previousThreadCount &&
+                    nextThreadCount >=0 &&
+                    nextThreadCount <= ThreadCount)
                 {
                     Points.Add(new Point()
                     {
@@ -101,7 +103,9 @@ namespace Runic.Agent.ThreadPatterns
             for (int i = 1; i <= rampdownIntervalCount; i++)
             {
                 var nextThreadCount = previousThreadCount - stepAmount;
-                if (nextThreadCount != previousThreadCount)
+                if (nextThreadCount != previousThreadCount && 
+                    nextThreadCount <= ThreadCount && 
+                    nextThreadCount >=0)
                 {
                     Points.Add(new Point()
                     {
@@ -134,6 +138,16 @@ namespace Runic.Agent.ThreadPatterns
         {
             GeneratePoints();
             await base.Start(ct);
+        }
+
+        public int GetMaxDurationSeconds()
+        {
+            return DurationSeconds;
+        }
+
+        public int GetMaxThreadCount()
+        {
+            return ThreadCount;
         }
     }
 }
