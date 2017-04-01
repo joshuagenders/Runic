@@ -11,6 +11,7 @@ using Runic.Framework.Clients;
 using Runic.Agent.AssemblyManagement;
 using System.IO;
 using Runic.Agent.Service;
+using Runic.Agent.Data;
 
 namespace Runic.Agent.UnitTest.TestUtility
 {
@@ -29,7 +30,7 @@ namespace Runic.Agent.UnitTest.TestUtility
             builder.RegisterInstance(statsd).As<IStatsd>();
             builder.RegisterType<Stats>().As<IStats>();
             builder.RegisterType<FlowManager>().As<IFlowManager>();
-
+            builder.RegisterType<DataService>().As<IDataService>();
             builder.RegisterType<NoOpMessagingService>().As<IMessagingService>();
             builder.RegisterType<InMemoryClient>().As<IRuneClient>();
             builder.RegisterType<FilePluginProvider>()

@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Runic.Agent.Data
 {
-    public class DataService
+    public class DataService : IDataService
     {
-        public T GetParameters<T>(string datasourceId)
+        public DataService()
         {
-            return default(T);
+            //todo add different handlers with priority order
         }
 
-        public T GetRune<T>(string runesourceId)
+        public object[] GetParameters(string datasourceId, Dictionary<string,string> datasourceMapping)
         {
-            return default(T);
+            return null;
         }
     }
 }

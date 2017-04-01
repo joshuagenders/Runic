@@ -11,6 +11,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Runic.Agent.ThreadPatterns;
 using Runic.Agent.Metrics;
+using Runic.Agent.Data;
 
 namespace Runic.Agent.Service
 {
@@ -22,18 +23,21 @@ namespace Runic.Agent.Service
         private readonly IFlowManager _flowManager;
         private readonly IPluginManager _pluginManager;
         private readonly IStats _stats;
+        private readonly IDataService _dataService;
 
         private ConcurrentDictionary<string, ThreadManager> _flowThreadManagers { get; set; }
 
         public AgentService(IPluginManager pluginManager, 
                             IMessagingService messagingService, 
                             IFlowManager flowManager, 
-                            IStats stats)
+                            IStats stats,
+                            IDataService dataService)
         {
             _flowManager = flowManager;
             _pluginManager = pluginManager;
             _messagingService = messagingService;
             _stats = stats;
+            _dataService = dataService;
 
             _flowThreadManagers = new ConcurrentDictionary<string, ThreadManager>();
         }
@@ -118,7 +122,7 @@ namespace Runic.Agent.Service
             }
             else
             {
-                var newThreadManager = new ThreadManager(_flowManager.GetFlow(request.FlowName), _pluginManager, _stats);
+                var newThreadManager = new ThreadManager(_flowManager.GetFlow(request.FlowName), _pluginManager, _stats, _dataService);
                 var resolvedManager = _flowThreadManagers.GetOrAdd(request.FlowName, newThreadManager);
                 await resolvedManager.SafeUpdateThreadCountAsync(request.ThreadLevel);
             }

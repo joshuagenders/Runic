@@ -1,4 +1,5 @@
 ﻿using Runic.Agent.AssemblyManagement;
+using Runic.Agent.Data;
 using Runic.Agent.Metrics;
 using Runic.Framework.Models;
 using System;
@@ -19,13 +20,15 @@ namespace Runic.Agent.Harness
         private readonly ConcurrentExclusiveSchedulerPair _scheduler;
         private readonly TaskFactory _exclusiveTaskFactory;
         private IStats _stats { get; set; }
+        private readonly IDataService _dataService; 
 
-        public ThreadManager(Flow flow, IPluginManager pluginManager, IStats stats)
+        public ThreadManager(Flow flow, IPluginManager pluginManager, IStats stats, IDataService dataService)
         {
             _flow = flow;
             _pluginManager = pluginManager;
             _stats = stats;
-            
+            _dataService = dataService;
+
             _scheduler = new ConcurrentExclusiveSchedulerPair();
             _exclusiveTaskFactory = new TaskFactory(_scheduler.ExclusiveScheduler);
             _taskPool = new ConcurrentDictionary<int, CancellableTask>();
@@ -62,7 +65,7 @@ namespace Runic.Agent.Harness
 
         private async Task ExecuteFlow(CancellationToken ct)
         {
-            var factory = new FunctionFactory(_flow, _pluginManager, _stats);
+            var factory = new FunctionFactory(_flow, _pluginManager, _stats, _dataService);
             FunctionHarness function = null;
             bool lastStepSuccess = false;
             while (!ct.IsCancellationRequested)

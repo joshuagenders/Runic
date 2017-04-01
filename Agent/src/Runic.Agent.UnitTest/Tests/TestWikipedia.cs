@@ -68,7 +68,7 @@ namespace Runic.Agent.UnitTest.Tests
                 }
             });
 
-            var agent = new AgentService(_world.PluginManager, _world.MessagingService, _world.FlowManager, _world.Stats);
+            var agent = new AgentService(_world.PluginManager, _world.MessagingService, _world.FlowManager, _world.Stats, _world.DataService);
 
             CancellationTokenSource cts = new CancellationTokenSource();
             cts.CancelAfter(5000);

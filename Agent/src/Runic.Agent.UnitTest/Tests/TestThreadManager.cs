@@ -42,7 +42,7 @@ namespace Runic.Agent.UnitTest.Tests
                 }
             };
 
-            var manager = new ThreadManager(flow, _world.PluginManager, _world.Stats);
+            var manager = new ThreadManager(flow, _world.PluginManager, _world.Stats, _world.DataService);
             await manager.SafeUpdateThreadCountAsync(1);
             Assert.AreEqual(1, manager.GetCurrentThreadCount());
             await manager.SafeUpdateThreadCountAsync(0);

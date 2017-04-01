@@ -8,6 +8,7 @@ using Runic.Framework.Clients;
 using Runic.Agent.Metrics;
 using Runic.Agent.Messaging;
 using Runic.Agent.FlowManagement;
+using Runic.Agent.Data;
 
 namespace Runic.Agent
 {
@@ -31,6 +32,7 @@ namespace Runic.Agent
             builder.RegisterType<Stats>().As<IStats>();
             builder.RegisterType<FlowManager>().As<IFlowManager>();
             builder.RegisterType<PluginManager>().As<IPluginManager>();
+            builder.RegisterType<DataService>().As<IDataService>();
             builder.RegisterType<NoOpMessagingService>().As<IMessagingService>();
             builder.RegisterType<InMemoryClient>().As<IRuneClient>();
             builder.RegisterType<FilePluginProvider>()
