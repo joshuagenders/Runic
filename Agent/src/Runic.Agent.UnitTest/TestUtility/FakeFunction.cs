@@ -52,6 +52,18 @@ namespace Runic.Agent.UnitTest.TestUtility
             });
         }
 
+        [Function("Inputs")]
+        public void DoSomeTask1(string input1, int input2)
+        {
+            CallList.Add(new InvocationInformation()
+            {
+                InvocationTime = DateTime.Now,
+                StackTrace = Environment.StackTrace,
+                InvocationTarget = "Inputs",
+                AdditionalData = $"input1={input1},input2={input2}"
+            });
+        }
+
         [AfterEach]
         public void AfterEach()
         {

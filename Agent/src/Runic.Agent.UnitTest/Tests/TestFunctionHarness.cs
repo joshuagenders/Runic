@@ -106,5 +106,25 @@ namespace Runic.Agent.UnitTest.Tests
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "AsyncWait"), "AsyncWait called");
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "AfterEach"), "AfterEach called");
         }
+
+        [TestMethod]
+        public async Task TestInputParameterBinding()
+        {
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(5000);
+            var fakeFunction = new FakeFunction();
+            var functionHarness = new FunctionHarness(_world.Stats);
+
+            var uniqueString = Guid.NewGuid().ToString("n");
+            var randomInt = new Random().Next();
+            functionHarness.Bind(fakeFunction, "Inputs", uniqueString, randomInt);
+            await functionHarness.Execute(cts.Token);
+
+            Assert.AreEqual(3, fakeFunction.CallList.Count);
+            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "BeforeEach"), "BeforeEach called");
+            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "Inputs"), "Inputs called");
+            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "AfterEach"), "AfterEach called");
+            Assert.IsTrue(fakeFunction.CallList.Any(c => c.AdditionalData == $"input1={uniqueString},input2={randomInt}"));
+        }
     }
 }

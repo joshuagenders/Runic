@@ -12,7 +12,7 @@ namespace Runic.Agent
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public async Task Start(string[] args, IStartup startup, CancellationToken ct)
+        public async Task Start(string[] args, IStartup startup)
         {
             AgentConfiguration.LoadConfiguration(args);
             var container = startup.BuildContainer();
@@ -34,7 +34,7 @@ namespace Runic.Agent
             using (var scope = container.BeginLifetimeScope())
             {
                 var agent = scope.Resolve<IAgentService>();
-                await agent.Run(ct);
+                await agent.Run(cts.Token);
             }
         }
     }

@@ -18,7 +18,7 @@ namespace Runic.Agent.Console.Shell
         private bool _return { get; set; }
         private IAgentService _agentService { get; }
         private CancellationToken _cancellationToken { get; set; }
-        private readonly PluginManager _pluginManager;
+        private readonly IPluginManager _pluginManager;
         private readonly IFlowManager _flowManager;
 
         public AgentShell(IAgentService agentService, IFlowManager flowManager, PluginManager pluginManager)

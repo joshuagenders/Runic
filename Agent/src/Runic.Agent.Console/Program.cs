@@ -1,4 +1,10 @@
-﻿using System;
+﻿using Autofac;
+using Runic.Agent.Configuration;
+using Runic.Agent.Console.Shell;
+using Runic.Agent.Service;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Runic.Agent.Console
 {
@@ -6,7 +12,7 @@ namespace Runic.Agent.Console
     {
         static void Main(string[] args)
         {
-            System.Console.WriteLine("Hello World!");
+           //todo
         }
     }
 }

@@ -17,16 +17,18 @@ namespace Runic.Agent.Harness
         private object _instance { get; set; }
         private string _functionName { get; set; }
         private IStats _stats { get; set; }
+        private object[] _inputParams { get; set; }
 
         public FunctionHarness(IStats stats)
         {
             _stats = stats;
         }
 
-        public void Bind(object functionInstance, string functionName)
+        public void Bind(object functionInstance, string functionName, params object[] inputParameters)
         {
             _instance = functionInstance;
             _functionName = functionName;
+            _inputParams = inputParameters;
         }
 
         public async Task<bool> Execute(CancellationToken ct)
@@ -39,7 +41,7 @@ namespace Runic.Agent.Harness
                 _stats.CountFunctionSuccess(_functionName);
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 _stats.CountFunctionFailure(_functionName);
                 return false;
@@ -62,7 +64,7 @@ namespace Runic.Agent.Harness
             if (functionMethod == null)
                 throw new FunctionWithAttributeNotFoundException(_functionName);
 
-            await ExecuteMethod(functionMethod, ct);
+            await ExecuteMethod(functionMethod, ct, _inputParams);
         }
 
         private bool IsAsyncMethod (MethodInfo method)
@@ -73,17 +75,16 @@ namespace Runic.Agent.Harness
                               .Any(c => c.GetType() == typeof(AsyncStateMachineAttribute));
         }
 
-        public async Task ExecuteMethod(MethodInfo method, CancellationToken ct)
+        public async Task ExecuteMethod(MethodInfo method, CancellationToken ct, params object[] inputParams)
         {
             if (IsAsyncMethod(method))
             {
-                //await Task.Factory.StartNew(async () => await (Task)method.Invoke(_instance, null), ct);
-                var task = (Task)method.Invoke(_instance, null);
+                var task = (Task)method.Invoke(_instance, inputParams);
                 await task;
             }
             else
             {
-                await Task.Run(() => method.Invoke(_instance, null), ct);
+                await Task.Run(() => method.Invoke(_instance, inputParams), ct);
             }
         }
         

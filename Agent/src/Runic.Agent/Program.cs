@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Runic.Agent
 {
@@ -8,8 +9,17 @@ namespace Runic.Agent
         {
             var agent = new Agent();
             var startup = new Startup();
-            var cts = new CancellationTokenSource();
-            agent.Start(args, startup, cts.Token).Wait();
+            Task.Run(async () =>
+            {
+                await agent.Start(args, startup).ContinueWith((result) =>
+                {
+                    if (result.Exception != null)
+                    {
+                        Console.WriteLine("An error occured.");
+                    }
+                    Console.WriteLine("Exiting.");
+                });
+            });
         }
     }
 }
