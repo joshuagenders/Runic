@@ -16,7 +16,13 @@ namespace Runic.Agent.Harness
 
         private object _instance { get; set; }
         private string _functionName { get; set; }
-        
+        private IStats _stats { get; set; }
+
+        public FunctionHarness(IStats stats)
+        {
+            _stats = stats;
+        }
+
         public void Bind(object functionInstance, string functionName)
         {
             _instance = functionInstance;
@@ -30,12 +36,12 @@ namespace Runic.Agent.Harness
                 await ExecuteMethodWithAttribute(typeof(BeforeEachAttribute), ct);
                 await ExecuteFunction(ct);
                 await ExecuteMethodWithAttribute(typeof(AfterEachAttribute), ct);
-                Stats.CountFunctionSuccess(_functionName);
+                _stats.CountFunctionSuccess(_functionName);
                 return true;
             }
             catch (Exception)
             {
-                Stats.CountFunctionFailure(_functionName);
+                _stats.CountFunctionFailure(_functionName);
                 return false;
             }
         }

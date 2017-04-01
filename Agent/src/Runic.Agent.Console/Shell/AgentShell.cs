@@ -10,7 +10,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Runic.Agent.FlowManagement;
 
-namespace Runic.Agent.Shell
+namespace Runic.Agent.Console.Shell
 {
     public class AgentShell
     {
@@ -19,14 +19,15 @@ namespace Runic.Agent.Shell
         private IAgentService _agentService { get; }
         private CancellationToken _cancellationToken { get; set; }
         private readonly PluginManager _pluginManager;
-        private readonly Flows _flows;
+        private readonly IFlowManager _flowManager;
 
-        public AgentShell(IAgentService agentService, Flows flows, PluginManager pluginManager)
+        public AgentShell(IAgentService agentService, IFlowManager flowManager, PluginManager pluginManager)
         {
             _return = false;
             _agentService = agentService;
             _pluginManager = pluginManager;
-            _flows = flows;
+            _flowManager = flowManager;
+
             RegisterHandlers();
         }
 
@@ -38,7 +39,7 @@ namespace Runic.Agent.Shell
             {
                 try
                 {
-                    string[] input = Console.ReadLine().Split();
+                    string[] input = System.Console.ReadLine().Split();
                     if (!input.Any()) continue;
                     if (input[0] == "exit") return;
 
@@ -48,13 +49,13 @@ namespace Runic.Agent.Shell
                     }
                     else
                     {
-                        Console.WriteLine($"No handler was found for the given command '{input[0]}'");
+                        System.Console.WriteLine($"No handler was found for the given command '{input[0]}'");
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Encountered error");
-                    Console.WriteLine(JsonConvert.SerializeObject(e));
+                    System.Console.WriteLine("Encountered error");
+                    System.Console.WriteLine(JsonConvert.SerializeObject(e));
                 }
             }
         }
@@ -68,11 +69,11 @@ namespace Runic.Agent.Shell
                     {
                         var vals = input.FromKeywordToDictionary();
                         if (!vals.ContainsKey("flow")){
-                            Console.WriteLine("missing parameter 'flow'");
+                            System.Console.WriteLine("missing parameter 'flow'");
                             return;
                         }
                         if (!vals.ContainsKey("threadcount")){
-                            Console.WriteLine("missing parameter 'threadcount'");
+                            System.Console.WriteLine("missing parameter 'threadcount'");
                             return;
                         }
 
@@ -89,10 +90,10 @@ namespace Runic.Agent.Shell
                     {
                         var vals = input.FromKeywordToDictionary();
                         if (!vals.ContainsKey("pluginkey")){
-                            Console.WriteLine("missing parameter 'pluginkey'");
+                            System.Console.WriteLine("missing parameter 'pluginkey'");
                             return;
                         }
-                        Console.WriteLine($"Attempting to load plugin {vals["pluginkey"]}");
+                        System.Console.WriteLine($"Attempting to load plugin {vals["pluginkey"]}");
                         await Task.Run(() => LoadPlugin(vals["pluginkey"], _cancellationToken));
                     }
                 },
@@ -107,7 +108,7 @@ namespace Runic.Agent.Shell
                     {
                         var vals = input.FromKeywordToDictionary();
                         if (!vals.ContainsKey("filepath")){
-                            Console.WriteLine("missing parameter 'filepath'");
+                            System.Console.WriteLine("missing parameter 'filepath'");
                             return;
                         }
                         await Task.Run(() => ImportFlow(vals), _cancellationToken);
@@ -130,7 +131,7 @@ namespace Runic.Agent.Shell
                 {
                     "wd", async (input) =>
                     {
-                        await Task.Run(() => Console.WriteLine(Directory.GetCurrentDirectory()), _cancellationToken);
+                        await Task.Run(() => System.Console.WriteLine(Directory.GetCurrentDirectory()), _cancellationToken);
                     }
                 },
                 {
@@ -144,70 +145,70 @@ namespace Runic.Agent.Shell
 
         private void WriteWelcome()
         {
-            Console.WriteLine();
-            Console.WriteLine("Welcome to Runic Agent");
-            Console.WriteLine("Please enter a command. type 'help' for options");
+            System.Console.WriteLine();
+            System.Console.WriteLine("Welcome to Runic Agent");
+            System.Console.WriteLine("Please enter a command. type 'help' for options");
         }
 
         private void ImportFlow(Dictionary<string,string> vals)
         {
             var text = File.ReadAllText(vals["filepath"]);
             var flow = JsonConvert.DeserializeObject<Flow>(text);
-            _flows.AddUpdateFlow(flow);
+            _flowManager.AddUpdateFlow(flow);
         }
 
         private void PrintFunctions()
         {
             var functions = _pluginManager.GetAvailableFunctions();
-            functions.ForEach(f => Console.WriteLine(JsonConvert.SerializeObject(f)));
+            functions.ForEach(f => System.Console.WriteLine(JsonConvert.SerializeObject(f)));
         }
 
         private void PrintPlugins(Dictionary<string,string> vals)
         {
             if (vals.ContainsKey("-v"))
             {
-                Console.WriteLine("Assemblies:");
-                _pluginManager.GetAssemblies().ForEach(a => Console.WriteLine(a.FullName));
+                System.Console.WriteLine("Assemblies:");
+                _pluginManager.GetAssemblies().ForEach(a => System.Console.WriteLine(a.FullName));
             }
-            Console.WriteLine("Keys:");
-            _pluginManager.GetAssemblyKeys().ForEach(a => Console.WriteLine(a));
+            System.Console.WriteLine("Keys:");
+            _pluginManager.GetAssemblyKeys().ForEach(a => System.Console.WriteLine(a));
         }
 
         private void PrintFlows(Dictionary<string,string> vals)
         {
-            _flows.GetFlows()
+            _flowManager.GetFlows()
                   .ForEach(f =>
                   {
                       if (vals.ContainsKey("-v"))
-                          Console.WriteLine(JsonConvert.SerializeObject(f));
+                          System.Console.WriteLine(JsonConvert.SerializeObject(f));
                       else
-                          Console.WriteLine(f.Name);
+                          System.Console.WriteLine(f.Name);
                   }
                    );
         }
 
         private void PrintHelp()
         {
-            Console.WriteLine("=============================");
-            Console.WriteLine("            HELP");
-            Console.WriteLine("=============================");
-            Console.WriteLine("setthread pluginkey=[string] flow=[filename] threadcount=[int]");
-            Console.WriteLine("  Sets the thread level for a flow\n");
-            Console.WriteLine("  Starts or stops a flow when threadCount moves to and from 0\n");
-
-            Console.WriteLine("load pluginkey=[string]");
-            Console.WriteLine("  Loads an assembly using the IPluginProvider configured in the assembly\n");
-
-            Console.WriteLine("import filepath=[string]");
-            Console.WriteLine("  Imports a flow from file\n");
-
-            Console.WriteLine("wd - display the current working directory\n");
-            Console.WriteLine("flows - list the available flows\n");
-            Console.WriteLine("functions - list the available functions\n");
-            Console.WriteLine("plugins - list the available plugins\n");
-            Console.WriteLine("help - display available command formats\n");
-            Console.WriteLine("exit - Stop all threads and exit the agent\n");
-            Console.WriteLine("=============================");
+            System.Console.WriteLine("=============================");
+            System.Console.WriteLine("            HELP");
+            System.Console.WriteLine("=============================");
+            System.Console.WriteLine("setthread pluginkey=[string] flow=[filename] threadcount=[int]");
+            System.Console.WriteLine("  Sets the thread level for a flow\n");
+            System.Console.WriteLine("  Starts or stops a flow when threadCount moves to and from 0\n");
+            
+            System.Console.WriteLine("load pluginkey=[string]");
+            System.Console.WriteLine("  Loads an assembly using the IPluginProvider configured in the assembly\n");
+            
+            System.Console.WriteLine("import filepath=[string]");
+            System.Console.WriteLine("  Imports a flow from file\n");
+            
+            System.Console.WriteLine("wd - display the current working directory\n");
+            System.Console.WriteLine("flows - list the available flows\n");
+            System.Console.WriteLine("functions - list the available functions\n");
+            System.Console.WriteLine("plugins - list the available plugins\n");
+            System.Console.WriteLine("help - display available command formats\n");
+            System.Console.WriteLine("exit - Stop all threads and exit the agent\n");
+            System.Console.WriteLine("=============================");
         }
 
         private void LoadPlugin(string pluginKey, CancellationToken ct)

@@ -23,9 +23,7 @@ namespace Runic.Agent.UnitTest.Tests
         [TestCategory("SystemTest")]
         public async Task RunTestWikipedia()
         {
-
-            var flows = new Flows();
-            flows.AddUpdateFlow(new Flow()
+            _world.FlowManager.AddUpdateFlow(new Flow()
             {
                 Name = "Wikipedia Flow",
                 StepDelayMilliseconds = 700,
@@ -70,7 +68,7 @@ namespace Runic.Agent.UnitTest.Tests
                 }
             });
 
-            var agent = new AgentService(_world.PluginManager, flows);
+            var agent = new AgentService(_world.PluginManager, _world.MessagingService, _world.FlowManager, _world.Stats);
 
             CancellationTokenSource cts = new CancellationTokenSource();
             cts.CancelAfter(5000);

@@ -12,17 +12,19 @@ namespace Runic.Agent.Harness
     public class ThreadManager : IDisposable
     {
         private readonly Flow _flow;
-        private readonly PluginManager _pluginManager;
+        private readonly IPluginManager _pluginManager;
         private int _currentThreadCount { get; set; }
 
         private ConcurrentDictionary<int, CancellableTask> _taskPool { get; set; }
         private readonly ConcurrentExclusiveSchedulerPair _scheduler;
         private readonly TaskFactory _exclusiveTaskFactory;
+        private IStats _stats { get; set; }
 
-        public ThreadManager(Flow flow, PluginManager pluginManager)
+        public ThreadManager(Flow flow, IPluginManager pluginManager, IStats stats)
         {
             _flow = flow;
             _pluginManager = pluginManager;
+            _stats = stats;
             
             _scheduler = new ConcurrentExclusiveSchedulerPair();
             _exclusiveTaskFactory = new TaskFactory(_scheduler.ExclusiveScheduler);
@@ -60,7 +62,7 @@ namespace Runic.Agent.Harness
 
         private async Task ExecuteFlow(CancellationToken ct)
         {
-            var factory = new FunctionFactory(_flow, _pluginManager);
+            var factory = new FunctionFactory(_flow, _pluginManager, _stats);
             FunctionHarness function = null;
             bool lastStepSuccess = false;
             while (!ct.IsCancellationRequested)
@@ -110,14 +112,14 @@ namespace Runic.Agent.Harness
                 Task.WaitAll(removalTasks.ToArray());
             }
             _currentThreadCount = threadCount;
-            Stats.SetThreadLevel(_flow.Name, threadCount);
+            _stats.SetThreadLevel(_flow.Name, threadCount);
         }
 
         public void Dispose()
         {
             UpdateThreads(0);
             if (_flow != null)
-                Stats.SetThreadLevel(_flow.Name, 0);
+                _stats.SetThreadLevel(_flow.Name, 0);
         }
     }
 }

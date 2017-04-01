@@ -1,11 +1,15 @@
-﻿namespace Runic.Agent
+﻿using System.Threading;
+
+namespace Runic.Agent
 {
     public class Program
     {
         public static void Main(string[] args)
         {
             var agent = new Agent();
-            agent.Start(args).Wait();
+            var startup = new Startup();
+            var cts = new CancellationTokenSource();
+            agent.Start(args, startup, cts.Token).Wait();
         }
     }
 }

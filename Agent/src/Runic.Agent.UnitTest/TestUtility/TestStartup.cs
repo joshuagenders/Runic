@@ -1,25 +1,24 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using Autofac;
-using Runic.Agent.AssemblyManagement;
-using Runic.Agent.Configuration;
-using Runic.Agent.Service;
 using StatsN;
-using Runic.Framework.Clients;
 using Runic.Agent.Metrics;
-using Runic.Agent.Messaging;
+using Runic.Agent.Configuration;
 using Runic.Agent.FlowManagement;
+using Runic.Agent.Messaging;
+using Runic.Framework.Clients;
+using Runic.Agent.AssemblyManagement;
+using System.IO;
+using Runic.Agent.Service;
 
-namespace Runic.Agent
+namespace Runic.Agent.UnitTest.TestUtility
 {
-    public class Startup : IStartup
+    public class TestStartup : IStartup
     {
         public IContainer BuildContainer()
         {
             var builder = new ContainerBuilder();
-            //builder.RegisterRawRabbit();
-            //builder.RegisterType<RabbitMessageClient>().As<IRuneClient>();
-            //builder.RegisterType<RabbitMessagingService>().As<IMessagingService>();
-            
             IStatsd statsd = Statsd.New<Udp>(options =>
             {
                 options.Port = AgentConfiguration.Instance.StatsdPort;
@@ -30,12 +29,13 @@ namespace Runic.Agent
             builder.RegisterInstance(statsd).As<IStatsd>();
             builder.RegisterType<Stats>().As<IStats>();
             builder.RegisterType<FlowManager>().As<IFlowManager>();
-            builder.RegisterType<PluginManager>().As<IPluginManager>();
+
             builder.RegisterType<NoOpMessagingService>().As<IMessagingService>();
             builder.RegisterType<InMemoryClient>().As<IRuneClient>();
             builder.RegisterType<FilePluginProvider>()
                     .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                     .As<IPluginProvider>();
+            builder.RegisterType<PluginManager>().As<IPluginManager>();
 
             builder.RegisterType<AgentService>().As<IAgentService>();
 

@@ -2,33 +2,38 @@
 
 namespace Runic.Agent.Metrics
 {
-    public static class Stats
+    public class Stats : IStats
     {
-        public static IStatsd Statsd { get; set; }
+        private IStatsd _statsd { get; set; }
 
-        public static void CountPluginLoaded()
+        public Stats(IStatsd statsd)
         {
-            Statsd?.Count("plugins.pluginLoaded");
+            _statsd = statsd;
         }
 
-        public static void CountFlowAdded(string flowName)
+        public void CountPluginLoaded()
         {
-            Statsd?.Count($"flows.{flowName}.AddOrUpdated");
+            _statsd?.Count("plugins.pluginLoaded");
         }
 
-        public static void CountFunctionSuccess(string functionName)
+        public void CountFlowAdded(string flowName)
         {
-            Statsd?.Count($"functions.{functionName}.actions.execute.success");
+            _statsd?.Count($"flows.{flowName}.AddOrUpdated");
         }
 
-        public static void CountFunctionFailure(string functionName)
+        public void CountFunctionSuccess(string functionName)
         {
-            Statsd?.Count($"functions.{functionName}.actions.execute.success");
+            _statsd?.Count($"functions.{functionName}.actions.execute.success");
         }
 
-        public static void SetThreadLevel(string flowName, int threadCount)
+        public void CountFunctionFailure(string functionName)
         {
-            Statsd?.Gauge($"flows.{flowName}.threadLevel", threadCount);
+            _statsd?.Count($"functions.{functionName}.actions.execute.success");
+        }
+
+        public void SetThreadLevel(string flowName, int threadCount)
+        {
+            _statsd?.Gauge($"flows.{flowName}.threadLevel", threadCount);
         }
     }
 }

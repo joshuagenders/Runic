@@ -1,11 +1,7 @@
 ﻿using Autofac;
 using NLog;
-using Runic.Agent.AssemblyManagement;
 using Runic.Agent.Configuration;
-using Runic.Agent.FlowManagement;
-using Runic.Agent.Messaging;
 using Runic.Agent.Service;
-using Runic.Agent.Shell;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,11 +12,10 @@ namespace Runic.Agent
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public async Task Start(string[] args)
+        public async Task Start(string[] args, IStartup startup, CancellationToken ct)
         {
             AgentConfiguration.LoadConfiguration(args);
-            var startup = new Startup();
-            var container = startup.Register();
+            var container = startup.BuildContainer();
 
             var cts = new CancellationTokenSource();
             try
@@ -35,47 +30,12 @@ namespace Runic.Agent
                 cts.CancelAfter(int.MaxValue);
             }
 
-            await Execute(container, cts.Token);
-        }
-
-        private async Task Execute(IContainer container, CancellationToken ct)
-        {
-            // resolve ioc
-            var pluginProvider = container.Resolve<IPluginProvider>();
-            var messagingService = container.Resolve<IMessagingService>();
-            //todo subscribe message handlers
-
-            var flows = container.Resolve<Flows>();
-            var pluginManager = container.Resolve<PluginManager>();
-            pluginManager.RegisterProvider(pluginProvider);
-
-            // start agent
-            var agentService = new AgentService(pluginManager, flows);
-            var serviceCts = new CancellationTokenSource();
-            var agentTask = agentService.Run(messagingService, ct: serviceCts.Token);
-
-            // start shell
-            var shell = new AgentShell(agentService, flows, pluginManager);
-            var cmdTask = shell.ProcessCommands(ct).ContinueWith(result =>
+            //start service
+            using (var scope = container.BeginLifetimeScope())
             {
-                // cancel agent when shell exits
-                serviceCts.Cancel();
-            }, ct);
-
-            // wait for shell and agent to complete
-            await Task.WhenAll(cmdTask, agentTask).ContinueWith(t =>
-            {
-                if (t.Exception != null)
-                {
-                    _logger.Error(t.Exception);
-                    Console.WriteLine("An error occured. Agent Exiting.");
-                }
-                else
-                {
-                    Console.WriteLine("Agent Exiting.");
-                }
-                Thread.Sleep(5000);
-            });
+                var agent = scope.Resolve<IAgentService>();
+                await agent.Run(ct);
+            }
         }
     }
 }

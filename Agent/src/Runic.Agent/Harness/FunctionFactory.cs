@@ -1,5 +1,6 @@
 ﻿using NLog;
 using Runic.Agent.AssemblyManagement;
+using Runic.Agent.Metrics;
 using Runic.Framework.Models;
 using System;
 using System.Collections.Generic;
@@ -15,13 +16,15 @@ namespace Runic.Agent.Harness
         private Dictionary<string, object> _assemblies { get; set; }
         private Step _lastStep { get; set; }
         private int _lastStepCount { get; set; }
+        private IStats _stats { get; set; }
 
-        private readonly PluginManager _pluginManager;
+        private readonly IPluginManager _pluginManager;
 
-        public FunctionFactory(Flow flow, PluginManager pluginManager)
+        public FunctionFactory(Flow flow, IPluginManager pluginManager, IStats stats)
         {
             _flow = flow;
             _pluginManager = pluginManager;
+            _stats = stats;
         }
 
         public FunctionHarness GetNextFunction(bool lastStepSuccess)
@@ -70,7 +73,7 @@ namespace Runic.Agent.Harness
             var instance = Activator.CreateInstance(type);
             _logger.Debug($"{step.Function.FunctionName} in {step.Function.AssemblyName} initialised");
 
-            var harness = new FunctionHarness();
+            var harness = new FunctionHarness(_stats);
             harness.Bind(instance, step.Function.FunctionName);
             return harness;
         }

@@ -8,9 +8,9 @@ namespace Runic.Agent.Harness
     public class FlowInitialiser
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private readonly PluginManager _pluginManager;
+        private readonly IPluginManager _pluginManager;
 
-        public FlowInitialiser(PluginManager pluginManager)
+        public FlowInitialiser(IPluginManager pluginManager)
         {
             _pluginManager = pluginManager;
         }

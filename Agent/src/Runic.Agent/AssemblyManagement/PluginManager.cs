@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using NLog;
-using StatsN;
 using Runic.Framework.Clients;
 using Runic.Framework.Attributes;
 using Runic.Framework.Models;
@@ -14,18 +13,22 @@ using System.IO;
 
 namespace Runic.Agent.AssemblyManagement
 {
-    public class PluginManager
+    public class PluginManager : IPluginManager
     {
         private readonly Logger _logger = LogManager.GetLogger("Runic.Agent.AssemblyManagement.PluginManager");
         private readonly ConcurrentBag<Assembly> _assemblies;
         private readonly ConcurrentDictionary<string, bool> _assembliesLoaded;
         private IRuneClient _runeClient { get; set; }
         private IPluginProvider _provider { get; set; }
+        private IStats _stats { get; set; }
 
-        public PluginManager()
+        public PluginManager(IRuneClient client, IPluginProvider provider, IStats stats)
         {
             _assemblies = new ConcurrentBag<Assembly>();
             _assembliesLoaded = new ConcurrentDictionary<string, bool>();
+            _runeClient = client;
+            _provider = provider;
+            _stats = stats;
         }
 
         public List<Assembly> GetAssemblies()
@@ -41,16 +44,6 @@ namespace Runic.Agent.AssemblyManagement
         public List<string> GetAssemblyKeys()
         {
             return _assembliesLoaded.Where(t => t.Value).Select(t => t.Key).ToList();
-        }
-
-        public void RegisterRuneClient(IRuneClient runeClient)
-        {
-            _runeClient = runeClient;
-        }
-
-        public void RegisterProvider(IPluginProvider provider)
-        {
-            _provider = provider;
         }
 
         public void LoadPlugin(string pluginAssemblyName)
@@ -80,7 +73,7 @@ namespace Runic.Agent.AssemblyManagement
 
             PopulateStaticInterfaces(assembly);
 
-            Stats.CountPluginLoaded();
+            _stats.CountPluginLoaded();
         }
 
         public Assembly LoadAssembly(string pluginPath, string pluginAssemblyName)
@@ -135,9 +128,9 @@ namespace Runic.Agent.AssemblyManagement
             foreach (var type in assembly.DefinedTypes)
             {
                 var staticFields = type.GetFields(BindingFlags.Static | BindingFlags.Public);
-                staticFields.Where(f => f.GetType() == typeof(IStatsd))
+                staticFields.Where(f => f.GetType() == typeof(IStats))
                             .ToList()
-                            .ForEach(f => f.SetValue(type, Stats.Statsd));
+                            .ForEach(f => f.SetValue(type, _stats));
                 staticFields.Where(f => f.GetType() == typeof(IRuneClient))
                             .ToList()
                             .ForEach(f => f.SetValue(type, _runeClient));

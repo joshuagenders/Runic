@@ -12,11 +12,19 @@ namespace Runic.Agent.UnitTest.Tests
     [TestClass]
     public class TestFunctionHarness
     {
+        private AgentWorld _world { get; set; }
+
+        [TestInitialize]
+        public void Init()
+        {
+            _world = new AgentWorld();
+        }
+
         [TestMethod]
         public void TestGetMethodWithAttribute()
         {
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness();
+            var functionHarness = new FunctionHarness(_world.Stats);
             functionHarness.Bind(fakeFunction, "Login");
             var method = functionHarness.GetMethodWithAttribute(typeof(BeforeEachAttribute));
             Assert.IsNotNull(method, "beforeeach method not found");
@@ -26,7 +34,7 @@ namespace Runic.Agent.UnitTest.Tests
         public async Task TestBeforeEachExecute()
         {
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness();
+            var functionHarness = new FunctionHarness(_world.Stats);
             functionHarness.Bind(fakeFunction, "Login");
             var method = functionHarness.GetMethodWithAttribute(typeof(BeforeEachAttribute));
             var cts = new CancellationTokenSource();
@@ -47,7 +55,7 @@ namespace Runic.Agent.UnitTest.Tests
         public async Task TestFunctionExecute()
         {
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness();
+            var functionHarness = new FunctionHarness(_world.Stats);
             functionHarness.Bind(fakeFunction, "AsyncWait");
             var cts = new CancellationTokenSource();
             try
@@ -70,7 +78,7 @@ namespace Runic.Agent.UnitTest.Tests
             var cts = new CancellationTokenSource();
             cts.CancelAfter(1000);
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness();
+            var functionHarness = new FunctionHarness(_world.Stats);
             functionHarness.Bind(fakeFunction, "Login");
             var result = await functionHarness.Execute(cts.Token);
 
@@ -88,7 +96,7 @@ namespace Runic.Agent.UnitTest.Tests
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness();
+            var functionHarness = new FunctionHarness(_world.Stats);
             functionHarness.Bind(fakeFunction, "AsyncWait");
             await functionHarness.Execute(cts.Token);
             

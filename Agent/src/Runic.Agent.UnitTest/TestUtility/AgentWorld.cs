@@ -1,15 +1,20 @@
-﻿using Moq;
+﻿using Autofac;
+using Moq;
 using Runic.Agent.AssemblyManagement;
 using Runic.Agent.Configuration;
+using Runic.Agent.FlowManagement;
 using Runic.Agent.Messaging;
+using Runic.Agent.Metrics;
 
 namespace Runic.Agent.UnitTest.TestUtility
 {
     public class AgentWorld
     {
         private const string wd = "C:\\code\\Runic\\Agent\\src\\Runic.Agent.UnitTest\\bin\\Debug\\netcoreapp1.0";
-        public PluginManager PluginManager { get; set; }
+        public IPluginManager PluginManager { get; set; }
         public IMessagingService MessagingService { get; set; }
+        public IFlowManager FlowManager { get; set; }
+        public IStats Stats { get; set; }
 
         public AgentWorld()
         {
@@ -24,11 +29,10 @@ namespace Runic.Agent.UnitTest.TestUtility
                 "Statsd:Prefix=Runic.Stats."
             };
             AgentConfiguration.LoadConfiguration(cli);
-            var container = new Startup().Register();
-
-            PluginManager = new PluginManager();
-            PluginManager.RegisterProvider(new FilePluginProvider(wd));
-
+            var container = new TestStartup().BuildContainer();
+            PluginManager = container.Resolve<IPluginManager>();
+            FlowManager = container.Resolve<IFlowManager>();
+            Stats = container.Resolve<IStats>();
             MessagingService = new Mock<IMessagingService>().Object;
         }
     }

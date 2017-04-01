@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Runic.Agent.Shell
+namespace Runic.Agent.Console.Shell
 {
     public static class Extensions
     {

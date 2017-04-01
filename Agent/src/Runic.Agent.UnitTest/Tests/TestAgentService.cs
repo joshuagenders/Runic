@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Runic.Agent.FlowManagement;
 using Runic.Agent.Service;
 using Runic.Framework.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -22,10 +21,8 @@ namespace Runic.Agent.UnitTest.Tests
 
         [TestMethod]
         public async Task TestSetThreadLevel()
-        {
-            var flows = new Flows();
-            
-            flows.AddUpdateFlow(
+        {   
+            _world.FlowManager.AddUpdateFlow(
                 new Flow()
                 {
                     Name = "FakeFlow",
@@ -47,7 +44,7 @@ namespace Runic.Agent.UnitTest.Tests
                     }
                 });
 
-            var agent = new AgentService(_world.PluginManager, flows);
+            var agent = new AgentService(_world.PluginManager, _world.MessagingService, _world.FlowManager, _world.Stats);
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
 
@@ -57,7 +54,7 @@ namespace Runic.Agent.UnitTest.Tests
                 ThreadLevel = 1
             }, cts.Token);
 
-            var agentTask = agent.Run(_world.MessagingService, cts.Token);
+            var agentTask = agent.Run(cts.Token);
 
             Thread.Sleep(150);
             Assert.AreEqual(1, agent.GetThreadLevel("FakeFlow"));

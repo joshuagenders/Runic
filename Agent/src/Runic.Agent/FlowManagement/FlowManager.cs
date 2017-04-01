@@ -6,19 +6,21 @@ using System.Collections.Generic;
 
 namespace Runic.Agent.FlowManagement
 {
-    public class Flows
+    public class FlowManager : IFlowManager
     {
         private ConcurrentDictionary<string, Flow> _flows { get; set; }
-        
-        public Flows()
+        private IStats _stats { get; set; }
+
+        public FlowManager(IStats stats)
         {
             _flows = new ConcurrentDictionary<string, Flow>();
+            _stats = stats;
         }
 
         public void AddUpdateFlow(Flow flow)
         {
             _flows[flow.Name] = flow;
-            Stats.CountFlowAdded(flow.Name);
+            _stats.CountFlowAdded(flow.Name);
         }
 
         public Flow GetFlow(string name)

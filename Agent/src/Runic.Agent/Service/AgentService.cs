@@ -10,6 +10,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Collections.Generic;
 using Runic.Agent.ThreadPatterns;
+using Runic.Agent.Metrics;
 
 namespace Runic.Agent.Service
 {
@@ -18,29 +19,27 @@ namespace Runic.Agent.Service
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private IMessagingService _messagingService { get; }
-        private readonly Flows _flows;
-        private readonly PluginManager _pluginManager;
+        private readonly IFlowManager _flowManager;
+        private readonly IPluginManager _pluginManager;
+        private readonly IStats _stats;
 
         private ConcurrentDictionary<string, ThreadManager> _flowThreadManagers { get; set; }
 
-        public AgentService(PluginManager pluginManager, Flows flows)
+        public AgentService(IPluginManager pluginManager, 
+                            IMessagingService messagingService, 
+                            IFlowManager flowManager, 
+                            IStats stats)
         {
-            _flows = flows;
+            _flowManager = flowManager;
             _pluginManager = pluginManager;
+            _messagingService = messagingService;
+            _stats = stats;
+
             _flowThreadManagers = new ConcurrentDictionary<string, ThreadManager>();
         }
 
-        private void RegisterHandlers(IMessagingService messagingService, CancellationToken ct)
+        public async Task Run(CancellationToken ct)
         {
-            messagingService.RegisterThreadLevelHandler((message, context) => SetThreadLevel(message, ct));
-            messagingService.RegisterFlowUpdateHandler((message, context) => Task.Run(() => _flows.AddUpdateFlow(message.Flow), ct));
-            _logger.Debug("Registered message handlers");
-        }
-
-        public async Task Run(IMessagingService messagingService, CancellationToken ct)
-        {
-            RegisterHandlers(messagingService, ct);
-
             //wait for cancellation
             await Task.Run(() => 
             {
@@ -73,7 +72,7 @@ namespace Runic.Agent.Service
 
         private async Task ExecutePattern(Flow flow, IThreadPattern pattern, CancellationToken ct)
         {
-            _flows.AddUpdateFlow(flow);
+            _flowManager.AddUpdateFlow(flow);
 
             pattern.RegisterThreadChangeHandler(async (threadLevel) =>
             {
@@ -119,7 +118,7 @@ namespace Runic.Agent.Service
             }
             else
             {
-                var newThreadManager = new ThreadManager(_flows.GetFlow(request.FlowName), _pluginManager);
+                var newThreadManager = new ThreadManager(_flowManager.GetFlow(request.FlowName), _pluginManager, _stats);
                 var resolvedManager = _flowThreadManagers.GetOrAdd(request.FlowName, newThreadManager);
                 await resolvedManager.SafeUpdateThreadCountAsync(request.ThreadLevel);
             }

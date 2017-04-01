@@ -6,6 +6,7 @@ using RawRabbit.Context;
 using Runic.Framework.Models;
 using RawRabbit.Configuration;
 using RawRabbit.vNext;
+using System.Threading;
 
 namespace Runic.Agent.Messaging
 {
@@ -62,6 +63,17 @@ namespace Runic.Agent.Messaging
         public void RegisterGradualFlowHandler(Func<GradualFlowExecutionRequest, MessageContext, Task> handler)
         {
             Subscribe(handler);
+        }
+
+        public async Task Run(CancellationToken ct)
+        {
+            await Task.Run(() =>
+            {
+                var mre = new ManualResetEventSlim(false);
+                ct.Register(() => mre.Set());
+                mre.Wait();
+            }, ct);
+            await _bus.ShutdownAsync();
         }
     }
 }
