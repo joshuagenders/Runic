@@ -126,5 +126,47 @@ namespace Runic.Agent.UnitTest.Tests
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "AfterEach"), "AfterEach called");
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.AdditionalData == $"input1={uniqueString},input2={randomInt}"));
         }
+
+        [TestMethod]
+        public async Task TestInputParameterBindingOverrideDefault()
+        {
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(5000);
+            var fakeFunction = new FakeFunction();
+            var functionHarness = new FunctionHarness(_world.Stats);
+
+            var uniqueString = Guid.NewGuid().ToString("n");
+            var uniqueString2 = Guid.NewGuid().ToString("n");
+            var randomInt = new Random().Next();
+
+            functionHarness.Bind(fakeFunction, "InputsWithDefault", uniqueString, randomInt, uniqueString2);
+            await functionHarness.Execute(cts.Token);
+
+            Assert.AreEqual(3, fakeFunction.CallList.Count);
+            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "BeforeEach"), "BeforeEach called");
+            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "InputsWithDefault"), "InputsWithDefault called");
+            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "AfterEach"), "AfterEach called");
+            Assert.IsTrue(fakeFunction.CallList.Any(c => c.AdditionalData == $"input1={uniqueString},input2={randomInt},input3={uniqueString2}"));
+        }
+
+        [TestMethod]
+        public async Task TestInputParameterBindingWithDefault()
+        {
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(5000);
+            var fakeFunction = new FakeFunction();
+            var functionHarness = new FunctionHarness(_world.Stats);
+
+            var uniqueString = Guid.NewGuid().ToString("n");
+            var randomInt = new Random().Next();
+            functionHarness.Bind(fakeFunction, "InputsWithDefault", uniqueString, randomInt);
+            await functionHarness.Execute(cts.Token);
+
+            Assert.AreEqual(3, fakeFunction.CallList.Count);
+            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "BeforeEach"), "BeforeEach called");
+            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "InputsWithDefault"), "InputsWithDefault called");
+            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "AfterEach"), "AfterEach called");
+            Assert.IsTrue(fakeFunction.CallList.Any(c => c.AdditionalData == $"input1={uniqueString},input2={randomInt},input3=default"));
+        }
     }
 }

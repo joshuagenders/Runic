@@ -64,6 +64,18 @@ namespace Runic.Agent.UnitTest.TestUtility
             });
         }
 
+        [Function("InputsWithDefault")]
+        public void DoSomeTask2(string input1, int input2, string defaultVal = "default")
+        {
+            CallList.Add(new InvocationInformation()
+            {
+                InvocationTime = DateTime.Now,
+                StackTrace = Environment.StackTrace,
+                InvocationTarget = "InputsWithDefault",
+                AdditionalData = $"input1={input1},input2={input2},input3={defaultVal}"
+            });
+        }
+
         [AfterEach]
         public void AfterEach()
         {

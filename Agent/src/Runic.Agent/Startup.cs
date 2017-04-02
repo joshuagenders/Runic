@@ -38,7 +38,6 @@ namespace Runic.Agent
             builder.RegisterType<FilePluginProvider>()
                     .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                     .As<IPluginProvider>();
-
             builder.RegisterType<AgentService>().As<IAgentService>();
 
             return builder.Build();

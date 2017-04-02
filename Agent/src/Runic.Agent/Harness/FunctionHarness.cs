@@ -17,18 +17,18 @@ namespace Runic.Agent.Harness
         private object _instance { get; set; }
         private string _functionName { get; set; }
         private IStats _stats { get; set; }
-        private object[] _inputParams { get; set; }
+        private object[] _positionalParameters { get; set; }
 
         public FunctionHarness(IStats stats)
         {
             _stats = stats;
         }
 
-        public void Bind(object functionInstance, string functionName, params object[] inputParameters)
+        public void Bind(object functionInstance, string functionName, params object[] positionalParameters)
         {
             _instance = functionInstance;
             _functionName = functionName;
-            _inputParams = inputParameters;
+            _positionalParameters = positionalParameters;
         }
 
         public async Task<bool> Execute(CancellationToken ct)
@@ -59,12 +59,13 @@ namespace Runic.Agent.Harness
                 if (attribute != null && attribute.Name == _functionName)
                 {
                     functionMethod = method;
+                    break;
                 }
             }
             if (functionMethod == null)
                 throw new FunctionWithAttributeNotFoundException(_functionName);
 
-            await ExecuteMethod(functionMethod, ct, _inputParams);
+            await ExecuteMethod(functionMethod, ct, GetParameters(_positionalParameters, functionMethod));
         }
 
         private bool IsAsyncMethod (MethodInfo method)
@@ -98,6 +99,26 @@ namespace Runic.Agent.Harness
                     return method;
             }
             return null;
+        }
+
+        private object[] GetParameters(object[] positionalParameters, MethodInfo methodInfo)
+        {
+            var p = methodInfo.GetParameters();
+            var methodParams = new object[p.Length];
+
+            for (var i = 0; i < positionalParameters.Length; i++)
+            {
+                if (i < p.Length)
+                    methodParams[i] = positionalParameters[i];
+            }
+            for (var i = positionalParameters.Length; i < p.Length; i++)
+            {
+                if(p[i].HasDefaultValue)
+                    methodParams[i] = p[i].DefaultValue;
+                else if (!p[i].IsOptional)
+                    methodParams[i] = p[i].ParameterType.IsByRef ? null : Activator.CreateInstance(p[i].ParameterType);
+            }
+            return methodParams;
         }
 
         private async Task ExecuteMethodWithAttribute(Type attributeType, CancellationToken ct)
