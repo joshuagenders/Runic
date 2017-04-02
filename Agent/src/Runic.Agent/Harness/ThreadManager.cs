@@ -100,6 +100,17 @@ namespace Runic.Agent.Harness
             await _exclusiveTaskFactory.StartNew(() => UpdateThreads(threadCount));
         }
 
+        public void StopAll()
+        {
+            var completionTasks = new List<Task>();
+            foreach (var thread in _taskPool)
+            {
+                thread.Value.Cancel();
+                completionTasks.Add(thread.Value.GetCompletionTask());
+            }
+            Task.WaitAll(completionTasks.ToArray());
+        }
+
         private void UpdateThreads(int threadCount)
         {
             if (threadCount > _currentThreadCount)

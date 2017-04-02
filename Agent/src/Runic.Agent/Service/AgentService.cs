@@ -224,7 +224,7 @@ namespace Runic.Agent.Service
         {
             if (_threadManagers.TryRemove(flowExecutionId, out ThreadManager threadManager))
             {
-                threadManager.Dispose();
+                threadManager.StopAll();
             }
         }
 
@@ -233,6 +233,7 @@ namespace Runic.Agent.Service
             if (_threadPatterns.TryRemove(patternExecutionId, out CancellableTask task))
             {
                 task.Cancel();
+                task.GetCompletionTask().Wait();
             }
         }
     }
