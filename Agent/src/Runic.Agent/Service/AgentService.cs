@@ -54,21 +54,18 @@ namespace Runic.Agent.Service
                 ct.Register(() => mre.Set());
                 mre.Wait();
             }, ct);
-            SafeCancelAll();
+            SafeCancelAll(ct);
         }
 
-        public void SafeCancelAll()
+        public void SafeCancelAll(CancellationToken ct)
         {
             var updateTasks = new List<Task>();
-            lock (_threadPatterns)
-            {
+            
                 _threadPatterns.ToList().ForEach(t => t.Value.Cancel());
-            }
-            lock (_threadManagers)
-            {
+            
                 _threadManagers.ToList().ForEach(ftm => updateTasks.Add(ftm.Value.SafeUpdateThreadCountAsync(0)));
-            }
-            Task.WaitAll(updateTasks.ToArray());
+            
+            Task.WaitAll(updateTasks.ToArray(), ct);
         }
 
         public int GetThreadLevel(string flowId)
@@ -94,9 +91,19 @@ namespace Runic.Agent.Service
             return _threadPatterns.Select(p => p.Key).ToList();
         }
 
+        public int GetRunningThreadPatternCount()
+        {
+            return _threadPatterns.Count;
+        }
+
         public IList<string> GetRunningFlows()
         {
-            return _threadManagers.Select(p => p.Value.Id).ToList();
+            return _threadManagers.Select(t => t.Key).ToList();
+        }
+
+        public int GetRunningFlowCount()
+        {
+            return _threadManagers.Count;
         }
 
         public void StopThreadPattern(string patternExecutionId)
@@ -135,8 +142,8 @@ namespace Runic.Agent.Service
             else
             {
                 var cts = new CancellationTokenSource();
-                var patternTask = ExecutePattern(patternExecutionId, flow, pattern, cts.Token).ContinueWith(
-                    async (_) => await SafeRemoveTaskAsync(patternExecutionId));
+                var patternTask = ExecutePattern(patternExecutionId, flow, pattern, cts.Token);
+                    //.ContinueWith(async (_) => await SafeRemoveTaskAsync(patternExecutionId));
 
                 var cancellableTask = new CancellableTask(patternTask, cts);
                 _threadPatterns.AddOrUpdate(patternExecutionId, cancellableTask,
@@ -147,7 +154,7 @@ namespace Runic.Agent.Service
             }
         }
 
-        private async Task SafeRemoveTaskAsync(string id)
+        private async Task SafeRemoveThreadPatternAsync(string id)
         {
             CancellableTask task;
             _threadPatterns.TryRemove(id, out task);
@@ -208,7 +215,9 @@ namespace Runic.Agent.Service
 
         public void Dispose()
         {
-            SafeCancelAll();
+            CancellationTokenSource cts = new CancellationTokenSource();
+            cts.CancelAfter(2000);
+            SafeCancelAll(cts.Token);
         }
     }
 }

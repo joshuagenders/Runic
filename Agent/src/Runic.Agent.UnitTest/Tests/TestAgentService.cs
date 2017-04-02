@@ -6,6 +6,7 @@ using Runic.Framework.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.UnitTest.TestUtility;
 using System;
+using System.Linq;
 
 namespace Runic.Agent.UnitTest.Tests
 {
@@ -13,21 +14,16 @@ namespace Runic.Agent.UnitTest.Tests
     public class TestAgentService
     {
         private AgentWorld _world { get; set; }
+        private Flow _fakeFlow { get; set; }
 
         [TestInitialize]
         public void Init()
         {
             _world = new AgentWorld();
-        }
 
-        //todo add more
-
-        [TestMethod]
-        public async Task TestGradualFlowExecute()
-        {
-            var flow = new Flow()
+            _fakeFlow = new Flow()
             {
-                Name = "FakeGradualFlow",
+                Name = "FakeFlow",
                 StepDelayMilliseconds = 200,
                 Steps = new List<Step>()
                     {
@@ -45,76 +41,142 @@ namespace Runic.Agent.UnitTest.Tests
                         }
                     }
             };
-
-            var agent = new AgentService(_world.PluginManager, 
-                _world.MessagingService, 
-                _world.FlowManager, 
-                _world.Stats, 
-                _world.DataService);
+        }
+        
+        [TestMethod]
+        public void TestGradualFlowExecute()
+        {
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
-            var flowExecutionId = Guid.NewGuid().ToString("N");
-            agent.ExecuteFlow(new GradualFlowExecutionRequest()
+            try
             {
-                PatternExecutionId = flowExecutionId,
-                Flow = flow,
-                ThreadPattern = new GradualThreadModel()
+                var flowExecutionId = Guid.NewGuid().ToString("N");
+                _world.Agent.ExecuteFlow(new GradualFlowExecutionRequest()
                 {
-                    DurationSeconds = 4,
-                    RampUpSeconds = 2,
-                    ThreadCount= 4,
-                    RampDownSeconds = 0,
-                    StepIntervalSeconds = 1
-                }
-            }, cts.Token);
-            Thread.Sleep(250);
-            var runningFlows = agent.GetRunningFlows();
-            var runningThreadPatterns = agent.GetRunningThreadPatterns();
-            Assert.IsTrue(runningFlows.Contains(flowExecutionId),"running flow not found");
-            Assert.IsTrue(runningThreadPatterns.Contains(flowExecutionId), "running thread pattern not found");
-
-            cts.Cancel();
-            await agent.GetCompletionTask(flowExecutionId);
+                    PatternExecutionId = flowExecutionId,
+                    Flow = _fakeFlow,
+                    ThreadPattern = new GradualThreadModel()
+                    {
+                        DurationSeconds = 4,
+                        RampUpSeconds = 2,
+                        ThreadCount = 4,
+                        RampDownSeconds = 1,
+                        StepIntervalSeconds = 1
+                    }
+                }, cts.Token);
+                Thread.Sleep(1250);
+                var runningFlows = _world.Agent.GetRunningFlows();
+                var runningThreadPatterns = _world.Agent.GetRunningThreadPatterns();
+                Assert.IsTrue(runningFlows.Contains(flowExecutionId), "running flow not found");
+                Assert.IsTrue(runningThreadPatterns.Contains(flowExecutionId), "running thread pattern not found");
+                _world.Agent.SafeCancelAll(cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                // all g
+            }
         }
 
         [TestMethod]
-        public async Task TestGraphFlowExecute()
+        public void TestGraphFlowExecute()
+        {
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(3000);
+            try { 
+                var flowExecutionId = Guid.NewGuid().ToString("N");
+                _world.Agent.ExecuteFlow(new GraphFlowExecutionRequest()
+                {
+                    PatternExecutionId = flowExecutionId,
+                    Flow = _fakeFlow,
+                    ThreadPattern = new GraphThreadModel()
+                    {
+                        DurationSeconds = 2,
+                        Points = new List<Point>()
+                        {
+                            new Point(){ threadLevel = 2, unitsFromStart = 0 },
+                            new Point() { threadLevel = 0, unitsFromStart = 10}
+                        }
+                    }
+                }, cts.Token);
+                Thread.Sleep(250);
+                var runningFlows = _world.Agent.GetRunningFlows().ToList();
+                var runningThreadPatterns = _world.Agent.GetRunningThreadPatterns().ToList();
+                var runningPatternCount = _world.Agent.GetRunningThreadPatternCount();
+                var runningFlowCount = _world.Agent.GetRunningFlowCount();
+                Assert.IsTrue(runningPatternCount == 1, $"Running pattern count not 1, {runningPatternCount}");
+                Assert.IsTrue(runningFlowCount == 1, $"Running flow count not 1, {runningFlowCount}");
+                Assert.IsTrue(runningFlows.Contains(flowExecutionId), "running flow not found");
+                Assert.IsTrue(runningThreadPatterns.Contains(flowExecutionId), "running thread pattern not found");
+
+                _world.Agent.SafeCancelAll(cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                // all g
+            }
+        }
+
+        [TestMethod]
+        public void TestConstantFlowExecute()
+        {
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(3000);
+            try {
+                var flowExecutionId = Guid.NewGuid().ToString("N");
+                _world.Agent.ExecuteFlow(new ConstantFlowExecutionRequest()
+                {
+                    PatternExecutionId = flowExecutionId,
+                    Flow = _fakeFlow,
+                    ThreadPattern = new ConstantThreadModel()
+                    {
+                        DurationSeconds = 2,
+                        ThreadCount = 3
+                    }
+                }, cts.Token);
+                Thread.Sleep(1150);
+                var runningFlows = _world.Agent.GetRunningFlows().ToList();
+                var runningThreadPatterns = _world.Agent.GetRunningThreadPatterns().ToList();
+                var runningPatternCount = _world.Agent.GetRunningThreadPatternCount();
+                var runningFlowCount = _world.Agent.GetRunningFlowCount();
+                Assert.IsTrue(runningPatternCount == 1, $"Running pattern count not 1, {runningPatternCount}");
+                Assert.IsTrue(runningFlowCount == 1, $"Running flow count not 1, {runningFlowCount}");
+                Assert.IsTrue(runningFlows.Contains(flowExecutionId), "running flow not found");
+                Assert.IsTrue(runningThreadPatterns.Contains(flowExecutionId), "running thread pattern not found");
+
+                _world.Agent.SafeCancelAll(cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                // all g
+            }
+        }
+
+        [TestMethod]
+        public void TestMultipleDifferentFlowExecute()
         {
             throw new NotImplementedException();
         }
 
         [TestMethod]
-        public async Task TestConstantFlowExecute()
+        public void TestMultipleSameFlowExecute()
         {
             throw new NotImplementedException();
         }
 
         [TestMethod]
-        public async Task TestMultipleDifferentFlowExecute()
+        public void TestHijackThreadPattern()
         {
             throw new NotImplementedException();
         }
 
         [TestMethod]
-        public async Task TestMultipleSameFlowExecute()
+        public void TestHijackThreadLevel()
         {
             throw new NotImplementedException();
         }
 
         [TestMethod]
-        public async Task TestHijackThreadPattern()
-        {
-            throw new NotImplementedException();
-        }
-
-        [TestMethod]
-        public async Task TestHijackThreadLevel()
-        {
-            throw new NotImplementedException();
-        }
-
-        [TestMethod]
-        public async Task TestHijackFlow()
+        public void TestHijackFlow()
         {
             throw new NotImplementedException();
         }

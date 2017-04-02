@@ -6,6 +6,7 @@ using Runic.Agent.Data;
 using Runic.Agent.FlowManagement;
 using Runic.Agent.Messaging;
 using Runic.Agent.Metrics;
+using Runic.Agent.Service;
 
 namespace Runic.Agent.UnitTest.TestUtility
 {
@@ -17,6 +18,7 @@ namespace Runic.Agent.UnitTest.TestUtility
         public IFlowManager FlowManager { get; set; }
         public IStats Stats { get; set; }
         public IDataService DataService { get; set; }
+        public IAgentService Agent { get; set; }
 
         public AgentWorld()
         {
@@ -37,6 +39,7 @@ namespace Runic.Agent.UnitTest.TestUtility
             Stats = container.Resolve<IStats>();
             DataService = container.Resolve<IDataService>();
             MessagingService = new Mock<IMessagingService>().Object;
+            Agent = container.Resolve<IAgentService>();
         }
     }
 }

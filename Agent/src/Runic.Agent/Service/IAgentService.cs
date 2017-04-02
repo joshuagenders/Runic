@@ -11,7 +11,12 @@ namespace Runic.Agent.Service
         Task SetThreadLevel(SetThreadLevelRequest request, CancellationToken ct);
         int GetThreadLevel(string flowId);
         IList<string> GetRunningFlows();
+        int GetRunningFlowCount();
+        int GetRunningThreadPatternCount();
         IList<string> GetRunningThreadPatterns();
-        void SafeCancelAll();
+        void SafeCancelAll(CancellationToken ct);
+        void ExecuteFlow(GradualFlowExecutionRequest request, CancellationToken ct);
+        void ExecuteFlow(GraphFlowExecutionRequest request, CancellationToken ct);
+        void ExecuteFlow(ConstantFlowExecutionRequest request, CancellationToken ct);
     }
 }
