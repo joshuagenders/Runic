@@ -26,17 +26,23 @@ namespace Runic.Agent.Console.Pages
             var cts = new CancellationTokenSource();
 
             var flowRequest = new ConstantFlowExecutionRequest();
-            //todo validation
-            flowRequest.Flow = _flowManager.GetFlow(Input.ReadString("Please enter the flow name"));
-            flowRequest.PatternExecutionId = Guid.NewGuid().ToString("N");
-            flowRequest.ThreadPattern = new ConstantThreadModel()
+            try
             {
-                DurationSeconds = Input.ReadInt("Duration Seconds", 0, int.MaxValue),
-                ThreadCount = Input.ReadInt("Thread Count", 0, 1000)
-            };
-            cts.CancelAfter(5000);
-            _agentService.ExecuteFlow(flowRequest, cts.Token);
-
+                //todo validation
+                flowRequest.Flow = _flowManager.GetFlow(Input.ReadString("Please enter the flow name"));
+                flowRequest.PatternExecutionId = Guid.NewGuid().ToString("N");
+                flowRequest.ThreadPattern = new ConstantThreadModel()
+                {
+                    DurationSeconds = Input.ReadInt("Duration Seconds", 0, int.MaxValue),
+                    ThreadCount = Input.ReadInt("Thread Count", 0, 1000)
+                };
+                cts.CancelAfter(5000);
+                _agentService.ExecuteFlow(flowRequest, cts.Token);
+            }
+            catch (Exception e)
+            {
+                Output.WriteLine(ConsoleColor.Red, $"An error occured: {e.Message}");
+            }
             Input.ReadString("Press [enter] to return");
             MenuProgram.NavigateHome();
         }

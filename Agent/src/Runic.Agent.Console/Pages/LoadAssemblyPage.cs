@@ -20,7 +20,7 @@ namespace Runic.Agent.Console.Pages
 
             var input = Input.ReadString("Enter the assembly plugin key");
             _pluginManager.LoadPlugin(input);
-            var assemblyLoaded = _pluginManager.GetAssemblyKeys().Any(a => a == input);
+            var assemblyLoaded = _pluginManager.GetAssemblyKeys()?.Any(a => a == input);
             if (assemblyLoaded)
             { 
                 Output.WriteLine(ConsoleColor.Green, $"Assembly loaded", input);

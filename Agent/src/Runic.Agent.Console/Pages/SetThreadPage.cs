@@ -1,5 +1,6 @@
 ﻿using Runic.Agent.Console.Framework;
 using Runic.Agent.Service;
+using Runic.Framework.Models;
 using System;
 using System.Threading;
 
@@ -22,7 +23,7 @@ namespace Runic.Agent.Console.Pages
             var flowId = Input.ReadString("Enter the flow id");
             var threadLevel = Input.ReadInt("Enter the thread level", 0, 1000);
             var cts = new CancellationTokenSource();
-            _agentService.SetThreadLevel(new Runic.Framework.Models.SetThreadLevelRequest()
+            _agentService.SetThreadLevel(new SetThreadLevelRequest()
             {
                 FlowName = flowId,
                 ThreadLevel = threadLevel

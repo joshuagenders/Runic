@@ -21,7 +21,7 @@ namespace Runic.Agent.Console.Pages
         {
             base.Display();
             var assemblies = _pluginManager.GetAssemblies();
-            assemblies.ToList().ForEach(i =>
+            assemblies?.ToList().ForEach(i =>
             {
                 Output.WriteLine(ConsoleColor.Green, $"{i.FullName}");
             });

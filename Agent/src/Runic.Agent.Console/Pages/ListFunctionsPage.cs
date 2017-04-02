@@ -20,7 +20,7 @@ namespace Runic.Agent.Console.Pages
         {
             base.Display();
             var functions = _pluginManager.GetAvailableFunctions();
-            functions.ToList().ForEach(i =>
+            functions?.ToList().ForEach(i =>
             {
                 Output.WriteLine(ConsoleColor.Green, $"{i.FunctionName}");
             });

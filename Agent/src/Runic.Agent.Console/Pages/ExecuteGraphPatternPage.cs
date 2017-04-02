@@ -30,30 +30,36 @@ namespace Runic.Agent.Console.Pages
 
             var flowRequest = new GraphFlowExecutionRequest();
             //todo validation
-            flowRequest.Flow = _flowManager.GetFlow(Input.ReadString("Please enter the flow name"));
-            flowRequest.PatternExecutionId = Guid.NewGuid().ToString("N");
-            var points = new List<Point>();
+            try
+            { 
+                flowRequest.Flow = _flowManager.GetFlow(Input.ReadString("Please enter the flow name"));
+                flowRequest.PatternExecutionId = Guid.NewGuid().ToString("N");
+                var points = new List<Point>();
 
-            int unitsFromStart = 0;
-            int threadLevel = 0;
-            do
+                int unitsFromStart = 0;
+                int threadLevel = 0;
+                do
+                {
+                    unitsFromStart = Input.ReadInt("Enter point units from start, or 0 to finish", 0, 1000);
+                    if (unitsFromStart == 0)
+                        break;
+                    threadLevel = Input.ReadInt("Enter point thread level", 0, 1000);
+                    points.Add(new Point() { unitsFromStart = unitsFromStart, threadLevel = threadLevel });
+                } while (unitsFromStart > 0);
+                points.Add(new Point() { unitsFromStart = points.Max(p=>p.unitsFromStart) + 1, threadLevel = 0 });
+
+                flowRequest.ThreadPattern = new GraphThreadModel()
+                {
+                    DurationSeconds = Input.ReadInt("Duration Seconds", 0, int.MaxValue),
+                    Points = points
+                };
+                cts.CancelAfter(flowRequest.ThreadPattern.DurationSeconds * 1000 + 200);
+                _agentService.ExecuteFlow(flowRequest, cts.Token);
+            }
+            catch (Exception e)
             {
-                unitsFromStart = Input.ReadInt("Enter point units from start, or 0 to finish", 0, 1000);
-                if (unitsFromStart == 0)
-                    break;
-                threadLevel = Input.ReadInt("Enter point thread level", 0, 1000);
-                points.Add(new Point() { unitsFromStart = unitsFromStart, threadLevel = threadLevel });
-            } while (unitsFromStart > 0);
-            points.Add(new Point() { unitsFromStart = points.Max(p=>p.unitsFromStart) + 1, threadLevel = 0 });
-
-            flowRequest.ThreadPattern = new GraphThreadModel()
-            {
-                DurationSeconds = Input.ReadInt("Duration Seconds", 0, int.MaxValue),
-                Points = points
-            };
-            cts.CancelAfter(flowRequest.ThreadPattern.DurationSeconds * 1000 + 200);
-            _agentService.ExecuteFlow(flowRequest, cts.Token);
-
+                Output.WriteLine(ConsoleColor.Red, $"An error occured: {e.Message}");
+            }
             Input.ReadString("Press [enter] to return");
             MenuProgram.NavigateHome();
         }

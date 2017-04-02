@@ -33,6 +33,8 @@ namespace Runic.Agent.Console.Pages
             Output.WriteLine(ConsoleColor.White, "Lists all running thread patterns in the agent");
             Output.WriteLine(ConsoleColor.DarkCyan, "\nStop Flow");
             Output.WriteLine(ConsoleColor.White, "Sets the thread level to 0");
+            Output.WriteLine(ConsoleColor.DarkCyan, "\nDisplay Agent Information");
+            Output.WriteLine(ConsoleColor.White, "Displays detailed information about the agent state");
             Output.WriteLine(ConsoleColor.DarkCyan, "\nExecute Thread Pattern");
             Output.WriteLine(ConsoleColor.White, "Executes a given thread pattern against a given flow");
             Output.WriteLine(ConsoleColor.DarkCyan, "\nStop Thread Pattern");
