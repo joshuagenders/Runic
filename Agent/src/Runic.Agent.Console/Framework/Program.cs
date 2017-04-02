@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
+//modified from https://github.com/splttingatms/EasyConsole
 namespace Runic.Agent.Console.Framework
 {
     public abstract class MenuProgram
