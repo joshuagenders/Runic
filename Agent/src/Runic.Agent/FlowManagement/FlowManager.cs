@@ -28,7 +28,7 @@ namespace Runic.Agent.FlowManagement
             return _flows[name];
         }
 
-        public List<Flow> GetFlows()
+        public IList<Flow> GetFlows()
         {
             return _flows.Values.ToList();
         }

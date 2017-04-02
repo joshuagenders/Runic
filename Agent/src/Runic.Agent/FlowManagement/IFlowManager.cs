@@ -7,6 +7,6 @@ namespace Runic.Agent.FlowManagement
     {
         void AddUpdateFlow(Flow flow);
         Flow GetFlow(string name);
-        List<Flow> GetFlows();
+        IList<Flow> GetFlows();
     }
 }

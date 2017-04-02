@@ -31,7 +31,7 @@ namespace Runic.Agent.AssemblyManagement
             _stats = stats;
         }
 
-        public List<Assembly> GetAssemblies()
+        public IList<Assembly> GetAssemblies()
         {
             List<Assembly> assemblyList;
             lock (_assemblies)
@@ -41,7 +41,7 @@ namespace Runic.Agent.AssemblyManagement
             return assemblyList;
         }
 
-        public List<string> GetAssemblyKeys()
+        public IList<string> GetAssemblyKeys()
         {
             return _assembliesLoaded.Where(t => t.Value).Select(t => t.Key).ToList();
         }
@@ -92,7 +92,23 @@ namespace Runic.Agent.AssemblyManagement
             return assembly;
         }
 
-        public List<FunctionInformation> GetAvailableFunctions()
+        public Type GetClassType(string functionFullyQualifiedName)
+        {
+            _logger.Debug($"Searching assemblies for function");
+            lock (_assemblies)
+            {
+                foreach (var assembly in _assemblies)
+                {
+                    var type = assembly.GetType(functionFullyQualifiedName);
+                    if (type != null)
+                        return type;
+                }
+            }
+
+            throw new ClassNotFoundInAssemblyException(functionFullyQualifiedName);
+        }
+
+        public IList<FunctionInformation> GetAvailableFunctions()
         {
             var functions = new List<FunctionInformation>();
             foreach (var assembly in _assemblies)
@@ -135,22 +151,6 @@ namespace Runic.Agent.AssemblyManagement
                             .ToList()
                             .ForEach(f => f.SetValue(type, _runeClient));
             }
-        }
-
-        public Type GetClassType(string functionFullyQualifiedName)
-        {
-            _logger.Debug($"Searching assemblies for function");
-            lock (_assemblies)
-            {
-                foreach (var assembly in _assemblies)
-                {
-                    var type = assembly.GetType(functionFullyQualifiedName);
-                    if (type != null)
-                        return type;
-                }
-            }
-
-            throw new ClassNotFoundInAssemblyException(functionFullyQualifiedName);
         }
     }
 }

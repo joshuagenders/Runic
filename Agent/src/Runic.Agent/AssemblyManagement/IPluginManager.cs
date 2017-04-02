@@ -7,11 +7,11 @@ namespace Runic.Agent.AssemblyManagement
 {
     public interface IPluginManager
     {
-        List<Assembly> GetAssemblies();
-        List<string> GetAssemblyKeys();
-        void LoadPlugin(string pluginAssemblyName);
-        Assembly LoadAssembly(string pluginPath, string pluginAssemblyName);
-        List<FunctionInformation> GetAvailableFunctions();
+        IList<Assembly> GetAssemblies();
+        IList<string> GetAssemblyKeys();
+        IList<FunctionInformation> GetAvailableFunctions();
         Type GetClassType(string functionFullyQualifiedName);
+        Assembly LoadAssembly(string pluginPath, string pluginAssemblyName);
+        void LoadPlugin(string pluginAssemblyName);
     }
 }
