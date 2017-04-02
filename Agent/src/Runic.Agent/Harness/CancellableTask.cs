@@ -8,11 +8,25 @@ namespace Runic.Agent.Harness
     {
         private CancellationTokenSource _cts { get; set; }
         private Task _task { get; set; }
-        
+        private ManualResetEventSlim _mre { get; set; }
+
         public CancellableTask(Task task, CancellationTokenSource cts)
         {
-            _task = task;
+            _mre = new ManualResetEventSlim(false);
+            _task = task.ContinueWith((r) =>
+            {
+                _mre.Set();
+            });
             _cts = cts;
+        }
+
+        public async Task GetCompletionTask()
+        {
+            await Task.Run(() =>
+            {
+                _cts.Token.Register(() => _mre.Set());
+                _mre.Wait();
+            }, _cts.Token);
         }
 
         public bool IsComplete()

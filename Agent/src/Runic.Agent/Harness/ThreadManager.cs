@@ -20,10 +20,14 @@ namespace Runic.Agent.Harness
         private readonly ConcurrentExclusiveSchedulerPair _scheduler;
         private readonly TaskFactory _exclusiveTaskFactory;
         private IStats _stats { get; set; }
-        private readonly IDataService _dataService; 
+        private readonly IDataService _dataService;
+        public readonly string Id;
+
 
         public ThreadManager(Flow flow, IPluginManager pluginManager, IStats stats, IDataService dataService)
         {
+            Id = Guid.NewGuid().ToString("N");
+
             _flow = flow;
             _pluginManager = pluginManager;
             _stats = stats;
@@ -107,7 +111,7 @@ namespace Runic.Agent.Harness
             }
             if (threadCount < _currentThreadCount)
             {
-                List<Task> removalTasks = new List<Task>();
+                var removalTasks = new List<Task>();
                 for (int index = _currentThreadCount; index > threadCount; index--)
                 {
                     removalTasks.Add(SafeRemoveTaskAsync(index));
