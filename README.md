@@ -1,9 +1,19 @@
 ![Runic](images/runic_logo_1.png)
 
-Below is a mind dump so far
-
 Runic is a test lab and framework for running distributed automated tests. The tool is designed to support functional and performance tests.
+## Concepts
+### Runes
+Quite often when test against a system we want to generate load in particular parts of an application, but also want to execute functional paths.
+This can be difficult when each component of the system under test requires state or data from other parts of the system. 
+Normally, a functional flow will move through each part of the application; control of the ratio of load applied to the system becomes more difficult in this model.
+Runes are designed to help mitigate this issue, by promoting modular functions which can share data. A rune is the result of an action executed against the SUT.
+The rune is stored and can be re-used later by other functions. In this model you could for example re-use logins and control the exact number of users dynamically.
 
+I will also add in a preference system so that runes aren't reused too often, potentially use the amount of times queried and age as factors.
+The other model of test design is to program distinct flows, which are more ideal for tests that involve longer start-up times or require more complex or precise compositions of actions. 
+
+
+## Goals
 What I want to achieve:
  - Make it easier
    - Build out a polished framework where the engineer can not only create tests efficiently, but also use the framework to perform exploratory testing.
@@ -23,10 +33,12 @@ What I want to achieve:
 Principles:
   - Continuous testing
   - Modular test design
-  - Well defined data dependencies for tests
+  - Data driven testing
   - Robust and flexible tests
   
 ## Basic Architecture
+
+TODO update image - out of date
 
 ![Runic Architecture](images/BasicArchitecture.png)
 
@@ -62,74 +74,14 @@ Some types of verification to support are:
 I will introduce more templated analytics at a later stage, that can also utilise the performance outputs from the framework.
 
 ## The Agent 
-The Agent is responsible for executing the functions or tests. The agent loads the required executables dynamically. The agent also reports all timing related statistics to graphite. The agent executes functions or tests based on messages received from a controller. Agents support multiple threads, however a test dll will only be loaded once. When retrieving runes, a local cache of runes will be checked first to improve performance. 
+The Agent is responsible for executing the functions or tests. The agent loads the required executables dynamically. The agent also reports all timing related statistics to graphite. The agent executes functions or tests based on messages received from a controller. Agents support multiple threads, however a test dll will only be loaded once.
 
-The order of preference of inputs to function is: 
-Overidden parameters static > Overriden parameters datastore > Cached Rune > Database Rune
+#### Possible feature: Data reservation
+The data reservation function can reserve an indexed field for use until a timeout period expires or until freed by the agent. As an example use case, any time an agent wants to use a customer id exclusively, it reserves the Id. The database rune query service can then exclude any runes for that customer id from use. This is not a completely safe solution but may be a handy tool.
 
-Example Agent process:
- * Create local rune cache
- * Listen for requests
- * Recieve execution request
- * Get test dll
- * load test dll
- * source test data
- * load test instance
- * execute class init
-   * execute beforeeach
-   * execute test/function
-     - inject data
-   * execute aftereach
- * execute class teardown
-
-The agent will eventually have a data reservation function that can reserve an indexed field from use until a after a timeout period or until freed by the agent. As an example use case, any time an agent wants to use a customer id exclusively, it reserves the Id. The database rune query service can then exclude any runes for that customer id from use. This is not a foolproof solution but may be a handy tool.
-
-The agent will also provide standard test hooks such as ClassInit, ClassTeardown, BeforeEachFunction, AfterEachFunction.
-
-Registering transforms
+#### Possible feature: Registering transforms
 Runic functions can have data fed to them from various sources through a single input queue, allowing real-time control of test data.
 Where an appropriate rune cannot be found for a test, if a transform can be found that converts an existing rune then it will be parsed.
-
-## The Controller
-Many agents can be deployed which execute the tests based on messages from the controller. The controller orchestrates the tests based on defined parameters. The controller can control exactly how many of each function are executed, and which test inputs are used. This is designed to create a flexible framework for composing tests.
-
-As an example for a test plan:
-```
- {
-    "FlowName": "MainOrderFlow",
-    "Threads": 800,
-    "RampUpMinutes": 10,
-    "RampDownMinutes": 10,
-    "ExecutionLengthMinutes": 60,
-    Steps : [
-       {
-         "Function": "Login"
-         "Repeat": 800
-       },
-       {
-         "Function": "Search",
-         "DistributionPercentage": 50,
-         "InputDatasource": "datastore.test.postcodes",
-         "DatasourceMapping": 
-           {
-             "POSTCODES_OUTCODE": "outcode"
-           }
-       },
-       {
-         "Function": "OpenItem",
-          "DistributionPercentage": 30
-       },
-      {
-        "Function": "Order",
-        "DistributionPercentage": 20
-      }
-    ]
-}
-```
-
-The controller can execute individual functions without a flow, although behind the scenes the function will likely be wrapped in a single step flow. As a potential use case, run 100 logins which produces 100 authenticated user runes, start 33% for each of search, GoToItem and AddToBasket functions. In this model, the tests re-use the runes created from each other’s execution. 
-I will also add in a preference system so that runes aren't reused too often, potentially use the amount of times queried and age as factors.
-The other model of test design is to program distinct flows, which are more ideal for tests that involve longer start-up times or require more complex or precise compositions of actions. 
 
 ## Test Data store
 The test data store can be used to store data that tests need that cannot be sourced through runes.
