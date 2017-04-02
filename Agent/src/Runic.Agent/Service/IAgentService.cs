@@ -18,5 +18,7 @@ namespace Runic.Agent.Service
         void ExecuteFlow(GradualFlowExecutionRequest request, CancellationToken ct);
         void ExecuteFlow(GraphFlowExecutionRequest request, CancellationToken ct);
         void ExecuteFlow(ConstantFlowExecutionRequest request, CancellationToken ct);
+        void StopFlow(string flowExecutionId);
+        void StopPattern(string flowExecutionId);
     }
 }

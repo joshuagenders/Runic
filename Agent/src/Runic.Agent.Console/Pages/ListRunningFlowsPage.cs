@@ -1,5 +1,6 @@
 ﻿using Runic.Agent.Console.Framework;
 using Runic.Agent.Service;
+using System.Linq;
 
 namespace Runic.Agent.Console.Pages
 {
@@ -18,7 +19,7 @@ namespace Runic.Agent.Console.Pages
             base.Display();
 
             var flowId = Input.ReadString("Enter the flow id");
-            //TODO
+            _agentService.GetRunningThreadPatterns().ToList().ForEach(p => Output.WriteLine(p));
             Input.ReadString("Press [enter] to return");
             MenuProgram.NavigateHome();
         }

@@ -5,26 +5,14 @@ using System.Threading;
 
 namespace Runic.Agent.Console.Pages
 {
-    public class ExecuteThreadPatternPage : Page
+    public class ExecuteThreadPatternPage : MenuPage
     {
-        private readonly IAgentService _agentService;
-
-        public ExecuteThreadPatternPage(MenuProgram program, IAgentService agentService)
-            : base("Set Threads", program)
+        public ExecuteThreadPatternPage(MenuProgram program)
+            : base("Main Menu", program,
+                  new Option("Execute Graph Thread Pattern", () => program.NavigateTo<ExecuteGraphPatternPage>()),
+                  new Option("Execute Gradual Pattern", () => program.NavigateTo<ListAssembliesPage>()),
+                  new Option("Execute Constant Pattern", () => program.NavigateTo<ListFunctionsPage>()))
         {
-            _agentService = agentService;
-        }
-
-        public override void Display()
-        {
-            base.Display();
-            
-            var flowId = Input.ReadString("Enter the flow id");
-            //todo thread pattern
-            var cts = new CancellationTokenSource();
-
-            Input.ReadString("Press [enter] to return");
-            MenuProgram.NavigateHome();
         }
     }
 }

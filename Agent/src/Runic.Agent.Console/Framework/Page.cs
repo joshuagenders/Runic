@@ -27,9 +27,9 @@ namespace Runic.Agent.Console.Framework
             }
             else
             {
-                System.Console.WriteLine(Title);
+                Output.WriteLine(ConsoleColor.DarkCyan, Title);
             }
-            System.Console.WriteLine("---");
+            Output.WriteLine(ConsoleColor.DarkBlue, "---");
         }
     }
 }

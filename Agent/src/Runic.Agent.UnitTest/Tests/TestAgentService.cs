@@ -182,6 +182,12 @@ namespace Runic.Agent.UnitTest.Tests
         }
 
         [TestMethod]
+        public void TestStartStopFlow()
+        {
+            throw new NotImplementedException();
+        }
+
+        [TestMethod]
         public async Task TestSetThreadLevel()
         {   
             _world.FlowManager.AddUpdateFlow(

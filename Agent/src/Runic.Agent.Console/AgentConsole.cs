@@ -24,9 +24,13 @@ namespace Runic.Agent.Console
             AddPage(new SetThreadPage(this, agentService));
             AddPage(new StopFlowPage(this, agentService));
             AddPage(new DisplayAgentInformationPage(this));
-            AddPage(new ExecuteThreadPatternPage(this, agentService));
+            AddPage(new ExecuteThreadPatternPage(this));
+            AddPage(new ExecuteConstantPatternPage(this, agentService, flowManager));
+            AddPage(new ExecuteGraphPatternPage(this, agentService, flowManager));
+            AddPage(new ExecuteGradualPatternPage(this, agentService, flowManager));
             AddPage(new StopThreadPatternPage(this, agentService));
             AddPage(new ListRunningThreadPatternsPage(this, agentService));
+            AddPage(new ExitPage(this));
             SetPage<MainPage>();
         }
     }

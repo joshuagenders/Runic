@@ -219,5 +219,21 @@ namespace Runic.Agent.Service
             cts.CancelAfter(2000);
             SafeCancelAll(cts.Token);
         }
+
+        public void StopFlow(string flowExecutionId)
+        {
+            if (_threadManagers.TryRemove(flowExecutionId, out ThreadManager threadManager))
+            {
+                threadManager.Dispose();
+            }
+        }
+
+        public void StopPattern(string patternExecutionId)
+        {
+            if (_threadPatterns.TryRemove(patternExecutionId, out CancellableTask task))
+            {
+                task.Cancel();
+            }
+        }
     }
 }

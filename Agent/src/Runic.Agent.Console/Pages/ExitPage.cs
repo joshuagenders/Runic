@@ -4,8 +4,14 @@ namespace Runic.Agent.Console.Pages
 {
     public class ExitPage : Page
     {
-        public ExitPage(MenuProgram program) : base("Exit", program)
+        public ExitPage(MenuProgram program) 
+            : base("Exit", program)
         {
+        }
+
+        public override void Display()
+        {
+            base.Display();
         }
     }
 }
