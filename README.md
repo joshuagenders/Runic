@@ -63,7 +63,7 @@ Angular2 or React are likely choices for the UI.
 ![Runic UI](images/ExampleTestComposer.png)
 
 ## The Oracle
-The oracle is (most likely a group of services) responsible for analysing the results from tests executed in a Runic test lab. The oracle should be designed so that the user can express the pre-conditions and expected outcomes for a test. The test can then be executed against any runes which match the pre-conditions. There may be a need to support several methods of expression, including external script execution. Possibly the use of hamstring matchers.
+The oracle is (most likely a group of services) responsible for analysing the results from tests executed in a Runic test lab. The oracle should be designed so that the user can express the pre-conditions and expected outcomes for a test. The test can then be executed against any runes which match the pre-conditions. There may be a need to support several methods of expression, including external script execution. Possibly the use of hamcrest matchers.
 
 Some types of verification to support are:
  * Expressing preconditions to source results to verify back-end state
