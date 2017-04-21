@@ -35,12 +35,6 @@ Principles:
   - Modular test design
   - Data driven testing
   - Robust and flexible tests
-  
-## Basic Architecture
-
-TODO update image - out of date
-
-![Runic Architecture](images/BasicArchitecture.png)
 
 ## The framework
 The Runic framework is designed around user interactions. It supports a data-driven model of testing. 
