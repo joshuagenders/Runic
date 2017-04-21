@@ -62,7 +62,7 @@ The oracle is (most likely a group of services) responsible for analysing the re
 Some types of verification to support are:
  * Expressing predicates to source results to verify back-end state
  * Expressing predicates to source results to verify front end funtionality or state
- * Locating outliers in function and flow results in comparison to similar other result sets and averages
+ * Locating outliers in function and flow results in comparison to comparable result sets and averages
  * General statisticical analytics of performance characteristics
  
 I will introduce more templated analytics at a later stage, that can also utilise the performance outputs from the framework.
