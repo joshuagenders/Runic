@@ -10,9 +10,8 @@ namespace Runic.Agent.Console
     {
         public static void Main(string[] args)
         {
-            AgentConfiguration.LoadConfiguration(args);
             var startup = new Startup();
-            var container = startup.BuildContainer();
+            var container = startup.BuildContainer(args);
             var service = container.Resolve<IAgentService>();
             var plugins = container.Resolve<IPluginManager>();
             var flowMgr = container.Resolve<IFlowManager>();
