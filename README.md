@@ -77,6 +77,9 @@ The data reservation function can reserve an indexed field for use until a timeo
 Runic functions can have data fed to them from various sources through a single input queue, allowing real-time control of test data.
 Where an appropriate rune cannot be found for a test, if a transform can be found that converts an existing rune then it will be parsed.
 
+#### Possible feature: Data visibility
+It is common that applications will require data only to be available to a user under certain circumstances, for example, authenticated users. When storing runes I may add some implementation of visibility levels. This will likely also involve restricting runes to particular users, roles, or other abstract concepts.
+
 ## Test Data store
 The test data store can be used to store data that tests need that cannot be sourced through runes.
 The user can map tables, stored procedures or queries through to inputs for tests. The user can also created user-defined lists, tables and data-structures (like JSON) as inputs to tests. 
