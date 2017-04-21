@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using System;
 
 namespace Runic.Agent
 {
@@ -11,7 +12,16 @@ namespace Runic.Agent
             using (var scope = container.BeginLifetimeScope())
             {
                 var agent = scope.Resolve<IApplication>();
-                agent.Run().Wait();
+                agent.Run()
+                     .ContinueWith((result) =>
+                     {
+                         if (result.Exception != null)
+                         {
+                             Console.WriteLine("An exception occured.");
+                             Console.WriteLine(result.Exception.Message);
+                         }
+                         Console.WriteLine("Exiting application...");
+                     });
             }
         }
     }
