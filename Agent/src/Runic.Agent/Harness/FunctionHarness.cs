@@ -65,7 +65,7 @@ namespace Runic.Agent.Harness
             if (functionMethod == null)
                 throw new FunctionWithAttributeNotFoundException(_functionName);
 
-            await ExecuteMethod(functionMethod, ct, GetParameters(_positionalParameters, functionMethod));
+            await ExecuteMethod(functionMethod, ct, GetMapParameters(_positionalParameters, functionMethod));
         }
 
         private bool IsAsyncMethod (MethodInfo method)
@@ -101,16 +101,18 @@ namespace Runic.Agent.Harness
             return null;
         }
 
-        private object[] GetParameters(object[] positionalParameters, MethodInfo methodInfo)
+        private object[] GetMapParameters(object[] positionalParameters, MethodInfo methodInfo)
         {
             var p = methodInfo.GetParameters();
             var methodParams = new object[p.Length];
 
+            //add positional params
             for (var i = 0; i < positionalParameters.Length; i++)
             {
                 if (i < p.Length)
                     methodParams[i] = positionalParameters[i];
             }
+            //add defaults for remaining params
             for (var i = positionalParameters.Length; i < p.Length; i++)
             {
                 if(p[i].HasDefaultValue)
