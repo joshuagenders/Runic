@@ -32,8 +32,8 @@ namespace Runic.Agent.UnitTest.TestUtility
                 "Statsd:Host=192.168.99.100",
                 "Statsd:Prefix=Runic.Stats."
             };
-            AgentConfiguration.LoadConfiguration(cli);
-            var container = new TestStartup().BuildContainer();
+
+            var container = new TestStartup().BuildContainer(cli);
             PluginManager = container.Resolve<IPluginManager>();
             FlowManager = container.Resolve<IFlowManager>();
             Stats = container.Resolve<IStats>();

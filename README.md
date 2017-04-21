@@ -28,7 +28,7 @@ What I want to achieve:
  - Support Continuous Testing
    - Enabling real-time feedback loops for functional and non-functional attributes
  - Flexible
-   - Tests written in .NET core, meaning tests have the control to exercise the SUT at many levels   
+   - Tests written in .NET core, meaning tests have the control to exercise the SUT at many levels
  
 Principles:
   - Continuous testing
@@ -52,7 +52,7 @@ Functions can span across multiple pages, or APIs etc. to achieve its purpose. S
 
 When constructing a framework, careful thought should be given to how to break up functions and how to standardise runes. Functions should be constructed to enable the most control over their actions, but also ease of integration by well-designed dependencies. Data that cannot be sourced from runes can be passed into the tests from the test data store. The test should be able to function without this input wherever possible.
 
-###Standard structure of a function:
+### Standard structure of a function:
 
 ![Runic Functions](images/FunctionDesign.png)
 

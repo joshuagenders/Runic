@@ -17,9 +17,10 @@ namespace Runic.Agent.UnitTest.TestUtility
 {
     public class TestStartup : IStartup
     {
-        public IContainer BuildContainer()
+        public IContainer BuildContainer(string [] args)
         {
-            var builder = new ContainerBuilder();
+            AgentConfiguration.LoadConfiguration(args);
+
             IStatsd statsd = Statsd.New<Udp>(options =>
             {
                 options.Port = AgentConfiguration.Instance.StatsdPort;
@@ -27,6 +28,9 @@ namespace Runic.Agent.UnitTest.TestUtility
                 options.Prefix = AgentConfiguration.Instance.StatsdPrefix;
                 options.BufferMetrics = false;
             });
+
+            var builder = new ContainerBuilder();
+
             builder.RegisterInstance(statsd).As<IStatsd>();
             builder.RegisterType<Stats>().As<IStats>();
             builder.RegisterType<FlowManager>().As<IFlowManager>();

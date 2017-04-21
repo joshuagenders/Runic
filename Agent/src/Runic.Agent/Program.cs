@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Autofac;
 
 namespace Runic.Agent
 {
@@ -7,19 +6,13 @@ namespace Runic.Agent
     {
         public static void Main(string[] args)
         {
-            var agent = new Agent();
             var startup = new Startup();
-            Task.Run(async () =>
+            var container = startup.BuildContainer();
+            using (var scope = container.BeginLifetimeScope())
             {
-                await agent.Start(args, startup).ContinueWith((result) =>
-                {
-                    if (result.Exception != null)
-                    {
-                        Console.WriteLine("An error occured.");
-                    }
-                    Console.WriteLine("Exiting.");
-                });
-            });
+                var agent = scope.Resolve<IApplication>();
+                agent.Run().Wait();
+            }
         }
     }
 }

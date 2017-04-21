@@ -1,18 +1,18 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using NLog;
+﻿using NLog;
+using Runic.Agent.Data;
 using Runic.Agent.FlowManagement;
 using Runic.Agent.Harness;
 using Runic.Agent.Messaging;
+using Runic.Agent.Metrics;
+using Runic.Agent.ThreadPatterns;
 using Runic.Framework.Models;
 using Runic.Agent.AssemblyManagement;
-using System.Collections.Concurrent;
-using System.Linq;
-using System.Collections.Generic;
-using Runic.Agent.ThreadPatterns;
-using Runic.Agent.Metrics;
-using Runic.Agent.Data;
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Runic.Agent.Service
 {

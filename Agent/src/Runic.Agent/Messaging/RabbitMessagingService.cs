@@ -17,6 +17,7 @@ namespace Runic.Agent.Messaging
 
         public RabbitMessagingService()
         {
+            //todo, DI handlers
             var busConfig = new RawRabbitConfiguration
             {
                 Username = "guest",
