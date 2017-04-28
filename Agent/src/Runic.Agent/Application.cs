@@ -1,10 +1,6 @@
-﻿using Autofac;
-using NLog;
-using Runic.Agent.Configuration;
+﻿using NLog;
 using Runic.Agent.Messaging;
 using Runic.Agent.Service;
-using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 

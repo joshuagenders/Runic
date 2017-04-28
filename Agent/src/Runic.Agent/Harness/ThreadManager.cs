@@ -14,15 +14,14 @@ namespace Runic.Agent.Harness
     {
         private readonly Flow _flow;
         private readonly IPluginManager _pluginManager;
-        private int _currentThreadCount { get; set; }
-
-        private ConcurrentDictionary<int, CancellableTask> _taskPool { get; set; }
         private readonly ConcurrentExclusiveSchedulerPair _scheduler;
         private readonly TaskFactory _exclusiveTaskFactory;
-        private IStats _stats { get; set; }
+        private readonly IStats _stats;
         private readonly IDataService _dataService;
         public readonly string Id;
 
+        private ConcurrentDictionary<int, CancellableTask> _taskPool { get; set; }
+        private int _currentThreadCount { get; set; }
 
         public ThreadManager(Flow flow, IPluginManager pluginManager, IStats stats, IDataService dataService)
         {

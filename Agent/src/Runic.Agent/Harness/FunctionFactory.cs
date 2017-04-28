@@ -12,15 +12,15 @@ namespace Runic.Agent.Harness
     public class FunctionFactory
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-
-        private Flow _flow { get; set; }
-        private Dictionary<string, object> _assemblies { get; set; }
-        private Step _lastStep { get; set; }
-        private int _lastStepCount { get; set; }
-        private IStats _stats { get; set; }
+        private readonly Flow _flow;
+        private readonly IStats _stats;
         private readonly IDataService _dataService;
         private readonly IPluginManager _pluginManager;
 
+        private Dictionary<string, object> _assemblies { get; set; }
+        private Step _lastStep { get; set; }
+        private int _lastStepCount { get; set; }
+        
         public FunctionFactory(Flow flow, IPluginManager pluginManager, IStats stats, IDataService dataService)
         {
             _flow = flow;

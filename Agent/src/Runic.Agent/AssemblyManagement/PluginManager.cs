@@ -18,10 +18,11 @@ namespace Runic.Agent.AssemblyManagement
         private readonly Logger _logger = LogManager.GetLogger("Runic.Agent.AssemblyManagement.PluginManager");
         private readonly ConcurrentBag<Assembly> _assemblies;
         private readonly ConcurrentDictionary<string, bool> _assembliesLoaded;
+        private readonly IStats _stats;
+
         private IRuneClient _runeClient { get; set; }
         private IPluginProvider _provider { get; set; }
-        private IStats _stats { get; set; }
-
+        
         public PluginManager(IRuneClient client, IPluginProvider provider, IStats stats)
         {
             _assemblies = new ConcurrentBag<Assembly>();

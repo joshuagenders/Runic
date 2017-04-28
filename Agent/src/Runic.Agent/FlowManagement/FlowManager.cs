@@ -9,7 +9,7 @@ namespace Runic.Agent.FlowManagement
     public class FlowManager : IFlowManager
     {
         private ConcurrentDictionary<string, Flow> _flows { get; set; }
-        private IStats _stats { get; set; }
+        private readonly IStats _stats;
 
         public FlowManager(IStats stats)
         {

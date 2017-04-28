@@ -16,7 +16,7 @@ namespace Runic.Agent.Harness
 
         private object _instance { get; set; }
         private string _functionName { get; set; }
-        private IStats _stats { get; set; }
+        private readonly IStats _stats;
         private object[] _positionalParameters { get; set; }
 
         public FunctionHarness(IStats stats)

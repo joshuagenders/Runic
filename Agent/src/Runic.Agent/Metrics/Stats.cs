@@ -4,7 +4,7 @@ namespace Runic.Agent.Metrics
 {
     public class Stats : IStats
     {
-        private IStatsd _statsd { get; set; }
+        private readonly IStatsd _statsd;
 
         public Stats(IStatsd statsd)
         {
