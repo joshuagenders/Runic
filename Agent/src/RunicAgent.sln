@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.UnitTest", "Run
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runic.Agent.Console", "Runic.Agent.Console\Runic.Agent.Console.csproj", "{90BCCFF9-F01E-495A-91B9-8DAF0A77F8B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runic.HttpServer", "Runic.HttpServer\Runic.HttpServer.csproj", "{703E655B-867D-4721-BE80-CF1CBA3D593B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{90BCCFF9-F01E-495A-91B9-8DAF0A77F8B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90BCCFF9-F01E-495A-91B9-8DAF0A77F8B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90BCCFF9-F01E-495A-91B9-8DAF0A77F8B6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{703E655B-867D-4721-BE80-CF1CBA3D593B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{703E655B-867D-4721-BE80-CF1CBA3D593B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{703E655B-867D-4721-BE80-CF1CBA3D593B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{703E655B-867D-4721-BE80-CF1CBA3D593B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

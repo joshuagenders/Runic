@@ -3,6 +3,7 @@ using Runic.Agent.AssemblyManagement;
 using Runic.Agent.Configuration;
 using Runic.Agent.Data;
 using Runic.Agent.FlowManagement;
+using Runic.Agent.Messaging;
 using Runic.Agent.Metrics;
 using Runic.Agent.Services;
 using Runic.Agent.ThreadManagement;
@@ -39,6 +40,7 @@ namespace Runic.Agent
                     .As<IPluginProvider>();
 
             builder.RegisterType<ThreadOrchestrator>().As<IThreadOrchestrator>();
+            builder.RegisterType<HandlerRegistry>().As<IHandlerRegistry>();
 
             return builder.Build();
         }

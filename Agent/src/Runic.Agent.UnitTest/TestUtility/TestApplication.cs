@@ -6,6 +6,7 @@ using Runic.Agent.Metrics;
 using Runic.Agent.ThreadManagement;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
 
 namespace Runic.Agent.UnitTest.TestUtility
 {
@@ -46,6 +47,10 @@ namespace Runic.Agent.UnitTest.TestUtility
         public Task RunApplicationAsync(CancellationToken ct = default(CancellationToken))
         {
             return Task.CompletedTask;
+        }
+
+        public void RegisterMessageHandlers(CancellationToken ct = default(CancellationToken))
+        {
         }
     }
 }
