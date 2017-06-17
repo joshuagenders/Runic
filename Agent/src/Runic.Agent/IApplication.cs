@@ -5,6 +5,6 @@ namespace Runic.Agent
 {
     public interface IApplication
     {
-        Task Run(CancellationToken ct = default(CancellationToken));
+        Task RunApplicationAsync(CancellationToken ct = default(CancellationToken));
     }
 }

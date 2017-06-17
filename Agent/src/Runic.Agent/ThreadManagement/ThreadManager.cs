@@ -1,5 +1,6 @@
 ﻿using Runic.Agent.AssemblyManagement;
 using Runic.Agent.Data;
+using Runic.Agent.Harness;
 using Runic.Agent.Metrics;
 using Runic.Framework.Models;
 using System;
@@ -8,7 +9,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Harness
+namespace Runic.Agent.ThreadManagement
 {
     public class ThreadManager : IDisposable
     {
@@ -53,7 +54,7 @@ namespace Runic.Agent.Harness
             else
             {
                 var cts = new CancellationTokenSource();
-                var flowTask = ExecuteFlow(cts.Token).ContinueWith(async (_) => await SafeRemoveTaskAsync(id));
+                var flowTask = ExecuteFlowAsync(cts.Token).ContinueWith(async (_) => await SafeRemoveTaskAsync(id));
 
                 var cancellableTask = new CancellableTask(flowTask, cts);
                     _taskPool.AddOrUpdate(
@@ -66,7 +67,7 @@ namespace Runic.Agent.Harness
             }
         }
 
-        private async Task ExecuteFlow(CancellationToken ct)
+        private async Task ExecuteFlowAsync(CancellationToken ct)
         {
             var factory = new FunctionFactory(_flow, _pluginManager, _stats, _dataService);
             FunctionHarness function = null;
@@ -74,7 +75,7 @@ namespace Runic.Agent.Harness
             while (!ct.IsCancellationRequested)
             {
                 function = factory.GetNextFunction(lastStepSuccess);
-                lastStepSuccess = await function.Execute(ct);
+                lastStepSuccess = await function.OrchestrateFunctionExecutionAsync(ct);
             }
         }
 
@@ -105,7 +106,7 @@ namespace Runic.Agent.Harness
             foreach (var thread in _taskPool)
             {
                 thread.Value.Cancel();
-                completionTasks.Add(thread.Value.GetCompletionTask());
+                completionTasks.Add(thread.Value.GetCompletionTaskAsync());
             }
             Task.WaitAll(completionTasks.ToArray());
         }

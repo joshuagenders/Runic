@@ -1,5 +1,5 @@
 ﻿using Runic.Agent.Console.Framework;
-using Runic.Agent.Service;
+using Runic.Agent.ThreadManagement;
 using Runic.Framework.Models;
 using System;
 using System.Threading;
@@ -8,12 +8,12 @@ namespace Runic.Agent.Console.Pages
 {
     class SetThreadPage : Page
     {
-        private readonly IAgentService _agentService;
+        private readonly IThreadOrchestrator _threadOrchestrator;
 
-        public SetThreadPage(MenuProgram program, IAgentService agentService)
+        public SetThreadPage(MenuProgram program, IThreadOrchestrator threadOrchestrator)
             : base("Set Threads", program)
         {
-            _agentService = agentService;
+            _threadOrchestrator = threadOrchestrator;
         }
 
         public override void Display()
@@ -23,7 +23,7 @@ namespace Runic.Agent.Console.Pages
             var flowId = Input.ReadString("Enter the flow id");
             var threadLevel = Input.ReadInt("Enter the thread level", 0, 1000);
             var cts = new CancellationTokenSource();
-            _agentService.SetThreadLevel(new SetThreadLevelRequest()
+            _threadOrchestrator.SetThreadLevelAsync(new SetThreadLevelRequest()
             {
                 FlowName = flowId,
                 ThreadLevel = threadLevel

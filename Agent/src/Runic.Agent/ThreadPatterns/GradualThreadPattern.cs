@@ -134,18 +134,13 @@ namespace Runic.Agent.ThreadPatterns
             AddEndPoint();
         }
 
-        public override async Task Start(CancellationToken ct)
+        public override async Task StartPatternAsync(CancellationToken ct)
         {
             GeneratePoints();
-            await base.Start(ct);
+            await base.StartPatternAsync(ct);
         }
 
-        public int GetMaxDurationSeconds()
-        {
-            return DurationSeconds;
-        }
-
-        public int GetMaxThreadCount()
+        public override int GetMaxThreadCount()
         {
             return ThreadCount;
         }

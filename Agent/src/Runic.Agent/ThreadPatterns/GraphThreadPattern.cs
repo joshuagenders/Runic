@@ -24,17 +24,17 @@ namespace Runic.Agent.ThreadPatterns
             _callbacks.Add(callback);
         }
 
-        public int GetMaxDurationSeconds()
+        public virtual int GetMaxDurationSeconds()
         {
             return DurationSeconds;
         }
 
-        public int GetMaxThreadCount()
+        public virtual int GetMaxThreadCount()
         {
             return Points.Max(p => p.threadLevel);
         }
 
-        public virtual async Task Start(CancellationToken ct)
+        public virtual async Task StartPatternAsync(CancellationToken ct)
         {
             double maxX = Points.Max(p => p.unitsFromStart);
             for (int index = 0; index < Points.Count; index++)

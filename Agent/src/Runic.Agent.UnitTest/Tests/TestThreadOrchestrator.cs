@@ -1,46 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Runic.Agent.Service;
 using Runic.Framework.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.UnitTest.TestUtility;
 using System;
 using System.Linq;
+using Runic.Agent.ThreadManagement;
 
 namespace Runic.Agent.UnitTest.Tests
 {
     [TestClass]
-    public class TestAgentService
+    public class TestThreadOrchestrator
     {
-        private AgentWorld _world { get; set; }
+        private TestEnvironment _testEnvironment { get; set; }
         private Flow _fakeFlow { get; set; }
 
         [TestInitialize]
         public void Init()
         {
-            _world = new AgentWorld();
-
-            _fakeFlow = new Flow()
-            {
-                Name = "FakeFlow",
-                StepDelayMilliseconds = 200,
-                Steps = new List<Step>()
-                    {
-                        new Step()
-                        {
-                            StepName = "Step1",
-                            Function = new FunctionInformation()
-                            {
-                                AssemblyName = "Runic.ExampleTest",
-                                AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.FakeFunction",
-                                FunctionName = "FakeFunction"
-                            },
-                            NextStepOnFailure = "Step1",
-                            NextStepOnSuccess = "Step1"
-                        }
-                    }
-            };
+            _testEnvironment = new TestEnvironment();
+        
+            _fakeFlow = TestData.GetTestFlowSingleStepLooping;
         }
         
         [TestMethod]
@@ -51,25 +32,27 @@ namespace Runic.Agent.UnitTest.Tests
             try
             {
                 var flowExecutionId = Guid.NewGuid().ToString("N");
-                _world.Agent.ExecuteFlow(new GradualFlowExecutionRequest()
-                {
-                    PatternExecutionId = flowExecutionId,
-                    Flow = _fakeFlow,
-                    ThreadPattern = new GradualThreadModel()
+                _testEnvironment.App.GradualFlowService.ExecuteFlow(
+                    new GradualFlowExecutionRequest()
                     {
-                        DurationSeconds = 4,
-                        RampUpSeconds = 2,
-                        ThreadCount = 4,
-                        RampDownSeconds = 1,
-                        StepIntervalSeconds = 1
-                    }
-                }, cts.Token);
+                        PatternExecutionId = flowExecutionId,
+                        Flow = _fakeFlow,
+                        ThreadPattern = new GradualThreadModel()
+                        {
+                            DurationSeconds = 4,
+                            RampUpSeconds = 2,
+                            ThreadCount = 4,
+                            RampDownSeconds = 1,
+                            StepIntervalSeconds = 1
+                        }
+                    }, cts.Token);
+
                 Thread.Sleep(1250);
-                var runningFlows = _world.Agent.GetRunningFlows();
-                var runningThreadPatterns = _world.Agent.GetRunningThreadPatterns();
+                var runningFlows = _testEnvironment.App.ThreadOrchestrator.GetRunningFlows();
+                var runningThreadPatterns = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatterns();
                 Assert.IsTrue(runningFlows.Contains(flowExecutionId), "running flow not found");
                 Assert.IsTrue(runningThreadPatterns.Contains(flowExecutionId), "running thread pattern not found");
-                _world.Agent.SafeCancelAll(cts.Token);
+                _testEnvironment.App.ThreadOrchestrator.SafeCancelAll(cts.Token);
             }
             catch (OperationCanceledException)
             {
@@ -84,7 +67,7 @@ namespace Runic.Agent.UnitTest.Tests
             cts.CancelAfter(3000);
             try { 
                 var flowExecutionId = Guid.NewGuid().ToString("N");
-                _world.Agent.ExecuteFlow(new GraphFlowExecutionRequest()
+                _testEnvironment.App.GraphFlowService.ExecuteFlow(new GraphFlowExecutionRequest()
                 {
                     PatternExecutionId = flowExecutionId,
                     Flow = _fakeFlow,
@@ -99,16 +82,16 @@ namespace Runic.Agent.UnitTest.Tests
                     }
                 }, cts.Token);
                 Thread.Sleep(250);
-                var runningFlows = _world.Agent.GetRunningFlows().ToList();
-                var runningThreadPatterns = _world.Agent.GetRunningThreadPatterns().ToList();
-                var runningPatternCount = _world.Agent.GetRunningThreadPatternCount();
-                var runningFlowCount = _world.Agent.GetRunningFlowCount();
+                var runningFlows = _testEnvironment.App.ThreadOrchestrator.GetRunningFlows().ToList();
+                var runningThreadPatterns = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatterns().ToList();
+                var runningPatternCount = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatternCount();
+                var runningFlowCount = _testEnvironment.App.ThreadOrchestrator.GetRunningFlowCount();
                 Assert.IsTrue(runningPatternCount == 1, $"Running pattern count not 1, {runningPatternCount}");
                 Assert.IsTrue(runningFlowCount == 1, $"Running flow count not 1, {runningFlowCount}");
                 Assert.IsTrue(runningFlows.Contains(flowExecutionId), "running flow not found");
                 Assert.IsTrue(runningThreadPatterns.Contains(flowExecutionId), "running thread pattern not found");
 
-                _world.Agent.SafeCancelAll(cts.Token);
+                _testEnvironment.App.ThreadOrchestrator.SafeCancelAll(cts.Token);
             }
             catch (OperationCanceledException)
             {
@@ -123,7 +106,7 @@ namespace Runic.Agent.UnitTest.Tests
             cts.CancelAfter(3000);
             try {
                 var flowExecutionId = Guid.NewGuid().ToString("N");
-                _world.Agent.ExecuteFlow(new ConstantFlowExecutionRequest()
+                _testEnvironment.App.ConstantFlowService.ExecuteFlow(new ConstantFlowExecutionRequest()
                 {
                     PatternExecutionId = flowExecutionId,
                     Flow = _fakeFlow,
@@ -133,17 +116,18 @@ namespace Runic.Agent.UnitTest.Tests
                         ThreadCount = 3
                     }
                 }, cts.Token);
+
                 Thread.Sleep(1150);
-                var runningFlows = _world.Agent.GetRunningFlows().ToList();
-                var runningThreadPatterns = _world.Agent.GetRunningThreadPatterns().ToList();
-                var runningPatternCount = _world.Agent.GetRunningThreadPatternCount();
-                var runningFlowCount = _world.Agent.GetRunningFlowCount();
+                var runningFlows = _testEnvironment.App.ThreadOrchestrator.GetRunningFlows().ToList();
+                var runningThreadPatterns = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatterns().ToList();
+                var runningPatternCount = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatternCount();
+                var runningFlowCount = _testEnvironment.App.ThreadOrchestrator.GetRunningFlowCount();
                 Assert.IsTrue(runningPatternCount == 1, $"Running pattern count not 1, {runningPatternCount}");
                 Assert.IsTrue(runningFlowCount == 1, $"Running flow count not 1, {runningFlowCount}");
                 Assert.IsTrue(runningFlows.Contains(flowExecutionId), "running flow not found");
                 Assert.IsTrue(runningThreadPatterns.Contains(flowExecutionId), "running thread pattern not found");
 
-                _world.Agent.SafeCancelAll(cts.Token);
+                _testEnvironment.App.ThreadOrchestrator.SafeCancelAll(cts.Token);
             }
             catch (OperationCanceledException)
             {
@@ -187,7 +171,7 @@ namespace Runic.Agent.UnitTest.Tests
             var cts = new CancellationTokenSource();
             cts.CancelAfter(3000);            
             var flowExecutionId = Guid.NewGuid().ToString("N");
-            _world.Agent.ExecuteFlow(new ConstantFlowExecutionRequest()
+            _testEnvironment.App.ConstantFlowService.ExecuteFlow(new ConstantFlowExecutionRequest()
             {
                 PatternExecutionId = flowExecutionId,
                 Flow = _fakeFlow,
@@ -198,20 +182,20 @@ namespace Runic.Agent.UnitTest.Tests
                 }
             }, cts.Token);
             Thread.Sleep(1150);
-            var runningFlows = _world.Agent.GetRunningFlows().ToList();
-            var runningThreadPatterns = _world.Agent.GetRunningThreadPatterns().ToList();
-            var runningPatternCount = _world.Agent.GetRunningThreadPatternCount();
-            var runningFlowCount = _world.Agent.GetRunningFlowCount();
+            var runningFlows = _testEnvironment.App.ThreadOrchestrator.GetRunningFlows().ToList();
+            var runningThreadPatterns = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatterns().ToList();
+            var runningPatternCount = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatternCount();
+            var runningFlowCount = _testEnvironment.App.ThreadOrchestrator.GetRunningFlowCount();
             Assert.IsTrue(runningPatternCount == 1, $"Running pattern count not 1, {runningPatternCount}");
             Assert.IsTrue(runningFlowCount == 1, $"Running flow count not 1, {runningFlowCount}");
             Assert.IsTrue(runningFlows.Contains(flowExecutionId), "running flow not found");
             Assert.IsTrue(runningThreadPatterns.Contains(flowExecutionId), "running thread pattern not found");
             try
             {
-                _world.Agent.StopPattern(flowExecutionId);
-                _world.Agent.StopFlow(flowExecutionId);
-                runningPatternCount = _world.Agent.GetRunningThreadPatternCount();
-                runningFlowCount = _world.Agent.GetRunningFlowCount();
+                _testEnvironment.App.ThreadOrchestrator.StopPattern(flowExecutionId);
+                _testEnvironment.App.ThreadOrchestrator.StopFlow(flowExecutionId);
+                runningPatternCount = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatternCount();
+                runningFlowCount = _testEnvironment.App.ThreadOrchestrator.GetRunningFlowCount();
                 Assert.IsTrue(runningPatternCount == 0, $"Running pattern count not 0, {runningPatternCount}");
                 Assert.IsTrue(runningFlowCount == 0, $"Running flow count not 0, {runningFlowCount}");
             }
@@ -221,8 +205,8 @@ namespace Runic.Agent.UnitTest.Tests
 
         [TestMethod]
         public async Task TestSetThreadLevel()
-        {   
-            _world.FlowManager.AddUpdateFlow(
+        {
+            _testEnvironment.App.FlowManager.AddUpdateFlow(
                 new Flow()
                 {
                     Name = "FakeFlow",
@@ -244,18 +228,22 @@ namespace Runic.Agent.UnitTest.Tests
                     }
                 });
 
-            var agent = new AgentService(_world.PluginManager, _world.MessagingService, _world.FlowManager, _world.Stats, _world.DataService);
+            var agent = new ThreadOrchestrator(
+                _testEnvironment.App.PluginManager,
+                _testEnvironment.App.MessagingService,
+                _testEnvironment.App.FlowManager,
+                _testEnvironment.App.Stats,
+                _testEnvironment.App.DataService);
+
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
 
-            await agent.SetThreadLevel(new SetThreadLevelRequest()
+            await agent.SetThreadLevelAsync(new SetThreadLevelRequest()
             {
                 FlowName = "FakeFlow",
                 FlowId = "MyFlow",
                 ThreadLevel = 1
             }, cts.Token);
-
-            var agentTask = agent.Run(cts.Token);
 
             Thread.Sleep(150);
             Assert.AreEqual(1, agent.GetThreadLevel("MyFlow"));
@@ -263,7 +251,6 @@ namespace Runic.Agent.UnitTest.Tests
             try
             {
                 cts.Cancel();
-                await agentTask;
             }
             catch (TaskCanceledException)
             {

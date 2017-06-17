@@ -12,7 +12,7 @@ namespace Runic.Agent
             using (var scope = container.BeginLifetimeScope())
             {
                 var agent = scope.Resolve<IApplication>();
-                agent.Run()
+                agent.RunApplicationAsync()
                      .ContinueWith((result) =>
                      {
                          if (result.Exception != null)

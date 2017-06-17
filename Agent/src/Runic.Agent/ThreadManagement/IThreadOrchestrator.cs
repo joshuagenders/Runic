@@ -2,23 +2,21 @@
 using System.Threading.Tasks;
 using Runic.Framework.Models;
 using System.Collections.Generic;
+using Runic.Agent.ThreadPatterns;
 
-namespace Runic.Agent.Service
+namespace Runic.Agent.ThreadManagement
 {
-    public interface IAgentService
+    public interface IThreadOrchestrator
     {
-        Task Run(CancellationToken ct);
-        Task SetThreadLevel(SetThreadLevelRequest request, CancellationToken ct);
+        Task SetThreadLevelAsync(SetThreadLevelRequest request, CancellationToken ct);
         int GetThreadLevel(string flowId);
         IList<string> GetRunningFlows();
         int GetRunningFlowCount();
         int GetRunningThreadPatternCount();
         IList<string> GetRunningThreadPatterns();
         void SafeCancelAll(CancellationToken ct);
-        void ExecuteFlow(GradualFlowExecutionRequest request, CancellationToken ct);
-        void ExecuteFlow(GraphFlowExecutionRequest request, CancellationToken ct);
-        void ExecuteFlow(ConstantFlowExecutionRequest request, CancellationToken ct);
         void StopFlow(string flowExecutionId);
         void StopPattern(string flowExecutionId);
+        void AddNewPattern(string patternExecutionId, Flow flow, IThreadPattern pattern);
     }
 }

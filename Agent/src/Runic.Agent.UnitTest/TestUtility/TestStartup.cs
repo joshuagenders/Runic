@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Autofac;
+﻿using Autofac;
 using StatsN;
 using Runic.Agent.Metrics;
 using Runic.Agent.Configuration;
 using Runic.Agent.FlowManagement;
-using Runic.Agent.Messaging;
+using Runic.Agent.Services;
 using Runic.Framework.Clients;
 using Runic.Agent.AssemblyManagement;
 using System.IO;
-using Runic.Agent.Service;
 using Runic.Agent.Data;
+using Runic.Agent.ThreadManagement;
+using Moq;
 
 namespace Runic.Agent.UnitTest.TestUtility
 {
@@ -34,16 +32,16 @@ namespace Runic.Agent.UnitTest.TestUtility
             builder.RegisterInstance(statsd).As<IStatsd>();
             builder.RegisterType<Stats>().As<IStats>();
             builder.RegisterType<FlowManager>().As<IFlowManager>();
-            builder.RegisterType<DataService>().As<IDataService>();
+            builder.RegisterType<JsonDataService>().As<IDataService>();
             builder.RegisterType<NoOpMessagingService>().As<IMessagingService>();
             builder.RegisterType<InMemoryClient>().As<IRuneClient>();
             builder.RegisterType<FilePluginProvider>()
                     .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                     .As<IPluginProvider>();
             builder.RegisterType<PluginManager>().As<IPluginManager>();
-
-            builder.RegisterType<AgentService>().As<IAgentService>();
-
+            builder.RegisterInstance(new Mock<IMessagingService>().Object).As<IMessagingService>();
+            builder.RegisterType<ThreadOrchestrator>().As<IThreadOrchestrator>();
+            builder.RegisterType<TestApplication>().As<IApplication>();
             return builder.Build();
         }
     }

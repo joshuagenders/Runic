@@ -1,11 +1,16 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Messaging
+namespace Runic.Agent.Services
 {
     public class NoOpMessagingService : IMessagingService
     {
-        public async Task Run(CancellationToken ct)
+        public void RegisterMessageHandler<T>(Func<T, Task> handler)
+        {
+        }
+
+        public async Task RunServiceAsync(CancellationToken ct)
         {
             await Task.Run(() =>
             {

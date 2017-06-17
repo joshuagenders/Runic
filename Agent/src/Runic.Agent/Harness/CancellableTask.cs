@@ -20,7 +20,7 @@ namespace Runic.Agent.Harness
             _cts = cts;
         }
 
-        public async Task GetCompletionTask()
+        public async Task GetCompletionTaskAsync()
         {
             await Task.Run(() =>
             {

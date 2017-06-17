@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Runic.Agent.FlowManagement;
-using Runic.Agent.Service;
+using Runic.Agent.ThreadManagement;
 using Runic.Agent.UnitTest.TestUtility;
 using Runic.Framework.Models;
 using System.Collections.Generic;
@@ -9,21 +8,23 @@ using System.Threading.Tasks;
 
 namespace Runic.Agent.UnitTest.Tests
 {
+    [TestClass]
     public class TestWikipedia
     {
-        private AgentWorld _world { get; set; }
+        private TestEnvironment _testEnvironment { get; set; }
 
         [TestInitialize]
         public void Init()
         {
-            _world = new AgentWorld();
+            _testEnvironment = new TestEnvironment();
         }
 
         [TestMethod]
+        [Ignore]
         [TestCategory("SystemTest")]
         public async Task RunTestWikipedia()
         {
-            _world.FlowManager.AddUpdateFlow(new Flow()
+            _testEnvironment.App.FlowManager.AddUpdateFlow(new Flow()
             {
                 Name = "Wikipedia Flow",
                 StepDelayMilliseconds = 700,
@@ -68,11 +69,16 @@ namespace Runic.Agent.UnitTest.Tests
                 }
             });
 
-            var agent = new AgentService(_world.PluginManager, _world.MessagingService, _world.FlowManager, _world.Stats, _world.DataService);
+            var agent = new ThreadOrchestrator(
+                _testEnvironment.App.PluginManager, 
+                _testEnvironment.App.MessagingService,
+                _testEnvironment.App.FlowManager,
+                _testEnvironment.App.Stats,
+                _testEnvironment.App.DataService);
 
             CancellationTokenSource cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
-            await agent.SetThreadLevel(new SetThreadLevelRequest()
+            await agent.SetThreadLevelAsync(new SetThreadLevelRequest()
             {
                 FlowName = "Wikipedia Flow",
                 ThreadLevel = 5

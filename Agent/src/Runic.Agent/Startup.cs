@@ -4,8 +4,8 @@ using Runic.Agent.Configuration;
 using Runic.Agent.Data;
 using Runic.Agent.FlowManagement;
 using Runic.Agent.Metrics;
-using Runic.Agent.Messaging;
-using Runic.Agent.Service;
+using Runic.Agent.Services;
+using Runic.Agent.ThreadManagement;
 using Runic.Framework.Clients;
 using StatsN;
 using System.IO;
@@ -31,13 +31,14 @@ namespace Runic.Agent
             builder.RegisterType<Stats>().As<IStats>();
             builder.RegisterType<FlowManager>().As<IFlowManager>();
             builder.RegisterType<PluginManager>().As<IPluginManager>();
-            builder.RegisterType<DataService>().As<IDataService>();
+            builder.RegisterType<JsonDataService>().As<IDataService>();
             builder.RegisterType<NoOpMessagingService>().As<IMessagingService>();
             builder.RegisterType<InMemoryClient>().As<IRuneClient>();
             builder.RegisterType<FilePluginProvider>()
                     .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                     .As<IPluginProvider>();
-            builder.RegisterType<AgentService>().As<IAgentService>();
+
+            builder.RegisterType<ThreadOrchestrator>().As<IThreadOrchestrator>();
 
             return builder.Build();
         }

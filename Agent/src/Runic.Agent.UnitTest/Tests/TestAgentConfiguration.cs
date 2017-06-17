@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.Configuration;
+using Runic.Agent.UnitTest.TestUtility;
 
 namespace Runic.Agent.UnitTest.Tests
 {
@@ -9,16 +10,8 @@ namespace Runic.Agent.UnitTest.Tests
         [TestMethod]
         public void TestCommandLineInputs()
         {
-            var cli = new[]
-            {
-                "Agent:MaxThreads=321",
-                "Agent:LifetimeSeconds=123",
-                "Client:MQConnectionString=MyExampleConnection",
-                "Statsd:Port=8125",
-                "Statsd:Host=192.168.99.100",
-                "Statsd:Prefix=Runic.Stats."
-            };
-            AgentConfiguration.LoadConfiguration(cli);
+            
+            AgentConfiguration.LoadConfiguration(TestConstants.CommandLineArguments);
 
             Assert.AreEqual(AgentConfiguration.Instance.ClientConnectionConfiguration, "MyExampleConnection");
             Assert.AreEqual(AgentConfiguration.Instance.LifetimeSeconds, 123);

@@ -7,7 +7,7 @@ namespace Runic.Agent.ThreadPatterns
     public interface IThreadPattern
     {
         void RegisterThreadChangeHandler(Action<int> callback);
-        Task Start(CancellationToken ct);
+        Task StartPatternAsync(CancellationToken ct);
         int GetMaxDurationSeconds();
         int GetMaxThreadCount();
     }

@@ -2,21 +2,20 @@
 using Runic.Agent.Data;
 using Runic.Agent.FlowManagement;
 using Runic.Agent.Harness;
-using Runic.Agent.Messaging;
 using Runic.Agent.Metrics;
 using Runic.Agent.ThreadPatterns;
 using Runic.Framework.Models;
 using Runic.Agent.AssemblyManagement;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Runic.Agent.Services;
 
-namespace Runic.Agent.Service
+namespace Runic.Agent.ThreadManagement
 {
-    public class AgentService : IAgentService, IDisposable
+    public class ThreadOrchestrator : IThreadOrchestrator
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -26,14 +25,12 @@ namespace Runic.Agent.Service
         private readonly IStats _stats;
         private readonly IDataService _dataService;
 
-        private ConcurrentDictionary<string, ThreadManager> _threadManagers { get; set; }
-        private ConcurrentDictionary<string, CancellableTask> _threadPatterns { get; set; }
-        
-        public AgentService(IPluginManager pluginManager, 
-                            IMessagingService messagingService, 
-                            IFlowManager flowManager, 
-                            IStats stats,
-                            IDataService dataService)
+        public ThreadOrchestrator(
+            IPluginManager pluginManager, 
+            IMessagingService messagingService, 
+            IFlowManager flowManager, 
+            IStats stats, 
+            IDataService dataService)
         {
             _flowManager = flowManager;
             _pluginManager = pluginManager;
@@ -45,26 +42,17 @@ namespace Runic.Agent.Service
             _threadPatterns = new ConcurrentDictionary<string, CancellableTask>();
         }
 
-        public async Task Run(CancellationToken ct)
-        {
-            //wait for cancellation
-            await Task.Run(() => 
-            {
-                var mre = new ManualResetEventSlim(false);
-                ct.Register(() => mre.Set());
-                mre.Wait();
-            }, ct);
-            SafeCancelAll(ct);
-        }
+        private static ConcurrentDictionary<string, ThreadManager> _threadManagers { get; set; }
+        private static ConcurrentDictionary<string, CancellableTask> _threadPatterns { get; set; }
 
         public void SafeCancelAll(CancellationToken ct)
         {
             var updateTasks = new List<Task>();
-            
-                _threadPatterns.ToList().ForEach(t => t.Value.Cancel());
-            
-                _threadManagers.ToList().ForEach(ftm => updateTasks.Add(ftm.Value.SafeUpdateThreadCountAsync(0)));
-            
+
+            _threadPatterns.ToList().ForEach(t => t.Value.Cancel());
+
+            _threadManagers.ToList().ForEach(ftm => updateTasks.Add(ftm.Value.SafeUpdateThreadCountAsync(0)));
+
             Task.WaitAll(updateTasks.ToArray(), ct);
         }
 
@@ -78,11 +66,11 @@ namespace Runic.Agent.Service
             return 0;
         }
 
-        public async Task GetCompletionTask(string patternExecutionId)
+        public async Task GetCompletionTaskAsync(string patternExecutionId)
         {
             if (_threadPatterns.ContainsKey(patternExecutionId))
             {
-                await _threadPatterns[patternExecutionId].GetCompletionTask();
+                await _threadPatterns[patternExecutionId].GetCompletionTaskAsync();
             }
         }
 
@@ -114,25 +102,8 @@ namespace Runic.Agent.Service
                 return;
             }
         }
-        
-        private async Task ExecutePattern(string flowExecutionId, Flow flow, IThreadPattern pattern, CancellationToken ct)
-        {
-            _flowManager.AddUpdateFlow(flow);
 
-            pattern.RegisterThreadChangeHandler(async (threadLevel) =>
-            {
-                await SetThreadLevel(new SetThreadLevelRequest()
-                {
-                    FlowName = flow.Name,
-                    ThreadLevel = threadLevel,
-                    FlowId = flowExecutionId
-                }, ct);
-            });
-
-            await pattern.Start(ct);
-        }
-
-        private void AddNewPattern(string patternExecutionId, Flow flow, IThreadPattern pattern)
+        public void AddNewPattern(string patternExecutionId, Flow flow, IThreadPattern pattern)
         {
             if (_threadManagers.TryGetValue(patternExecutionId, out ThreadManager manager))
             {
@@ -143,7 +114,7 @@ namespace Runic.Agent.Service
             {
                 var cts = new CancellationTokenSource();
                 var patternTask = ExecutePattern(patternExecutionId, flow, pattern, cts.Token);
-                    //.ContinueWith(async (_) => await SafeRemoveTaskAsync(patternExecutionId));
+                //.ContinueWith(async (_) => await SafeRemoveTaskAsync(patternExecutionId));
 
                 var cancellableTask = new CancellableTask(patternTask, cts);
                 _threadPatterns.AddOrUpdate(patternExecutionId, cancellableTask,
@@ -154,6 +125,23 @@ namespace Runic.Agent.Service
             }
         }
 
+        private async Task ExecutePattern(string flowExecutionId, Flow flow, IThreadPattern pattern, CancellationToken ct)
+        {
+            _flowManager.AddUpdateFlow(flow);
+
+            pattern.RegisterThreadChangeHandler(async (threadLevel) =>
+            {
+                await SetThreadLevelAsync(new SetThreadLevelRequest()
+                {
+                    FlowName = flow.Name,
+                    ThreadLevel = threadLevel,
+                    FlowId = flowExecutionId
+                }, ct);
+            });
+
+            await pattern.StartPatternAsync(ct);
+        }
+
         private async Task SafeRemoveThreadPatternAsync(string id)
         {
             CancellableTask task;
@@ -162,42 +150,7 @@ namespace Runic.Agent.Service
                 await task.CancelAsync();
         }
 
-        public void ExecuteFlow(GradualFlowExecutionRequest request, CancellationToken ct)
-        {
-            var pattern = new GradualThreadPattern()
-            {
-                DurationSeconds = request.ThreadPattern.DurationSeconds,
-                Points = request.ThreadPattern.Points,
-                RampDownSeconds = request.ThreadPattern.RampDownSeconds,
-                RampUpSeconds = request.ThreadPattern.RampUpSeconds,
-                StepIntervalSeconds = request.ThreadPattern.StepIntervalSeconds,
-                ThreadCount = request.ThreadPattern.ThreadCount
-            };
-
-            AddNewPattern(request.PatternExecutionId, request.Flow, pattern);
-        }
-
-        public void ExecuteFlow(GraphFlowExecutionRequest request, CancellationToken ct)
-        {
-            var pattern = new GraphThreadPattern()
-            {
-                DurationSeconds = request.ThreadPattern.DurationSeconds,
-                Points = request.ThreadPattern.Points
-            };
-            AddNewPattern(request.PatternExecutionId, request.Flow, pattern);
-        }
-
-        public void ExecuteFlow(ConstantFlowExecutionRequest request, CancellationToken ct)
-        {
-            var pattern = new ConstantThreadPattern()
-            {
-                ThreadCount = request.ThreadPattern.ThreadCount,
-                DurationSeconds = request.ThreadPattern.DurationSeconds
-            };
-            AddNewPattern(request.PatternExecutionId, request.Flow, pattern);
-        }
-
-        public async Task SetThreadLevel(SetThreadLevelRequest request, CancellationToken ct)
+        public async Task SetThreadLevelAsync(SetThreadLevelRequest request, CancellationToken ct)
         {
             //todo implement maxthreads
             _logger.Debug($"Attempting to update thread level to {request.ThreadLevel} for {request.FlowName}");
@@ -233,7 +186,7 @@ namespace Runic.Agent.Service
             if (_threadPatterns.TryRemove(patternExecutionId, out CancellableTask task))
             {
                 task.Cancel();
-                task.GetCompletionTask().Wait();
+                task.GetCompletionTaskAsync().Wait();
             }
         }
     }

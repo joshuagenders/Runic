@@ -10,42 +10,23 @@ namespace Runic.Agent.UnitTest.Tests
     [TestClass]
     public class TestFlowInitialiser
     {
-        private AgentWorld _world { get; set; }
+        private TestEnvironment _testEnvironment { get; set; }
 
         [TestInitialize]
         public void Init()
         {
-            _world = new AgentWorld();
+            _testEnvironment = new TestEnvironment();
         }
 
         [TestMethod]
         public void TestLibraryLoads()
         {
-
-            var flow = new Flow()
-            {
-                Name = "Test",
-                Steps = new List<Step>()
-                {
-                    new Step()
-                    {
-                        StepName = "blah",
-                        Function = new FunctionInformation()
-                        {
-                            AssemblyName = "Runic.ExampleTest",
-                            FunctionName = "FakeFunction",
-                            AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.FakeFunction"
-                        }
-                    }
-                }
-            };
-
-            
-            var flowInitialiser = new FlowInitialiser(_world.PluginManager);
+            var flow = TestData.GetTestFlowSingleStep;   
+            var flowInitialiser = new FlowInitialiser(_testEnvironment.App.PluginManager);
             flowInitialiser.InitialiseFlow(flow);
 
-            Assert.IsTrue(_world.PluginManager.GetAssemblies().Any());
-            Assert.IsTrue(_world.PluginManager.GetAssemblyKeys().Any(k => k == "Runic.ExampleTest"));
+            Assert.IsTrue(_testEnvironment.App.PluginManager.GetAssemblies().Any());
+            Assert.IsTrue(_testEnvironment.App.PluginManager.GetAssemblyKeys().Any(k => k == "Runic.ExampleTest"));
         }
     }
 }

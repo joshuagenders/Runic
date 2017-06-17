@@ -12,19 +12,19 @@ namespace Runic.Agent.UnitTest.Tests
     [TestClass]
     public class TestFunctionHarness
     {
-        private AgentWorld _world { get; set; }
+        private TestEnvironment _testEnvironment { get; set; }
 
         [TestInitialize]
         public void Init()
         {
-            _world = new AgentWorld();
+            _testEnvironment = new TestEnvironment();
         }
 
         [TestMethod]
         public void TestGetMethodWithAttribute()
         {
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness(_world.Stats);
+            var functionHarness = new FunctionHarness(_testEnvironment.App.Stats);
             functionHarness.Bind(fakeFunction, "Login");
             var method = functionHarness.GetMethodWithAttribute(typeof(BeforeEachAttribute));
             Assert.IsNotNull(method, "beforeeach method not found");
@@ -34,14 +34,14 @@ namespace Runic.Agent.UnitTest.Tests
         public async Task TestBeforeEachExecute()
         {
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness(_world.Stats);
+            var functionHarness = new FunctionHarness(_testEnvironment.App.Stats);
             functionHarness.Bind(fakeFunction, "Login");
             var method = functionHarness.GetMethodWithAttribute(typeof(BeforeEachAttribute));
             var cts = new CancellationTokenSource();
             try
             {
                 cts.CancelAfter(5000);
-                var task = functionHarness.ExecuteMethod(method, cts.Token);
+                var task = functionHarness.ExecuteMethodAsync(method, cts.Token);
                 await task;
                 Assert.IsNull(task.Exception);
             }
@@ -55,13 +55,13 @@ namespace Runic.Agent.UnitTest.Tests
         public async Task TestFunctionExecute()
         {
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness(_world.Stats);
+            var functionHarness = new FunctionHarness(_testEnvironment.App.Stats);
             functionHarness.Bind(fakeFunction, "AsyncWait");
             var cts = new CancellationTokenSource();
             try
             {
                 cts.CancelAfter(5000);
-                var task = functionHarness.ExecuteFunction(cts.Token);
+                var task = functionHarness.ExecuteFunctionAsync(cts.Token);
                 await task;
                 Assert.IsTrue(fakeFunction.AsyncTask.IsCompleted);
                 Assert.IsNull(task.Exception);
@@ -78,9 +78,9 @@ namespace Runic.Agent.UnitTest.Tests
             var cts = new CancellationTokenSource();
             cts.CancelAfter(1000);
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness(_world.Stats);
+            var functionHarness = new FunctionHarness(_testEnvironment.App.Stats);
             functionHarness.Bind(fakeFunction, "Login");
-            var result = await functionHarness.Execute(cts.Token);
+            var result = await functionHarness.OrchestrateFunctionExecutionAsync(cts.Token);
 
             fakeFunction.CallList.ForEach(c => Console.WriteLine(c.InvocationTarget));
             Assert.IsTrue(result, "Function returned false - error in execution");
@@ -96,9 +96,9 @@ namespace Runic.Agent.UnitTest.Tests
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness(_world.Stats);
+            var functionHarness = new FunctionHarness(_testEnvironment.App.Stats);
             functionHarness.Bind(fakeFunction, "AsyncWait");
-            await functionHarness.Execute(cts.Token);
+            await functionHarness.OrchestrateFunctionExecutionAsync(cts.Token);
             
             Assert.IsTrue(fakeFunction.AsyncTask.IsCompleted);
             Assert.AreEqual(3, fakeFunction.CallList.Count);
@@ -113,12 +113,12 @@ namespace Runic.Agent.UnitTest.Tests
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness(_world.Stats);
+            var functionHarness = new FunctionHarness(_testEnvironment.App.Stats);
 
             var uniqueString = Guid.NewGuid().ToString("n");
             var randomInt = new Random().Next();
             functionHarness.Bind(fakeFunction, "Inputs", uniqueString, randomInt);
-            await functionHarness.Execute(cts.Token);
+            await functionHarness.OrchestrateFunctionExecutionAsync(cts.Token);
 
             Assert.AreEqual(3, fakeFunction.CallList.Count);
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "BeforeEach"), "BeforeEach called");
@@ -133,14 +133,14 @@ namespace Runic.Agent.UnitTest.Tests
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness(_world.Stats);
+            var functionHarness = new FunctionHarness(_testEnvironment.App.Stats);
 
             var uniqueString = Guid.NewGuid().ToString("n");
             var uniqueString2 = Guid.NewGuid().ToString("n");
             var randomInt = new Random().Next();
 
             functionHarness.Bind(fakeFunction, "InputsWithDefault", uniqueString, randomInt, uniqueString2);
-            await functionHarness.Execute(cts.Token);
+            await functionHarness.OrchestrateFunctionExecutionAsync(cts.Token);
 
             Assert.AreEqual(3, fakeFunction.CallList.Count);
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "BeforeEach"), "BeforeEach called");
@@ -155,12 +155,12 @@ namespace Runic.Agent.UnitTest.Tests
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness(_world.Stats);
+            var functionHarness = new FunctionHarness(_testEnvironment.App.Stats);
 
             var uniqueString = Guid.NewGuid().ToString("n");
             var randomInt = new Random().Next();
             functionHarness.Bind(fakeFunction, "InputsWithDefault", uniqueString, randomInt);
-            await functionHarness.Execute(cts.Token);
+            await functionHarness.OrchestrateFunctionExecutionAsync(cts.Token);
 
             Assert.AreEqual(3, fakeFunction.CallList.Count);
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "BeforeEach"), "BeforeEach called");

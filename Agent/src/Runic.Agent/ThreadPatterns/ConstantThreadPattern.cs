@@ -32,7 +32,7 @@ namespace Runic.Agent.ThreadPatterns
             return ThreadCount;
         }
 
-        public async Task Start(CancellationToken ct)
+        public async Task StartPatternAsync(CancellationToken ct)
         {
             if (DurationSeconds == 0)
             {

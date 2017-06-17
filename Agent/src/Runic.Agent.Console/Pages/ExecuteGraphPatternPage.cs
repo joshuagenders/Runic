@@ -1,6 +1,7 @@
 ﻿using Runic.Agent.Console.Framework;
 using Runic.Agent.FlowManagement;
-using Runic.Agent.Service;
+using Runic.Agent.Services;
+using Runic.Agent.ThreadManagement;
 using Runic.Framework.Models;
 using System;
 using System.Collections.Generic;
@@ -11,14 +12,16 @@ namespace Runic.Agent.Console.Pages
 {
     public class ExecuteGraphPatternPage : Page
     {
-        private readonly IAgentService _agentService;
+        private readonly IThreadOrchestrator _threadOrchestrator;
         private readonly IFlowManager _flowManager;
+        private readonly GraphFlowService _flowService;
 
-        public ExecuteGraphPatternPage(MenuProgram program, IAgentService agentService, IFlowManager flowManager)
+        public ExecuteGraphPatternPage(MenuProgram program, IThreadOrchestrator threadOrchestrator, IFlowManager flowManager)
             : base("Execute Graph Pattern", program)
         {
-            _agentService = agentService;
+            _threadOrchestrator = threadOrchestrator;
             _flowManager = flowManager;
+            _flowService = new GraphFlowService(_threadOrchestrator);
         }
 
         public override void Display()
@@ -54,7 +57,7 @@ namespace Runic.Agent.Console.Pages
                     Points = points
                 };
                 cts.CancelAfter(flowRequest.ThreadPattern.DurationSeconds * 1000 + 200);
-                _agentService.ExecuteFlow(flowRequest, cts.Token);
+                _flowService.ExecuteFlow(flowRequest, cts.Token);
             }
             catch (Exception e)
             {

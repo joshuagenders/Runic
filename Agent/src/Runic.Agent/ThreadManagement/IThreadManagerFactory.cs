@@ -1,4 +1,4 @@
-﻿namespace Runic.Agent.Harness
+﻿namespace Runic.Agent.ThreadManagement
 {
     public interface IThreadManagerFactory
     {

@@ -26,7 +26,7 @@ namespace Runic.Agent.UnitTest.Tests
             cts.CancelAfter(maxDuration * 1000 + 1000);
             try
             {
-                await threadPattern.Start(cts.Token);
+                await threadPattern.StartPatternAsync(cts.Token);
             }
             catch (TaskCanceledException)
             {

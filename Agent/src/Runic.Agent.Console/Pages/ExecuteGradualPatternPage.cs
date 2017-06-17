@@ -1,6 +1,7 @@
 ﻿using Runic.Agent.Console.Framework;
 using Runic.Agent.FlowManagement;
-using Runic.Agent.Service;
+using Runic.Agent.Services;
+using Runic.Agent.ThreadManagement;
 using Runic.Framework.Models;
 using System;
 using System.Threading;
@@ -9,14 +10,16 @@ namespace Runic.Agent.Console.Pages
 {
     public class ExecuteGradualPatternPage : MenuPage
     {
-        private readonly IAgentService _agentService;
+        private readonly IThreadOrchestrator _threadOrchestrator;
         private readonly IFlowManager _flowManager;
+        private readonly GradualFlowService _flowService;
 
-        public ExecuteGradualPatternPage(MenuProgram program, IAgentService agentService, IFlowManager flowManager)
+        public ExecuteGradualPatternPage(MenuProgram program, IThreadOrchestrator threadOrchestrator, IFlowManager flowManager)
             : base("Execute Gradual Pattern", program)
         {
-            _agentService = agentService;
+            _threadOrchestrator = threadOrchestrator;
             _flowManager = flowManager;
+            _flowService = new GradualFlowService(_threadOrchestrator);
         }
 
         public override void Display()
@@ -40,7 +43,7 @@ namespace Runic.Agent.Console.Pages
                     StepIntervalSeconds = Input.ReadInt("Step Interval Seconds", 0, 3600)
                 };
                 cts.CancelAfter(5000);
-                _agentService.ExecuteFlow(flowRequest, cts.Token);
+                _flowService.ExecuteFlow(flowRequest, cts.Token);
             }
             catch (Exception e)
             {

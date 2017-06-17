@@ -1,7 +1,7 @@
 ﻿using Runic.Agent.Console.Framework;
 using Runic.Agent.FlowManagement;
-using Runic.Agent.Service;
-using Runic.Agent.ThreadPatterns;
+using Runic.Agent.Services;
+using Runic.Agent.ThreadManagement;
 using Runic.Framework.Models;
 using System;
 using System.Threading;
@@ -10,13 +10,16 @@ namespace Runic.Agent.Console.Pages
 {
     public class ExecuteConstantPatternPage : Page
     {
-        private readonly IAgentService _agentService;
+        private readonly IThreadOrchestrator _threadOrchestrator;
         private readonly IFlowManager _flowManager;
-        public ExecuteConstantPatternPage(MenuProgram program, IAgentService agentService, IFlowManager flowManager)
+        private readonly ConstantFlowService _flowService;
+
+        public ExecuteConstantPatternPage(MenuProgram program, IThreadOrchestrator threadOrchestrator, IFlowManager flowManager)
             : base("Execute Constant Pattern", program)
         {
-            _agentService = agentService;
+            _threadOrchestrator = threadOrchestrator;
             _flowManager = flowManager;
+            _flowService = new ConstantFlowService(_threadOrchestrator);
         }
 
         public override void Display()
@@ -37,7 +40,7 @@ namespace Runic.Agent.Console.Pages
                     ThreadCount = Input.ReadInt("Thread Count", 0, 1000)
                 };
                 cts.CancelAfter(5000);
-                _agentService.ExecuteFlow(flowRequest, cts.Token);
+                _flowService.ExecuteFlow(flowRequest, cts.Token);
             }
             catch (Exception e)
             {

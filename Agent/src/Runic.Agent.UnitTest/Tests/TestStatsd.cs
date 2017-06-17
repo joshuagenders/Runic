@@ -8,14 +8,15 @@ namespace Runic.Agent.UnitTest.Tests
     [TestClass]
     public class TestStatsd
     {
-        private AgentWorld _world { get; set; }
+        private TestEnvironment _testEnvironment { get; set; }
 
         [TestInitialize]
         public void Init()
         {
-            _world = new AgentWorld();
+            _testEnvironment = new TestEnvironment();
         }
 
+        [Ignore]
         [TestMethod]
         public void TestBucketCreate()
         {

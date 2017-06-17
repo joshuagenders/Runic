@@ -1,0 +1,15 @@
+﻿namespace Runic.Agent.UnitTest.TestUtility
+{
+    public class TestConstants
+    {
+        public static readonly string[] CommandLineArguments = new string[]
+            {
+                "Agent:MaxThreads=321",
+                "Agent:LifetimeSeconds=123",
+                "Client:MQConnectionString=MyExampleConnection",
+                "Statsd:Port=8125",
+                "Statsd:Host=192.168.99.100",
+                "Statsd:Prefix=Runic.Stats."
+            };    
+    }
+}

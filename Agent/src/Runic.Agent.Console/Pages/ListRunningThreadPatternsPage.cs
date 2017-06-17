@@ -1,17 +1,17 @@
 ﻿using Runic.Agent.Console.Framework;
-using Runic.Agent.Service;
+using Runic.Agent.ThreadManagement;
 using System.Linq;
 
 namespace Runic.Agent.Console.Pages
 {
     public class ListRunningThreadPatternsPage : Page
     {
-        private readonly IAgentService _agentService;
+        private readonly IThreadOrchestrator _threadOrchestrator;
 
-        public ListRunningThreadPatternsPage(MenuProgram program, IAgentService agentService) 
+        public ListRunningThreadPatternsPage(MenuProgram program, IThreadOrchestrator threadOrchestrator) 
             : base("List Running Thread Patterns", program)
         {
-            _agentService = agentService;
+            _threadOrchestrator = threadOrchestrator;
         }
 
         public override void Display()
@@ -19,7 +19,7 @@ namespace Runic.Agent.Console.Pages
             base.Display();
 
             var flowId = Input.ReadString("Enter the flow id");
-            _agentService.GetRunningFlows()?.ToList().ForEach(f => Output.WriteLine(f));
+            _threadOrchestrator.GetRunningFlows()?.ToList().ForEach(f => Output.WriteLine(f));
             Input.ReadString("Press [enter] to return");
             MenuProgram.NavigateHome();
         }

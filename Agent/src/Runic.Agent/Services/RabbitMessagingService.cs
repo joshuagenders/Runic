@@ -3,12 +3,11 @@ using System.Threading.Tasks;
 using NLog;
 using RawRabbit;
 using RawRabbit.Context;
-using Runic.Framework.Models;
 using RawRabbit.Configuration;
 using RawRabbit.vNext;
 using System.Threading;
 
-namespace Runic.Agent.Messaging
+namespace Runic.Agent.Services
 {
     public class RabbitMessagingService : IMessagingService
     {
@@ -29,11 +28,14 @@ namespace Runic.Agent.Messaging
             _bus = BusClientFactory.CreateDefault(busConfig);
         }
 
-        public void Subscribe<T>(Func<T, MessageContext, Task> handler)
+        public void RegisterMessageHandler<T>(Func<T, Task> handler)
         {
+            Func<T, MessageContext, Task> rabbitHandler =
+                (flowRequest, messageContext) => handler(flowRequest);
+            
             try
             {
-                _bus.SubscribeAsync(handler);
+                _bus.SubscribeAsync(rabbitHandler);
             }
             catch (Exception e)
             {
@@ -41,32 +43,7 @@ namespace Runic.Agent.Messaging
             }
         }
 
-        public void RegisterThreadLevelHandler(Func<SetThreadLevelRequest, MessageContext, Task> handler)
-        {
-            Subscribe(handler);   
-        }
-
-        public void RegisterFlowUpdateHandler(Func<AddUpdateFlowRequest, MessageContext, Task> handler)
-        {
-            Subscribe(handler);
-        }
-
-        public void RegisterConstantFlowHandler(Func<ConstantFlowExecutionRequest, MessageContext, Task> handler)
-        {
-            Subscribe(handler);
-        }
-
-        public void RegisterGraphFlowHandler(Func<GraphFlowExecutionRequest, MessageContext, Task> handler)
-        {
-            Subscribe(handler);
-        }
-
-        public void RegisterGradualFlowHandler(Func<GradualFlowExecutionRequest, MessageContext, Task> handler)
-        {
-            Subscribe(handler);
-        }
-
-        public async Task Run(CancellationToken ct)
+        public async Task RunServiceAsync(CancellationToken ct)
         {
             await Task.Run(() =>
             {

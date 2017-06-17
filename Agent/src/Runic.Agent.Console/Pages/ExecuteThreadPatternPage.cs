@@ -1,7 +1,4 @@
 ﻿using Runic.Agent.Console.Framework;
-using Runic.Agent.Service;
-using System;
-using System.Threading;
 
 namespace Runic.Agent.Console.Pages
 {

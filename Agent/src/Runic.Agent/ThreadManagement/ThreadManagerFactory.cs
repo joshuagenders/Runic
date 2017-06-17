@@ -3,7 +3,7 @@ using Runic.Agent.Data;
 using Runic.Agent.FlowManagement;
 using Runic.Agent.Metrics;
 
-namespace Runic.Agent.Harness
+namespace Runic.Agent.ThreadManagement
 {
     public class ThreadManagerFactory : IThreadManagerFactory
     {

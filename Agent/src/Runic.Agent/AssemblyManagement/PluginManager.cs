@@ -22,7 +22,7 @@ namespace Runic.Agent.AssemblyManagement
 
         private IRuneClient _runeClient { get; set; }
         private IPluginProvider _provider { get; set; }
-        
+
         public PluginManager(IRuneClient client, IPluginProvider provider, IStats stats)
         {
             _assemblies = new ConcurrentBag<Assembly>();
@@ -30,21 +30,6 @@ namespace Runic.Agent.AssemblyManagement
             _runeClient = client;
             _provider = provider;
             _stats = stats;
-        }
-
-        public IList<Assembly> GetAssemblies()
-        {
-            List<Assembly> assemblyList;
-            lock (_assemblies)
-            {
-                assemblyList = _assemblies.ToList();
-            }
-            return assemblyList;
-        }
-
-        public IList<string> GetAssemblyKeys()
-        {
-            return _assembliesLoaded.Where(t => t.Value).Select(t => t.Key).ToList();
         }
 
         public void LoadPlugin(string pluginAssemblyName)
@@ -56,7 +41,7 @@ namespace Runic.Agent.AssemblyManagement
                 _assembliesLoaded.TryGetValue(pluginAssemblyName, out loaded);
             }
             if (loaded)
-                return;            
+                return;
 
             _provider.RetrieveSourceDll(pluginAssemblyName);
             var pluginPath = _provider.GetFilepath(pluginAssemblyName);
@@ -128,7 +113,7 @@ namespace Runic.Agent.AssemblyManagement
                                 AssemblyQualifiedClassName = type.FullName,
                                 FunctionName = attribute.Name,
                                 Parameters = method.GetParameters()
-                                                    .ToDictionary(p=> p.Name, p => p.ParameterType),
+                                                    .ToDictionary(p => p.Name, p => p.ParameterType),
                                 RequiredRunes = method.GetCustomAttributes<RequiresRunesAttribute>()
                                                      ?.SelectMany(s => s.Runes)
                                                       .ToList()
@@ -152,6 +137,21 @@ namespace Runic.Agent.AssemblyManagement
                             .ToList()
                             .ForEach(f => f.SetValue(type, _runeClient));
             }
+        }
+
+        public IList<Assembly> GetAssemblies()
+        {
+            List<Assembly> assemblyList;
+            lock (_assemblies)
+            {
+                assemblyList = _assemblies.ToList();
+            }
+            return assemblyList;
+        }
+
+        public IList<string> GetAssemblyKeys()
+        {
+            return _assembliesLoaded.Where(t => t.Value).Select(t => t.Key).ToList();
         }
     }
 }

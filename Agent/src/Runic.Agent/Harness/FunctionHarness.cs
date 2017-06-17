@@ -31,12 +31,12 @@ namespace Runic.Agent.Harness
             _positionalParameters = positionalParameters;
         }
 
-        public async Task<bool> Execute(CancellationToken ct)
+        public async Task<bool> OrchestrateFunctionExecutionAsync(CancellationToken ct)
         {
             try
             {
                 await ExecuteMethodWithAttribute(typeof(BeforeEachAttribute), ct);
-                await ExecuteFunction(ct);
+                await ExecuteFunctionAsync(ct);
                 await ExecuteMethodWithAttribute(typeof(AfterEachAttribute), ct);
                 _stats.CountFunctionSuccess(_functionName);
                 return true;
@@ -48,7 +48,7 @@ namespace Runic.Agent.Harness
             }
         }
 
-        public async Task ExecuteFunction(CancellationToken ct)
+        public async Task ExecuteFunctionAsync(CancellationToken ct)
         {
             //todo pass overrides
             var methods = _instance.GetType().GetRuntimeMethods();
@@ -65,7 +65,7 @@ namespace Runic.Agent.Harness
             if (functionMethod == null)
                 throw new FunctionWithAttributeNotFoundException(_functionName);
 
-            await ExecuteMethod(functionMethod, ct, GetMapParameters(_positionalParameters, functionMethod));
+            await ExecuteMethodAsync(functionMethod, ct, GetMapParameters(_positionalParameters, functionMethod));
         }
 
         private bool IsAsyncMethod (MethodInfo method)
@@ -76,7 +76,7 @@ namespace Runic.Agent.Harness
                               .Any(c => c.GetType() == typeof(AsyncStateMachineAttribute));
         }
 
-        public async Task ExecuteMethod(MethodInfo method, CancellationToken ct, params object[] inputParams)
+        public async Task ExecuteMethodAsync(MethodInfo method, CancellationToken ct, params object[] inputParams)
         {
             if (IsAsyncMethod(method))
             {
@@ -127,7 +127,7 @@ namespace Runic.Agent.Harness
         {
             var method = GetMethodWithAttribute(attributeType);
             if (method != null)
-                await ExecuteMethod(method, ct);
+                await ExecuteMethodAsync(method, ct);
         }
     }
 }

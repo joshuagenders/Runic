@@ -10,19 +10,19 @@ namespace Runic.Agent.UnitTest.Tests
     [TestClass]
     public class TestAssemblyManagement
     {
-        private AgentWorld _world { get; set; }
+        private TestEnvironment _testEnvironment { get; set; }
 
         [TestInitialize]
         public void Init()
         {
-            _world = new AgentWorld();
+            _testEnvironment = new TestEnvironment();
         }
 
         [TestMethod]
         public void TestFunctionTypeRetrieve()
         {
-            _world.PluginManager.LoadPlugin("Runic.ExampleTest");
-            var type = _world.PluginManager.GetClassType("Runic.ExampleTest.Functions.FakeFunction");
+            _testEnvironment.App.PluginManager.LoadPlugin("Runic.ExampleTest");
+            var type = _testEnvironment.App.PluginManager.GetClassType("Runic.ExampleTest.Functions.FakeFunction");
             Assert.IsNotNull(type);
             Assert.AreEqual(type.Name, "FakeFunction");
         }
@@ -30,9 +30,9 @@ namespace Runic.Agent.UnitTest.Tests
         [TestMethod]
         public void TestLoadAssembly()
         {
-            _world.PluginManager.LoadPlugin("Runic.ExampleTest");
-            Assert.AreEqual(_world.PluginManager.GetAssemblies().Count, 1);
-            var assembly = _world.PluginManager.GetAssemblies().Single();
+            _testEnvironment.App.PluginManager.LoadPlugin("Runic.ExampleTest");
+            Assert.AreEqual(_testEnvironment.App.PluginManager.GetAssemblies().Count, 1);
+            var assembly = _testEnvironment.App.PluginManager.GetAssemblies().Single();
             var iocType = assembly.GetType("Runic.ExampleTest.RunicIoC");
             var runeClient = iocType.GetProperties(BindingFlags.Static | BindingFlags.Public)
                                     .Where(t => t.PropertyType.IsAssignableTo<IRuneClient>())
@@ -43,17 +43,17 @@ namespace Runic.Agent.UnitTest.Tests
         [TestMethod]
         public void TestGetFunctionInfo()
         {
-            _world.PluginManager.LoadPlugin("Runic.ExampleTest");
-            var functions = _world.PluginManager.GetAvailableFunctions();
+            _testEnvironment.App.PluginManager.LoadPlugin("Runic.ExampleTest");
+            var functions = _testEnvironment.App.PluginManager.GetAvailableFunctions();
             Assert.IsTrue(functions.Any());
         }
 
         [TestMethod]
         public void TestDualLoadIsSafe()
         {
-            _world.PluginManager.LoadPlugin("Runic.ExampleTest");
-            _world.PluginManager.LoadPlugin("Runic.ExampleTest");
-            Assert.AreEqual(_world.PluginManager.GetAssemblies().Count, 1);
+            _testEnvironment.App.PluginManager.LoadPlugin("Runic.ExampleTest");
+            _testEnvironment.App.PluginManager.LoadPlugin("Runic.ExampleTest");
+            Assert.AreEqual(_testEnvironment.App.PluginManager.GetAssemblies().Count, 1);
         }
     }
 }

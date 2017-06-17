@@ -2,7 +2,7 @@
 using Runic.Framework.Models;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Messaging
+namespace Runic.Agent.Services
 {
     public class NoOpRuneClient : IRuneClient
     {

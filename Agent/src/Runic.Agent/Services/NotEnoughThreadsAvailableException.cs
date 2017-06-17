@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Runic.Agent.Service
+namespace Runic.Agent.Services
 {
     internal class NotEnoughThreadsAvailableException : Exception
     {
