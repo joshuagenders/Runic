@@ -13,10 +13,8 @@ namespace Runic.Framework.Models
     public class Step
     {
         public string StepName { get; set; }
-        public string NextStepOnSuccess { get; set; }
-        public string NextStepOnFailure { get; set; }
+        public bool GetNextStepFromFunctionResult { get; set; }
         public int Repeat { get; set; }
-        public bool EvaluateSuccessOnRepeat { get; set; }
         public DataInput DataInput { get; set; }
         public Distribution Distribution { get; set; }
         public FunctionInformation Function { get; set; }

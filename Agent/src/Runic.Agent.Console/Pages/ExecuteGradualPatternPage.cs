@@ -2,6 +2,7 @@
 using Runic.Agent.FlowManagement;
 using Runic.Agent.Services;
 using Runic.Agent.ThreadManagement;
+using Runic.Agent.ThreadPatterns;
 using Runic.Framework.Models;
 using System;
 using System.Threading;
@@ -12,14 +13,12 @@ namespace Runic.Agent.Console.Pages
     {
         private readonly IThreadOrchestrator _threadOrchestrator;
         private readonly IFlowManager _flowManager;
-        private readonly GradualFlowService _flowService;
-
+        
         public ExecuteGradualPatternPage(MenuProgram program, IThreadOrchestrator threadOrchestrator, IFlowManager flowManager)
             : base("Execute Gradual Pattern", program)
         {
             _threadOrchestrator = threadOrchestrator;
             _flowManager = flowManager;
-            _flowService = new GradualFlowService(_threadOrchestrator);
         }
 
         public override void Display()
@@ -43,7 +42,15 @@ namespace Runic.Agent.Console.Pages
                     StepIntervalSeconds = Input.ReadInt("Step Interval Seconds", 0, 3600)
                 };
                 cts.CancelAfter(5000);
-                _flowService.ExecuteFlow(flowRequest, cts.Token);
+                _threadOrchestrator.AddNewPattern(flowRequest.PatternExecutionId, flowRequest.Flow, new GradualThreadPattern()
+                {
+                    DurationSeconds = flowRequest.ThreadPattern.DurationSeconds,
+                    Points = flowRequest.ThreadPattern.Points,
+                    RampDownSeconds= flowRequest.ThreadPattern.RampDownSeconds,
+                    RampUpSeconds = flowRequest.ThreadPattern.RampUpSeconds,
+                    StepIntervalSeconds = flowRequest.ThreadPattern.StepIntervalSeconds,
+                    ThreadCount = flowRequest.ThreadPattern.ThreadCount
+                });
             }
             catch (Exception e)
             {

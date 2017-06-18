@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.UnitTest.TestUtility;
 using System;
-using System.Collections.Generic;
 
 namespace Runic.Agent.UnitTest.Tests
 {
@@ -19,7 +18,12 @@ namespace Runic.Agent.UnitTest.Tests
         [TestMethod]
         public void TestSingleMessageInput()
         {
-            
+            throw new NotImplementedException();
+            //start flow
+
+            //insert mock message
+
+            //validate message has been used
         }
     }
 }

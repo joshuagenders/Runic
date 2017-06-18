@@ -1,5 +1,5 @@
-﻿using Runic.Agent.Services;
-using Runic.Agent.ThreadManagement;
+﻿using Runic.Agent.ThreadManagement;
+using Runic.Agent.ThreadPatterns;
 using Runic.Framework.Models;
 using System.Threading;
 
@@ -18,18 +18,64 @@ namespace Runic.Agent.Messaging
 
         public void RegisterMessageHandlers(CancellationToken ct = default(CancellationToken))
         {
-            var gradualFlowService = new GradualFlowService(_threadOrchestrator);
-            var constantFlowService = new ConstantFlowService(_threadOrchestrator);
-            var graphFlowService = new GraphFlowService(_threadOrchestrator);
+            RegisterConstantMessageHandler();
+            RegisterGraphMessageHandler();
+            RegisterGradualMessageHandler();
+            RegisterThreadLevelMessageHandler(ct);
+        }
 
-            _messagingService.RegisterMessageHandler<GradualFlowExecutionRequest>(
-                (request) => gradualFlowService.ExecuteFlow(request, ct));
-            _messagingService.RegisterMessageHandler<ConstantFlowExecutionRequest>(
-                (request) => constantFlowService.ExecuteFlow(request, ct));
-            _messagingService.RegisterMessageHandler<GraphFlowExecutionRequest>(
-                (request) => graphFlowService.ExecuteFlow(request, ct));
+        private void RegisterThreadLevelMessageHandler(CancellationToken ct = default(CancellationToken))
+        {
             _messagingService.RegisterMessageHandler<SetThreadLevelRequest>(
                 (request) => _threadOrchestrator.SetThreadLevelAsync(request, ct));
+        }
+
+        private void RegisterConstantMessageHandler()
+        {
+            _messagingService.RegisterMessageHandler<ConstantFlowExecutionRequest>(
+                (request) =>
+                {
+                    var pattern = new ConstantThreadPattern()
+                    {
+                        ThreadCount = request.ThreadPattern.ThreadCount,
+                        DurationSeconds = request.ThreadPattern.DurationSeconds
+                    };
+
+                    _threadOrchestrator.AddNewPattern(request.PatternExecutionId, request.Flow, pattern);
+                });
+        }
+
+        private void RegisterGraphMessageHandler()
+        {
+            _messagingService.RegisterMessageHandler<GraphFlowExecutionRequest>(
+                (request) =>
+                {
+                    var pattern = new GraphThreadPattern()
+                    {
+                        DurationSeconds = request.ThreadPattern.DurationSeconds,
+                        Points = request.ThreadPattern.Points
+                    };
+                    _threadOrchestrator.AddNewPattern(request.PatternExecutionId, request.Flow, pattern);
+                });
+        }
+
+        private void RegisterGradualMessageHandler()
+        {
+            _messagingService.RegisterMessageHandler<GradualFlowExecutionRequest>(
+                (request) =>
+                {
+                    var pattern = new GradualThreadPattern()
+                    {
+                        DurationSeconds = request.ThreadPattern.DurationSeconds,
+                        Points = request.ThreadPattern.Points,
+                        RampDownSeconds = request.ThreadPattern.RampDownSeconds,
+                        RampUpSeconds = request.ThreadPattern.RampUpSeconds,
+                        StepIntervalSeconds = request.ThreadPattern.StepIntervalSeconds,
+                        ThreadCount = request.ThreadPattern.ThreadCount
+                    };
+
+                    _threadOrchestrator.AddNewPattern(request.PatternExecutionId, request.Flow, pattern);
+                });
         }
     }
 }

@@ -6,6 +6,7 @@ using Runic.Framework.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -71,11 +72,29 @@ namespace Runic.Agent.ThreadManagement
         {
             var factory = new FunctionFactory(_flow, _pluginManager, _stats, _dataService);
             FunctionHarness function = null;
-            bool lastStepSuccess = false;
+
             while (!ct.IsCancellationRequested)
             {
-                function = factory.GetNextFunction(lastStepSuccess);
-                lastStepSuccess = await function.OrchestrateFunctionExecutionAsync(ct);
+                if (function == null)
+                {
+                    function = factory.CreateFunction(_flow.Steps.First());
+                }
+                else if (function?.NextStep != null)
+                {
+                    function = factory.CreateFunction(function.NextStep);
+                }
+                else
+                {
+                    int functionIndex = _flow.Steps
+                                             .Where(s => s.StepName == function.StepName)
+                                             .Select(s => _flow.Steps.IndexOf(s))
+                                             .Single();
+                    functionIndex++;
+                    functionIndex = functionIndex >= _flow.Steps.Count ? 0 : functionIndex;
+
+                    function = factory.CreateFunction(_flow.Steps[functionIndex]);
+                }
+                await function.OrchestrateFunctionExecutionAsync(ct);
             }
         }
 

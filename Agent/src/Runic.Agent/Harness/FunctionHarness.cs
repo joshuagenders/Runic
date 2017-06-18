@@ -18,17 +18,22 @@ namespace Runic.Agent.Harness
         private string _functionName { get; set; }
         private readonly IStats _stats;
         private object[] _positionalParameters { get; set; }
+        private bool _getNextStepFromResult { get; set; }
+        public string NextStep { get; set; }
+        public string StepName { get; set; }
 
         public FunctionHarness(IStats stats)
         {
             _stats = stats;
         }
 
-        public void Bind(object functionInstance, string functionName, params object[] positionalParameters)
+        public void Bind(object functionInstance, string stepName, string functionName, bool getNextStepFromResult, params object[] positionalParameters)
         {
             _instance = functionInstance;
             _functionName = functionName;
             _positionalParameters = positionalParameters;
+            _getNextStepFromResult = getNextStepFromResult;
+            StepName = StepName;
         }
 
         public async Task<bool> OrchestrateFunctionExecutionAsync(CancellationToken ct)
@@ -64,8 +69,15 @@ namespace Runic.Agent.Harness
             }
             if (functionMethod == null)
                 throw new FunctionWithAttributeNotFoundException(_functionName);
-
-            await ExecuteMethodAsync(functionMethod, ct, GetMapParameters(_positionalParameters, functionMethod));
+            if (_getNextStepFromResult)
+            {
+                var result = await ExecuteMethodWithReturnAsync(functionMethod, ct, GetMapParameters(_positionalParameters, functionMethod));
+                NextStep = result;
+            }
+            else
+            {
+                await ExecuteMethodAsync(functionMethod, ct, GetMapParameters(_positionalParameters, functionMethod));
+            }
         }
 
         private bool IsAsyncMethod (MethodInfo method)
@@ -74,6 +86,19 @@ namespace Runic.Agent.Harness
                         method.ReturnTypeCustomAttributes
                               .GetCustomAttributes(false)
                               .Any(c => c.GetType() == typeof(AsyncStateMachineAttribute));
+        }
+
+        public async Task<string> ExecuteMethodWithReturnAsync(MethodInfo method, CancellationToken ct, params object[] inputParams)
+        {
+            if (IsAsyncMethod(method))
+            {
+                return await (Task<string>)method.Invoke(_instance, inputParams);
+            }
+            else
+            {
+                string result = (string)method.Invoke(_instance, inputParams);
+                return result;
+            }
         }
 
         public async Task ExecuteMethodAsync(MethodInfo method, CancellationToken ct, params object[] inputParams)

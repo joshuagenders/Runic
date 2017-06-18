@@ -2,6 +2,7 @@
 using Runic.Agent.FlowManagement;
 using Runic.Agent.Services;
 using Runic.Agent.ThreadManagement;
+using Runic.Agent.ThreadPatterns;
 using Runic.Framework.Models;
 using System;
 using System.Collections.Generic;
@@ -14,14 +15,12 @@ namespace Runic.Agent.Console.Pages
     {
         private readonly IThreadOrchestrator _threadOrchestrator;
         private readonly IFlowManager _flowManager;
-        private readonly GraphFlowService _flowService;
-
+        
         public ExecuteGraphPatternPage(MenuProgram program, IThreadOrchestrator threadOrchestrator, IFlowManager flowManager)
             : base("Execute Graph Pattern", program)
         {
             _threadOrchestrator = threadOrchestrator;
             _flowManager = flowManager;
-            _flowService = new GraphFlowService(_threadOrchestrator);
         }
 
         public override void Display()
@@ -56,8 +55,16 @@ namespace Runic.Agent.Console.Pages
                     DurationSeconds = Input.ReadInt("Duration Seconds", 0, int.MaxValue),
                     Points = points
                 };
+
                 cts.CancelAfter(flowRequest.ThreadPattern.DurationSeconds * 1000 + 200);
-                _flowService.ExecuteFlow(flowRequest, cts.Token);
+                _threadOrchestrator.AddNewPattern(
+                    flowRequest.PatternExecutionId, 
+                    flowRequest.Flow, 
+                    new GraphThreadPattern()
+                {
+                    DurationSeconds = flowRequest.ThreadPattern.DurationSeconds,
+                    Points = flowRequest.ThreadPattern.Points
+                });
             }
             catch (Exception e)
             {

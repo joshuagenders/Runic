@@ -28,28 +28,10 @@ namespace Runic.Agent.Harness
             _stats = stats;
             _dataService = dataService;
         }
-
-        public FunctionHarness GetNextFunction(bool lastStepSuccess)
-        {
-            return CreateFunction(GetNextStep(lastStepSuccess));
-        }
-
-        private Step GetNextStep(bool lastStepResultSuccess)
-        {
-            if (_lastStep == null)
-                return _flow.Steps[0];
-
-            //if repeat is not set or repeat count is met, return next step based on success
-            if (_lastStep.Repeat == 0 && _lastStepCount >= _lastStep.Repeat)
-            {
-                _lastStepCount = 0;
-                _lastStep = lastStepResultSuccess
-                    ? GetStepByName(_lastStep.NextStepOnSuccess)
-                    : GetStepByName(_lastStep.NextStepOnFailure);
-            }
-
-            _lastStepCount++;
-            return _lastStep;
+        
+        public FunctionHarness CreateFunction(string stepName)
+        { 
+            return CreateFunction(GetStepByName(stepName));
         }
 
         private Step GetStepByName(string name)
@@ -76,8 +58,10 @@ namespace Runic.Agent.Harness
             _logger.Debug($"{step.Function.FunctionName} in {step.Function.AssemblyName} initialised");
 
             var harness = new FunctionHarness(_stats);
-            harness.Bind(instance, 
-                         step.Function.FunctionName, 
+            harness.Bind(instance,
+                         step.StepName,
+                         step.Function.FunctionName,
+                         step.GetNextStepFromFunctionResult,
                          _dataService.GetParameters(step.DataInput.InputDatasource, 
                                                     step.DataInput.DatasourceMapping));
             return harness;

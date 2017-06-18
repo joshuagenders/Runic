@@ -32,7 +32,7 @@ namespace Runic.Agent.UnitTest.Tests
             try
             {
                 var flowExecutionId = Guid.NewGuid().ToString("N");
-                _testEnvironment.App.GradualFlowService.ExecuteFlow(
+                _testEnvironment.App.MessagingService.PublishMessage(
                     new GradualFlowExecutionRequest()
                     {
                         PatternExecutionId = flowExecutionId,
@@ -45,7 +45,7 @@ namespace Runic.Agent.UnitTest.Tests
                             RampDownSeconds = 1,
                             StepIntervalSeconds = 1
                         }
-                    }, cts.Token);
+                    });
 
                 Thread.Sleep(1250);
                 var runningFlows = _testEnvironment.App.ThreadOrchestrator.GetRunningFlows;
@@ -67,7 +67,7 @@ namespace Runic.Agent.UnitTest.Tests
             cts.CancelAfter(3000);
             try { 
                 var flowExecutionId = Guid.NewGuid().ToString("N");
-                _testEnvironment.App.GraphFlowService.ExecuteFlow(new GraphFlowExecutionRequest()
+                _testEnvironment.App.MessagingService.PublishMessage(new GraphFlowExecutionRequest()
                 {
                     PatternExecutionId = flowExecutionId,
                     Flow = _fakeFlow,
@@ -80,7 +80,8 @@ namespace Runic.Agent.UnitTest.Tests
                             new Point() { threadLevel = 0, unitsFromStart = 10}
                         }
                     }
-                }, cts.Token);
+                });
+
                 Thread.Sleep(250);
                 var runningFlows = _testEnvironment.App.ThreadOrchestrator.GetRunningFlows.ToList();
                 var runningThreadPatterns = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatterns.ToList();
@@ -106,7 +107,7 @@ namespace Runic.Agent.UnitTest.Tests
             cts.CancelAfter(3000);
             try {
                 var flowExecutionId = Guid.NewGuid().ToString("N");
-                _testEnvironment.App.ConstantFlowService.ExecuteFlow(new ConstantFlowExecutionRequest()
+                _testEnvironment.App.MessagingService.PublishMessage(new ConstantFlowExecutionRequest()
                 {
                     PatternExecutionId = flowExecutionId,
                     Flow = _fakeFlow,
@@ -115,7 +116,7 @@ namespace Runic.Agent.UnitTest.Tests
                         DurationSeconds = 2,
                         ThreadCount = 3
                     }
-                }, cts.Token);
+                });
 
                 Thread.Sleep(1150);
                 var runningFlows = _testEnvironment.App.ThreadOrchestrator.GetRunningFlows.ToList();
@@ -171,7 +172,7 @@ namespace Runic.Agent.UnitTest.Tests
             var cts = new CancellationTokenSource();
             cts.CancelAfter(3000);            
             var flowExecutionId = Guid.NewGuid().ToString("N");
-            _testEnvironment.App.ConstantFlowService.ExecuteFlow(new ConstantFlowExecutionRequest()
+            _testEnvironment.App.MessagingService.PublishMessage(new ConstantFlowExecutionRequest()
             {
                 PatternExecutionId = flowExecutionId,
                 Flow = _fakeFlow,
@@ -180,7 +181,8 @@ namespace Runic.Agent.UnitTest.Tests
                     DurationSeconds = 2,
                     ThreadCount = 3
                 }
-            }, cts.Token);
+            });
+
             Thread.Sleep(1150);
             var runningFlows = _testEnvironment.App.ThreadOrchestrator.GetRunningFlows.ToList();
             var runningThreadPatterns = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatterns.ToList();

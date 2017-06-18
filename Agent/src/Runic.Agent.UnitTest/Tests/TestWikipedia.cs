@@ -38,9 +38,7 @@ namespace Runic.Agent.UnitTest.Tests
                             AssemblyName = "Runic.ExampleTest",
                             AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.ViewHomepageFunction",
                             FunctionName = "OpenFirstLinkFunction"
-                        },
-                        NextStepOnFailure = "GetHome",
-                        NextStepOnSuccess = "Search"
+                        }
                     },
                     new Step()
                     {
@@ -50,9 +48,7 @@ namespace Runic.Agent.UnitTest.Tests
                             AssemblyName = "Runic.ExampleTest",
                             AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.SearchFunction",
                             FunctionName = "OpenFirstLinkFunction"
-                        },
-                        NextStepOnFailure = "GetHome",
-                        NextStepOnSuccess = "OpenLink"
+                        }
                     },
                     new Step()
                     {
@@ -62,9 +58,7 @@ namespace Runic.Agent.UnitTest.Tests
                             AssemblyName = "Runic.ExampleTest",
                             AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.OpenFirstLinkFunction",
                             FunctionName = "OpenFirstLinkFunction"
-                        },
-                        NextStepOnFailure = "Search",
-                        NextStepOnSuccess = "OpenLink"
+                        }
                     }
                 }
             });

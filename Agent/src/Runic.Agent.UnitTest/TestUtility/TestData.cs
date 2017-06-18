@@ -38,7 +38,6 @@ namespace Runic.Agent.UnitTest.TestUtility
                             AssemblyQualifiedClassName = TestConstants.AssemblyQualifiedClassName
                         },
                         Repeat = 2,
-                        EvaluateSuccessOnRepeat = false
                     }
                 }
         };
@@ -56,11 +55,7 @@ namespace Runic.Agent.UnitTest.TestUtility
                             AssemblyName = TestConstants.AssemblyName,
                             FunctionName = TestConstants.FunctionName,
                             AssemblyQualifiedClassName = TestConstants.AssemblyQualifiedClassName
-                        },
-                        NextStepOnFailure = "step1",
-                        NextStepOnSuccess = "step1",
-                        EvaluateSuccessOnRepeat = false,
-                        
+                        }
                     }
                 }
         };

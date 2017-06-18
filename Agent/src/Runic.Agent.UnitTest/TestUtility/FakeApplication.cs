@@ -20,10 +20,7 @@ namespace Runic.Agent.UnitTest.TestUtility
         public IStats Stats { get; set; }
         public IDataService DataService { get; set; }
         public IThreadOrchestrator ThreadOrchestrator { get; set; }
-        public GradualFlowService GradualFlowService { get; set; }
-        public ConstantFlowService ConstantFlowService { get; set; }
-        public GraphFlowService GraphFlowService { get; set; }
-
+        
         public FakeApplication(
             IPluginManager pluginManager,
             IFlowManager flowManager,
@@ -41,9 +38,6 @@ namespace Runic.Agent.UnitTest.TestUtility
             MessagingService = messagingService;
             ThreadOrchestrator = threadOrchestrator;
             
-            GradualFlowService = new GradualFlowService(ThreadOrchestrator);
-            ConstantFlowService = new ConstantFlowService(ThreadOrchestrator);
-            GraphFlowService = new GraphFlowService(ThreadOrchestrator);
             handlerRegistry.RegisterMessageHandlers();
         }
 
