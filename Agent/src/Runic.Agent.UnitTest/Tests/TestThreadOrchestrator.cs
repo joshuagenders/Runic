@@ -48,8 +48,8 @@ namespace Runic.Agent.UnitTest.Tests
                     }, cts.Token);
 
                 Thread.Sleep(1250);
-                var runningFlows = _testEnvironment.App.ThreadOrchestrator.GetRunningFlows();
-                var runningThreadPatterns = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatterns();
+                var runningFlows = _testEnvironment.App.ThreadOrchestrator.GetRunningFlows;
+                var runningThreadPatterns = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatterns;
                 Assert.IsTrue(runningFlows.Contains(flowExecutionId), "running flow not found");
                 Assert.IsTrue(runningThreadPatterns.Contains(flowExecutionId), "running thread pattern not found");
                 _testEnvironment.App.ThreadOrchestrator.SafeCancelAll(cts.Token);
@@ -82,10 +82,10 @@ namespace Runic.Agent.UnitTest.Tests
                     }
                 }, cts.Token);
                 Thread.Sleep(250);
-                var runningFlows = _testEnvironment.App.ThreadOrchestrator.GetRunningFlows().ToList();
-                var runningThreadPatterns = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatterns().ToList();
-                var runningPatternCount = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatternCount();
-                var runningFlowCount = _testEnvironment.App.ThreadOrchestrator.GetRunningFlowCount();
+                var runningFlows = _testEnvironment.App.ThreadOrchestrator.GetRunningFlows.ToList();
+                var runningThreadPatterns = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatterns.ToList();
+                var runningPatternCount = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatternCount;
+                var runningFlowCount = _testEnvironment.App.ThreadOrchestrator.GetRunningFlowCount;
                 Assert.IsTrue(runningPatternCount == 1, $"Running pattern count not 1, {runningPatternCount}");
                 Assert.IsTrue(runningFlowCount == 1, $"Running flow count not 1, {runningFlowCount}");
                 Assert.IsTrue(runningFlows.Contains(flowExecutionId), "running flow not found");
@@ -118,10 +118,10 @@ namespace Runic.Agent.UnitTest.Tests
                 }, cts.Token);
 
                 Thread.Sleep(1150);
-                var runningFlows = _testEnvironment.App.ThreadOrchestrator.GetRunningFlows().ToList();
-                var runningThreadPatterns = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatterns().ToList();
-                var runningPatternCount = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatternCount();
-                var runningFlowCount = _testEnvironment.App.ThreadOrchestrator.GetRunningFlowCount();
+                var runningFlows = _testEnvironment.App.ThreadOrchestrator.GetRunningFlows.ToList();
+                var runningThreadPatterns = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatterns.ToList();
+                var runningPatternCount = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatternCount;
+                var runningFlowCount = _testEnvironment.App.ThreadOrchestrator.GetRunningFlowCount;
                 Assert.IsTrue(runningPatternCount == 1, $"Running pattern count not 1, {runningPatternCount}");
                 Assert.IsTrue(runningFlowCount == 1, $"Running flow count not 1, {runningFlowCount}");
                 Assert.IsTrue(runningFlows.Contains(flowExecutionId), "running flow not found");
@@ -182,20 +182,20 @@ namespace Runic.Agent.UnitTest.Tests
                 }
             }, cts.Token);
             Thread.Sleep(1150);
-            var runningFlows = _testEnvironment.App.ThreadOrchestrator.GetRunningFlows().ToList();
-            var runningThreadPatterns = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatterns().ToList();
-            var runningPatternCount = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatternCount();
-            var runningFlowCount = _testEnvironment.App.ThreadOrchestrator.GetRunningFlowCount();
+            var runningFlows = _testEnvironment.App.ThreadOrchestrator.GetRunningFlows.ToList();
+            var runningThreadPatterns = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatterns.ToList();
+            var runningPatternCount = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatternCount;
+            var runningFlowCount = _testEnvironment.App.ThreadOrchestrator.GetRunningFlowCount;
             Assert.IsTrue(runningPatternCount == 1, $"Running pattern count not 1, {runningPatternCount}");
             Assert.IsTrue(runningFlowCount == 1, $"Running flow count not 1, {runningFlowCount}");
             Assert.IsTrue(runningFlows.Contains(flowExecutionId), "running flow not found");
             Assert.IsTrue(runningThreadPatterns.Contains(flowExecutionId), "running thread pattern not found");
             try
             {
-                _testEnvironment.App.ThreadOrchestrator.StopPattern(flowExecutionId);
+                _testEnvironment.App.ThreadOrchestrator.StopThreadPattern(flowExecutionId);
                 _testEnvironment.App.ThreadOrchestrator.StopFlow(flowExecutionId);
-                runningPatternCount = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatternCount();
-                runningFlowCount = _testEnvironment.App.ThreadOrchestrator.GetRunningFlowCount();
+                runningPatternCount = _testEnvironment.App.ThreadOrchestrator.GetRunningThreadPatternCount;
+                runningFlowCount = _testEnvironment.App.ThreadOrchestrator.GetRunningFlowCount;
                 Assert.IsTrue(runningPatternCount == 0, $"Running pattern count not 0, {runningPatternCount}");
                 Assert.IsTrue(runningFlowCount == 0, $"Running flow count not 0, {runningFlowCount}");
             }
@@ -207,30 +207,10 @@ namespace Runic.Agent.UnitTest.Tests
         public async Task TestSetThreadLevel()
         {
             _testEnvironment.App.FlowManager.AddUpdateFlow(
-                new Flow()
-                {
-                    Name = "FakeFlow",
-                    StepDelayMilliseconds = 200,
-                    Steps = new List<Step>()
-                    {
-                        new Step()
-                        {
-                            StepName = "Step1",
-                            Function = new FunctionInformation()
-                            {
-                                AssemblyName = "Runic.ExampleTest",
-                                AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.FakeFunction",
-                                FunctionName = "FakeFunction"
-                            },
-                            NextStepOnFailure = "Step1",
-                            NextStepOnSuccess = "Step1"
-                        }
-                    }
-                });
+                TestData.GetTestFlowSingleStepLooping);
 
             var agent = new ThreadOrchestrator(
                 _testEnvironment.App.PluginManager,
-                _testEnvironment.App.MessagingService,
                 _testEnvironment.App.FlowManager,
                 _testEnvironment.App.Stats,
                 _testEnvironment.App.DataService);
@@ -240,7 +220,7 @@ namespace Runic.Agent.UnitTest.Tests
 
             await agent.SetThreadLevelAsync(new SetThreadLevelRequest()
             {
-                FlowName = "FakeFlow",
+                FlowName = "Test",
                 FlowId = "MyFlow",
                 ThreadLevel = 1
             }, cts.Token);

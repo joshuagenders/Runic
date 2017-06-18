@@ -33,7 +33,7 @@ namespace Runic.Agent
             builder.RegisterType<FlowManager>().As<IFlowManager>();
             builder.RegisterType<PluginManager>().As<IPluginManager>();
             builder.RegisterType<JsonDataService>().As<IDataService>();
-            builder.RegisterType<NoOpMessagingService>().As<IMessagingService>();
+            builder.RegisterType<RabbitMessagingService>().As<IMessagingService>();
             builder.RegisterType<InMemoryClient>().As<IRuneClient>();
             builder.RegisterType<FilePluginProvider>()
                     .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))

@@ -1,8 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.Harness;
 using Runic.Agent.UnitTest.TestUtility;
-using Runic.Framework.Models;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Runic.Agent.UnitTest.Tests
@@ -26,7 +24,7 @@ namespace Runic.Agent.UnitTest.Tests
             flowInitialiser.InitialiseFlow(flow);
 
             Assert.IsTrue(_testEnvironment.App.PluginManager.GetAssemblies().Any());
-            Assert.IsTrue(_testEnvironment.App.PluginManager.GetAssemblyKeys().Any(k => k == "Runic.ExampleTest"));
+            Assert.IsTrue(_testEnvironment.App.PluginManager.GetAssemblyKeys().Any(k => k == TestConstants.AssemblyName));
         }
     }
 }

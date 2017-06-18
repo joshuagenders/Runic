@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Runic.Agent.Services;
 
 namespace Runic.Agent.ThreadManagement
 {
@@ -19,22 +18,21 @@ namespace Runic.Agent.ThreadManagement
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private IMessagingService _messagingService { get; }
         private readonly IFlowManager _flowManager;
         private readonly IPluginManager _pluginManager;
         private readonly IStats _stats;
         private readonly IDataService _dataService;
+        private static ConcurrentDictionary<string, ThreadManager> _threadManagers { get; set; }
+        private static ConcurrentDictionary<string, CancellableTask> _threadPatterns { get; set; }
 
         public ThreadOrchestrator(
             IPluginManager pluginManager, 
-            IMessagingService messagingService, 
             IFlowManager flowManager, 
             IStats stats, 
             IDataService dataService)
         {
             _flowManager = flowManager;
             _pluginManager = pluginManager;
-            _messagingService = messagingService;
             _stats = stats;
             _dataService = dataService;
 
@@ -42,67 +40,7 @@ namespace Runic.Agent.ThreadManagement
             _threadPatterns = new ConcurrentDictionary<string, CancellableTask>();
         }
 
-        private static ConcurrentDictionary<string, ThreadManager> _threadManagers { get; set; }
-        private static ConcurrentDictionary<string, CancellableTask> _threadPatterns { get; set; }
-
-        public void SafeCancelAll(CancellationToken ct)
-        {
-            var updateTasks = new List<Task>();
-
-            _threadPatterns.ToList().ForEach(t => t.Value.Cancel());
-
-            _threadManagers.ToList().ForEach(ftm => updateTasks.Add(ftm.Value.SafeUpdateThreadCountAsync(0)));
-
-            Task.WaitAll(updateTasks.ToArray(), ct);
-        }
-
-        public int GetThreadLevel(string flowId)
-        {
-            if (_threadManagers.TryGetValue(flowId, out ThreadManager manager))
-            {
-                return manager.GetCurrentThreadCount();
-            }
-
-            return 0;
-        }
-
-        public async Task GetCompletionTaskAsync(string patternExecutionId)
-        {
-            if (_threadPatterns.ContainsKey(patternExecutionId))
-            {
-                await _threadPatterns[patternExecutionId].GetCompletionTaskAsync();
-            }
-        }
-
-        public IList<string> GetRunningThreadPatterns()
-        {
-            return _threadPatterns.Select(p => p.Key).ToList();
-        }
-
-        public int GetRunningThreadPatternCount()
-        {
-            return _threadPatterns.Count;
-        }
-
-        public IList<string> GetRunningFlows()
-        {
-            return _threadManagers.Select(t => t.Key).ToList();
-        }
-
-        public int GetRunningFlowCount()
-        {
-            return _threadManagers.Count;
-        }
-
-        public void StopThreadPattern(string patternExecutionId)
-        {
-            if (_threadPatterns.TryRemove(patternExecutionId, out CancellableTask task))
-            {
-                task.Cancel();
-                return;
-            }
-        }
-
+        
         public void AddNewPattern(string patternExecutionId, Flow flow, IThreadPattern pattern)
         {
             if (_threadManagers.TryGetValue(patternExecutionId, out ThreadManager manager))
@@ -166,11 +104,15 @@ namespace Runic.Agent.ThreadManagement
             }
         }
 
-        public void Dispose()
+        public void SafeCancelAll(CancellationToken ct)
         {
-            CancellationTokenSource cts = new CancellationTokenSource();
-            cts.CancelAfter(2000);
-            SafeCancelAll(cts.Token);
+            var updateTasks = new List<Task>();
+
+            _threadPatterns.ToList().ForEach(t => t.Value.Cancel());
+
+            _threadManagers.ToList().ForEach(ftm => updateTasks.Add(ftm.Value.SafeUpdateThreadCountAsync(0)));
+
+            Task.WaitAll(updateTasks.ToArray(), ct);
         }
 
         public void StopFlow(string flowExecutionId)
@@ -181,13 +123,43 @@ namespace Runic.Agent.ThreadManagement
             }
         }
 
-        public void StopPattern(string patternExecutionId)
+        public void StopThreadPattern(string patternExecutionId)
         {
             if (_threadPatterns.TryRemove(patternExecutionId, out CancellableTask task))
             {
                 task.Cancel();
                 task.GetCompletionTaskAsync().Wait();
             }
+        }
+
+        public async Task GetCompletionTaskAsync(string patternExecutionId)
+        {
+            if (_threadPatterns.ContainsKey(patternExecutionId))
+            {
+                await _threadPatterns[patternExecutionId].GetCompletionTaskAsync();
+            }
+        }
+
+        public int GetThreadLevel(string flowId)
+        {
+            if (_threadManagers.TryGetValue(flowId, out ThreadManager manager))
+            {
+                return manager.GetCurrentThreadCount();
+            }
+
+            return 0;
+        }
+
+        public IList<string> GetRunningThreadPatterns => _threadPatterns.Select(p => p.Key).ToList();
+        public int GetRunningThreadPatternCount => _threadPatterns.Count;
+        public IList<string> GetRunningFlows => _threadManagers.Select(t => t.Key).ToList();
+        public int GetRunningFlowCount => _threadManagers.Count;
+
+        public void Dispose()
+        {
+            CancellationTokenSource cts = new CancellationTokenSource();
+            cts.CancelAfter(2000);
+            SafeCancelAll(cts.Token);
         }
     }
 }

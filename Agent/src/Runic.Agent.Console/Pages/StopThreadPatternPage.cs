@@ -21,7 +21,7 @@ namespace Runic.Agent.Console.Pages
             var patternId = Input.ReadString("Enter the thread pattern id");
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
-            _threadOrchestrator.StopPattern(patternId);
+            _threadOrchestrator.StopThreadPattern(patternId);
             Output.WriteLine(ConsoleColor.Green, $"Thread pattern {patternId} stopped");
             Input.ReadString("Press [enter] to return");
             MenuProgram.NavigateHome();

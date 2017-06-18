@@ -15,9 +15,9 @@ namespace Runic.Agent.UnitTest.TestUtility
                         StepName = "step1",
                         Function = new FunctionInformation()
                         {
-                            AssemblyName = "Runic.ExampleTest",
-                            FunctionName = "FakeFunction",
-                            AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.FakeFunction"
+                            AssemblyName = TestConstants.AssemblyName,
+                            FunctionName = TestConstants.FunctionName,
+                            AssemblyQualifiedClassName = TestConstants.AssemblyQualifiedClassName
                         }
                     }
                 }
@@ -33,9 +33,9 @@ namespace Runic.Agent.UnitTest.TestUtility
                         StepName = "step1",
                         Function = new FunctionInformation()
                         {
-                            AssemblyName = "Runic.ExampleTest",
-                            FunctionName = "FakeFunction",
-                            AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.FakeFunction"
+                            AssemblyName = TestConstants.AssemblyName,
+                            FunctionName = TestConstants.FunctionName,
+                            AssemblyQualifiedClassName = TestConstants.AssemblyQualifiedClassName
                         },
                         Repeat = 2,
                         EvaluateSuccessOnRepeat = false
@@ -53,9 +53,9 @@ namespace Runic.Agent.UnitTest.TestUtility
                         StepName = "step1",
                         Function = new FunctionInformation()
                         {
-                            AssemblyName = "Runic.ExampleTest",
-                            FunctionName = "FakeFunction",
-                            AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.FakeFunction"
+                            AssemblyName = TestConstants.AssemblyName,
+                            FunctionName = TestConstants.FunctionName,
+                            AssemblyQualifiedClassName = TestConstants.AssemblyQualifiedClassName
                         },
                         NextStepOnFailure = "step1",
                         NextStepOnSuccess = "step1",
@@ -75,9 +75,9 @@ namespace Runic.Agent.UnitTest.TestUtility
                         StepName = "step1",
                         Function = new FunctionInformation()
                         {
-                            AssemblyName = "Runic.ExampleTest",
-                            FunctionName = "FakeFunction",
-                            AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.FakeFunction"
+                            AssemblyName = TestConstants.AssemblyName,
+                            FunctionName = TestConstants.FunctionName,
+                            AssemblyQualifiedClassName = TestConstants.AssemblyQualifiedClassName
                         }
                     },
                     new Step()
@@ -85,9 +85,9 @@ namespace Runic.Agent.UnitTest.TestUtility
                         StepName = "step2",
                         Function = new FunctionInformation()
                         {
-                            AssemblyName = "Runic.ExampleTest",
-                            FunctionName = "FakeFunction",
-                            AssemblyQualifiedClassName = "Runic.ExampleTest.Functions.FakeFunction"
+                            AssemblyName = TestConstants.AssemblyName,
+                            FunctionName = TestConstants.FunctionName,
+                            AssemblyQualifiedClassName = TestConstants.AssemblyQualifiedClassName
                         }
                     }
                 }

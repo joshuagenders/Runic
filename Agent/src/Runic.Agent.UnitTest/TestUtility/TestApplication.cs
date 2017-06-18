@@ -7,6 +7,7 @@ using Runic.Agent.ThreadManagement;
 using System.Threading;
 using System.Threading.Tasks;
 using System;
+using Runic.Agent.Messaging;
 
 namespace Runic.Agent.UnitTest.TestUtility
 {
@@ -29,7 +30,8 @@ namespace Runic.Agent.UnitTest.TestUtility
             IStats stats,
             IDataService dataService,
             IMessagingService messagingService,
-            IThreadOrchestrator threadOrchestrator
+            IThreadOrchestrator threadOrchestrator,
+            IHandlerRegistry handlerRegistry
             )
         {
             PluginManager = pluginManager;
@@ -42,15 +44,12 @@ namespace Runic.Agent.UnitTest.TestUtility
             GradualFlowService = new GradualFlowService(ThreadOrchestrator);
             ConstantFlowService = new ConstantFlowService(ThreadOrchestrator);
             GraphFlowService = new GraphFlowService(ThreadOrchestrator);
+            handlerRegistry.RegisterMessageHandlers();
         }
 
         public Task RunApplicationAsync(CancellationToken ct = default(CancellationToken))
         {
             return Task.CompletedTask;
-        }
-
-        public void RegisterMessageHandlers(CancellationToken ct = default(CancellationToken))
-        {
         }
     }
 }

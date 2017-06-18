@@ -1,6 +1,5 @@
 ﻿using NLog;
 using Runic.Agent.Messaging;
-using Runic.Agent.Services;
 using System.Threading;
 using System.Threading.Tasks;
 

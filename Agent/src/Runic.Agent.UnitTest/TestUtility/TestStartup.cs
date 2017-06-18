@@ -10,6 +10,7 @@ using System.IO;
 using Runic.Agent.Data;
 using Runic.Agent.ThreadManagement;
 using Moq;
+using Runic.Agent.Messaging;
 
 namespace Runic.Agent.UnitTest.TestUtility
 {
@@ -33,7 +34,7 @@ namespace Runic.Agent.UnitTest.TestUtility
             builder.RegisterType<Stats>().As<IStats>();
             builder.RegisterType<FlowManager>().As<IFlowManager>();
             builder.RegisterType<JsonDataService>().As<IDataService>();
-            builder.RegisterType<NoOpMessagingService>().As<IMessagingService>();
+            builder.RegisterInstance(new Mock<IMessagingService>().Object).As<IMessagingService>();
             builder.RegisterType<InMemoryClient>().As<IRuneClient>();
             builder.RegisterType<FilePluginProvider>()
                     .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
@@ -42,6 +43,7 @@ namespace Runic.Agent.UnitTest.TestUtility
             builder.RegisterInstance(new Mock<IMessagingService>().Object).As<IMessagingService>();
             builder.RegisterType<ThreadOrchestrator>().As<IThreadOrchestrator>();
             builder.RegisterType<TestApplication>().As<IApplication>();
+            builder.RegisterType<HandlerRegistry>().As<IHandlerRegistry>();
             return builder.Build();
         }
     }

@@ -6,6 +6,7 @@ using RawRabbit.Context;
 using RawRabbit.Configuration;
 using RawRabbit.vNext;
 using System.Threading;
+using Runic.Agent.Messaging;
 
 namespace Runic.Agent.Services
 {
@@ -28,10 +29,10 @@ namespace Runic.Agent.Services
             _bus = BusClientFactory.CreateDefault(busConfig);
         }
 
-        public void RegisterMessageHandler<T>(Func<T, Task> handler)
+        public void RegisterMessageHandler<T>(Action<T> handler)
         {
             Func<T, MessageContext, Task> rabbitHandler =
-                (flowRequest, messageContext) => handler(flowRequest);
+                (request, messageContext) => Task.Run(() => handler(request));
             
             try
             {

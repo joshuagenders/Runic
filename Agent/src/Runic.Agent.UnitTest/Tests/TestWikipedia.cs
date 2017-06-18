@@ -70,8 +70,7 @@ namespace Runic.Agent.UnitTest.Tests
             });
 
             var agent = new ThreadOrchestrator(
-                _testEnvironment.App.PluginManager, 
-                _testEnvironment.App.MessagingService,
+                _testEnvironment.App.PluginManager,
                 _testEnvironment.App.FlowManager,
                 _testEnvironment.App.Stats,
                 _testEnvironment.App.DataService);

@@ -21,8 +21,8 @@ namespace Runic.Agent.UnitTest.Tests
         [TestMethod]
         public void TestFunctionTypeRetrieve()
         {
-            _testEnvironment.App.PluginManager.LoadPlugin("Runic.ExampleTest");
-            var type = _testEnvironment.App.PluginManager.GetClassType("Runic.ExampleTest.Functions.FakeFunction");
+            _testEnvironment.App.PluginManager.LoadPlugin(TestConstants.AssemblyName);
+            var type = _testEnvironment.App.PluginManager.GetClassType(TestConstants.AssemblyQualifiedClassName);
             Assert.IsNotNull(type);
             Assert.AreEqual(type.Name, "FakeFunction");
         }
@@ -30,7 +30,7 @@ namespace Runic.Agent.UnitTest.Tests
         [TestMethod]
         public void TestLoadAssembly()
         {
-            _testEnvironment.App.PluginManager.LoadPlugin("Runic.ExampleTest");
+            _testEnvironment.App.PluginManager.LoadPlugin(TestConstants.AssemblyName);
             Assert.AreEqual(_testEnvironment.App.PluginManager.GetAssemblies().Count, 1);
             var assembly = _testEnvironment.App.PluginManager.GetAssemblies().Single();
             var iocType = assembly.GetType("Runic.ExampleTest.RunicIoC");
@@ -43,7 +43,7 @@ namespace Runic.Agent.UnitTest.Tests
         [TestMethod]
         public void TestGetFunctionInfo()
         {
-            _testEnvironment.App.PluginManager.LoadPlugin("Runic.ExampleTest");
+            _testEnvironment.App.PluginManager.LoadPlugin(TestConstants.AssemblyName);
             var functions = _testEnvironment.App.PluginManager.GetAvailableFunctions();
             Assert.IsTrue(functions.Any());
         }
@@ -51,8 +51,8 @@ namespace Runic.Agent.UnitTest.Tests
         [TestMethod]
         public void TestDualLoadIsSafe()
         {
-            _testEnvironment.App.PluginManager.LoadPlugin("Runic.ExampleTest");
-            _testEnvironment.App.PluginManager.LoadPlugin("Runic.ExampleTest");
+            _testEnvironment.App.PluginManager.LoadPlugin(TestConstants.AssemblyName);
+            _testEnvironment.App.PluginManager.LoadPlugin(TestConstants.AssemblyName);
             Assert.AreEqual(_testEnvironment.App.PluginManager.GetAssemblies().Count, 1);
         }
     }

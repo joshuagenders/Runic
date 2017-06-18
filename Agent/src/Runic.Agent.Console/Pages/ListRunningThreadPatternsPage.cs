@@ -19,7 +19,7 @@ namespace Runic.Agent.Console.Pages
             base.Display();
 
             var flowId = Input.ReadString("Enter the flow id");
-            _threadOrchestrator.GetRunningFlows()?.ToList().ForEach(f => Output.WriteLine(f));
+            _threadOrchestrator.GetRunningFlows?.ToList().ForEach(f => Output.WriteLine(f));
             Input.ReadString("Press [enter] to return");
             MenuProgram.NavigateHome();
         }
