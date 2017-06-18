@@ -6,7 +6,7 @@ namespace Runic.Agent.UnitTest.TestUtility
     public class TestEnvironment : IDisposable
     {
         private ILifetimeScope lifetimeScope { get; set; }
-        public readonly TestApplication App;
+        public readonly FakeApplication App;
 
         public void Dispose()
         {
@@ -15,10 +15,10 @@ namespace Runic.Agent.UnitTest.TestUtility
 
         public TestEnvironment()
         {
-            var testStartup = new TestStartup();
+            var testStartup = new FakeStartup();
             var container = testStartup.BuildContainer(TestConstants.CommandLineArguments);
             lifetimeScope = container.BeginLifetimeScope();
-            App = lifetimeScope.Resolve<IApplication>() as TestApplication;
+            App = lifetimeScope.Resolve<IApplication>() as FakeApplication;
         }        
     }
 }

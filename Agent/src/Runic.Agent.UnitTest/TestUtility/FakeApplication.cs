@@ -11,7 +11,7 @@ using Runic.Agent.Messaging;
 
 namespace Runic.Agent.UnitTest.TestUtility
 {
-    public class TestApplication : IApplication
+    public class FakeApplication : IApplication
     {
         private const string wd = "C:\\code\\Runic\\Agent\\src\\Runic.Agent.UnitTest\\bin\\Debug\\netcoreapp1.0";
         public IPluginManager PluginManager { get; set; }
@@ -24,7 +24,7 @@ namespace Runic.Agent.UnitTest.TestUtility
         public ConstantFlowService ConstantFlowService { get; set; }
         public GraphFlowService GraphFlowService { get; set; }
 
-        public TestApplication(
+        public FakeApplication(
             IPluginManager pluginManager,
             IFlowManager flowManager,
             IStats stats,
@@ -47,9 +47,9 @@ namespace Runic.Agent.UnitTest.TestUtility
             handlerRegistry.RegisterMessageHandlers();
         }
 
-        public Task RunApplicationAsync(CancellationToken ct = default(CancellationToken))
+        public async Task RunApplicationAsync(CancellationToken ct = default(CancellationToken))
         {
-            return Task.CompletedTask;
+            await MessagingService.RunServiceAsync(ct);
         }
     }
 }

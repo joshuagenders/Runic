@@ -25,8 +25,7 @@ namespace Runic.Agent.Configuration
                 builder.AddCommandLine(args);
 
             builder.SetBasePath(Directory.GetCurrentDirectory());
-            if (File.Exists("appsettings.json"))
-                builder.AddJsonFile("appsettings.json");
+            builder.AddJsonFile("appsettings.json", true);
 
             _instance = new AgentConfiguration();
             Instance.Configuration = builder.Build();

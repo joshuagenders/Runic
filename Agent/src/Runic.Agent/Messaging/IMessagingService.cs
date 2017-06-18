@@ -7,6 +7,7 @@ namespace Runic.Agent.Messaging
     public interface IMessagingService
     {
         Task RunServiceAsync(CancellationToken ct);
-        void RegisterMessageHandler<T>(Action<T> handler);
+        void RegisterMessageHandler<T>(Action<T> handler) where T : class;
+        void PublishMessage<T>(T message);
     }
 }

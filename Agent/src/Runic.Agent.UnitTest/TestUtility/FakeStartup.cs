@@ -14,7 +14,7 @@ using Runic.Agent.Messaging;
 
 namespace Runic.Agent.UnitTest.TestUtility
 {
-    public class TestStartup : IStartup
+    public class FakeStartup : IStartup
     {
         public IContainer BuildContainer(string [] args)
         {
@@ -40,10 +40,12 @@ namespace Runic.Agent.UnitTest.TestUtility
                     .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                     .As<IPluginProvider>();
             builder.RegisterType<PluginManager>().As<IPluginManager>();
-            builder.RegisterInstance(new Mock<IMessagingService>().Object).As<IMessagingService>();
             builder.RegisterType<ThreadOrchestrator>().As<IThreadOrchestrator>();
-            builder.RegisterType<TestApplication>().As<IApplication>();
+            builder.RegisterType<FakeApplication>().As<IApplication>();
+
             builder.RegisterType<HandlerRegistry>().As<IHandlerRegistry>();
+            builder.RegisterInstance(new InMemoryMessagingService()).As<IMessagingService>();
+
             return builder.Build();
         }
     }

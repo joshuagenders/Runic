@@ -28,6 +28,8 @@ namespace Runic.Agent.Messaging
                 (request) => constantFlowService.ExecuteFlow(request, ct));
             _messagingService.RegisterMessageHandler<GraphFlowExecutionRequest>(
                 (request) => graphFlowService.ExecuteFlow(request, ct));
+            _messagingService.RegisterMessageHandler<SetThreadLevelRequest>(
+                (request) => _threadOrchestrator.SetThreadLevelAsync(request, ct));
         }
     }
 }

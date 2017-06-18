@@ -29,7 +29,7 @@ namespace Runic.Agent.Services
             _bus = BusClientFactory.CreateDefault(busConfig);
         }
 
-        public void RegisterMessageHandler<T>(Action<T> handler)
+        public void RegisterMessageHandler<T>(Action<T> handler) where T : class
         {
             Func<T, MessageContext, Task> rabbitHandler =
                 (request, messageContext) => Task.Run(() => handler(request));
@@ -42,6 +42,11 @@ namespace Runic.Agent.Services
             {
                 _logger.Error(e);
             }
+        }
+
+        public void PublishMessage<T>(T message)
+        {
+            _bus.PublishAsync(message);
         }
 
         public async Task RunServiceAsync(CancellationToken ct)
