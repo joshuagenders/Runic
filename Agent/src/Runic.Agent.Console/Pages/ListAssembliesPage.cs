@@ -1,9 +1,7 @@
-﻿using Runic.Agent.AssemblyManagement;
+﻿using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Console.Framework;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Runic.Agent.Console.Pages
 {

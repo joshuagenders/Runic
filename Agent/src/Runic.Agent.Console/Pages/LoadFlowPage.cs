@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Runic.Agent.Console.Framework;
-using Runic.Agent.FlowManagement;
+using Runic.Agent.Core.FlowManagement;
 using Runic.Framework.Models;
 using System;
 using System.IO;

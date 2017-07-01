@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runic.Agent.Console", "Runic.Agent.Console\Runic.Agent.Console.csproj", "{90BCCFF9-F01E-495A-91B9-8DAF0A77F8B6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Core", "Runic.Agent.Core\Runic.Agent.Core.csproj", "{B1730AD2-8CCC-426B-B93D-0BBE8A325D0D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Core.UnitTest", "Runic.Agent.UnitTest\Runic.Agent.Core.UnitTest.csproj", "{3FC83F41-C339-4FF8-B1AC-67A6D374E360}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Worker", "Runic.Agent.Worker\Runic.Agent.Worker.csproj", "{CD45FE49-CCE9-4461-AFB2-E84394F10EB6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Api", "Runic.Agent.Api\Runic.Agent.Api\Runic.Agent.Api.csproj", "{052A42AD-9B8D-4F49-B49E-9DD0E2BB8047}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runic.Agent.Worker.UnitTest", "Runic.Agent.Worker.UnitTest\Runic.Agent.Worker.UnitTest.csproj", "{88453393-8899-4B5F-9A88-062421575956}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{90BCCFF9-F01E-495A-91B9-8DAF0A77F8B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90BCCFF9-F01E-495A-91B9-8DAF0A77F8B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90BCCFF9-F01E-495A-91B9-8DAF0A77F8B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90BCCFF9-F01E-495A-91B9-8DAF0A77F8B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1730AD2-8CCC-426B-B93D-0BBE8A325D0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1730AD2-8CCC-426B-B93D-0BBE8A325D0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1730AD2-8CCC-426B-B93D-0BBE8A325D0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1730AD2-8CCC-426B-B93D-0BBE8A325D0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FC83F41-C339-4FF8-B1AC-67A6D374E360}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FC83F41-C339-4FF8-B1AC-67A6D374E360}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FC83F41-C339-4FF8-B1AC-67A6D374E360}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FC83F41-C339-4FF8-B1AC-67A6D374E360}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD45FE49-CCE9-4461-AFB2-E84394F10EB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD45FE49-CCE9-4461-AFB2-E84394F10EB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD45FE49-CCE9-4461-AFB2-E84394F10EB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD45FE49-CCE9-4461-AFB2-E84394F10EB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{052A42AD-9B8D-4F49-B49E-9DD0E2BB8047}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{052A42AD-9B8D-4F49-B49E-9DD0E2BB8047}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{052A42AD-9B8D-4F49-B49E-9DD0E2BB8047}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{052A42AD-9B8D-4F49-B49E-9DD0E2BB8047}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88453393-8899-4B5F-9A88-062421575956}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88453393-8899-4B5F-9A88-062421575956}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88453393-8899-4B5F-9A88-062421575956}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88453393-8899-4B5F-9A88-062421575956}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

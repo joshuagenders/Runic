@@ -1,20 +1,16 @@
 ﻿using Autofac;
-using StatsN;
-using Runic.Agent.Metrics;
-using Runic.Agent.Configuration;
-using Runic.Agent.FlowManagement;
-using Runic.Agent.Services;
+using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.Configuration;
+using Runic.Agent.Core.FlowManagement;
+using Runic.Agent.Core.Metrics;
+using Runic.Agent.Core.ThreadManagement;
 using Runic.Framework.Clients;
-using Runic.Agent.AssemblyManagement;
+using StatsN;
 using System.IO;
-using Runic.Agent.Data;
-using Runic.Agent.ThreadManagement;
-using Moq;
-using Runic.Agent.Messaging;
 
-namespace Runic.Agent.UnitTest.TestUtility
+namespace Runic.Agent.Core.UnitTest.TestUtility
 {
-    public class FakeStartup : IStartup
+    public class FakeStartup
     {
         public IContainer BuildContainer(string [] args)
         {
@@ -33,18 +29,15 @@ namespace Runic.Agent.UnitTest.TestUtility
             builder.RegisterInstance(statsd).As<IStatsd>();
             builder.RegisterType<Stats>().As<IStats>();
             builder.RegisterType<FlowManager>().As<IFlowManager>();
-            builder.RegisterType<JsonDataService>().As<IDataService>();
-            builder.RegisterInstance(new Mock<IMessagingService>().Object).As<IMessagingService>();
+            //builder.RegisterInstance(new Mock<IMessagingService>().Object).As<IMessagingService>();
             builder.RegisterType<InMemoryClient>().As<IRuneClient>();
             builder.RegisterType<FilePluginProvider>()
                     .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                     .As<IPluginProvider>();
             builder.RegisterType<PluginManager>().As<IPluginManager>();
-            builder.RegisterType<ThreadOrchestrator>().As<IThreadOrchestrator>();
-            builder.RegisterType<FakeApplication>().As<IApplication>();
-
-            builder.RegisterType<HandlerRegistry>().As<IHandlerRegistry>();
-            builder.RegisterInstance(new InMemoryMessagingService()).As<IMessagingService>();
+            builder.RegisterType<PatternService>().As<IPatternService>();
+            //builder.RegisterType<HandlerRegistry>().As<IHandlerRegistry>();
+            //builder.RegisterInstance(new InMemoryMessagingService()).As<IMessagingService>();
 
             return builder.Build();
         }

@@ -4,7 +4,7 @@ using Runic.Framework.Attributes;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.UnitTest.TestUtility
+namespace Runic.Agent.Core.UnitTest.TestUtility
 {
     public class FakeFunction
     {

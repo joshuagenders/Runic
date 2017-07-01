@@ -1,11 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Runic.Agent.ThreadPatterns;
+using Runic.Agent.Core.ThreadPatterns;
 using Runic.Framework.Models;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.UnitTest.Tests
+namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
     public class TestThreadPatterns

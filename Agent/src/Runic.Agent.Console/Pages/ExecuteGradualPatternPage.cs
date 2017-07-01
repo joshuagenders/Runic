@@ -1,8 +1,7 @@
 ﻿using Runic.Agent.Console.Framework;
-using Runic.Agent.FlowManagement;
-using Runic.Agent.Services;
-using Runic.Agent.ThreadManagement;
-using Runic.Agent.ThreadPatterns;
+using Runic.Agent.Core.FlowManagement;
+using Runic.Agent.Core.ThreadManagement;
+using Runic.Agent.Core.ThreadPatterns;
 using Runic.Framework.Models;
 using System;
 using System.Threading;
@@ -11,10 +10,10 @@ namespace Runic.Agent.Console.Pages
 {
     public class ExecuteGradualPatternPage : MenuPage
     {
-        private readonly IThreadOrchestrator _threadOrchestrator;
+        private readonly IPatternService _threadOrchestrator;
         private readonly IFlowManager _flowManager;
         
-        public ExecuteGradualPatternPage(MenuProgram program, IThreadOrchestrator threadOrchestrator, IFlowManager flowManager)
+        public ExecuteGradualPatternPage(MenuProgram program, IPatternService threadOrchestrator, IFlowManager flowManager)
             : base("Execute Gradual Pattern", program)
         {
             _threadOrchestrator = threadOrchestrator;
@@ -41,8 +40,8 @@ namespace Runic.Agent.Console.Pages
                     RampUpSeconds = Input.ReadInt("Rampup Seconds", 0, int.MaxValue),
                     StepIntervalSeconds = Input.ReadInt("Step Interval Seconds", 0, 3600)
                 };
-                cts.CancelAfter(5000);
-                _threadOrchestrator.AddNewPattern(flowRequest.PatternExecutionId, flowRequest.Flow, new GradualThreadPattern()
+                cts.CancelAfter(flowRequest.ThreadPattern.DurationSeconds * 1000);
+                _threadOrchestrator.StartThreadPattern(flowRequest.PatternExecutionId, flowRequest.Flow, new GradualThreadPattern()
                 {
                     DurationSeconds = flowRequest.ThreadPattern.DurationSeconds,
                     Points = flowRequest.ThreadPattern.Points,
@@ -50,7 +49,7 @@ namespace Runic.Agent.Console.Pages
                     RampUpSeconds = flowRequest.ThreadPattern.RampUpSeconds,
                     StepIntervalSeconds = flowRequest.ThreadPattern.StepIntervalSeconds,
                     ThreadCount = flowRequest.ThreadPattern.ThreadCount
-                });
+                }, cts.Token);
             }
             catch (Exception e)
             {

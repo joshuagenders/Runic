@@ -1,8 +1,8 @@
 ﻿using Runic.Framework.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Runic.Agent.UnitTest.TestUtility;
+using Runic.Agent.Core.UnitTest.TestUtility;
 
-namespace Runic.Agent.UnitTest.Tests
+namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
     public class TestFlows

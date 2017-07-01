@@ -48,9 +48,10 @@ namespace Runic.Framework.Clients
                 Runes.AddRange(runes);
                 if (runes.Count > MaxObjects)
                 {
-                    runes.Where(r => r.RuneExpiry < DateTime.Now)
-                         .ToList()
-                         .ForEach(r => Runes.Remove(r));
+                    //todo
+                    //runes.Where(r => r.RuneExpiry < DateTime.Now)
+                    //     .ToList()
+                    //     .ForEach(r => Runes.Remove(r));
                 }
             }
             //todo remove non expired

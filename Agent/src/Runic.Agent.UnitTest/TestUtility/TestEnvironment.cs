@@ -1,7 +1,8 @@
 ﻿using Autofac;
+using Runic.Agent.Core.UnitTest.TestUtility;
 using System;
 
-namespace Runic.Agent.UnitTest.TestUtility
+namespace Runic.Agent.Core.UnitTest.TestUtility
 {
     public class TestEnvironment : IDisposable
     {
@@ -18,6 +19,7 @@ namespace Runic.Agent.UnitTest.TestUtility
             var testStartup = new FakeStartup();
             var container = testStartup.BuildContainer(TestConstants.CommandLineArguments);
             lifetimeScope = container.BeginLifetimeScope();
+            //todo fix test architecture
             App = lifetimeScope.Resolve<IApplication>() as FakeApplication;
         }        
     }

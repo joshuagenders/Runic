@@ -1,5 +1,5 @@
-﻿using Runic.Agent.AssemblyManagement;
-using Runic.Agent.Console.Framework;
+﻿using Runic.Agent.Console.Framework;
+using Runic.Agent.Core.AssemblyManagement;
 using System;
 using System.Linq;
 

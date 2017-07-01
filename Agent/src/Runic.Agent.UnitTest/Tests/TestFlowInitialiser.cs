@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Runic.Agent.Harness;
-using Runic.Agent.UnitTest.TestUtility;
+using Runic.Agent.Core.Harness;
+using Runic.Agent.Core.UnitTest.TestUtility;
 using System.Linq;
 
-namespace Runic.Agent.UnitTest.Tests
+namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
     public class TestFlowInitialiser

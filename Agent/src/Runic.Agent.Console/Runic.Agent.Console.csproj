@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Runic.Agent\Runic.Agent.csproj" />
+    <ProjectReference Include="..\Runic.Agent.Core\Runic.Agent.Core.csproj" />
+    <ProjectReference Include="..\Runic.Agent\Runic.Agent.Core.csproj" />
   </ItemGroup>
 
 </Project>

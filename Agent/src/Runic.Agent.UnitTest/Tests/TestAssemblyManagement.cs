@@ -1,11 +1,11 @@
 ﻿using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Runic.Agent.UnitTest.TestUtility;
+using Runic.Agent.Core.UnitTest.TestUtility;
 using Runic.Framework.Clients;
 using System.Linq;
 using System.Reflection;
 
-namespace Runic.Agent.UnitTest.Tests
+namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
     public class TestAssemblyManagement

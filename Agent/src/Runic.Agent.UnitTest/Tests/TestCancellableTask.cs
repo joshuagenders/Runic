@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Runic.Agent.Harness;
+using Runic.Agent.Core.Harness;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.UnitTest.Tests
+namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
     public class TestCancellableTask

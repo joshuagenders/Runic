@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using Runic.Agent.AssemblyManagement;
-using Runic.Agent.FlowManagement;
-using Runic.Agent.ThreadManagement;
+using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.FlowManagement;
+using Runic.Agent.Core.ThreadManagement;
 
 namespace Runic.Agent.Console
 {
@@ -9,13 +9,14 @@ namespace Runic.Agent.Console
     {
         public static void Main(string[] args)
         {
-            var startup = new Startup();
-            var container = startup.BuildContainer(args);
-            var service = container.Resolve<IThreadOrchestrator>();
-            var plugins = container.Resolve<IPluginManager>();
-            var flowMgr = container.Resolve<IFlowManager>();
-
-            new AgentConsole(service, flowMgr, plugins).Run();
+            //todo
+            //var startup = new Startup();
+            //var container = startup.BuildContainer(args);
+            //var service = container.Resolve<IPatternService>();
+            //var plugins = container.Resolve<IPluginManager>();
+            //var flowMgr = container.Resolve<IFlowManager>();
+            //
+            //new AgentConsole(service, flowMgr, plugins).Run();
         }
     }
 }

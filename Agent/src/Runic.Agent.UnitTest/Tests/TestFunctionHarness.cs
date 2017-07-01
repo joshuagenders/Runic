@@ -1,13 +1,13 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Runic.Agent.Harness;
+using Runic.Agent.Core.Harness;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading;
 using System;
 using Runic.Framework.Attributes;
-using Runic.Agent.UnitTest.TestUtility;
+using Runic.Agent.Core.UnitTest.TestUtility;
 
-namespace Runic.Agent.UnitTest.Tests
+namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
     public class TestFunctionHarness

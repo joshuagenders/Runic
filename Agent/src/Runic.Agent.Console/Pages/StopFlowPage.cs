@@ -1,5 +1,5 @@
 ﻿using Runic.Agent.Console.Framework;
-using Runic.Agent.ThreadManagement;
+using Runic.Agent.Core.ThreadManagement;
 using System;
 using System.Threading;
 
@@ -7,11 +7,11 @@ namespace Runic.Agent.Console.Pages
 {
     public class StopFlowPage : Page
     {
-        private readonly IThreadOrchestrator _threadOrchestrator;
-        public StopFlowPage(MenuProgram program, IThreadOrchestrator threadOrchestrator) 
+        private readonly ThreadManager _threadManager;
+        public StopFlowPage(MenuProgram program, ThreadManager threadManager) 
             : base("Stop Flow", program)
         {
-            _threadOrchestrator = threadOrchestrator;
+            _threadManager = threadManager;
         }
 
         public override void Display()
@@ -21,7 +21,7 @@ namespace Runic.Agent.Console.Pages
             var flowId = Input.ReadString("Enter the flow id");
             var cts = new CancellationTokenSource();
             cts.CancelAfter(10000);
-            _threadOrchestrator.StopFlow(flowId);
+            _threadManager.StopFlow(flowId);
             Output.WriteLine(ConsoleColor.Green, $"Flow {flowId} thread level set to 0");
             Input.ReadString("Press [enter] to return");
             MenuProgram.NavigateHome();
