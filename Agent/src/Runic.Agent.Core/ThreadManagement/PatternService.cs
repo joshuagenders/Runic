@@ -1,4 +1,4 @@
-﻿using NLog;
+﻿using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.Harness;
 using Runic.Agent.Core.Metrics;
 using Runic.Agent.Core.ThreadPatterns;
@@ -13,7 +13,7 @@ namespace Runic.Agent.Core.ThreadManagement
 {
     public class PatternService : IPatternService
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger _logger = new LoggerFactory().CreateLogger(nameof(PatternService));
 
         private readonly IStats _stats;
         private readonly ExecutionContext _context;

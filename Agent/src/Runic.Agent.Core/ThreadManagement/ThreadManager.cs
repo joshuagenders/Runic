@@ -1,4 +1,4 @@
-﻿using NLog;
+﻿using Microsoft.Extensions.Logging;
 using Runic.Framework.Models;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ namespace Runic.Agent.Core.ThreadManagement
 {
     public class ThreadManager
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger _logger = new LoggerFactory().CreateLogger(nameof(ThreadManager));
         private static ConcurrentDictionary<string, FlowThreadManager> _threadManagers { get; set; }
         private readonly ExecutionContext _context;
         public ThreadManager(ExecutionContext context)
@@ -51,7 +51,7 @@ namespace Runic.Agent.Core.ThreadManagement
         public async Task SetThreadLevelAsync(SetThreadLevelRequest request, CancellationToken ct)
         {
             //todo implement maxthreads
-            _logger.Debug($"Attempting to update thread level to {request.ThreadLevel} for {request.FlowName}");
+            _logger.LogDebug($"Attempting to update thread level to {request.ThreadLevel} for {request.FlowName}");
             if (_threadManagers.TryGetValue(request.FlowId, out FlowThreadManager manager))
             {
                 await manager.SafeUpdateThreadCountAsync(request.ThreadLevel);

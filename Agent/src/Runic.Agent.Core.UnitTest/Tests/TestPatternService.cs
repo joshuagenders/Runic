@@ -11,7 +11,7 @@ using Runic.Agent.Core.ThreadManagement;
 namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
-    public class TestThreadOrchestrator
+    public class TestPatternService
     {
         private TestEnvironment _testEnvironment { get; set; }
         private Flow _fakeFlow { get; set; }

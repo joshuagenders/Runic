@@ -3,7 +3,6 @@ using Runic.Agent.Core.Data;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.Metrics;
 using Runic.Agent.Core.ThreadManagement;
-using Runic.Agent.Core.UnitTest.TestUtility;
 using System.Threading;
 using System.Threading.Tasks;
 

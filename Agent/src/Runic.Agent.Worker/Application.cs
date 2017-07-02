@@ -1,4 +1,4 @@
-﻿using NLog;
+﻿using Microsoft.Extensions.Logging;
 using Runic.Agent.Worker.Messaging;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,7 +7,7 @@ namespace Runic.Agent.Worker
 {
     public class Application : IApplication
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger _logger = new LoggerFactory().CreateLogger(nameof(Application));
         private readonly IMessagingService _messagingService;
         private readonly IHandlerRegistry _handlerRegistry;
 

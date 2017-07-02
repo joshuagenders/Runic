@@ -4,18 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
-using NLog;
 using Runic.Framework.Clients;
 using Runic.Framework.Attributes;
 using Runic.Framework.Models;
 using Runic.Agent.Core.Metrics;
 using System.IO;
+using Microsoft.Extensions.Logging;
 
 namespace Runic.Agent.Core.AssemblyManagement
 {
     public class PluginManager : IPluginManager
     {
-        private readonly Logger _logger = LogManager.GetLogger("Runic.Agent.Core.AssemblyManagement.PluginManager");
+        private static readonly ILogger _logger = new LoggerFactory().CreateLogger(nameof(PluginManager));
         private readonly ConcurrentBag<Assembly> _assemblies;
         private readonly ConcurrentDictionary<string, bool> _assembliesLoaded;
         private readonly IStats _stats;
@@ -34,7 +34,7 @@ namespace Runic.Agent.Core.AssemblyManagement
 
         public void LoadPlugin(string pluginAssemblyName)
         {
-            _logger.Debug($"Loading plugin {pluginAssemblyName}");
+            _logger.LogDebug($"Loading plugin {pluginAssemblyName}");
             bool loaded;
             lock (_assembliesLoaded)
             {
@@ -45,7 +45,7 @@ namespace Runic.Agent.Core.AssemblyManagement
 
             _provider.RetrieveSourceDll(pluginAssemblyName);
             var pluginPath = _provider.GetFilepath(pluginAssemblyName);
-            _logger.Debug($"Plugin path {pluginPath}");
+            _logger.LogDebug($"Plugin path {pluginPath}");
             if (!File.Exists(pluginPath))
             {
                 Console.WriteLine($"Could not find file {pluginPath}");
@@ -80,7 +80,7 @@ namespace Runic.Agent.Core.AssemblyManagement
 
         public Type GetClassType(string functionFullyQualifiedName)
         {
-            _logger.Debug($"Searching assemblies for function");
+            _logger.LogDebug($"Searching assemblies for function");
             lock (_assemblies)
             {
                 foreach (var assembly in _assemblies)

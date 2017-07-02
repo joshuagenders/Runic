@@ -1,13 +1,13 @@
 ﻿using System.IO;
 using Microsoft.Extensions.Configuration;
 
-namespace Runic.Agent.Core.Configuration
+namespace Runic.Agent.Worker.Configuration
 {
-    public class AgentConfiguration
+    public class WorkerConfiguration
     {
         private IConfigurationRoot Configuration { get; set; }
-        private static AgentConfiguration _instance { get; set; }
-        public static AgentConfiguration Instance => _instance ?? (_instance = new AgentConfiguration());
+        private static WorkerConfiguration _instance { get; set; }
+        public static WorkerConfiguration Instance => _instance ?? (_instance = new WorkerConfiguration());
 
         public int MaxThreads => Configuration.GetConfigValue("Agent:MaxThreads", int.Parse, 0);
         public int LifetimeSeconds => Configuration.GetConfigValue("Agent:LifetimeSeconds", int.Parse, 60);
@@ -16,7 +16,7 @@ namespace Runic.Agent.Core.Configuration
         public string StatsdHost => Configuration.GetConfigValue("Statsd:Host", "localhost");
         public string StatsdPrefix => Configuration.GetConfigValue("Statsd:Prefix", "Runic.Agent.Core.");
 
-        private AgentConfiguration() { }
+        private WorkerConfiguration() { }
 
         public static void LoadConfiguration(string[] args = null)
         {
@@ -27,7 +27,7 @@ namespace Runic.Agent.Core.Configuration
             builder.SetBasePath(Directory.GetCurrentDirectory());
             builder.AddJsonFile("appsettings.json", true);
 
-            _instance = new AgentConfiguration();
+            _instance = new WorkerConfiguration();
             Instance.Configuration = builder.Build();
         }
     }

@@ -1,4 +1,4 @@
-﻿using NLog;
+﻿using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Data;
 using Runic.Agent.Core.Metrics;
@@ -11,7 +11,7 @@ namespace Runic.Agent.Core.Harness
 {
     public class FunctionFactory
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger _logger = new LoggerFactory().CreateLogger(nameof(FunctionFactory));
         private readonly Flow _flow;
         private readonly IStats _stats;
         private readonly IDataService _dataService;
@@ -46,16 +46,16 @@ namespace Runic.Agent.Core.Harness
 
         public FunctionHarness CreateFunction(Step step)
         {
-            _logger.Debug($"Initialising {step.Function.FunctionName} in {step.Function.AssemblyName}");
-            _logger.Debug($"Retrieving function type");
+            _logger.LogDebug($"Initialising {step.Function.FunctionName} in {step.Function.AssemblyName}");
+            _logger.LogDebug($"Retrieving function type");
 
             var type = _pluginManager.GetClassType(step.Function.AssemblyQualifiedClassName);
             if (type == null)
                 throw new FunctionTypeNotFoundException();
 
-            _logger.Debug($"type found {type.AssemblyQualifiedName}");
+            _logger.LogDebug($"type found {type.AssemblyQualifiedName}");
             var instance = Activator.CreateInstance(type);
-            _logger.Debug($"{step.Function.FunctionName} in {step.Function.AssemblyName} initialised");
+            _logger.LogDebug($"{step.Function.FunctionName} in {step.Function.AssemblyName} initialised");
 
             var harness = new FunctionHarness(_stats);
             harness.Bind(instance,

@@ -1,24 +1,24 @@
 ﻿using Microsoft.Extensions.Configuration;
-using NLog;
+using Microsoft.Extensions.Logging;
 using System;
 
-namespace Runic.Agent.Core.Configuration
+namespace Runic.Agent.Worker.Configuration
 {
     public static class ConfigurationExtensions
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger _logger = new LoggerFactory().CreateLogger(nameof(ConfigurationExtensions));
 
         public static T GetValueFromAppSettings<T>(
             this IConfigurationRoot configuration, string name, Func<string, T> parser, T defaultValue)
         {
             if (name == null)
             {
-                _logger.Error("Attempted to retrieve configuration key but was passed a null key");
+                _logger.LogError("Attempted to retrieve configuration key but was passed a null key");
                 return default(T);
             }
             if (parser == null)
             {
-                _logger.Error("Attempted to retrieve configuration key but was passed a null parser");
+                _logger.LogError("Attempted to retrieve configuration key but was passed a null parser");
                 return default(T);
             }
 
@@ -30,7 +30,7 @@ namespace Runic.Agent.Core.Configuration
         {
             if (name == null)
             {
-                _logger.Error("Attempted to retrieve configuration key but was passed a null key");
+                _logger.LogError("Attempted to retrieve configuration key but was passed a null key");
                 return null;
             }
 
@@ -42,12 +42,12 @@ namespace Runic.Agent.Core.Configuration
         {
             if (name == null)
             {
-                _logger.Error("Attempted to retrieve configuration key but was passed a null key");
+                _logger.LogError("Attempted to retrieve configuration key but was passed a null key");
                 return default(T);
             }
             if (parser == null)
             {
-                _logger.Error("Attempted to retrieve configuration key but was passed a null parser");
+                _logger.LogError("Attempted to retrieve configuration key but was passed a null parser");
                 return default(T);
             }
 
@@ -59,7 +59,7 @@ namespace Runic.Agent.Core.Configuration
         {
             if (name == null)
             {
-                _logger.Error("Attempted to retrieve configuration key but was passed a null key");
+                _logger.LogError("Attempted to retrieve configuration key but was passed a null key");
                 return defaultValue;
             }
 
@@ -71,7 +71,7 @@ namespace Runic.Agent.Core.Configuration
         {
             if (name == null)
             {
-                _logger.Error("Attempted to retrieve configuration key but was passed a null key");
+                _logger.LogError("Attempted to retrieve configuration key but was passed a null key");
                 return defaultValue;
             }
 
@@ -88,12 +88,12 @@ namespace Runic.Agent.Core.Configuration
         {
             if (name == null)
             {
-                _logger.Error("Attempted to retrieve configuration key but was passed a null key");
+                _logger.LogError("Attempted to retrieve configuration key but was passed a null key");
                 return defaultValue;
             }
             if (parser == null)
             {
-                _logger.Error("Attempted to retrieve configuration key but was passed a null parser");
+                _logger.LogError("Attempted to retrieve configuration key but was passed a null parser");
                 return defaultValue;
             }
 

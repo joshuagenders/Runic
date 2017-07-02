@@ -3,16 +3,16 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Runic.Framework.Attributes;
-using NLog;
 using Runic.Agent.Core.Metrics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Logging;
 
 namespace Runic.Agent.Core.Harness
 {
     public class FunctionHarness
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger _logger = new LoggerFactory().CreateLogger(nameof(FunctionHarness));
 
         private object _instance { get; set; }
         private string _functionName { get; set; }
