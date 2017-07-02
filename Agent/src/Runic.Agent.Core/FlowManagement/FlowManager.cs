@@ -26,7 +26,7 @@ namespace Runic.Agent.Core.FlowManagement
         public Flow GetFlow(string name)
         {
             Flow result;
-            return _flows.TryGetValue(name, out result) ? _flows[name] : null;
+            return _flows.TryGetValue(name, out result) ? result : null;
         }
 
         public IList<Flow> GetFlows()
