@@ -9,9 +9,9 @@ namespace Runic.Agent.Worker.Messaging
     {
         private readonly IMessagingService _messagingService;
         private readonly IPatternService _patternService;
-        private readonly ThreadManager _threadManager;
+        private readonly IThreadManager _threadManager;
 
-        public HandlerRegistry(IMessagingService messagingService, IPatternService threadOrchestrator, ThreadManager threadManager)
+        public HandlerRegistry(IMessagingService messagingService, IPatternService threadOrchestrator, IThreadManager threadManager)
         {
             _messagingService = messagingService;
             _patternService = threadOrchestrator;

@@ -13,6 +13,8 @@ namespace Runic.Agent.Core.ThreadManagement
         void StartThreadPattern(string flowExecutionId, Flow flow, IThreadPattern pattern, CancellationToken ct);
         Task GetCompletionTaskAsync(string flowExecutionId, CancellationToken ct);
 
+        Task SetThreadLevelAsync(SetThreadLevelRequest request, CancellationToken ct);
+
         IList<string> GetRunningThreadPatterns();
         int GetRunningThreadPatternCount();
     }

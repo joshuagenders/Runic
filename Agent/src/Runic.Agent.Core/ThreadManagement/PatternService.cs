@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.Harness;
 using Runic.Agent.Core.Metrics;
 using Runic.Agent.Core.ThreadPatterns;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
 
 namespace Runic.Agent.Core.ThreadManagement
 {
@@ -17,15 +19,19 @@ namespace Runic.Agent.Core.ThreadManagement
 
         private readonly IStats _stats;
         private readonly ExecutionContext _context;
-        private readonly ThreadManager _threadManager;
-
+        private readonly IThreadManager _threadManager;
+        private readonly IFlowManager _flowManager;
+        
         private static ConcurrentDictionary<string, CancellableTask> _threadPatterns { get; set; }
 
-        public PatternService(ExecutionContext context, ThreadManager threadManager)
+        public PatternService(
+            IFlowManager flowManager,
+            IStats stats,
+            IThreadManager IThreadManager)
         {
-            _context = context;
-            _threadManager = threadManager;
-            _stats = context.stats;
+            _threadManager = IThreadManager;
+            _stats = stats;
+            _flowManager = flowManager;
             _threadPatterns = new ConcurrentDictionary<string, CancellableTask>();
         }
         
@@ -85,10 +91,9 @@ namespace Runic.Agent.Core.ThreadManagement
                 await task.CancelAsync();
         }
 
-
         private async Task ExecutePatternAsync(string flowExecutionId, Flow flow, IThreadPattern pattern, CancellationToken ct)
         {
-            _context.flowManager.AddUpdateFlow(flow);
+            _flowManager.AddUpdateFlow(flow);
 
             pattern.RegisterThreadChangeHandler(async (threadLevel) =>
             {
@@ -108,6 +113,11 @@ namespace Runic.Agent.Core.ThreadManagement
             CancellationTokenSource cts = new CancellationTokenSource();
             cts.CancelAfter(2000);
             SafeCancelAllPatternsAsync(cts.Token).Wait();
+        }
+
+        public async Task SetThreadLevelAsync(SetThreadLevelRequest request, CancellationToken ct)
+        {
+            await _threadManager.SetThreadLevelAsync(request, ct);
         }
     }
 }

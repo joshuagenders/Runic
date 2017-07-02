@@ -10,7 +10,6 @@ namespace Runic.Agent.Worker.UnitTest.Tests
         [TestMethod]
         public void TestCommandLineInputs()
         {
-            
             WorkerConfiguration.LoadConfiguration(TestConstants.CommandLineArguments);
 
             Assert.AreEqual(WorkerConfiguration.Instance.ClientConnectionConfiguration, "MyExampleConnection");

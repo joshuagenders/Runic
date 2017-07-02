@@ -1,4 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
+using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.Data;
+using Runic.Agent.Core.FlowManagement;
+using Runic.Agent.Core.Metrics;
 using Runic.Framework.Models;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -8,15 +12,27 @@ using System.Threading.Tasks;
 
 namespace Runic.Agent.Core.ThreadManagement
 {
-    public class ThreadManager
+    public class ThreadManager : IThreadManager
     {
         private static readonly ILogger _logger = new LoggerFactory().CreateLogger(nameof(ThreadManager));
         private static ConcurrentDictionary<string, FlowThreadManager> _threadManagers { get; set; }
-        private readonly ExecutionContext _context;
-        public ThreadManager(ExecutionContext context)
+
+        private readonly IStats _stats;
+        private readonly IPluginManager _pluginManager; 
+        private readonly IFlowManager _flowManager;
+        private readonly IDataService _dataService;
+
+        public ThreadManager(
+            IFlowManager flowManager,
+            IPluginManager pluginManager,
+            IStats stats,
+            IDataService dataService)
         {
             _threadManagers = new ConcurrentDictionary<string, FlowThreadManager>();
-            _context = context;
+            _flowManager = flowManager;
+            _pluginManager = pluginManager;
+            _stats = stats;
+            _dataService = dataService;
         }
 
         public int GetThreadLevel(string flowId)
@@ -31,9 +47,9 @@ namespace Runic.Agent.Core.ThreadManagement
 
         public void StopFlow(string flowExecutionId)
         {
-            if (_threadManagers.TryRemove(flowExecutionId, out FlowThreadManager threadManager))
+            if (_threadManagers.TryRemove(flowExecutionId, out FlowThreadManager IThreadManager))
             {
-                threadManager.StopAll();
+                IThreadManager.StopAll();
             }
         }
         
@@ -60,18 +76,18 @@ namespace Runic.Agent.Core.ThreadManagement
             {
                 var newThreadManager = request.FlowName
                                               .GetFlowThreadManager(
-                                                    _context.flowManager, 
-                                                    _context.pluginManager, 
-                                                    _context.stats, 
-                                                    _context.dataService);
+                                                    _flowManager, 
+                                                    _pluginManager, 
+                                                    _stats, 
+                                                    _dataService);
 
                 var resolvedManager = _threadManagers.GetOrAdd(request.FlowId, newThreadManager);
                 await resolvedManager.SafeUpdateThreadCountAsync(request.ThreadLevel);
             }
         }
 
-        public IList<string> GetRunningFlows => _threadManagers.Select(t => t.Key).ToList();
-        public int GetRunningFlowCount => _threadManagers.Count;
+        public IList<string> GetRunningFlows() => _threadManagers.Select(t => t.Key).ToList();
+        public int GetRunningFlowCount() => _threadManagers.Count;
         public bool FlowExists(string flowExecutionId) => _threadManagers.ContainsKey(flowExecutionId);
     }
 }

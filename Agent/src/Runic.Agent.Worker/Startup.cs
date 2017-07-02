@@ -30,12 +30,13 @@ namespace Runic.Agent.Worker
                 .Register<FlowManager, IFlowManager>()
                 .Register<PluginManager, IPluginManager>()
                 .Register<MessagingDataService, IDataService>()
-                .Register<RabbitMessagingService, IDataService>()
+                //.Register<RabbitMessagingService, IDataService>()
                 .Register<RabbitMessagingService, IMessagingService>()
                 .Register<InMemoryRuneClient, IRuneClient>()
                 .Register<PatternService, IPatternService>()
-                .Register<HandlerRegistry, IHandlerRegistry>();
-
+                .Register<HandlerRegistry, IHandlerRegistry>()
+                .Register<Application, IApplication>();
+            
             builder.RegisterInstance(statsd).As<IStatsd>();
             builder.RegisterType<FilePluginProvider>()
                     .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
