@@ -19,6 +19,7 @@ namespace Runic.Agent.Worker.UnitTest.TestUtility
         public IPatternService PatternService { get; set; }
         public IThreadManager ThreadManager { get; set; }
         public IFlowManager FlowManager { get; set; }
+        public IHandlerRegistry HandlerRegistry { get; set; }
 
         public TestEnvironment(
             IPluginManager pluginManager,
@@ -27,15 +28,18 @@ namespace Runic.Agent.Worker.UnitTest.TestUtility
             IMessagingService messagingService,
             IPatternService patternService,
             IThreadManager threadManager,
-            IFlowManager flowManager)
+            IFlowManager flowManager,
+            IHandlerRegistry handlerRegistry
+            )
         {
-            PluginManager = PluginManager;
+            PluginManager = pluginManager;
             Stats = stats;
             DataService = dataService;
             MessagingService = messagingService;
             PatternService = patternService;
             ThreadManager = threadManager;
             FlowManager = flowManager;
+            HandlerRegistry = handlerRegistry;
         }
 
         public Task RunApplicationAsync(CancellationToken ct = default(CancellationToken))

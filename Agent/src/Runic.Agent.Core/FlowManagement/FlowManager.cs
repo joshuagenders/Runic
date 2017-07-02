@@ -25,12 +25,13 @@ namespace Runic.Agent.Core.FlowManagement
 
         public Flow GetFlow(string name)
         {
-            return _flows[name];
+            Flow result;
+            return _flows.TryGetValue(name, out result) ? _flows[name] : null;
         }
 
         public IList<Flow> GetFlows()
         {
-            return _flows.Values.ToList();
+            return _flows.Values?.ToList();
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public void TestFunctionTypeRetrieve()
+        public void AssemblyManagement_FunctionTypeRetrieve()
         {
             _pluginManager.LoadPlugin(TestConstants.AssemblyName);
             var type = _pluginManager.GetClassType(TestConstants.AssemblyQualifiedClassName);
@@ -35,7 +35,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public void TestLoadAssembly()
+        public void AssemblyManagement_LoadAssembly()
         {
             _pluginManager.LoadPlugin(TestConstants.AssemblyName);
             Assert.AreEqual(_pluginManager.GetAssemblies().Count, 1);
@@ -48,7 +48,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public void TestGetFunctionInfo()
+        public void AssemblyManagement_GetFunctionInfo()
         {
             _pluginManager.LoadPlugin(TestConstants.AssemblyName);
             var functions = _pluginManager.GetAvailableFunctions();
@@ -56,7 +56,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public void TestDualLoadIsSafe()
+        public void AssemblyManagement_DualLoadIsSafe()
         {
             _pluginManager.LoadPlugin(TestConstants.AssemblyName);
             _pluginManager.LoadPlugin(TestConstants.AssemblyName);
