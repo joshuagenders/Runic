@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.Worker.Configuration;
+using Runic.Agent.Worker.UnitTest.TestUtility;
 
 namespace Runic.Agent.Worker.UnitTest.Tests
 {

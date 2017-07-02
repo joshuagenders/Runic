@@ -14,7 +14,7 @@ namespace Runic.Agent.Worker.Configuration
         public string ClientConnectionConfiguration => Configuration.GetConfigValue("Client:MQConnectionString", "");
         public int StatsdPort => Configuration.GetConfigValue("Statsd:Port", int.Parse, 8125);
         public string StatsdHost => Configuration.GetConfigValue("Statsd:Host", "localhost");
-        public string StatsdPrefix => Configuration.GetConfigValue("Statsd:Prefix", "Runic.Agent.Core.");
+        public string StatsdPrefix => Configuration.GetConfigValue("Statsd:Prefix", "Runic.Agent.Worker.");
 
         private WorkerConfiguration() { }
 

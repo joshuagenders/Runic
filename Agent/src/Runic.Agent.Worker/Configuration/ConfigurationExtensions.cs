@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Autofac;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 
@@ -7,6 +8,12 @@ namespace Runic.Agent.Worker.Configuration
     public static class ConfigurationExtensions
     {
         private static readonly ILogger _logger = new LoggerFactory().CreateLogger(nameof(ConfigurationExtensions));
+
+        public static ContainerBuilder Register<T,U>(this ContainerBuilder builder)
+        {
+            builder.RegisterType<T>().As<U>();
+            return builder;
+        }
 
         public static T GetValueFromAppSettings<T>(
             this IConfigurationRoot configuration, string name, Func<string, T> parser, T defaultValue)

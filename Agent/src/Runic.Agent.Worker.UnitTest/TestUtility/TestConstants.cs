@@ -1,4 +1,4 @@
-﻿namespace Runic.Agent.Worker.UnitTest
+﻿namespace Runic.Agent.Worker.UnitTest.TestUtility
 {
     public class TestConstants
     {
