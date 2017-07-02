@@ -62,8 +62,9 @@ namespace Runic.Agent.Core.Harness
                          step.StepName,
                          step.Function.FunctionName,
                          step.GetNextStepFromFunctionResult,
-                         _dataService.GetMethodParameterValues(step.DataInput.InputDatasource, 
-                                                    step.DataInput.DatasourceMapping));
+                         _dataService.GetMethodParameterValues(
+                            step.DataInput.InputDatasource, 
+                            step.DataInput.DatasourceMapping));
             return harness;
         }
     }

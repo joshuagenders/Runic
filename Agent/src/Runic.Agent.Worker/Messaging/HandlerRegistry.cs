@@ -2,6 +2,7 @@
 using Runic.Agent.Core.ThreadPatterns;
 using Runic.Framework.Models;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Runic.Agent.Worker.Messaging
 {
@@ -28,29 +29,29 @@ namespace Runic.Agent.Worker.Messaging
 
         private void RegisterThreadLevelMessageHandler(CancellationToken ct = default(CancellationToken))
         {
-            _messagingService.RegisterMessageHandler<SetThreadLevelRequest>(
-                async (request) => await _threadManager.SetThreadLevelAsync(request, ct));
+            _messagingService.RegisterMessageHandler(
+                async (SetThreadLevelRequest request) => await _threadManager.SetThreadLevelAsync(request, ct));
         }
 
         private void RegisterConstantMessageHandler(CancellationToken ct = default(CancellationToken))
         {
-            _messagingService.RegisterMessageHandler<ConstantFlowExecutionRequest>(
-                (request) =>
+            _messagingService.RegisterMessageHandler(
+                (ConstantFlowExecutionRequest request) =>
                 {
                     var pattern = new ConstantThreadPattern()
                     {
                         ThreadCount = request.ThreadPattern.ThreadCount,
                         DurationSeconds = request.ThreadPattern.DurationSeconds
                     };
-
                     _patternService.StartThreadPattern(request.PatternExecutionId, request.Flow, pattern, ct);
+                    return Task.CompletedTask;
                 });
         }
 
         private void RegisterGraphMessageHandler(CancellationToken ct)
         {
-            _messagingService.RegisterMessageHandler<GraphFlowExecutionRequest>(
-                (request) =>
+            _messagingService.RegisterMessageHandler(
+                (GraphFlowExecutionRequest request) =>
                 {
                     var pattern = new GraphThreadPattern()
                     {
@@ -58,13 +59,14 @@ namespace Runic.Agent.Worker.Messaging
                         Points = request.ThreadPattern.Points
                     };
                     _patternService.StartThreadPattern(request.PatternExecutionId, request.Flow, pattern, ct);
+                    return Task.CompletedTask;
                 });
         }
 
         private void RegisterGradualMessageHandler(CancellationToken ct)
         {
-            _messagingService.RegisterMessageHandler<GradualFlowExecutionRequest>(
-                (request) =>
+            _messagingService.RegisterMessageHandler(
+                (GradualFlowExecutionRequest request) =>
                 {
                     var pattern = new GradualThreadPattern()
                     {
@@ -77,6 +79,7 @@ namespace Runic.Agent.Worker.Messaging
                     };
 
                     _patternService.StartThreadPattern(request.PatternExecutionId, request.Flow, pattern, ct);
+                    return Task.CompletedTask;
                 });
         }
     }

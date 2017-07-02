@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
 using Runic.Agent.Worker.Messaging;
+using Runic.Framework.Models;
 
 namespace Runic.Agent.Worker.UnitTest.TestUtility
 {
@@ -15,11 +16,11 @@ namespace Runic.Agent.Worker.UnitTest.TestUtility
         {
             _handlers = new Dictionary<Type, Action<object>>();
         }
-        public void RegisterMessageHandler<T>(Action<T> handler) where T : class
+        public void RegisterHandler<T>(Func<T, Task> handler) where T : class
         {
-            _handlers[typeof(T)] = (_) => 
+            _handlers[typeof(T)] = async (_) => 
             {
-                handler(Convert.ChangeType(_,typeof(T)) as T);
+                await handler(Convert.ChangeType(_,typeof(T)) as T);
             };
         }
 
@@ -43,5 +44,12 @@ namespace Runic.Agent.Worker.UnitTest.TestUtility
         {
             return Task.CompletedTask;
         }
+
+        public void RegisterMessageHandler(Func<SetThreadLevelRequest, Task> handler) => RegisterHandler(handler);
+        public void RegisterMessageHandler(Func<AddUpdateFlowRequest, Task> handler) => RegisterHandler(handler);
+        public void RegisterMessageHandler(Func<ConstantFlowExecutionRequest, Task> handler) => RegisterHandler(handler);
+        public void RegisterMessageHandler(Func<GraphFlowExecutionRequest, Task> handler) => RegisterHandler(handler);
+        public void RegisterMessageHandler(Func<GradualFlowExecutionRequest, Task> handler) => RegisterHandler(handler);
+        
     }
 }
