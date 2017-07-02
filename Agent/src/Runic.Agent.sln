@@ -5,11 +5,15 @@ VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Core", "Runic.Agent.Core\Runic.Agent.Core.csproj", "{560768FC-9863-49A5-AF57-FC8BB256E956}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runic.Agent.Worker", "Runic.Agent.Worker\Runic.Agent.Worker.csproj", "{A934A746-A8B2-4B9E-BFD0-3FCB276E8CBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Worker", "Runic.Agent.Worker\Runic.Agent.Worker.csproj", "{A934A746-A8B2-4B9E-BFD0-3FCB276E8CBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runic.Agent.Core.UnitTest", "Runic.Agent.Core.UnitTest\Runic.Agent.Core.UnitTest.csproj", "{DE08AD1D-FB3E-4356-97D8-F04F2E92CE3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Core.UnitTest", "Runic.Agent.Core.UnitTest\Runic.Agent.Core.UnitTest.csproj", "{DE08AD1D-FB3E-4356-97D8-F04F2E92CE3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runic.Agent.Worker.UnitTest", "Runic.Agent.Worker.UnitTest\Runic.Agent.Worker.UnitTest.csproj", "{68DBCD72-9853-4D45-8A2D-09597D544D59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Worker.UnitTest", "Runic.Agent.Worker.UnitTest\Runic.Agent.Worker.UnitTest.csproj", "{68DBCD72-9853-4D45-8A2D-09597D544D59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runic.Agent.Api", "Runic.Agent.Api\Runic.Agent.Api.csproj", "{BE65539A-A02F-46E5-9BBE-4E71BABE1FC3}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{AA7755D3-C67F-452C-A168-4A09EBD13389}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{68DBCD72-9853-4D45-8A2D-09597D544D59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68DBCD72-9853-4D45-8A2D-09597D544D59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68DBCD72-9853-4D45-8A2D-09597D544D59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE65539A-A02F-46E5-9BBE-4E71BABE1FC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE65539A-A02F-46E5-9BBE-4E71BABE1FC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE65539A-A02F-46E5-9BBE-4E71BABE1FC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE65539A-A02F-46E5-9BBE-4E71BABE1FC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA7755D3-C67F-452C-A168-4A09EBD13389}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA7755D3-C67F-452C-A168-4A09EBD13389}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA7755D3-C67F-452C-A168-4A09EBD13389}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA7755D3-C67F-452C-A168-4A09EBD13389}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

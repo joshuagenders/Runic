@@ -18,4 +18,10 @@
     <ProjectReference Include="..\Runic.Agent.Core\Runic.Agent.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update=".dockerignore">
+      <DependentUpon>Dockerfile</DependentUpon>
+    </None>
+  </ItemGroup>
+
 </Project>
