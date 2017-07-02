@@ -1,40 +1,35 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Runic.Agent.Core.Harness;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Threading;
-using System;
-using Runic.Framework.Attributes;
 using Runic.Agent.Core.UnitTest.TestUtility;
+using Runic.Framework.Attributes;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Runic.Agent.Core.Metrics;
 
 namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
     public class TestFunctionHarness
     {
-        private TestEnvironment _testEnvironment { get; set; }
-
-        [TestInitialize]
-        public void Init()
-        {
-            _testEnvironment = new TestEnvironment();
-        }
-
         [TestMethod]
-        public void TestGetMethodWithAttribute()
+        public void FunctionHarness_GetMethodWithAttribute()
         {
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness(_testEnvironment.App.Stats);
+            var functionHarness = new FunctionHarness(new Mock<IStats>().Object);
             functionHarness.Bind(fakeFunction, "step1", "Login", false);
             var method = functionHarness.GetMethodWithAttribute(typeof(BeforeEachAttribute));
             Assert.IsNotNull(method, "beforeeach method not found");
         }
 
         [TestMethod]
-        public async Task TestBeforeEachExecute()
+        public async Task FunctionHarness_BeforeEachExecute()
         {
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness(_testEnvironment.App.Stats);
+            var functionHarness = new FunctionHarness(new Mock<IStats>().Object);
             functionHarness.Bind(fakeFunction, "step1", "Login", false);
             var method = functionHarness.GetMethodWithAttribute(typeof(BeforeEachAttribute));
             var cts = new CancellationTokenSource();
@@ -52,10 +47,10 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task TestFunctionExecute()
+        public async Task FunctionHarness_FunctionExecute()
         {
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness(_testEnvironment.App.Stats);
+            var functionHarness = new FunctionHarness(new Mock<IStats>().Object);
             functionHarness.Bind(fakeFunction, "step1", "AsyncWait", false);
             var cts = new CancellationTokenSource();
             try
@@ -73,12 +68,12 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task TestBindAndExecute()
+        public async Task FunctionHarness_BindAndExecute()
         {
             var cts = new CancellationTokenSource();
             cts.CancelAfter(1000);
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness(_testEnvironment.App.Stats);
+            var functionHarness = new FunctionHarness(new Mock<IStats>().Object);
             functionHarness.Bind(fakeFunction, "step1", "Login", false);
             var result = await functionHarness.OrchestrateFunctionExecutionAsync(cts.Token);
 
@@ -91,12 +86,12 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task TestAsyncFunctionWaitsUntilCompletion()
+        public async Task FunctionHarness_AsyncFunctionWaitsUntilCompletion()
         {
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness(_testEnvironment.App.Stats);
+            var functionHarness = new FunctionHarness(new Mock<IStats>().Object);
             functionHarness.Bind(fakeFunction, "step1", "AsyncWait", false);
             await functionHarness.OrchestrateFunctionExecutionAsync(cts.Token);
             
@@ -108,12 +103,12 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task TestInputParameterBinding()
+        public async Task FunctionHarness_InputParameterBinding()
         {
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness(_testEnvironment.App.Stats);
+            var functionHarness = new FunctionHarness(new Mock<IStats>().Object);
 
             var uniqueString = Guid.NewGuid().ToString("n");
             var randomInt = new Random().Next();
@@ -128,12 +123,12 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task TestInputParameterBindingOverrideDefault()
+        public async Task FunctionHarness_InputParameterBindingOverrideDefault()
         {
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness(_testEnvironment.App.Stats);
+            var functionHarness = new FunctionHarness(new Mock<IStats>().Object);
 
             var uniqueString = Guid.NewGuid().ToString("n");
             var uniqueString2 = Guid.NewGuid().ToString("n");
@@ -150,12 +145,12 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task TestInputParameterBindingWithDefault()
+        public async Task FunctionHarness_InputParameterBindingWithDefault()
         {
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness(_testEnvironment.App.Stats);
+            var functionHarness = new FunctionHarness(new Mock<IStats>().Object);
 
             var uniqueString = Guid.NewGuid().ToString("n");
             var randomInt = new Random().Next();

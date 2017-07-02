@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Edge.js" Version="6.5.1" />
     <PackageReference Include="Runic.Framework" Version="1.0.0" />
+    <PackageReference Include="Runic.Framework.Extensions" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

@@ -1,26 +1,27 @@
-﻿//using Autofac;
-using Runic.Agent.Core.UnitTest.TestUtility;
+﻿using Moq;
+using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.Data;
+using Runic.Agent.Core.Metrics;
+using Runic.Framework.Clients;
 using System;
+using System.IO;
 
 namespace Runic.Agent.Core.UnitTest.TestUtility
 {
-    public class TestEnvironment : IDisposable
+    public class TestEnvironment
     {
-        //private ILifetimeScope lifetimeScope { get; set; }
-        public readonly FakeApplication App;
-
-        public void Dispose()
-        {
-           // lifetimeScope.Dispose();
-        }
-
+        public IPluginManager PluginManager { get; set; }
+        public Mock<IStats> Stats { get; set; }
+        public Mock<IDataService> DataService { get; set; }
         public TestEnvironment()
         {
-           // var testStartup = new FakeStartup();
-           // var container = testStartup.BuildContainer(TestConstants.CommandLineArguments);
-           // lifetimeScope = container.BeginLifetimeScope();
-           // //todo fix test architecture
-           // App = lifetimeScope.Resolve<IApplication>() as FakeApplication;
+            Stats = new Mock<IStats>();
+            DataService = new Mock<IDataService>();
+            PluginManager = new PluginManager(
+                new Mock<IRuneClient>().Object, 
+                new FilePluginProvider(Directory.GetCurrentDirectory()), 
+                Stats.Object);
+
         }        
     }
 }

@@ -6,9 +6,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+    <PackageReference Include="Moq" Version="4.7.63" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.1.11" />
     <PackageReference Include="MSTest.TestFramework" Version="1.1.11" />
     <PackageReference Include="Runic.Framework" Version="1.0.0" />
+    <PackageReference Include="StatsN" Version="1.2.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,6 +19,15 @@
 
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Plugins\Runic.ExampleTest.deps.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Plugins\Runic.ExampleTest.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

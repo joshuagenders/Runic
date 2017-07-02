@@ -36,7 +36,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task TestShrinkingGraphCallbacks()
+        public async Task Patterns_ShrinkingGraphCallbacks()
         {
             var gtp = new GraphThreadPattern()
             {
@@ -56,7 +56,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task TestExpandingGraphCallbacks()
+        public async Task Patterns_ExpandingGraphCallbacks()
         {
             var gtp = new GraphThreadPattern()
             {
@@ -76,7 +76,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task TestConstantCallback()
+        public async Task Patterns_ConstantCallback()
         {
             var ctp = new ConstantThreadPattern()
             {
@@ -88,7 +88,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task TestTimedConstantCallback()
+        public async Task Patterns_TimedConstantCallback()
         {
             var ctp = new ConstantThreadPattern()
             {
@@ -102,7 +102,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task TestGradualCallback()
+        public async Task Patterns_GradualCallback()
         {
             //todo use xunit theories
             var gtp = new GradualThreadPattern()
@@ -123,7 +123,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task TestGradualCallbackComplex()
+        public async Task Patterns_GradualCallbackComplex()
         {
             var gtp = new GradualThreadPattern()
             {
@@ -147,7 +147,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task TestGradualCallbackRampUpDownEdgeAndIntervalCollision()
+        public async Task Patterns_GradualCallbackRampUpDownEdgeAndIntervalCollision()
         {
             var gtp = new GradualThreadPattern()
             {
@@ -165,7 +165,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task TestGradualCallbackNoRampUpDown()
+        public async Task Patterns_GradualCallbackNoRampUpDown()
         {
             var gtp = new GradualThreadPattern()
             {

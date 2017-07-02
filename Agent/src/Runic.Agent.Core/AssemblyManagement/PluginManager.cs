@@ -57,7 +57,8 @@ namespace Runic.Agent.Core.AssemblyManagement
             if (assembly == null)
                 throw new AssemblyLoadException($"Could not load assembly {pluginPath}, {pluginAssemblyName}");
 
-            PopulateStaticInterfaces(assembly);
+            assembly.PopulateStaticPropertiesWithInstance(_runeClient)
+                    .PopulateStaticPropertiesWithInstance(_stats);
 
             _stats.CountPluginLoaded();
         }
@@ -123,20 +124,6 @@ namespace Runic.Agent.Core.AssemblyManagement
                 }
             }
             return functions;
-        }
-
-        private void PopulateStaticInterfaces(Assembly assembly)
-        {
-            foreach (var type in assembly.DefinedTypes)
-            {
-                var staticFields = type.GetFields(BindingFlags.Static | BindingFlags.Public);
-                staticFields.Where(f => f.GetType() == typeof(IStats))
-                            .ToList()
-                            .ForEach(f => f.SetValue(type, _stats));
-                staticFields.Where(f => f.GetType() == typeof(IRuneClient))
-                            .ToList()
-                            .ForEach(f => f.SetValue(type, _runeClient));
-            }
         }
 
         public IList<Assembly> GetAssemblies()
