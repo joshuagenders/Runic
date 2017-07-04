@@ -12,7 +12,7 @@ namespace Runic.Agent.Core.Harness
 {
     public class FunctionHarness
     {
-        private static readonly ILogger _logger = new LoggerFactory().CreateLogger(nameof(FunctionHarness));
+        private static readonly ILogger _logger = new LoggerFactory().CreateLogger<FunctionHarness>();
 
         private object _instance { get; set; }
         private string _functionName { get; set; }
@@ -48,6 +48,7 @@ namespace Runic.Agent.Core.Harness
             }
             catch (Exception e)
             {
+                _logger.LogError($"Error in function execution for step {StepName} and function {_functionName}", e);
                 _stats.CountFunctionFailure(_functionName);
                 return false;
             }
@@ -71,12 +72,12 @@ namespace Runic.Agent.Core.Harness
                 throw new FunctionWithAttributeNotFoundException(_functionName);
             if (_getNextStepFromResult)
             {
-                var result = await ExecuteMethodWithReturnAsync(functionMethod, ct, GetMapParameters(_positionalParameters, functionMethod));
+                var result = await ExecuteMethodWithReturnAsync(functionMethod, ct, GetMapMethodParameters(_positionalParameters, functionMethod));
                 NextStep = result;
             }
             else
             {
-                await ExecuteMethodAsync(functionMethod, ct, GetMapParameters(_positionalParameters, functionMethod));
+                await ExecuteMethodAsync(functionMethod, ct, GetMapMethodParameters(_positionalParameters, functionMethod));
             }
         }
 
@@ -126,7 +127,7 @@ namespace Runic.Agent.Core.Harness
             return null;
         }
 
-        private object[] GetMapParameters(object[] positionalParameters, MethodInfo methodInfo)
+        private object[] GetMapMethodParameters(object[] positionalParameters, MethodInfo methodInfo)
         {
             var p = methodInfo.GetParameters();
             var methodParams = new object[p.Length];

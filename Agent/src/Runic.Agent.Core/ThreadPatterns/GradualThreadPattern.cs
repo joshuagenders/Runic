@@ -13,6 +13,28 @@ namespace Runic.Agent.Core.ThreadPatterns
         public int RampDownSeconds { get; set; }
         public int StepIntervalSeconds { get; set; }
 
+        private void GeneratePoints()
+        {
+            Points = new List<Point>();
+
+            AddStartPoint();
+
+            if (RampUpSeconds > 0)
+                AddRampUpPoints();
+
+            AddMaxLevelPoint();
+
+            if (RampDownSeconds > 0)
+                AddRampdownPoints();
+
+            AddEndPoint();
+        }
+        public override async Task StartPatternAsync(CancellationToken ct)
+        {
+            GeneratePoints();
+            await base.StartPatternAsync(ct);
+        }
+
         private void AddStartPoint()
         {
             Points.Add(new Point()
@@ -117,32 +139,6 @@ namespace Runic.Agent.Core.ThreadPatterns
             }
         }
 
-        private void GeneratePoints()
-        {
-            Points = new List<Point>();
-
-            AddStartPoint();
-
-            if (RampUpSeconds > 0)
-                AddRampUpPoints();
-
-            AddMaxLevelPoint();
-
-            if (RampDownSeconds > 0)
-                AddRampdownPoints();
-
-            AddEndPoint();
-        }
-
-        public override async Task StartPatternAsync(CancellationToken ct)
-        {
-            GeneratePoints();
-            await base.StartPatternAsync(ct);
-        }
-
-        public override int GetMaxThreadCount()
-        {
-            return ThreadCount;
-        }
+        public override int GetMaxThreadCount() => ThreadCount;
     }
 }

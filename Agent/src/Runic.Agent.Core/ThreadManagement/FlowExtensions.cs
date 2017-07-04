@@ -9,8 +9,8 @@ namespace Runic.Agent.Core.ThreadManagement
     public static class FlowExtensions
     {
         public static FlowThreadManager GetFlowThreadManager(
-            this string flow, 
-            IFlowManager flowManager, 
+            this IFlowManager flowManager,
+            string flow,
             IPluginManager pluginManager, 
             IStats stats, 
             IDataService dataService)

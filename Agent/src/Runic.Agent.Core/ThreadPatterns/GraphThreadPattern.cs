@@ -19,20 +19,9 @@ namespace Runic.Agent.Core.ThreadPatterns
             _callbacks = new List<Action<int>>();
         }
 
-        public void RegisterThreadChangeHandler(Action<int> callback)
-        {
-            _callbacks.Add(callback);
-        }
-
-        public virtual int GetMaxDurationSeconds()
-        {
-            return DurationSeconds;
-        }
-
-        public virtual int GetMaxThreadCount()
-        {
-            return Points.Max(p => p.threadLevel);
-        }
+        public void RegisterThreadChangeHandler(Action<int> callback) => _callbacks.Add(callback);
+        public virtual int GetMaxDurationSeconds() => DurationSeconds;
+        public virtual int GetMaxThreadCount() => Points.Max(p => p.threadLevel);
 
         public virtual async Task StartPatternAsync(CancellationToken ct)
         {
@@ -52,6 +41,7 @@ namespace Runic.Agent.Core.ThreadPatterns
                     ct.WaitHandle.WaitOne(TimeSpan.FromSeconds(waitTimeSeconds));
                 }
             }
+            await Task.CompletedTask;
         }
     }
 }

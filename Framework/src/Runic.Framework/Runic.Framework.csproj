@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <Authors>Joshua Genders</Authors>
-    <Company>Joshua Genders</Company>
+    <Company></Company>
     <Description>Runic Test Framework</Description>
     <PackageProjectUrl>https://github.com/joshuagenders/Runic</PackageProjectUrl>
     <RepositoryUrl>https://github.com/joshuagenders/Runic</RepositoryUrl>

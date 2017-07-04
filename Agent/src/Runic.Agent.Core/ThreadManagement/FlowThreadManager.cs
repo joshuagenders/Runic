@@ -28,8 +28,7 @@ namespace Runic.Agent.Core.ThreadManagement
             _flow = flow;
             _functionFactory = factory;
             _stats = stats;
-            _taskFactory = new TaskFactory(); 
-            //new TaskFactory(new ConcurrentExclusiveSchedulerPair().ExclusiveScheduler);
+            _taskFactory = new TaskFactory(new ConcurrentExclusiveSchedulerPair().ExclusiveScheduler);
             _taskPool = new ConcurrentDictionary<int, CancellableTask>();
         }
 

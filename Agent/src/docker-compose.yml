@@ -6,9 +6,21 @@ services:
     build:
       context: ./Runic.Agent.Worker
       dockerfile: Dockerfile
+    labels:
+    - "com.microsoft.visualstudio.targetoperatingsystem=windows"
 
   runic.agent.api:
     image: runic.agent.api
     build:
       context: ./Runic.Agent.Api
       dockerfile: Dockerfile
+    labels:
+    - "com.microsoft.visualstudio.targetoperatingsystem=windows"
+
+  runic.agent.standalone:
+    image: runic.agent.standalone
+    build:
+      context: ./Runic.Agent.Standalone
+      dockerfile: Dockerfile
+    labels:
+    - "com.microsoft.visualstudio.targetoperatingsystem=windows"

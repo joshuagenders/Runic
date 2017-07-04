@@ -17,20 +17,9 @@ namespace Runic.Agent.Core.ThreadPatterns
             _callbacks = new List<Action<int>>();
         }
 
-        public void RegisterThreadChangeHandler(Action<int> callback)
-        {
-            _callbacks.Add(callback);
-        }
-
-        public int GetMaxDurationSeconds()
-        {
-            return DurationSeconds;
-        }
-
-        public int GetMaxThreadCount()
-        {
-            return ThreadCount;
-        }
+        public void RegisterThreadChangeHandler(Action<int> callback) => _callbacks.Add(callback);
+        public int GetMaxDurationSeconds() => DurationSeconds;
+        public int GetMaxThreadCount() => ThreadCount;
 
         public async Task StartPatternAsync(CancellationToken ct)
         {

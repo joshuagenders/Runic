@@ -7,7 +7,7 @@ namespace Runic.Agent.Core.Harness
 {
     public class FlowInitialiser
     {
-        private static readonly ILogger _logger = new LoggerFactory().CreateLogger(nameof(FunctionHarness));
+        private static readonly ILogger _logger = new LoggerFactory().CreateLogger<FunctionHarness>();
         private readonly IPluginManager _pluginManager;
 
         public FlowInitialiser(IPluginManager pluginManager)

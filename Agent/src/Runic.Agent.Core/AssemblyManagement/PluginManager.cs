@@ -15,7 +15,7 @@ namespace Runic.Agent.Core.AssemblyManagement
 {
     public class PluginManager : IPluginManager
     {
-        private static readonly ILogger _logger = new LoggerFactory().CreateLogger(nameof(PluginManager));
+        private static readonly ILogger _logger = new LoggerFactory().CreateLogger<PluginManager>();
         private readonly ConcurrentBag<Assembly> _assemblies;
         private readonly ConcurrentDictionary<string, bool> _assembliesLoaded;
         private readonly IStats _stats;
@@ -48,7 +48,7 @@ namespace Runic.Agent.Core.AssemblyManagement
             _logger.LogDebug($"Plugin path {pluginPath}");
             if (!File.Exists(pluginPath))
             {
-                Console.WriteLine($"Could not find file {pluginPath}");
+                _logger.LogError($"Could not find file {pluginPath}");
                 throw new FileNotFoundException($"Could not find file {pluginPath}");
             }
 

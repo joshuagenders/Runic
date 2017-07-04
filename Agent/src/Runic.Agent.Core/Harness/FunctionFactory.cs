@@ -11,7 +11,7 @@ namespace Runic.Agent.Core.Harness
 {
     public class FunctionFactory
     {
-        private static readonly ILogger _logger = new LoggerFactory().CreateLogger(nameof(FunctionFactory));
+        private static readonly ILogger _logger = new LoggerFactory().CreateLogger<FunctionFactory>();
         private readonly Flow _flow;
         private readonly IStats _stats;
         private readonly IDataService _dataService;
