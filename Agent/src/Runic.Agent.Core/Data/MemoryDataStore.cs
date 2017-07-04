@@ -24,7 +24,7 @@ namespace Runic.Agent.Core.Data
         public T GetRune<T>(RuneQuery query) where T : Rune
         {
             //todo 
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
             //var bag = GetCreateRuneBag<T>() as dynamic;
             //bag.Where(r => r.GetType())
         }
