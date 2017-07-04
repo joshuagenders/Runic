@@ -28,7 +28,8 @@ namespace Runic.Agent.Standalone
                              Console.WriteLine(result.Exception.Message);
                          }
                          Console.WriteLine("Exiting application...");
-                     });
+                     })
+                     .Wait();
             }
         }
     }
