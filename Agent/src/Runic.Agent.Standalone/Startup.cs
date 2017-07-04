@@ -2,6 +2,7 @@
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Data;
 using Runic.Agent.Core.FlowManagement;
+using Runic.Agent.Core.Metrics;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Standalone.Clients;
 using Runic.Agent.Standalone.Configuration;
@@ -24,10 +25,13 @@ namespace Runic.Agent.Standalone
             builder.RegisterType<PatternService>().As<IPatternService>().SingleInstance();
             builder.RegisterType<ThreadManager>().As<IThreadManager>().SingleInstance();
             builder.RegisterType<Application>().As <IApplication>();
+            builder.RegisterType<Stats>().As<IStats>().SingleInstance();
 
             builder.RegisterType<FilePluginProvider>()
                    .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                    .As<IPluginProvider>();
+
+            
 
             IStatsd statsd = Statsd.New<Udp>(options =>
             {

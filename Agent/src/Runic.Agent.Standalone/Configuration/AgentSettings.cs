@@ -13,11 +13,11 @@ namespace Runic.Agent.Standalone.Configuration
         //constant+graph
         public readonly Option<int> DurationSeconds;
         //constant+gradual
-        public readonly Option<int> ThreadCount;
+        public readonly Option<int> ThreadCount = new Option<int>(1);
         //gradual
-        public readonly Option<int> RampUpSeconds; 
-        public readonly Option<int> RampDownSeconds; 
-        public readonly Option<int> StepIntervalSeconds; 
+        public readonly Option<int> RampUpSeconds = new Option<int>(0);
+        public readonly Option<int> RampDownSeconds = new Option<int>(0); 
+        public readonly Option<int> StepIntervalSeconds = new Option<int>(1);
 
         protected override void OnConfigure(IConfigConfiguration configuration)
         {
