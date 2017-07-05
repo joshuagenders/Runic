@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Microsoft.Extensions.Logging;
+using Moq;
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Data;
 using Runic.Agent.Core.Metrics;
@@ -20,7 +21,8 @@ namespace Runic.Agent.Core.UnitTest.TestUtility
             PluginManager = new PluginManager(
                 new Mock<IRuneClient>().Object, 
                 new FilePluginProvider(Directory.GetCurrentDirectory()), 
-                Stats.Object);
+                Stats.Object,
+                new LoggerFactory());
 
         }        
     }

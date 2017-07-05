@@ -9,19 +9,19 @@ namespace Runic.Agent.Standalone.Clients
 {
     public class InMemoryRuneClient : IRuneClient
     {
-        public ConcurrentDictionary<Type, ConcurrentQueue<RuneWrapper>> RuneQueues { get; set; }
-        public int MaxQueueSize { get; set; }
-        public int CurrentQueueSize => RuneQueues.Sum(q => q.Value.Count);
-        public InMemoryRuneClient(int maxQueueSize = 1024)
-        {
-            RuneQueues = new ConcurrentDictionary<Type, ConcurrentQueue<RuneWrapper>>();
-            MaxQueueSize = maxQueueSize;
-        }
+        public ConcurrentDictionary<Type, ConcurrentBag<Rune>> RuneBags { get; set; }
+        public int MaxRuneCount { get; set; }
+        public int RuneCount => RuneBags.Sum(q => q.Value.Count);
 
+        public InMemoryRuneClient(int maxRuneCount = 1024)
+        {
+            RuneBags = new ConcurrentDictionary<Type, ConcurrentBag<Rune>>();
+            MaxRuneCount = maxRuneCount;
+        }
+        
         public async Task<RuneQuery> RetrieveRunes(RuneQuery query)
         {
             //todo
-            
             return await Task.FromResult(query);
         }
         
@@ -29,39 +29,28 @@ namespace Runic.Agent.Standalone.Clients
         {
             foreach (var rune in runes)
             {
-                //try add
-                if (CurrentQueueSize >= MaxQueueSize) RemoveRandomMessage();
+                //todo ensure message is taken
+                if (RuneCount >= MaxRuneCount) TryRemoveRandomMessage();
 
-                var queue = GetOrCreateQueue(rune.GetType());
-                queue.Enqueue(
-                    new RuneWrapper()
-                    {
-                        Rune = rune,
-                        CreatedTime = DateTime.Now
-                    });
+                var bag = GetOrCreateBag(rune.GetType());
+                bag.Add(rune);
             }
             await Task.CompletedTask;
         }
 
-        public void RemoveRandomMessage()
+        private void TryRemoveRandomMessage()
         {
-            var queues = RuneQueues.Where(r => r.Value.Count > 0)
+            var bags = RuneBags.Where(r => r.Value.Count > 0)
                                    .ToList();
-            RuneWrapper result;
-            queues[new Random().Next(0, queues.Count - 1)].Value.TryDequeue(out result);
+            Rune result;
+            bags[new Random().Next(0, bags.Count - 1)].Value.TryTake(out result);
         }
 
-        private ConcurrentQueue<RuneWrapper> GetOrCreateQueue(Type type)
+        private ConcurrentBag<Rune> GetOrCreateBag(Type type)
         {
-            if (!RuneQueues.ContainsKey(type))
-                RuneQueues[type] = new ConcurrentQueue<RuneWrapper>();
-            return RuneQueues[type];
+            if (!RuneBags.ContainsKey(type))
+                RuneBags[type] = new ConcurrentBag<Rune>();
+            return RuneBags[type];
         }
-    }
-
-    public class RuneWrapper
-    {
-        public object Rune { get; set; }
-        public DateTime CreatedTime { get; set; }
     }
 }

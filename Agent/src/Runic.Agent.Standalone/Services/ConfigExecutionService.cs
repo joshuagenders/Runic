@@ -4,6 +4,7 @@ using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Core.ThreadPatterns;
 using Runic.Agent.Standalone.Configuration;
 using Runic.Framework.Models;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,9 +46,9 @@ namespace Runic.Agent.Standalone.Services
 
         private void ImportFlow()
         {
-            if (File.Exists(AgentConfig.AgentSettings.FlowFilepath))
+            if (!File.Exists(AgentConfig.AgentSettings.FlowFilepath))
             {
-                throw new FileNotFoundException("Flow not found at {AgentConfig.AgentSettings.FlowFilepath}");
+                throw new FileNotFoundException($"Flow not found at {AgentConfig.AgentSettings.FlowFilepath}");
             }
             _flow = JsonConvert.DeserializeObject<Flow>(File.ReadAllText(AgentConfig.AgentSettings.FlowFilepath));
             _flowManager.AddUpdateFlow(_flow);

@@ -11,7 +11,8 @@ namespace Runic.Agent.Core.Harness
 {
     public class FunctionFactory
     {
-        private static readonly ILogger _logger = new LoggerFactory().CreateLogger<FunctionFactory>();
+        private readonly ILogger _logger;
+        private readonly ILoggerFactory _loggerFactory;
         private readonly Flow _flow;
         private readonly IStats _stats;
         private readonly IDataService _dataService;
@@ -21,8 +22,10 @@ namespace Runic.Agent.Core.Harness
         private Step _lastStep { get; set; }
         private int _lastStepCount { get; set; }
         
-        public FunctionFactory(Flow flow, IPluginManager pluginManager, IStats stats, IDataService dataService)
+        public FunctionFactory(Flow flow, IPluginManager pluginManager, IStats stats, IDataService dataService, ILoggerFactory loggerFactory)
         {
+            _logger = loggerFactory.CreateLogger<FunctionFactory>();
+            _loggerFactory = loggerFactory;
             _flow = flow;
             _pluginManager = pluginManager;
             _stats = stats;
@@ -57,7 +60,7 @@ namespace Runic.Agent.Core.Harness
             var instance = Activator.CreateInstance(type);
             _logger.LogDebug($"{step.Function.FunctionName} in {step.Function.AssemblyName} initialised");
 
-            var harness = new FunctionHarness(_stats);
+            var harness = new FunctionHarness(_stats, _loggerFactory);
             harness.Bind(instance,
                          step.StepName,
                          step.Function.FunctionName,

@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Data;
 using Runic.Agent.Core.FlowManagement;
@@ -31,7 +32,8 @@ namespace Runic.Agent.Standalone
                    .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                    .As<IPluginProvider>();
 
-            
+            var loggerFactory = new LoggerFactory().AddConsole();
+            builder.RegisterInstance(loggerFactory).SingleInstance();
 
             IStatsd statsd = Statsd.New<Udp>(options =>
             {

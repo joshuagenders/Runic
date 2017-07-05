@@ -1,4 +1,5 @@
-﻿using Runic.Agent.Core.AssemblyManagement;
+﻿using Microsoft.Extensions.Logging;
+using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Data;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.Harness;
@@ -13,13 +14,14 @@ namespace Runic.Agent.Core.ThreadManagement
             string flow,
             IPluginManager pluginManager, 
             IStats stats, 
-            IDataService dataService)
+            IDataService dataService,
+            ILoggerFactory loggerFactory)
         {
             var flowInstance = flowManager.GetFlow(flow);
             return new FlowThreadManager(
                 flowInstance, 
                 stats, 
-                new FunctionFactory(flowInstance,pluginManager, stats, dataService));
+                new FunctionFactory(flowInstance,pluginManager, stats, dataService, loggerFactory));
         }
     }
 }

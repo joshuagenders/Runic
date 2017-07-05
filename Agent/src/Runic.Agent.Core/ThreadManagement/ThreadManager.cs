@@ -14,7 +14,8 @@ namespace Runic.Agent.Core.ThreadManagement
 {
     public class ThreadManager : IThreadManager
     {
-        private static readonly ILogger _logger = new LoggerFactory().CreateLogger<ThreadManager>();
+        private readonly ILogger _logger;
+        private readonly ILoggerFactory _loggerFactory;
         private static ConcurrentDictionary<string, FlowThreadManager> _threadManagers { get; set; }
 
         private readonly IStats _stats;
@@ -26,8 +27,11 @@ namespace Runic.Agent.Core.ThreadManagement
             IFlowManager flowManager,
             IPluginManager pluginManager,
             IStats stats,
-            IDataService dataService)
+            IDataService dataService, 
+            ILoggerFactory loggerFactory)
         {
+            _logger = loggerFactory.CreateLogger<ThreadManager>();
+            _loggerFactory = loggerFactory;
             _threadManagers = new ConcurrentDictionary<string, FlowThreadManager>();
             _flowManager = flowManager;
             _pluginManager = pluginManager;
@@ -78,7 +82,8 @@ namespace Runic.Agent.Core.ThreadManagement
                     request.FlowName, 
                     _pluginManager, 
                     _stats, 
-                    _dataService);
+                    _dataService, 
+                    _loggerFactory);
 
                 var resolvedManager = _threadManagers.GetOrAdd(request.FlowId, newThreadManager);
                 await resolvedManager.SafeUpdateThreadCountAsync(request.ThreadLevel);

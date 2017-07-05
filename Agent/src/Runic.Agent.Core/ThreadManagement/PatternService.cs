@@ -15,16 +15,16 @@ namespace Runic.Agent.Core.ThreadManagement
 {
     public class PatternService : IPatternService
     {
-        private static readonly ILogger _logger = new LoggerFactory().CreateLogger<PatternService>();
-
+        private readonly ILogger _logger;
         private readonly IStats _stats;
         private readonly IThreadManager _threadManager;
         private readonly IFlowManager _flowManager;
         
         private static ConcurrentDictionary<string, CancellableTask> _threadPatterns { get; set; }
 
-        public PatternService(IFlowManager flowManager, IStats stats, IThreadManager IThreadManager)
+        public PatternService(IFlowManager flowManager, IStats stats, IThreadManager IThreadManager, ILoggerFactory loggerFactory)
         {
+            _logger = loggerFactory.CreateLogger<PatternService>();
             _threadManager = IThreadManager;
             _stats = stats;
             _flowManager = flowManager;

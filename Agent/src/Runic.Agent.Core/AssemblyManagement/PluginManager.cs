@@ -15,7 +15,7 @@ namespace Runic.Agent.Core.AssemblyManagement
 {
     public class PluginManager : IPluginManager
     {
-        private static readonly ILogger _logger = new LoggerFactory().CreateLogger<PluginManager>();
+        private readonly ILogger _logger;
         private readonly ConcurrentBag<Assembly> _assemblies;
         private readonly ConcurrentDictionary<string, bool> _assembliesLoaded;
         private readonly IStats _stats;
@@ -23,13 +23,14 @@ namespace Runic.Agent.Core.AssemblyManagement
         private IRuneClient _runeClient { get; set; }
         private IPluginProvider _provider { get; set; }
 
-        public PluginManager(IRuneClient client, IPluginProvider provider, IStats stats)
+        public PluginManager(IRuneClient client, IPluginProvider provider, IStats stats, ILoggerFactory loggerFactory)
         {
             _assemblies = new ConcurrentBag<Assembly>();
             _assembliesLoaded = new ConcurrentDictionary<string, bool>();
             _runeClient = client;
             _provider = provider;
             _stats = stats;
+            _logger = loggerFactory.CreateLogger<PluginManager>();
         }
 
         public void LoadPlugin(string pluginAssemblyName)

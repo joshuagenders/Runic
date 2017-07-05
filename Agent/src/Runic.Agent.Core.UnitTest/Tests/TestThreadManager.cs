@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Runic.Agent.Core.Harness;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Core.UnitTest.TestUtility;
@@ -29,7 +31,8 @@ namespace Runic.Agent.Core.UnitTest.Tests
                     flow, 
                     _testEnvironment.PluginManager, 
                     _testEnvironment.Stats.Object, 
-                    _testEnvironment.DataService.Object));
+                    _testEnvironment.DataService.Object,
+                    new LoggerFactory()));
         
             await manager.SafeUpdateThreadCountAsync(1);
             Assert.AreEqual(1, manager.GetCurrentThreadCount());

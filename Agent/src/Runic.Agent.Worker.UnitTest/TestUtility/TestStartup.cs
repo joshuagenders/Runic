@@ -12,6 +12,7 @@ using Runic.Framework.Clients;
 using System.IO;
 using Runic.Agent.Core.Metrics;
 using StatsN;
+using Microsoft.Extensions.Logging;
 
 namespace Runic.Agent.Worker.UnitTest.TestUtility
 {
@@ -34,7 +35,8 @@ namespace Runic.Agent.Worker.UnitTest.TestUtility
                    .Register<PluginManager, IPluginManager>()       
                    .Register<HandlerRegistry, IHandlerRegistry>()
                    .Register<MessagingDataService, IDataService>()
-                   .Register<TestEnvironment, IApplication>();
+                   .Register<TestEnvironment, IApplication>()
+                   .Register<LoggerFactory, ILoggerFactory>();
 
             builder.RegisterType<PatternService>().As<IPatternService>().SingleInstance();
             builder.RegisterType<FlowManager>().As<IFlowManager>().SingleInstance();
