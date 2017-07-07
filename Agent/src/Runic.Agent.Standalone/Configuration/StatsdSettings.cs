@@ -11,6 +11,7 @@ namespace Runic.Agent.Standalone.Configuration
         protected override void OnConfigure(IConfigConfiguration configuration)
         {
             configuration.UseCommandLineArgs();
+            //todo josh pass command line args into plugin as context
         }
     }
 }

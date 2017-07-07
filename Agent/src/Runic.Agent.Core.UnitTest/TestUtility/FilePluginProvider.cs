@@ -1,6 +1,7 @@
-﻿using System.IO;
+﻿using Runic.Agent.Core.AssemblyManagement;
+using System.IO;
 
-namespace Runic.Agent.Core.AssemblyManagement
+namespace Runic.Agent.Core.UnitTest.TestUtility
 {
     public class FilePluginProvider : IPluginProvider
     {
@@ -13,8 +14,7 @@ namespace Runic.Agent.Core.AssemblyManagement
 
         public string GetFilepath(string key)
         {
-            return 
-                Path.Combine(FolderPath ?? Directory.GetCurrentDirectory(), "Plugins", $"{key}.dll");
+            return Path.Combine(FolderPath ?? Directory.GetCurrentDirectory(), "Plugins", $"{key}.dll");
         }
 
         public void RetrieveSourceDll(string key)

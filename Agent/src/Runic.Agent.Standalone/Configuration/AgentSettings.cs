@@ -7,6 +7,7 @@ namespace Runic.Agent.Standalone.Configuration
         public readonly Option<string> PatternExecutionId;
         public readonly Option<string> FlowFilepath;
         public readonly Option<string> ThreadPatternName;
+        public readonly Option<string> PluginDirectory = new Option<string>("Plugins");
 
         //graph
         public readonly Option<string[]> Points;
