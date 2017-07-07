@@ -7,6 +7,7 @@ using Runic.Agent.Core.Metrics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
+using Runic.Framework.Clients;
 
 namespace Runic.Agent.Core.Harness
 {
@@ -15,13 +16,13 @@ namespace Runic.Agent.Core.Harness
         private readonly ILogger _logger;
         private object _instance { get; set; }
         private string _functionName { get; set; }
-        private readonly IStats _stats;
+        private readonly IStatsClient _stats;
         private object[] _positionalParameters { get; set; }
         private bool _getNextStepFromResult { get; set; }
         public string NextStep { get; set; }
         public string StepName { get; set; }
 
-        public FunctionHarness(IStats stats, ILoggerFactory loggerFactory)
+        public FunctionHarness(IStatsClient stats, ILoggerFactory loggerFactory)
         {
             _stats = stats;
             _logger = loggerFactory.CreateLogger<FunctionHarness>();

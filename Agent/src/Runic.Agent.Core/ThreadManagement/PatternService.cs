@@ -10,19 +10,20 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System;
+using Runic.Framework.Clients;
 
 namespace Runic.Agent.Core.ThreadManagement
 {
     public class PatternService : IPatternService
     {
         private readonly ILogger _logger;
-        private readonly IStats _stats;
+        private readonly IStatsClient _stats;
         private readonly IThreadManager _threadManager;
         private readonly IFlowManager _flowManager;
         
         private static ConcurrentDictionary<string, CancellableTask> _threadPatterns { get; set; }
 
-        public PatternService(IFlowManager flowManager, IStats stats, IThreadManager IThreadManager, ILoggerFactory loggerFactory)
+        public PatternService(IFlowManager flowManager, IStatsClient stats, IThreadManager IThreadManager, ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<PatternService>();
             _threadManager = IThreadManager;

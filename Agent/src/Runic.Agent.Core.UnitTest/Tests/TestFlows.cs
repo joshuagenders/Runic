@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.Core.UnitTest.TestUtility;
 using Runic.Agent.Core.FlowManagement;
 using Moq;
-using Runic.Agent.Core.Metrics;
+using Runic.Framework.Clients;
 
 namespace Runic.Agent.Core.UnitTest.Tests
 {
@@ -15,7 +15,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         [TestInitialize]
         public void Init()
         {
-            _flowManager = new FlowManager(new Mock<IStats>().Object);
+            _flowManager = new FlowManager(new Mock<IStatsClient>().Object);
         }
 
         [TestMethod]

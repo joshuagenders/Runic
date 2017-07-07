@@ -4,6 +4,7 @@ using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.Metrics;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Worker.Messaging;
+using Runic.Framework.Clients;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace Runic.Agent.Worker.UnitTest.TestUtility
     public class TestEnvironment : IApplication
     {
         public IPluginManager PluginManager { get; set; }
-        public IStats Stats { get; set; }
+        public IStatsClient Stats { get; set; }
         public IDataService DataService { get; set; }
         public IMessagingService MessagingService { get; set; }
         public IPatternService PatternService { get; set; }
@@ -23,7 +24,7 @@ namespace Runic.Agent.Worker.UnitTest.TestUtility
 
         public TestEnvironment(
             IPluginManager pluginManager,
-            IStats stats,
+            IStatsClient stats,
             IDataService dataService,
             IMessagingService messagingService,
             IPatternService patternService,

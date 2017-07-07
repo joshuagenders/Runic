@@ -10,8 +10,6 @@ using Runic.Agent.Core.Data;
 using Runic.Agent.Worker.Messaging;
 using Runic.Framework.Clients;
 using System.IO;
-using Runic.Agent.Core.Metrics;
-using StatsN;
 using Microsoft.Extensions.Logging;
 
 namespace Runic.Agent.Worker.UnitTest.TestUtility
@@ -24,10 +22,8 @@ namespace Runic.Agent.Worker.UnitTest.TestUtility
 
             var builder = new ContainerBuilder();
             builder.RegisterInstance(new Mock<IDataService>().Object).As<IDataService>();
-            builder.RegisterInstance(new Mock<IStats>().Object).As<IStats>();
-            IStats statsd = new Mock<IStats>().Object;
-            builder.RegisterInstance(statsd).As<IStats>();
-
+            builder.RegisterInstance(new Mock<IStatsClient>().Object).As<IStatsClient>();
+            
             builder.RegisterType<FilePluginProvider>()
                    .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                    .As<IPluginProvider>();

@@ -12,11 +12,11 @@ namespace Runic.Agent.Core.UnitTest.TestUtility
     public class TestEnvironment
     {
         public IPluginManager PluginManager { get; set; }
-        public Mock<IStats> Stats { get; set; }
+        public Mock<IStatsClient> Stats { get; set; }
         public Mock<IDataService> DataService { get; set; }
         public TestEnvironment()
         {
-            Stats = new Mock<IStats>();
+            Stats = new Mock<IStatsClient>();
             DataService = new Mock<IDataService>();
             PluginManager = new PluginManager(
                 new Mock<IRuneClient>().Object, 

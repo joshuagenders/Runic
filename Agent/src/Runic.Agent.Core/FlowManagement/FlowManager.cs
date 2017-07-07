@@ -3,15 +3,16 @@ using Runic.Framework.Models;
 using Runic.Agent.Core.Metrics;
 using System.Linq;
 using System.Collections.Generic;
+using Runic.Framework.Clients;
 
 namespace Runic.Agent.Core.FlowManagement
 {
     public class FlowManager : IFlowManager
     {
         private ConcurrentDictionary<string, Flow> _flows { get; set; }
-        private readonly IStats _stats;
+        private readonly IStatsClient _stats;
 
-        public FlowManager(IStats stats)
+        public FlowManager(IStatsClient stats)
         {
             _flows = new ConcurrentDictionary<string, Flow>();
             _stats = stats;

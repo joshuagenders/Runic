@@ -3,7 +3,7 @@ using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Data;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.Harness;
-using Runic.Agent.Core.Metrics;
+using Runic.Framework.Clients;
 
 namespace Runic.Agent.Core.ThreadManagement
 {
@@ -12,8 +12,8 @@ namespace Runic.Agent.Core.ThreadManagement
         public static FlowThreadManager GetFlowThreadManager(
             this IFlowManager flowManager,
             string flow,
-            IPluginManager pluginManager, 
-            IStats stats, 
+            IPluginManager pluginManager,
+            IStatsClient stats, 
             IDataService dataService,
             ILoggerFactory loggerFactory)
         {

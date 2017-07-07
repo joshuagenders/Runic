@@ -6,7 +6,7 @@ namespace Runic.Agent.Standalone.Configuration
     {
         public readonly Option<int> StatsdPort = new Option<int>(8125);
         public readonly Option<string> StatsdHost = new Option<string>("localhost");
-        public readonly Option<string> StatsdPrefix = new Option<string>("paladin");
+        public readonly Option<string> StatsdPrefix = new Option<string>("Runic");
 
         protected override void OnConfigure(IConfigConfiguration configuration)
         {

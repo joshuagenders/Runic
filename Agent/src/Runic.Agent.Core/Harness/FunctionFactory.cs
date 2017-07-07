@@ -2,6 +2,7 @@
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Data;
 using Runic.Agent.Core.Metrics;
+using Runic.Framework.Clients;
 using Runic.Framework.Models;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Runic.Agent.Core.Harness
         private readonly ILogger _logger;
         private readonly ILoggerFactory _loggerFactory;
         private readonly Flow _flow;
-        private readonly IStats _stats;
+        private readonly IStatsClient _stats;
         private readonly IDataService _dataService;
         private readonly IPluginManager _pluginManager;
 
@@ -22,7 +23,7 @@ namespace Runic.Agent.Core.Harness
         private Step _lastStep { get; set; }
         private int _lastStepCount { get; set; }
         
-        public FunctionFactory(Flow flow, IPluginManager pluginManager, IStats stats, IDataService dataService, ILoggerFactory loggerFactory)
+        public FunctionFactory(Flow flow, IPluginManager pluginManager, IStatsClient stats, IDataService dataService, ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<FunctionFactory>();
             _loggerFactory = loggerFactory;
@@ -46,7 +47,8 @@ namespace Runic.Agent.Core.Harness
             }
             return _flow.Steps.Where(s => s.StepName == name).Single();
         }
-
+        //todo implement databinding for flow steps?
+        //todo think about state lifecycle for functions and assemblies
         public FunctionHarness CreateFunction(Step step)
         {
             _logger.LogDebug($"Initialising {step.Function.FunctionName} in {step.Function.AssemblyName}");

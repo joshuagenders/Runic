@@ -7,7 +7,6 @@ using Runic.Framework.Clients;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Runic.Agent.Core.Metrics;
 using Microsoft.Extensions.Logging;
 
 namespace Runic.Agent.Core.UnitTest.Tests
@@ -23,7 +22,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             _pluginManager = new PluginManager(
                 new Mock<IRuneClient>().Object, 
                 new FilePluginProvider(Directory.GetCurrentDirectory()),
-                new Mock<IStats>().Object, 
+                new Mock<IStatsClient>().Object, 
                 new LoggerFactory());
         }
 

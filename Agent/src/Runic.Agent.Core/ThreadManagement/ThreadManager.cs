@@ -3,6 +3,7 @@ using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Data;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.Metrics;
+using Runic.Framework.Clients;
 using Runic.Framework.Models;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace Runic.Agent.Core.ThreadManagement
         private readonly ILoggerFactory _loggerFactory;
         private static ConcurrentDictionary<string, FlowThreadManager> _threadManagers { get; set; }
 
-        private readonly IStats _stats;
+        private readonly IStatsClient _stats;
         private readonly IPluginManager _pluginManager; 
         private readonly IFlowManager _flowManager;
         private readonly IDataService _dataService;
@@ -26,7 +27,7 @@ namespace Runic.Agent.Core.ThreadManagement
         public ThreadManager(
             IFlowManager flowManager,
             IPluginManager pluginManager,
-            IStats stats,
+            IStatsClient stats,
             IDataService dataService, 
             ILoggerFactory loggerFactory)
         {

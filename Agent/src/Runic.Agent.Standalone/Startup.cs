@@ -19,15 +19,14 @@ namespace Runic.Agent.Standalone
         public IContainer BuildContainer(string[] args = null)
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<PluginManager>().As<IPluginManager>();
+            builder.RegisterType<PluginManager>().As<IPluginManager>().SingleInstance();
             builder.RegisterType<FlowManager>().As<IFlowManager>().SingleInstance();
             builder.RegisterType<NoOpDataService>().As<IDataService>().SingleInstance();
             builder.RegisterType<InMemoryRuneClient>().As<IRuneClient>().SingleInstance();
             builder.RegisterType<PatternService>().As<IPatternService>().SingleInstance();
             builder.RegisterType<ThreadManager>().As<IThreadManager>().SingleInstance();
-            builder.RegisterType<Application>().As <IApplication>();
-            builder.RegisterType<Stats>().As<IStats>().SingleInstance();
-
+            builder.RegisterType<Application>().As<IApplication>();
+            builder.RegisterType<StatsClient>().As<IStatsClient>().SingleInstance();
             builder.RegisterType<FilePluginProvider>()
                    .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                    .As<IPluginProvider>();
@@ -42,7 +41,7 @@ namespace Runic.Agent.Standalone
                 options.Prefix = AgentConfig.StatsdSettings.StatsdPrefix;
                 options.BufferMetrics = false;
             });
-            builder.RegisterInstance(statsd).As<IStatsd>();
+            builder.RegisterInstance(statsd).As<IStatsd>().SingleInstance();
             
             return builder.Build();
         }

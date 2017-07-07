@@ -21,7 +21,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             _pluginManager = new PluginManager(
                 new Mock<IRuneClient>().Object, 
                 new FilePluginProvider(Directory.GetCurrentDirectory()), 
-                new Mock<IStats>().Object,
+                new Mock<IStatsClient>().Object,
                 new LoggerFactory()); 
             //todo move into testenvironment, refactor, bulidenv.with.with
         }

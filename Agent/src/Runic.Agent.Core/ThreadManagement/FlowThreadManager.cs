@@ -1,5 +1,6 @@
 ﻿using Runic.Agent.Core.Harness;
 using Runic.Agent.Core.Metrics;
+using Runic.Framework.Clients;
 using Runic.Framework.Models;
 using System;
 using System.Collections.Concurrent;
@@ -12,7 +13,7 @@ namespace Runic.Agent.Core.ThreadManagement
     public class FlowThreadManager : IDisposable
     {
         private readonly Flow _flow;
-        private readonly IStats _stats;
+        private readonly IStatsClient _stats;
         private readonly TaskFactory _taskFactory;
         private readonly FunctionFactory _functionFactory;
 
@@ -21,7 +22,7 @@ namespace Runic.Agent.Core.ThreadManagement
         private ConcurrentDictionary<int, CancellableTask> _taskPool { get; set; }
         private int _currentThreadCount { get; set; }
 
-        public FlowThreadManager(Flow flow, IStats stats, FunctionFactory factory)
+        public FlowThreadManager(Flow flow, IStatsClient stats, FunctionFactory factory)
         {
             Id = Guid.NewGuid().ToString("N");
 

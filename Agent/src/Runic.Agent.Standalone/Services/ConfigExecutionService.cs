@@ -62,11 +62,7 @@ namespace Runic.Agent.Standalone.Services
                     DurationSeconds = AgentConfig.AgentSettings.DurationSeconds
                 };
 
-            _patternService.StartThreadPattern(
-                AgentConfig.AgentSettings.PatternExecutionId, 
-                _flow, 
-                pattern, 
-                ct);
+            _patternService.StartThreadPattern(AgentConfig.AgentSettings.PatternExecutionId, _flow, pattern, ct);
         }
 
         private void StartGraphPattern(CancellationToken ct)
@@ -76,11 +72,7 @@ namespace Runic.Agent.Standalone.Services
                 DurationSeconds = AgentConfig.AgentSettings.DurationSeconds,
                 Points = AgentConfig.AgentSettings.Points.Value.ParsePoints()
             };
-            _patternService.StartThreadPattern(
-                AgentConfig.AgentSettings.PatternExecutionId,
-                _flow,
-                pattern,
-                ct);
+            _patternService.StartThreadPattern(AgentConfig.AgentSettings.PatternExecutionId, _flow, pattern, ct);
         }
 
         private void StartGradualPattern(CancellationToken ct)
@@ -95,11 +87,7 @@ namespace Runic.Agent.Standalone.Services
                 ThreadCount = AgentConfig.AgentSettings.ThreadCount
             };
 
-            _patternService.StartThreadPattern(
-               AgentConfig.AgentSettings.PatternExecutionId,
-               _flow,
-               pattern,
-               ct);
+            _patternService.StartThreadPattern(AgentConfig.AgentSettings.PatternExecutionId, _flow, pattern, ct);
         }
     }
 }

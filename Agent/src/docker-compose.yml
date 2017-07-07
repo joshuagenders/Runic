@@ -16,11 +16,3 @@ services:
       dockerfile: Dockerfile
     labels:
     - "com.microsoft.visualstudio.targetoperatingsystem=windows"
-
-  runic.agent.standalone:
-    image: runic.agent.standalone
-    build:
-      context: ./Runic.Agent.Standalone
-      dockerfile: Dockerfile
-    labels:
-    - "com.microsoft.visualstudio.targetoperatingsystem=windows"
