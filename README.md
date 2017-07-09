@@ -9,9 +9,8 @@ Normally, a functional flow will move through each part of the application; cont
 Runes are designed to help mitigate this issue, by promoting modular functions which can share data. A rune is the result of an action executed against the SUT.
 The rune is stored and can be re-used later by other functions. In this model you could for example re-use logins and control the exact number of users dynamically.
 
-I will also add in a preference system so that runes aren't reused too often, potentially use the amount of times queried and age as factors.
-The other model of test design is to program distinct flows, which are more ideal for tests that involve longer start-up times or require more complex or precise compositions of actions. 
-
+This model flips test architecture on its side. The model is best suited to architectures where transactional state is flexible or minimal such as microservice architecture.
+Using this framework you have complete control over the amount of load on each invdividual component of the system, but you can also simulate functional flows through the system by capturing and reusing state obtained by performing actions in the system under test.
 
 ## Goals
 What I want to achieve:
