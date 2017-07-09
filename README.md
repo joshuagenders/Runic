@@ -46,30 +46,110 @@ Functions can span across multiple pages, or APIs etc. to achieve its purpose. S
 
 When constructing a framework, careful thought should be given to how to break up functions and how to standardise runes. Functions should be constructed to enable the most control over their actions, but also ease of integration by well-designed dependencies. Data that cannot be sourced from runes can be passed into the tests from the test data store. The test should be able to function without this input wherever possible.
 
+### Attributes
+TODO
+
 ### Standard structure of a function:
 
 ![Runic Functions](images/FunctionDesign.png)
 
-## Runic UI
-Runic UI provides user access to the test lab and oracle functionality. The UI can be used to design and construct workflows, create and execute test plans and manage test data. The oracle is used to analyse the test results in depth and perform functional checks. 
-Angular2 or React are likely choices for the UI. 
 
-![Runic UI](images/ExampleTestComposer.png)
-
-## The Oracle
-The oracle is (most likely a group of services) responsible for analysing the results from tests executed in a Runic test lab. The oracle should be designed so that the user can express the pre-conditions and expected outcomes for a test. The test can then be executed against any runes which match the pre-conditions. There may be a need to support several methods of expression, including external script execution. Possibly the use of hamcrest matchers.
-
-Some types of verification to support are:
- * Expressing predicates to source results to verify back-end state
- * Expressing predicates to source results to verify front end funtionality or state
- * Locating outliers in function and flow results in comparison to comparable result sets and averages
- * General statisticical analytics of performance characteristics
+## Runner Concepts
+### Functions
+A function will maintain state throughout it's execution. Be careful to manage memory wisely. 
+This decision was made to provide the most control over execution to the test as possible.
+Functions are used as steps as part of a flow.
  
-I will introduce more templated analytics at a later stage, that can also utilise the performance outputs from the framework.
+### Flows
+Flows are groups of functions which can be executed by a Runic agent. A flow could be a single repeating function or a complex series of functions.
+By default steps are executed in order, but an additional flag can be set to jump to a new step by step name, returned as a string from the function itself.
+Thread patterns are implemented as scheduled updates to the thread level of flows.
 
+### Thread Patterns
+There are three supported types of thread pattern:
+ * Constant Thread Patterns - Maintains a consistent thread level throughout the test
+ * Gradual Thread Patterns - Thread pattern allows for an optional ramp up and ramp down in thread level
+ * Graph Thread Patterns - Thread pattern that allows mapped points of thread levels, allowing thread levels to follow any pattern desired
+
+## Implementing the runner
+### Key Interfaces to implement
+There are many interfaces to implement, and different consequences of implementation design. Some key interfaces are their purpose are detailed below.
+
+#### IStats
+The IStats interface is used to push stats about test execution to a time-series database like graphite or through a proxy like Statsd.
+Implementations using the StatsN and the JustEat Statsd packages are provided in the core library.
+    public interface IStatsClient
+    {
+        void CountPluginLoaded();
+        void CountFlowAdded(string flowName);
+        void CountFunctionSuccess(string functionName);
+        void CountFunctionFailure(string functionName);
+        void SetThreadLevel(string flowName, int threadCount);
+        void CountHttpRequestSuccess(string functionName, string responseCode);
+        void CountHttpRequestFailure(string functionName, string responseCode);
+        void Time(string functionName, string actionName, Action actionToTime);
+    }
+
+#### IRuneClient
+The IRuneClient is used to store and query runes. Runes are queried by functions whenever state is required to perform that function.
+The implementation of the rune client decides how runes will be stored, and how runes will be served to functions based on the query provided by the function.
+Possible implementations are using queues or in memory storage.
+Some factors to consider are:
+ * TTL on runes (to avoid stale state)
+ * Exclusivity of rune use (to avoid duplicate use of state)
+ * Efficiency of the rune querying implementation (for performance)
+```
+    public interface IRuneClient
+    {
+        Task<RuneQuery> RetrieveRunes(RuneQuery query);
+        Task SendRunes<T>(params T[] runes) where T : Rune;
+    }
+```
+
+##### Note
+The IStats and IRuneClient implementations are injected into the function assemblies wherever a public static property is found of their respective types.
+ 
+#### IFlowManager
+The flow manager is used to store and manage flow objects. The test agent invokes the flow manager whenever a new flow is requested to be started.
+The flow manager could be implemented in memory or could use an external datasource like redis, dynamodb or even a web service.
+```
+    public interface IFlowManager
+    {
+        void AddUpdateFlow(Flow flow);
+        Flow GetFlow(string name);
+        IList<Flow> GetFlows();
+    }
+```
+
+#### IDataService
+The Data Service can be used to inject data into a function through communication with a datastore. This functionality can also be used to 'inject' data into a flow at runtime.
+The IDataService takes a datasource ID and datasource mapping. The Datasource ID is used to identify a datastore such as a table name or queue name. 
+The datasource mapping is a dictionary used to map the data from the datasource into the return object array. 
+The return object array are the input parameters to a method (Runic function).
+As a practice, all functions should have defaulted method parameters and handle cases where default inputs are used.
+```
+    public interface IDataService
+    {
+        object[] GetMethodParameterValues(string datasourceId, Dictionary<string, string> datasourceMapping);
+    }
+```
+
+#### IPluginProvider
+The IPluginProvider is used to retrieve function dlls. 
+If the assembly dlls are already available to the plugin manager, then the RetrieveSourceDll method does not need to do anything. 
+The GetFilepath should return the filepath of the function dll based on the key provided.
+```
+    public interface IPluginProvider
+    {
+        void RetrieveSourceDll(string key);
+        string GetFilepath(string key);
+    }
+``` 
 ## The Agent 
 The Agent is responsible for executing the functions or tests. The agent loads the required executables dynamically. The agent also reports all timing related statistics to graphite. The agent executes functions or tests based on messages received from a controller. Agents support multiple threads, however a test dll will only be loaded once.
 
+
+# Future features
 #### Possible feature: Data reservation
 The data reservation function can reserve an indexed field for use until a timeout period expires or until freed by the agent. As an example use case, any time an agent wants to use a customer id exclusively, it reserves the Id. The database rune query service can then exclude any runes for that customer id from use. This is not a completely safe solution but may be a handy tool.
 
@@ -86,6 +166,25 @@ The user can map tables, stored procedures or queries through to inputs for test
 
 A possible function is to create an event system to synchronize changes to test data. The data store could subscribe to certain tests/functions or runes and update state based on the results. Although this approach does assume that the data surfaced on the front end; in the case of bugs the data may need to be sanitized. As a precaution, data could be set with expiry so only relatively new state is used for tests.
 The other model is to regularly update the data store with state from the target system’s database.
+
+## Runic UI
+Runic UI provides user access to the test lab and oracle functionality. The UI can be used to design and construct workflows, create and execute test plans and manage test data. The oracle is used to analyse the test results in depth and perform functional checks. 
+Angular2 or React are likely choices for the UI. 
+
+![Runic UI](images/ExampleTestComposer.png)
+
+Some types of verification to support in future are:
+ * Expressing predicates to source results to verify back-end state
+ * Expressing predicates to source results to verify front end funtionality or state
+ * Locating outliers in function and flow results in comparison to comparable result sets and averages
+ * General statisticical analytics of performance characteristics
+ 
+I will introduce more templated analytics at a later stage, that can also utilise the performance outputs from the framework.
+
+
+## The Oracle
+The oracle is (most likely a group of services) responsible for analysing the results from tests executed in a Runic test lab. The oracle should be designed so that the user can express the pre-conditions and expected outcomes for a test. The test can then be executed against any runes which match the pre-conditions. There may be a need to support several methods of expression, including external script execution. Possibly the use of hamcrest matchers.
+
 
 ## Kamon
 For Graphana functionality.

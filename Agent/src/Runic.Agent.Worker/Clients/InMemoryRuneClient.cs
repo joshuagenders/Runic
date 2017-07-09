@@ -10,12 +10,12 @@ namespace Runic.Agent.Worker.Clients
     //todo
     public class InMemoryRuneClient : IRuneClient
     {
-        public ConcurrentDictionary<Type, ConcurrentQueue<RuneWrapper>> RuneQueues { get; set; }
+        public ConcurrentDictionary<Type, ConcurrentBag<RuneWrapper>> RuneQueues { get; set; }
         public int MaxQueueSize { get; set; }
         public int CurrentQueueSize => RuneQueues.Sum(q => q.Value.Count);
         public InMemoryRuneClient(int maxQueueSize = 1024)
         {
-            RuneQueues = new ConcurrentDictionary<Type, ConcurrentQueue<RuneWrapper>>();
+            RuneQueues = new ConcurrentDictionary<Type, ConcurrentBag<RuneWrapper>>();
             MaxQueueSize = maxQueueSize;
         }
 
@@ -49,7 +49,7 @@ namespace Runic.Agent.Worker.Clients
             var queues = RuneQueues.Where(r => r.Value.Count > 0)
                                    .ToList();
             RuneWrapper result;
-            queues[new Random().Next(0, queues.Count - 1)].Value.TryDequeue(out result);
+            queues[new Random().Next(0, queues.Count - 1)].Value.TryTake(out result);
         }
 
         private ConcurrentQueue<RuneWrapper> GetOrCreateQueue(Type type)
