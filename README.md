@@ -47,7 +47,14 @@ Functions can span across multiple pages, or APIs etc. to achieve its purpose. S
 When constructing a framework, careful thought should be given to how to break up functions and how to standardise runes. Functions should be constructed to enable the most control over their actions, but also ease of integration by well-designed dependencies. Data that cannot be sourced from runes can be passed into the tests from the test data store. The test should be able to function without this input wherever possible.
 
 ### Attributes
-TODO
+BeforeEach - Decorates a method to be exected before each function in the class
+AfterEach - Decorates a method to be exected after each function in the class
+ClassInitialise - Decorates a method to be exected upon class instantiation
+ClassTeardown - Decorates a method to be exected upon object disposal
+Function - Decorates a method as a function. A mandatory parameter 'FunctionName' is used to identify the function.
+
+#### TODO Attributes
+MinesRune, Requires, RequiresLinkedRunes - TODO will be used to provide metadata about what runes a function creates and requires
 
 ### Standard structure of a function:
 
