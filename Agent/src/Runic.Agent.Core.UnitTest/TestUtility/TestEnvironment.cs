@@ -2,9 +2,7 @@
 using Moq;
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Data;
-using Runic.Agent.Core.Metrics;
 using Runic.Framework.Clients;
-using System;
 using System.IO;
 
 namespace Runic.Agent.Core.UnitTest.TestUtility

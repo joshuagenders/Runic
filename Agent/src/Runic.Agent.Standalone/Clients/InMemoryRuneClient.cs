@@ -20,7 +20,7 @@ namespace Runic.Agent.Standalone.Clients
             RuneBags = new ConcurrentDictionary<string, ConcurrentBag<Rune>>();
             MaxRuneCount = maxRuneCount;
         }
-        
+
         public async Task<RuneQuery> RetrieveRunes(RuneQuery query)
         {
             var bag = GetOrCreateBag(query.RuneName);
