@@ -1,7 +1,7 @@
 ﻿using Runic.Framework.Models;
 using System.Collections.Generic;
 
-namespace Runic.Agent.Worker.UnitTest.TestUtility
+namespace Runic.Agent.Worker.Test.TestUtility
 {
     public class TestData
     {

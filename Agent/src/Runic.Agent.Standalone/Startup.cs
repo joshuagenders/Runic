@@ -27,6 +27,9 @@ namespace Runic.Agent.Standalone
             builder.RegisterType<ThreadManager>().As<IThreadManager>().SingleInstance();
             builder.RegisterType<Application>().As<IApplication>();
             builder.RegisterType<StatsClient>().As<IStatsClient>().SingleInstance();
+            builder.RegisterType<AgentConfig>().As<IAgentConfig>().SingleInstance();
+            builder.RegisterType<AgentSettings>().As<IAgentSettings>().SingleInstance();
+            builder.RegisterType<StatsdSettings>().As<IStatsdSettings>().SingleInstance();
             builder.RegisterType<FilePluginProvider>()
                    .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                    .As<IPluginProvider>();
@@ -34,11 +37,15 @@ namespace Runic.Agent.Standalone
             var loggerFactory = new LoggerFactory().AddConsole();
             builder.RegisterInstance(loggerFactory).SingleInstance();
 
+            var statsdSettings = new StatsdSettings();
+            var agentSettings = new AgentSettings();
+            var agentConfig = new AgentConfig(statsdSettings, agentSettings);
+
             IStatsd statsd = Statsd.New<Udp>(options =>
             {
-                options.Port = AgentConfig.StatsdSettings.StatsdPort.Value;
-                options.HostOrIp = AgentConfig.StatsdSettings.StatsdHost;
-                options.Prefix = AgentConfig.StatsdSettings.StatsdPrefix;
+                options.Port = agentConfig.StatsdSettings.Port;
+                options.HostOrIp = agentConfig.StatsdSettings.Host;
+                options.Prefix = agentConfig.StatsdSettings.Prefix;
                 options.BufferMetrics = false;
             });
             builder.RegisterInstance(statsd).As<IStatsd>().SingleInstance();

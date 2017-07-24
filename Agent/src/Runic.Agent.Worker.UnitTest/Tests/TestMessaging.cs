@@ -1,13 +1,13 @@
 ﻿using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Runic.Agent.Worker.UnitTest.TestUtility;
+using Runic.Agent.Worker.Test.TestUtility;
 using Runic.Framework.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Worker.UnitTest.Tests
+namespace Runic.Agent.Worker.Test.Tests
 {
     [TestClass]
     public class TestMessaging

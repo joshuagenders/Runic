@@ -6,9 +6,9 @@ namespace Runic.Agent.Core.Harness
 {
     public class CancellableTask : IDisposable
     {
-        private CancellationTokenSource _cts { get; set; }
-        private Task _task { get; set; }
-        private ManualResetEventSlim _mre { get; set; }
+        private readonly CancellationTokenSource _cts;
+        private readonly Task _task;
+        private readonly ManualResetEventSlim _mre;
 
         public CancellableTask(Task task, CancellationTokenSource cts)
         {

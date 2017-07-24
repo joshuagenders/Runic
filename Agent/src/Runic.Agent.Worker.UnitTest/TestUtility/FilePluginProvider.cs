@@ -1,7 +1,7 @@
 ﻿using Runic.Agent.Core.AssemblyManagement;
 using System.IO;
 
-namespace Runic.Agent.Worker.UnitTest.TestUtility
+namespace Runic.Agent.Worker.Test.TestUtility
 {
     public class FilePluginProvider : IPluginProvider
     {

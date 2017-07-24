@@ -9,11 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Worker", "Runic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Core.UnitTest", "Runic.Agent.Core.UnitTest\Runic.Agent.Core.UnitTest.csproj", "{DE08AD1D-FB3E-4356-97D8-F04F2E92CE3D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Worker.UnitTest", "Runic.Agent.Worker.UnitTest\Runic.Agent.Worker.UnitTest.csproj", "{68DBCD72-9853-4D45-8A2D-09597D544D59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Worker.Test", "Runic.Agent.Worker.UnitTest\Runic.Agent.Worker.Test.csproj", "{68DBCD72-9853-4D45-8A2D-09597D544D59}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Api", "Runic.Agent.Api\Runic.Agent.Api.csproj", "{BE65539A-A02F-46E5-9BBE-4E71BABE1FC3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Standalone", "Runic.Agent.Standalone\Runic.Agent.Standalone.csproj", "{1AFA36AC-006A-4FAF-84CB-E9426AFFD99C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Standalone.Test", "Runic.Agent.Standalone.UnitTest\Runic.Agent.Standalone.Test.csproj", "{641D739C-A389-4DDA-9B9F-8854A0A41C80}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{1AFA36AC-006A-4FAF-84CB-E9426AFFD99C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1AFA36AC-006A-4FAF-84CB-E9426AFFD99C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1AFA36AC-006A-4FAF-84CB-E9426AFFD99C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{641D739C-A389-4DDA-9B9F-8854A0A41C80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{641D739C-A389-4DDA-9B9F-8854A0A41C80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{641D739C-A389-4DDA-9B9F-8854A0A41C80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{641D739C-A389-4DDA-9B9F-8854A0A41C80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

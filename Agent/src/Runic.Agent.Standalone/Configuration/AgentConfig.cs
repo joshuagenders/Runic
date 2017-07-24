@@ -1,11 +1,17 @@
 ﻿namespace Runic.Agent.Standalone.Configuration
 {
-    public class AgentConfig
+    public class AgentConfig : IAgentConfig
     {
-        private static StatsdSettings _statsdSettings = new StatsdSettings();
-        public static StatsdSettings StatsdSettings => _statsdSettings;
+        public AgentConfig(IStatsdSettings statsdSettings, IAgentSettings agentSettings)
+        {
+            _statsdSettings = statsdSettings;
+            _agentSettings = agentSettings;
+        }
 
-        private static AgentSettings _agentSettings = new AgentSettings();
-        public static AgentSettings AgentSettings => _agentSettings;
+        private static IStatsdSettings _statsdSettings { get; set; }
+        public IStatsdSettings StatsdSettings => _statsdSettings;
+
+        private static IAgentSettings _agentSettings { get; set; }
+        public IAgentSettings AgentSettings => _agentSettings;
     }
 }

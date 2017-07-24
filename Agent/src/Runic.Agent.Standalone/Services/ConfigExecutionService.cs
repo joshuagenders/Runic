@@ -16,18 +16,20 @@ namespace Runic.Agent.Standalone.Services
         private readonly IPatternService _patternService;
         private readonly IFlowManager _flowManager;
         private Flow _flow;
+        private IAgentConfig _config;
 
-        public ConfigExecutionService(IPatternService patternService, IFlowManager flowManager)
+        public ConfigExecutionService(IPatternService patternService, IFlowManager flowManager, IAgentConfig config)
         {
             _patternService = patternService;
             _flowManager = flowManager;
+            _config = config;
         }
 
         public async Task StartThreadPattern(CancellationToken ct = default(CancellationToken))
         {
             //todo standardise tokens
             ImportFlow();
-            switch (AgentConfig.AgentSettings.ThreadPatternName.Value.ToLowerInvariant())
+            switch (_config.AgentSettings.FlowThreadPatternName.ToLowerInvariant())
             {
                 case "graph":
                     StartGraphPattern(ct);
@@ -46,11 +48,11 @@ namespace Runic.Agent.Standalone.Services
 
         private void ImportFlow()
         {
-            if (!File.Exists(AgentConfig.AgentSettings.FlowFilepath))
+            if (!File.Exists(_config.AgentSettings.AgentFlowFilepath))
             {
-                throw new FileNotFoundException($"Flow not found at {AgentConfig.AgentSettings.FlowFilepath}");
+                throw new FileNotFoundException($"Flow not found at {_config.AgentSettings.AgentFlowFilepath}");
             }
-            _flow = JsonConvert.DeserializeObject<Flow>(File.ReadAllText(AgentConfig.AgentSettings.FlowFilepath));
+            _flow = JsonConvert.DeserializeObject<Flow>(File.ReadAllText(_config.AgentSettings.AgentFlowFilepath));
             _flowManager.AddUpdateFlow(_flow);
         }
 
@@ -58,36 +60,36 @@ namespace Runic.Agent.Standalone.Services
         {
             var pattern = new ConstantThreadPattern()
                 {
-                    ThreadCount = AgentConfig.AgentSettings.ThreadCount,
-                    DurationSeconds = AgentConfig.AgentSettings.DurationSeconds
+                    ThreadCount = _config.AgentSettings.FlowThreadCount,
+                    DurationSeconds = _config.AgentSettings.FlowDurationSeconds
                 };
 
-            _patternService.StartThreadPattern(AgentConfig.AgentSettings.PatternExecutionId, _flow, pattern, ct);
+            _patternService.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ct);
         }
 
         private void StartGraphPattern(CancellationToken ct)
         {
             var pattern = new GraphThreadPattern()
             {
-                DurationSeconds = AgentConfig.AgentSettings.DurationSeconds,
-                Points = AgentConfig.AgentSettings.Points.Value.ParsePoints()
+                DurationSeconds = _config.AgentSettings.FlowDurationSeconds,
+                Points = _config.AgentSettings.FlowPoints.ParsePoints()
             };
-            _patternService.StartThreadPattern(AgentConfig.AgentSettings.PatternExecutionId, _flow, pattern, ct);
+            _patternService.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ct);
         }
 
         private void StartGradualPattern(CancellationToken ct)
         {
             var pattern = new GradualThreadPattern()
             {
-                DurationSeconds = AgentConfig.AgentSettings.DurationSeconds,
-                Points = AgentConfig.AgentSettings.Points.Value.ParsePoints(),
-                RampDownSeconds = AgentConfig.AgentSettings.RampDownSeconds,
-                RampUpSeconds = AgentConfig.AgentSettings.RampUpSeconds,
-                StepIntervalSeconds = AgentConfig.AgentSettings.StepIntervalSeconds,
-                ThreadCount = AgentConfig.AgentSettings.ThreadCount
+                DurationSeconds = _config.AgentSettings.FlowDurationSeconds,
+                Points = _config.AgentSettings.FlowPoints.ParsePoints(),
+                RampDownSeconds = _config.AgentSettings.FlowRampDownSeconds,
+                RampUpSeconds = _config.AgentSettings.FlowRampUpSeconds,
+                StepIntervalSeconds = _config.AgentSettings.FlowStepIntervalSeconds,
+                ThreadCount = _config.AgentSettings.FlowThreadCount
             };
 
-            _patternService.StartThreadPattern(AgentConfig.AgentSettings.PatternExecutionId, _flow, pattern, ct);
+            _patternService.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ct);
         }
     }
 }

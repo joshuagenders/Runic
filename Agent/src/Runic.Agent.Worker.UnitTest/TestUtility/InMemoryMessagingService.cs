@@ -6,7 +6,7 @@ using System.Reflection;
 using Runic.Agent.Worker.Messaging;
 using Runic.Framework.Models;
 
-namespace Runic.Agent.Worker.UnitTest.TestUtility
+namespace Runic.Agent.Worker.Test.TestUtility
 {
     public class InMemoryMessagingService : IMessagingService
     {

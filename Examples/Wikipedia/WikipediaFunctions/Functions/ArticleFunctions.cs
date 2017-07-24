@@ -25,7 +25,7 @@ namespace WikipediaFunctions
             var document = await BrowsingContext.New(_config).OpenAsync($"https://en.wikipedia.org/wiki/{article}");
             await RuneClient.SendRunes(new ArticleRune()
             {
-                ResponseHtml = document.TextContent,
+                ResponseHtml = document.Body.TextContent,
                 CreatedTime = DateTime.Now,
                 Name = "ArticleRune"
             });

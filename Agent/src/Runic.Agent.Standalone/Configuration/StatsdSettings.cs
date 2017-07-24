@@ -2,11 +2,15 @@
 
 namespace Runic.Agent.Standalone.Configuration
 {
-    public class StatsdSettings : SettingsContainer
+    public class StatsdSettings : SettingsContainer, IStatsdSettings
     {
-        public readonly Option<int> StatsdPort = new Option<int>(8125);
-        public readonly Option<string> StatsdHost = new Option<string>("localhost");
-        public readonly Option<string> StatsdPrefix = new Option<string>("Runic");
+        private readonly Option<int> StatsdPort = new Option<int>(8125);
+        private readonly Option<string> StatsdHost = new Option<string>("localhost");
+        private readonly Option<string> StatsdPrefix = new Option<string>("Runic");
+
+        public string Prefix => StatsdPrefix;
+        public int Port => StatsdPort;
+        public string Host => StatsdHost;
 
         protected override void OnConfigure(IConfigConfiguration configuration)
         {

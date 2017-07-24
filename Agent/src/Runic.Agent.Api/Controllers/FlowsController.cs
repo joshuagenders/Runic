@@ -31,5 +31,12 @@ namespace Runic.Agent.Api.Controllers
 
             return Ok();
         }
+
+        [HttpPut()]
+        public async Task<IActionResult> StopAll([FromBody] StopAllFlowsRequest request)
+        {
+            await _client.PublishMessageAsync(request);
+            return Ok();
+        }
     }
 }

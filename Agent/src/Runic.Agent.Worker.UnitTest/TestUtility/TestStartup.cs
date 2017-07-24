@@ -12,7 +12,7 @@ using Runic.Framework.Clients;
 using System.IO;
 using Microsoft.Extensions.Logging;
 
-namespace Runic.Agent.Worker.UnitTest.TestUtility
+namespace Runic.Agent.Worker.Test.TestUtility
 {
     public class TestStartup : IStartup
     {

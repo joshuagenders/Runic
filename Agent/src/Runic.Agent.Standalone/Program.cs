@@ -12,12 +12,15 @@ namespace Runic.Agent.Standalone
             var startup = new Startup();
             var container = startup.BuildContainer();
             var cts = new CancellationTokenSource();
-            if (AgentConfig.AgentSettings.DurationSeconds != 0)
-            {
-                cts.CancelAfter(AgentConfig.AgentSettings.DurationSeconds * 1000);
-            }
+            
             using (var scope = container.BeginLifetimeScope())
             {
+                var config = scope.Resolve<IAgentConfig>();
+                if (config.AgentSettings.FlowDurationSeconds != 0)
+                {
+                    cts.CancelAfter(config.AgentSettings.FlowDurationSeconds * 1000);
+                }
+
                 var agent = scope.Resolve<IApplication>();
                 agent.RunApplicationAsync(cts.Token)
                      .ContinueWith((result) =>

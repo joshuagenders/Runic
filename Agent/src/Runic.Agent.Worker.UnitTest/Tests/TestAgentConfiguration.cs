@@ -1,8 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.Worker.Configuration;
-using Runic.Agent.Worker.UnitTest.TestUtility;
+using Runic.Agent.Worker.Test.TestUtility;
 
-namespace Runic.Agent.Worker.UnitTest.Tests
+namespace Runic.Agent.Worker.Test.Tests
 {
     [TestClass]
     public class TestAgentConfiguration
