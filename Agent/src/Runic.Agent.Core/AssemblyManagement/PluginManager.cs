@@ -63,7 +63,7 @@ namespace Runic.Agent.Core.AssemblyManagement
             _stats.CountPluginLoaded();
         }
 
-        public Assembly LoadAssembly(string pluginPath, string pluginAssemblyName)
+        private Assembly LoadAssembly(string pluginPath, string pluginAssemblyName)
         {
             Assembly assembly = null;
             lock (_assemblies)
@@ -75,7 +75,7 @@ namespace Runic.Agent.Core.AssemblyManagement
             {
                 _assembliesLoaded[pluginAssemblyName] = true;
             }
-
+        
             return assembly;
         }
 
@@ -126,7 +126,7 @@ namespace Runic.Agent.Core.AssemblyManagement
             return functions;
         }
 
-        public IList<Assembly> GetAssemblies()
+        private IList<Assembly> GetAssemblies()
         {
             List<Assembly> assemblyList;
             lock (_assemblies)
@@ -136,7 +136,7 @@ namespace Runic.Agent.Core.AssemblyManagement
             return assemblyList;
         }
 
-        public IList<string> GetAssemblyKeys()
+        private IList<string> GetAssemblyKeys()
         {
             return _assembliesLoaded.Where(t => t.Value).Select(t => t.Key).ToList();
         }

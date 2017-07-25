@@ -1,8 +1,10 @@
 ﻿using Autofac;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Data;
 using Runic.Agent.Core.FlowManagement;
+using Runic.Agent.Core.Metrics;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Standalone.Clients;
 using Runic.Agent.Standalone.Configuration;
@@ -70,18 +72,18 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             _builder = new ContainerBuilder();
         }
 
-        public TestObject<IPluginManager> PluginManager { get; set; }
-        public TestObject<IPluginProvider> PluginProvider { get; set; }
-        public TestObject<IFlowManager> FlowManager { get; set; }
-        public TestObject<IDataService> DataService { get; set; }
-        public TestObject<IStatsd> Statsd { get; set; }
-        public TestObject<IStatsClient> StatsClient{ get; set; }
-        public TestObject<IPatternService> PatternService { get; set; }
-        public TestObject<IThreadManager> ThreadManager { get; set; }
-        public TestObject<IRuneClient> RuneClient { get; set; }
-        public TestObject<IAgentConfig> AgentConfig { get; set; }
-        public TestObject<IAgentSettings> AgentSettings { get; set; }
-        public TestObject<IStatsdSettings> StatsdSettings { get; set; }
+        public TestObject<IPluginManager> PluginManager { get; set; } = new TestObject<IPluginManager>();
+        public TestObject<IPluginProvider> PluginProvider { get; set; } = new TestObject<IPluginProvider>();
+        public TestObject<IFlowManager> FlowManager { get; set; } = new TestObject<IFlowManager>();
+        public TestObject<IDataService> DataService { get; set; } = new TestObject<IDataService>();
+        public TestObject<IStatsd> Statsd { get; set; } = new TestObject<IStatsd>();
+        public TestObject<IStatsClient> StatsClient{ get; set; } = new TestObject<IStatsClient>();
+        public TestObject<IPatternService> PatternService { get; set; } = new TestObject<IPatternService>();
+        public TestObject<IThreadManager> ThreadManager { get; set; } = new TestObject<IThreadManager>();
+        public TestObject<IRuneClient> RuneClient { get; set; } = new TestObject<IRuneClient>();
+        public TestObject<IAgentConfig> AgentConfig { get; set; } = new TestObject<IAgentConfig>();
+        public TestObject<IAgentSettings> AgentSettings { get; set; } = new TestObject<IAgentSettings>();
+        public TestObject<IStatsdSettings> StatsdSettings { get; set; } = new TestObject<IStatsdSettings>();
 
         public IContainer Build()
         {
@@ -89,44 +91,45 @@ namespace Runic.Agent.Standalone.Test.TestUtility
 
             Register(PluginManager);
             Register(PluginProvider);
-            Register(FlowManager.Instance);
-            Register(DataService.Instance);
+            Register(FlowManager);
+            Register(DataService);
             Register(Statsd);
             Register(StatsClient);
-            Register(PatternService.Instance);
-            Register(ThreadManager.Instance);
-            Register(RuneClient.Instance);
-            Register(AgentConfig.Instance);
-            Register(AgentSettings.Instance);
-            Register(StatsdSettings.Instance);
+            Register(PatternService);
+            Register(ThreadManager);
+            Register(RuneClient);
+            Register(AgentConfig);
+            Register(AgentSettings);
+            Register(StatsdSettings);
 
             return _builder.Build();
         }
 
-        private void Register<T>(T instance) where T : class
+        private void Register<T>(TestObject<T> instance) where T : class
         {
-            var implementedInterfaces = RegisteredTypes
-                                               .Where(s => 
+            var hasImplementedInterfaces = RegisteredTypes
+                                               .Where(s =>
                                                     instance.GetType()
                                                             .GetTypeInfo()
                                                             .ImplementedInterfaces
-                                                            .Any(i => i.IsAssignableFrom(s.Item2)))
-                                                            .ToList();
-            if (!implementedInterfaces.Any())
+                                                            .Any(i => i.IsAssignableFrom(s.Item2)));
+            if (!hasImplementedInterfaces.Any())
             {
-                _builder.RegisterInstance(instance);
+                _builder.RegisterInstance(instance.Instance);
             }
         }
 
         public TestEnvironment WithType<T, U>()
         {
             _builder.RegisterType<T>().As<U>();
+            RegisteredTypes.Add(new Tuple<Type,Type>(typeof(T), typeof(U)));
             return this;
         }
 
         public TestEnvironment WithSingleInstanceType<T, U>()
         {
             _builder.RegisterType<T>().As<U>().SingleInstance();
+            RegisteredTypes.Add(new Tuple<Type, Type>(typeof(T), typeof(U)));
             return this;
         }
 
@@ -225,7 +228,10 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             return env.WithType<Statsd, IStatsd>()
                       .WithSingleInstanceType<ThreadManager, IThreadManager>()
                       .WithSingleInstanceType<InMemoryRuneClient, IRuneClient>()
+                      .WithSingleInstanceType<FlowManager, IFlowManager>()
                       .WithSingleInstanceType<PatternService, IPatternService>()
+                      .WithType<LoggerFactory, ILoggerFactory>()
+                      .WithType<StatsClient, IStatsClient>()
                       .WithType<Application, IApplication>();
         }
     }

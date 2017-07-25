@@ -53,22 +53,45 @@ namespace Runic.Agent.Standalone.Clients
             return matches;
         }
 
-        private bool PropertyExists(Rune rune, string propertyName)
+        private bool PropertyExists(object obj, string propertyName)
         {
-            //todo support x.y.z recursive (non base properties)
-            return rune.GetType().GetProperties().Select(p => p.Name).Contains(propertyName);
+            var split = propertyName.Split('.');
+            if (split.Length > 1)
+            {
+                var prop = obj.GetType().GetProperties().Where(o => o.Name == split[0]);
+                if (prop.Any())
+                {
+                    return PropertyExists(prop.GetType().GetProperty(split[0]).GetValue(obj), propertyName.Substring(0, propertyName.IndexOf('.')));
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            //base case
+            return obj.GetType().GetProperties().Select(p => p.Name).Contains(propertyName);
         }
 
-        private bool PropertyExists(Rune rune, string propertyName, string propertyValue)
+        private bool PropertyExists(object obj, string propertyName, string propertyValue)
         {
-            var prop = rune.GetType().GetProperties().Where(p => p.Name == propertyName);
-            if (prop.Count() > 0)
+            var split = propertyName.Split('.');
+            if (split.Length > 1)
             {
-                if (prop.FirstOrDefault().GetValue(rune).ToString() == propertyValue)
+                var prop = obj.GetType().GetProperties().Where(o => o.Name == split[0]);
+                if (prop.Any())
                 {
-                    return true;
+                    return PropertyExists(prop.GetType().GetProperty(split[0]).GetValue(obj), propertyName.Substring(0, propertyName.IndexOf('.')), propertyValue);
                 }
-                return false;
+                else
+                {
+                    return false;
+                }
+            }
+            //base case
+            var baseProp = obj.GetType().GetProperties().Where(o => o.Name == propertyName);
+            if (baseProp.Any() && baseProp.FirstOrDefault().GetValue(obj).ToString() == propertyValue)
+            {
+                return true;
             }
             return false;
         }
