@@ -2,8 +2,6 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Runic.Framework.Attributes;
-using Runic.Agent.Core.Metrics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
