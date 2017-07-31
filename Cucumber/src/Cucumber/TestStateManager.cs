@@ -35,7 +35,7 @@ namespace Runic.Cucumber
         {
             if (!_testObjects.ContainsKey(typeof(T)))
             {
-                AddObject(Activator.CreateInstance(typeof(T)));
+                AddObject((T)Activator.CreateInstance(typeof(T)));
             }
             return _testObjects[typeof(T)] as T;
         }
