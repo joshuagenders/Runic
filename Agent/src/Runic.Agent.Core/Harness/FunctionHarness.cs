@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Runic.Framework.Clients;
+using Runic.Framework.Attributes;
 
 namespace Runic.Agent.Core.Harness
 {

@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Description>.Net Core Cucumber API supported by the Runic.Agent</Description>
   </PropertyGroup>
 
   <ItemGroup>
