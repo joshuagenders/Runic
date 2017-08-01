@@ -12,24 +12,33 @@ namespace Runic.Agent.Worker.Clients
     public class InMemoryRuneClient : IRuneClient
     {
         public ConcurrentDictionary<string, ConcurrentBag<Rune>> RuneBags { get; set; }
-        public int MaxRuneCount { get; set; }
+        public int MaxRuneCount { get; set; } = 1024;
         public int RuneCount => RuneBags.Sum(q => q.Value.Count);
 
-        public InMemoryRuneClient(int maxRuneCount = 1024)
+        public InMemoryRuneClient()
         {
             RuneBags = new ConcurrentDictionary<string, ConcurrentBag<Rune>>();
-            MaxRuneCount = maxRuneCount;
         }
 
-        public async Task<RuneQuery> RetrieveRunes(RuneQuery query)
+        public async Task<RuneQuery> GetRunes(RuneQuery query)
         {
             var bag = GetOrCreateBag(query.RuneName);
             query.Result = bag.PeekRandom(r => RuneHasMatchingProperties(r, query.RequiredProperties));
             return await Task.FromResult(query);
         }
 
+        public async Task<RuneQuery> TakeRunes(RuneQuery query)
+        {
+            var bag = GetOrCreateBag(query.RuneName);
+            query.Result = bag.TakeRandom(r => RuneHasMatchingProperties(r, query.RequiredProperties));
+            return await Task.FromResult(query);
+        }
+
         private bool RuneHasMatchingProperties(Rune rune, Dictionary<string, string> properties)
         {
+            if (properties == null)
+                return true;
+
             bool matches = true;
             foreach (var property in properties)
             {
@@ -53,22 +62,45 @@ namespace Runic.Agent.Worker.Clients
             return matches;
         }
 
-        private bool PropertyExists(Rune rune, string propertyName)
+        private bool PropertyExists(object obj, string propertyName)
         {
-            //todo support x.y.z recursive (non base properties)
-            return rune.GetType().GetProperties().Select(p => p.Name).Contains(propertyName);
+            var split = propertyName.Split('.');
+            if (split.Length > 1)
+            {
+                var prop = obj.GetType().GetProperties().Where(o => o.Name == split[0]);
+                if (prop.Any())
+                {
+                    return PropertyExists(prop.GetType().GetProperty(split[0]).GetValue(obj), propertyName.Substring(0, propertyName.IndexOf('.')));
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            //base case
+            return obj.GetType().GetProperties().Select(p => p.Name).Contains(propertyName);
         }
 
-        private bool PropertyExists(Rune rune, string propertyName, string propertyValue)
+        private bool PropertyExists(object obj, string propertyName, string propertyValue)
         {
-            var prop = rune.GetType().GetProperties().Where(p => p.Name == propertyName);
-            if (prop.Count() > 0)
+            var split = propertyName.Split('.');
+            if (split.Length > 1)
             {
-                if (prop.FirstOrDefault().GetValue(rune).ToString() == propertyValue)
+                var prop = obj.GetType().GetProperties().Where(o => o.Name == split[0]);
+                if (prop.Any())
                 {
-                    return true;
+                    return PropertyExists(prop.GetType().GetProperty(split[0]).GetValue(obj), propertyName.Substring(0, propertyName.IndexOf('.')), propertyValue);
                 }
-                return false;
+                else
+                {
+                    return false;
+                }
+            }
+            //base case
+            var baseProp = obj.GetType().GetProperties().Where(o => o.Name == propertyName);
+            if (baseProp.Any() && baseProp.FirstOrDefault().GetValue(obj).ToString() == propertyValue)
+            {
+                return true;
             }
             return false;
         }
@@ -108,6 +140,30 @@ namespace Runic.Agent.Worker.Clients
         {
             var list = bag.Where(predicate).ToList();
             return list[new Random().Next(0, list.Count - 1)];
+        }
+
+        public static Rune TakeRandom(this ConcurrentBag<Rune> bag, Func<Rune, bool> predicate)
+        {
+            var list = bag.Where(predicate).ToList();
+            Rune rune = null;
+            List<Rune> nonMatchingRunes = new List<Rune>();
+            while (rune == null)
+            {
+                var res = bag.Take(1).Single();
+                if (res == null || bag.Count <= 0)
+                    break;
+
+                if (predicate(res))
+                {
+                    rune = res;
+                }
+                else
+                {
+                    nonMatchingRunes.Add(res);
+                }
+            }
+            nonMatchingRunes.ForEach(r => bag.Add(r));
+            return rune;
         }
     }
 }

@@ -12,24 +12,33 @@ namespace Runic.Agent.Standalone.Clients
     public class InMemoryRuneClient : IRuneClient
     {
         public ConcurrentDictionary<string, ConcurrentBag<Rune>> RuneBags { get; set; }
-        public int MaxRuneCount { get; set; }
+        public int MaxRuneCount { get; set; } = 1024;
         public int RuneCount => RuneBags.Sum(q => q.Value.Count);
 
-        public InMemoryRuneClient(int maxRuneCount = 1024)
+        public InMemoryRuneClient()
         {
             RuneBags = new ConcurrentDictionary<string, ConcurrentBag<Rune>>();
-            MaxRuneCount = maxRuneCount;
         }
 
-        public async Task<RuneQuery> RetrieveRunes(RuneQuery query)
+        public async Task<RuneQuery> GetRunes(RuneQuery query)
         {
             var bag = GetOrCreateBag(query.RuneName);
             query.Result = bag.PeekRandom(r => RuneHasMatchingProperties(r, query.RequiredProperties));
             return await Task.FromResult(query);
         }
 
+        public async Task<RuneQuery> TakeRunes(RuneQuery query)
+        {
+            var bag = GetOrCreateBag(query.RuneName);
+            query.Result = bag.TakeRandom(r => RuneHasMatchingProperties(r, query.RequiredProperties));
+            return await Task.FromResult(query);
+        }
+
         private bool RuneHasMatchingProperties(Rune rune, Dictionary<string, string> properties)
         {
+            if (properties == null)
+                return true;
+
             bool matches = true;
             foreach (var property in properties)
             {
@@ -131,6 +140,30 @@ namespace Runic.Agent.Standalone.Clients
         {
             var list = bag.Where(predicate).ToList();
             return list[new Random().Next(0, list.Count - 1)];
+        }
+
+        public static Rune TakeRandom(this ConcurrentBag<Rune> bag, Func<Rune, bool> predicate)
+        {
+            var list = bag.Where(predicate).ToList();
+            Rune rune = null;
+            List<Rune> nonMatchingRunes = new List<Rune>();
+            while (rune == null)
+            {
+                var res = bag.Take(1).Single();
+                if (res == null || bag.Count <= 0)
+                    break;
+
+                if (predicate(res))
+                {
+                    rune = res;
+                }
+                else
+                {
+                    nonMatchingRunes.Add(res);
+                }
+            }
+            nonMatchingRunes.ForEach(r => bag.Add(r));
+            return rune;
         }
     }
 }
