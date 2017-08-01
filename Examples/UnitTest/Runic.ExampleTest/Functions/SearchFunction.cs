@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Runic.Framework.Attributes;
 using Runic.ExampleTest.Runes;
 using System.Net.Http;
-using Runic.Framework.Extensions;
 
 namespace Runic.ExampleTest.Functions
 {
@@ -16,20 +15,15 @@ namespace Runic.ExampleTest.Functions
             if (searchTerm == null)
                 searchTerm = GenerateSearchTerm();
 
-            Func<string> searchAction = () =>
-            {
-                var httpClient = new HttpClient();
-                httpClient.BaseAddress = new Uri(baseAddress);
-                return httpClient.GetStringAsync($"/wiki/{searchTerm}").GetAwaiter().GetResult();
-            };
-
-            var result = await searchAction.TimedExecute("Search");
-
+            var httpClient = new HttpClient();
+            httpClient.BaseAddress = new Uri(baseAddress);
+            var result = await httpClient.GetStringAsync($"/wiki/{searchTerm}");
+            
             await RunicIoC.RuneClient.SendRunes(
                 new SearchResultsRune()
                 {
                     SearchTerm = searchTerm,
-                    Results = result.ExecutionResult
+                    Results = result
                 });
         }
 

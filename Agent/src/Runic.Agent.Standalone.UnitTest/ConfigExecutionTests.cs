@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.Standalone.Configuration;
+using System;
 
 namespace Runic.Agent.Standalone.Test
 {
@@ -14,6 +15,7 @@ namespace Runic.Agent.Standalone.Test
         [TestMethod]
         public void UnitTest()
         {
+            throw new NotImplementedException();
         }
     }
 }

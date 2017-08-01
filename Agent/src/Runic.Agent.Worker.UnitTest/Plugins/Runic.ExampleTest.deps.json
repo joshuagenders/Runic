@@ -9,8 +9,7 @@
       "runic.exampletest/1.0.0": {
         "dependencies": {
           "Edge.js": "6.5.1",
-          "Runic.Framework": "1.0.0",
-          "Runic.Framework.Extensions": "1.0.0"
+          "Runic.Framework": "1.0.0"
         },
         "runtime": {
           "Runic.ExampleTest.dll": {}
@@ -74,12 +73,6 @@
           "lib/netcoreapp1.1/Runic.Framework.dll": {}
         }
       },
-      "runic.framework.extensions/1.0.0": {
-        "dependencies": {
-          "Microsoft.Extensions.Logging": "1.1.2",
-          "Runic.Framework": "1.0.0",
-          "StatsN": "1.2.1"
-        },
         "runtime": {
           "lib/netcoreapp1.1/Runic.Framework.Extensions.dll": {}
         }
@@ -203,13 +196,6 @@
       "sha512": "sha512-4eCx+deoaYVxWhJcl/UW3l2xLRFDaKOUCKnVpdAOQcZjK+mWXYZFUWespLeUW+Jmr5fjfrVdFwrlMfGhDqHttw==",
       "path": "runic.framework/1.0.0",
       "hashPath": "runic.framework.1.0.0.nupkg.sha512"
-    },
-    "runic.framework.extensions/1.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-CxSnOryL7PZG/JgR7cC4ntdOjyGUKYrND5DGLaine9CLI0K+gvs8oPvC50Cr/l11582AGaqbX+w2rHI8SoWH6A==",
-      "path": "runic.framework.extensions/1.0.0",
-      "hashPath": "runic.framework.extensions.1.0.0.nupkg.sha512"
     },
     "statsn/1.2.1": {
       "type": "package",

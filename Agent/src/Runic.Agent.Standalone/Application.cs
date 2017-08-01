@@ -20,6 +20,7 @@ namespace Runic.Agent.Standalone
             _patternService = patternService;
             _flowManager = flowManager;
             _logger = loggerFactory.CreateLogger<IApplication>();
+            _config = config;
         }
 
         public async Task RunApplicationAsync(CancellationToken ct = default(CancellationToken))

@@ -1,7 +1,6 @@
 ﻿using Runic.ExampleTest.Runes;
 using Runic.Framework.Attributes;
 using Runic.Framework.Models;
-using Runic.Framework.Extensions;
 using System;
 using System.Net.Http;
 using System.Text.RegularExpressions;
@@ -27,20 +26,17 @@ namespace Runic.ExampleTest.Functions
             var firstLink = matchResults.Value;
 
             // get next page
-            Func<string> openAction = () =>
-            {
-                var httpClient = new HttpClient();
-                httpClient.BaseAddress = new Uri(Constants.BaseAddress);
-                return httpClient.GetStringAsync($"/{firstLink}").GetAwaiter().GetResult();
-            };
-            var result = await openAction.TimedExecute("OpenFirstLink");
-
+            
+            var httpClient = new HttpClient();
+            httpClient.BaseAddress = new Uri(Constants.BaseAddress);
+            var result = httpClient.GetStringAsync($"/{firstLink}").GetAwaiter().GetResult();
+            
             // store rune
             await RunicIoC.RuneClient.SendRunes(
                 new SearchResultsRune()
                 {
                     SearchTerm = firstLink,
-                    Results = result.ExecutionResult
+                    Results = result
                 });
         }
     }
