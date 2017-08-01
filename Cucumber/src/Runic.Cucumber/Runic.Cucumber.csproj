@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>Joshua Genders</Authors>
+    <Company />
+    <Description>Cucumber API for .NET Core, supported by the Runic Agent</Description>
+    <PackageProjectUrl>https://github.com/joshuagenders/Runic/wiki</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/joshuagenders/Runic/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/joshuagenders/Runic</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageTags>Runic Cucumber</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Gherkin\Gherkin.csproj" />
+  </ItemGroup>
+
+</Project>
