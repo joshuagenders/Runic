@@ -13,4 +13,8 @@
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Runic.Cucumber\Runic.Cucumber.csproj" />
+  </ItemGroup>
+
 </Project>

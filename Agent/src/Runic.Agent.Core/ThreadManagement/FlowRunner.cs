@@ -13,17 +13,19 @@ namespace Runic.Agent.Core.ThreadManagement
     public class FlowRunner
     {
         private readonly FunctionFactory _factory;
+        private readonly CucumberHarness _harness;
         private readonly Flow _flow;
-        public FlowRunner(FunctionFactory factory, Flow flow)
+        public FlowRunner(FunctionFactory factory, CucumberHarness harness, Flow flow)
         {
             _factory = factory;
+            _harness = harness;
             _flow = flow;
         }
 
-        public async Task ExecuteFlowAsync(CancellationToken ct)
+        private async Task ExecuteFunctionAsync(CancellationToken ctx = default(CancellationToken))
         {
             FunctionHarness function = null;
-            while (!ct.IsCancellationRequested)
+            while (!ctx.IsCancellationRequested)
             {
                 if (function == null)
                 {
@@ -44,7 +46,34 @@ namespace Runic.Agent.Core.ThreadManagement
 
                     function = _factory.CreateFunction(_flow.Steps[functionIndex]);
                 }
-                await function.OrchestrateFunctionExecutionAsync(ct);
+                await function.OrchestrateFunctionExecutionAsync(ctx);
+            }
+        }
+
+        private async Task ExecuteCucumberAsync(CancellationToken ctx = default(CancellationToken))
+        {
+            while (!ctx.IsCancellationRequested)
+            {
+                foreach (var step in _flow.Steps)
+                {
+                    if (step.Cucumber != null)
+                    {
+                        await _harness.ExecuteTestAsync(step.Cucumber.AssemblyName, step.Cucumber.Document, ctx);
+                    }
+                }
+            }
+        }
+
+        public async Task ExecuteFlowAsync(CancellationToken ctx = default(CancellationToken))
+        {
+            if (_flow.Steps.Any(s => !string.IsNullOrEmpty(s.Cucumber.Document)))
+            {
+                //todo allow for mix of functions and cucumber execution in a flow
+                await ExecuteCucumberAsync(ctx);
+            }
+            else
+            {
+                await ExecuteFunctionAsync(ctx);
             }
         }
     }

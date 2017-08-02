@@ -21,7 +21,8 @@ namespace Runic.Agent.Core.ThreadManagement
             return new FlowThreadManager(
                 flowInstance, 
                 stats, 
-                new FunctionFactory(flowInstance,pluginManager, stats, dataService, loggerFactory));
+                new FunctionFactory(flowInstance, pluginManager, stats, dataService, loggerFactory),
+                new CucumberHarness(pluginManager));
         }
     }
 }

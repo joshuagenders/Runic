@@ -140,5 +140,15 @@ namespace Runic.Agent.Core.AssemblyManagement
         {
             return _assembliesLoaded.Where(t => t.Value).Select(t => t.Key).ToList();
         }
+
+        public Assembly GetPlugin(string pluginAssemblyName)
+        {
+            bool loaded;
+            if (_assembliesLoaded.TryGetValue(pluginAssemblyName, out loaded) && loaded)
+            {
+                return GetAssemblies().Single(a => a.FullName == pluginAssemblyName);
+            }
+            throw new AssemblyNotFoundException($"Unable to locate assembly by key {pluginAssemblyName}");
+        }
     }
 }

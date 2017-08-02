@@ -16,19 +16,21 @@ namespace Runic.Agent.Core.ThreadManagement
         private readonly IStatsClient _stats;
         private readonly TaskFactory _taskFactory;
         private readonly FunctionFactory _functionFactory;
+        private readonly CucumberHarness _harness;
 
         public readonly string Id;
 
         private ConcurrentDictionary<int, CancellableTask> _taskPool { get; set; }
         private int _currentThreadCount { get; set; }
 
-        public FlowThreadManager(Flow flow, IStatsClient stats, FunctionFactory factory)
+        public FlowThreadManager(Flow flow, IStatsClient stats, FunctionFactory factory, CucumberHarness harness)
         {
             Id = Guid.NewGuid().ToString("N");
 
             _flow = flow;
             _functionFactory = factory;
             _stats = stats;
+            _harness = harness;
             _taskFactory = new TaskFactory(new ConcurrentExclusiveSchedulerPair().ExclusiveScheduler);
             _taskPool = new ConcurrentDictionary<int, CancellableTask>();
         }
@@ -49,7 +51,7 @@ namespace Runic.Agent.Core.ThreadManagement
             else
             {
                 var cts = new CancellationTokenSource();
-                var flowTask = new FlowRunner(_functionFactory, _flow)
+                var flowTask = new FlowRunner(_functionFactory, _harness, _flow)
                     .ExecuteFlowAsync(cts.Token)
                     .ContinueWith(async (_) => await SafeRemoveTaskAsync(id));
 

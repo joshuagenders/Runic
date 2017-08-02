@@ -32,7 +32,8 @@ namespace Runic.Agent.Core.UnitTest.Tests
                     _testEnvironment.PluginManager, 
                     _testEnvironment.Stats.Object, 
                     _testEnvironment.DataService.Object,
-                    new LoggerFactory()));
+                    new LoggerFactory()), 
+                    null);
         
             await manager.SafeUpdateThreadCountAsync(1);
             Assert.AreEqual(1, manager.GetCurrentThreadCount());

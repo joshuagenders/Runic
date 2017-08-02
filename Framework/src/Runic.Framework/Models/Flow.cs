@@ -18,7 +18,13 @@ namespace Runic.Framework.Models
         public DataInput DataInput { get; set; }
         public Distribution Distribution { get; set; }
         public FunctionInformation Function { get; set; }
-        
+        public CucmberInformation Cucumber { get; set; }
+    }
+
+    public class CucmberInformation
+    {
+        public string Document { get; set; }
+        public string AssemblyName { get; set; }
     }
 
     public class FunctionInformation
