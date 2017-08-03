@@ -12,7 +12,7 @@ namespace Runic.Cucumber.UnitTest
         [TestMethod]
         public async Task CucumberTestExecutesAllMethods()
         {
-            var fakeTest = new FakeBddTest();
+            var fakeTest = new FakeCucumberClass();
             TestEnvironment.SetupMocks(fakeTest);
             var test = new CucumberTest(TestEnvironment.AssemblyAdapter.Instance);
 

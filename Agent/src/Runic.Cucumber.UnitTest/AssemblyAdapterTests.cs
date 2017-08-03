@@ -13,7 +13,7 @@ namespace Runic.Cucumber.UnitTest
         [TestMethod]
         public async Task MethodExecutionShouldCallMethods()
         {
-            var fakeTest = new FakeBddTest();
+            var fakeTest = new FakeCucumberClass();
             TestEnvironment.SetupMocks(fakeTest);
             var method = fakeTest.GetType()
                                  .GetTypeInfo()
@@ -34,7 +34,7 @@ namespace Runic.Cucumber.UnitTest
         [TestMethod]
         public void InitialiseShouldPopulateMethodReferences()
         {
-            var fakeTest = new FakeBddTest();
+            var fakeTest = new FakeCucumberClass();
             TestEnvironment.SetupMocks(fakeTest);
             ((AssemblyAdapter)TestEnvironment.AssemblyAdapter.Instance).Methods.Count.Should().Be(3);
         }
@@ -42,7 +42,7 @@ namespace Runic.Cucumber.UnitTest
         [TestMethod]
         public async Task AttributeExecutionShouldCallMethods()
         {
-            var fakeTest = new FakeBddTest();
+            var fakeTest = new FakeCucumberClass();
             TestEnvironment.SetupMocks(fakeTest);
 
             var method = fakeTest.GetType()

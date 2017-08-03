@@ -26,7 +26,7 @@ namespace Runic.Cucumber
         {
             if (!_testObjects.ContainsKey(t))
             {
-                AddObject(Activator.CreateInstance(t));
+                AddObject(t, Convert.ChangeType(Activator.CreateInstance(t), t));
             }
             return _testObjects[t];
         }

@@ -13,7 +13,7 @@ namespace Runic.Cucumber.UnitTest
         [TestMethod]
         public async Task GivenWhenThenDocumentCallsAllMethods()
         {
-            var fakeTest = new FakeBddTest();
+            var fakeTest = new FakeCucumberClass();
             TestEnvironment.SetupMocks(fakeTest);
             var method = fakeTest.GetType().GetTypeInfo().GetMethod("GivenMethod");
             var assemblyAdapter = new AssemblyAdapter(fakeTest.GetType().GetTypeInfo().Assembly, TestEnvironment.TestStateManager.Instance);

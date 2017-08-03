@@ -17,11 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Standalone", "R
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Standalone.Test", "Runic.Agent.Standalone.UnitTest\Runic.Agent.Standalone.Test.csproj", "{641D739C-A389-4DDA-9B9F-8854A0A41C80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runic.Cucumber", "Runic.Cucumber\Runic.Cucumber.csproj", "{2E427711-9C07-4B8F-A684-634A7CF7894E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Cucumber", "Runic.Cucumber\Runic.Cucumber.csproj", "{2E427711-9C07-4B8F-A684-634A7CF7894E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runic.Cucumber.UnitTest", "Runic.Cucumber.UnitTest\Runic.Cucumber.UnitTest.csproj", "{3C8FA656-6259-4569-BA86-D084087A1035}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Cucumber.UnitTest", "Runic.Cucumber.UnitTest\Runic.Cucumber.UnitTest.csproj", "{3C8FA656-6259-4569-BA86-D084087A1035}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gherkin", "Gherkin\Gherkin.csproj", "{73098342-42D5-4D15-9F85-818B313EA113}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gherkin", "Gherkin\Gherkin.csproj", "{73098342-42D5-4D15-9F85-818B313EA113}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

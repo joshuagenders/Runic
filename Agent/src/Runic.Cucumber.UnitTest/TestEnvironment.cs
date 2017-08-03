@@ -7,10 +7,10 @@ namespace Runic.Cucumber.UnitTest
         public TestObject<IAssemblyAdapter> AssemblyAdapter { get; set; } = new TestObject<IAssemblyAdapter>();
         public TestObject<TestStateManager> TestStateManager { get; set; } = new TestObject<TestStateManager>();
 
-        public void SetupMocks(FakeBddTest test)
+        public void SetupMocks(FakeCucumberClass test)
         {
             TestStateManager.MockObject
-                            .Setup(m => m.GetObject(typeof(FakeBddTest)))
+                            .Setup(m => m.GetObject(typeof(FakeCucumberClass)))
                             .Returns(test);
 
             AssemblyAdapter.Instance = new AssemblyAdapter(GetType().GetTypeInfo().Assembly, TestStateManager.MockObject.Object);
