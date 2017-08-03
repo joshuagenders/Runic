@@ -51,7 +51,6 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         private IApplication _application { get; set; }
         private ILifetimeScope _scope { get; set; }
 
-        public List<Tuple<Type, Type>> RegisteredTypes { get; set; }
         private ContainerBuilder _builder { get; set; }
 
         public IApplication Application
@@ -68,7 +67,6 @@ namespace Runic.Agent.Standalone.Test.TestUtility
 
         public TestEnvironment()
         {
-            RegisteredTypes = new List<Tuple<Type, Type>>();
             _builder = new ContainerBuilder();
         }
 
@@ -87,8 +85,6 @@ namespace Runic.Agent.Standalone.Test.TestUtility
 
         public IContainer Build()
         {
-            RegisteredTypes.ForEach(t => _builder.RegisterType(t.Item1).As(t.Item2));
-
             Register(PluginManager);
             Register(PluginProvider);
             Register(FlowManager);
@@ -107,29 +103,18 @@ namespace Runic.Agent.Standalone.Test.TestUtility
 
         private void Register<T>(TestObject<T> instance) where T : class
         {
-            var hasImplementedInterfaces = RegisteredTypes
-                                               .Where(s =>
-                                                    instance.GetType()
-                                                            .GetTypeInfo()
-                                                            .ImplementedInterfaces
-                                                            .Any(i => i.IsAssignableFrom(s.Item2)));
-            if (!hasImplementedInterfaces.Any())
-            {
-                _builder.RegisterInstance(instance.Instance);
-            }
+             _builder.RegisterInstance(instance.Instance);
         }
 
         public TestEnvironment WithType<T, U>()
         {
             _builder.RegisterType<T>().As<U>();
-            RegisteredTypes.Add(new Tuple<Type,Type>(typeof(T), typeof(U)));
             return this;
         }
 
         public TestEnvironment WithSingleInstanceType<T, U>()
         {
             _builder.RegisterType<T>().As<U>().SingleInstance();
-            RegisteredTypes.Add(new Tuple<Type, Type>(typeof(T), typeof(U)));
             return this;
         }
 

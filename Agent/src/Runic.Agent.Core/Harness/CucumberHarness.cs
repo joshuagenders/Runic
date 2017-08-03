@@ -1,10 +1,7 @@
-﻿using Runic.Agent.Core.AssemblyManagement;
+﻿﻿using System.Threading.Tasks;
 using Runic.Cucumber;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Runic.Agent.Core.AssemblyManagement;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Runic.Agent.Core.Harness
 {
