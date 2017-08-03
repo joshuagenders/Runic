@@ -8,6 +8,7 @@ using Runic.Agent.Core.Metrics;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Standalone.Clients;
 using Runic.Agent.Standalone.Configuration;
+using Runic.Agent.Standalone.Providers;
 using Runic.Framework.Clients;
 using StatsN;
 using System;
@@ -31,7 +32,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             }
             private set { _mockObject = value; }
         }
-
+        public bool HasInstance { get; set; } = false;
         private T _instance;
         public T Instance
         {
@@ -42,6 +43,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             set
             {
                 _instance = value;
+                HasInstance = true;
             }
         }
     }
@@ -82,7 +84,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         public TestObject<IAgentConfig> AgentConfig { get; set; } = new TestObject<IAgentConfig>();
         public TestObject<IAgentSettings> AgentSettings { get; set; } = new TestObject<IAgentSettings>();
         public TestObject<IStatsdSettings> StatsdSettings { get; set; } = new TestObject<IStatsdSettings>();
-
+        public TestObject<IFlowProvider> FlowProvider { get; set; } = new TestObject<IFlowProvider>();
         public IContainer Build()
         {
             Register(PluginManager);
@@ -97,6 +99,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             Register(AgentConfig);
             Register(AgentSettings);
             Register(StatsdSettings);
+            Register(FlowProvider);
 
             return _builder.Build();
         }

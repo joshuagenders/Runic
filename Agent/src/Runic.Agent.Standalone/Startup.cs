@@ -7,6 +7,7 @@ using Runic.Agent.Core.Metrics;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Standalone.Clients;
 using Runic.Agent.Standalone.Configuration;
+using Runic.Agent.Standalone.Providers;
 using Runic.Agent.Standalone.Services;
 using Runic.Framework.Clients;
 using StatsN;
@@ -30,6 +31,7 @@ namespace Runic.Agent.Standalone
             builder.RegisterType<AgentConfig>().As<IAgentConfig>().SingleInstance();
             builder.RegisterType<AgentSettings>().As<IAgentSettings>().SingleInstance();
             builder.RegisterType<StatsdSettings>().As<IStatsdSettings>().SingleInstance();
+            builder.RegisterType<FileFlowProvider>().As<IFlowProvider>();
             builder.RegisterType<FilePluginProvider>()
                    .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                    .As<IPluginProvider>();

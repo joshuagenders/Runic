@@ -3,6 +3,7 @@ using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Core.ThreadPatterns;
 using Runic.Agent.Standalone.Configuration;
+using Runic.Agent.Standalone.Providers;
 using Runic.Framework.Models;
 using System;
 using System.IO;
@@ -17,12 +18,14 @@ namespace Runic.Agent.Standalone.Services
         private readonly IFlowManager _flowManager;
         private Flow _flow;
         private IAgentConfig _config;
+        private IFlowProvider _flowProvider;
 
-        public ConfigExecutionService(IPatternService patternService, IFlowManager flowManager, IAgentConfig config)
+        public ConfigExecutionService(IPatternService patternService, IFlowManager flowManager, IAgentConfig config, IFlowProvider flowProvider)
         {
             _patternService = patternService;
             _flowManager = flowManager;
             _config = config;
+            _flowProvider = flowProvider;
         }
 
         public async Task StartThreadPattern(CancellationToken ct = default(CancellationToken))
@@ -48,11 +51,7 @@ namespace Runic.Agent.Standalone.Services
 
         private void ImportFlow()
         {
-            if (!File.Exists(_config.AgentSettings.AgentFlowFilepath))
-            {
-                throw new FileNotFoundException($"Flow not found at {_config.AgentSettings.AgentFlowFilepath}");
-            }
-            _flow = JsonConvert.DeserializeObject<Flow>(File.ReadAllText(_config.AgentSettings.AgentFlowFilepath));
+            _flow = _flowProvider.GetFlow(_config.AgentSettings.AgentFlowFilepath);
             _flowManager.AddUpdateFlow(_flow);
         }
 

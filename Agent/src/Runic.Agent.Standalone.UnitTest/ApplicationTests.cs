@@ -48,7 +48,7 @@ namespace Runic.Agent.Standalone.Test
             mockAgentSettings.Setup(s => s.FlowPatternExecutionId).Returns("test_execution_id");
             mockAgentSettings.Setup(s => s.FlowThreadCount).Returns(1);
             mockAgentSettings.Setup(s => s.FlowThreadPatternName).Returns("TestConstantThreadPattern");
-
+            
             var environment = new TestEnvironment().WithAgentSettings(mockAgentSettings.Object)
                                                    .WithType<AgentConfig, IAgentConfig>()
                                                    .WithType<StatsdSettings, IStatsdSettings>()
@@ -64,60 +64,23 @@ namespace Runic.Agent.Standalone.Test
                        .MockObject
                        .Setup(f => f.GetFlow("test_flow"))
                        .Returns(testFlow);
-
+            
             environment.StartApplication();
-            Thread.Sleep(100);
+            var cts = new CancellationTokenSource();
+            var appTask = environment.Application.RunApplicationAsync(cts.Token);
             environment.ThreadManager.Instance.FlowExists("test_flow").Should().BeTrue();
         }
 
         [TestMethod]
         public void TestGradualPatternExecution()
         {
-            var mockAgentSettings = new Mock<IAgentSettings>();
-            mockAgentSettings.Setup(s => s.FlowDurationSeconds).Returns(4);
-            mockAgentSettings.Setup(s => s.FlowPatternExecutionId).Returns("test_execution_id");
-            mockAgentSettings.Setup(s => s.FlowRampDownSeconds).Returns(1);
-            mockAgentSettings.Setup(s => s.FlowRampUpSeconds).Returns(1);
-            mockAgentSettings.Setup(s => s.FlowStepIntervalSeconds).Returns(1);
-            mockAgentSettings.Setup(s => s.FlowThreadCount).Returns(1);
-            mockAgentSettings.Setup(s => s.FlowThreadPatternName).Returns("TestGradualThreadPatterm");
-
-            var environment = new TestEnvironment().WithAgentSettings(mockAgentSettings.Object)
-                                                   .WithType<AgentConfig, IAgentConfig>()
-                                                   .WithType<StatsdSettings, IStatsdSettings>()
-                                                   .WithStandardTypes();
-
-            environment.FlowManager
-                       .MockObject
-                       .Setup(f => f.GetFlow("test_flow"))
-                       .Returns(TestFlow);
-
-            environment.StartApplication();
-            environment.ThreadManager.Instance.FlowExists("test_flow").Should().BeTrue();
+            throw new NotImplementedException();
         }
 
         [TestMethod]
         public void TestGraphPatternExecution()
         {
-            var mockAgentSettings = new Mock<IAgentSettings>();
-            mockAgentSettings.Setup(s => s.FlowDurationSeconds).Returns(4);
-            mockAgentSettings.Setup(s => s.FlowPatternExecutionId).Returns("test_execution_id");
-            mockAgentSettings.Setup(s => s.FlowPoints).Returns(new string[] { "0.1", "2.2", "4.0" });
-            mockAgentSettings.Setup(s => s.FlowStepIntervalSeconds).Returns(1);
-            mockAgentSettings.Setup(s => s.FlowThreadPatternName).Returns("TestGraphThreadPattern");
-            
-            var environment = new TestEnvironment().WithAgentSettings(mockAgentSettings.Object)
-                                                   .WithType<AgentConfig, IAgentConfig>()
-                                                   .WithType<StatsdSettings, IStatsdSettings>()
-                                                   .WithStandardTypes();
-
-            environment.FlowManager
-                       .MockObject
-                       .Setup(f => f.GetFlow("test_flow"))
-                       .Returns(TestFlow);
-
-            environment.StartApplication();
-            environment.ThreadManager.Instance.FlowExists("test_flow").Should().BeTrue();
+            throw new NotImplementedException();
         }
     }
 }
