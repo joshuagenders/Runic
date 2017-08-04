@@ -63,13 +63,14 @@ namespace Runic.Agent.Core.Harness
             _logger.LogDebug($"{step.Function.FunctionName} in {step.Function.AssemblyName} initialised");
 
             var harness = new FunctionHarness(_stats, _loggerFactory);
+            var methodParams = _dataService.GetMethodParameterValues(
+                            step.DataInput?.InputDatasource,
+                            step.DataInput?.DatasourceMapping);
             harness.Bind(instance,
                          step.StepName,
                          step.Function.FunctionName,
                          step.GetNextStepFromFunctionResult,
-                         _dataService.GetMethodParameterValues(
-                            step.DataInput.InputDatasource, 
-                            step.DataInput.DatasourceMapping));
+                         methodParams);
             return harness;
         }
     }

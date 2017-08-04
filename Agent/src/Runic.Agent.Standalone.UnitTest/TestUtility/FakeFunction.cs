@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using Runic.Framework.Attributes;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace Runic.Agent.Standalone.Test.TestUtility
 {
     public class FakeFunction
     {
         public List<InvocationInformation> CallList { get; }
+        public static ConcurrentDictionary<DateTime, FakeFunction> CreatedInstances { get; set; } = new ConcurrentDictionary<DateTime, FakeFunction>();
         public Task AsyncTask { get; set; }
 
         public FakeFunction()
         {
             CallList = new List<InvocationInformation>();
+            CreatedInstances.AddOrUpdate(DateTime.Now, this, (a,b) => this);
         }
 
         [BeforeEach]

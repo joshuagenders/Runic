@@ -66,7 +66,7 @@ namespace Runic.Agent.Core.ThreadManagement
 
         public async Task ExecuteFlowAsync(CancellationToken ctx = default(CancellationToken))
         {
-            if (_flow.Steps.Any(s => !string.IsNullOrEmpty(s.Cucumber.Document)))
+            if (_flow.Steps.Any(s => !string.IsNullOrEmpty(s.Cucumber?.Document)))
             {
                 //todo allow for mix of functions and cucumber execution in a flow
                 await ExecuteCucumberAsync(ctx);

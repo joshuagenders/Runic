@@ -9,6 +9,7 @@ using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Standalone.Clients;
 using Runic.Agent.Standalone.Configuration;
 using Runic.Agent.Standalone.Providers;
+using Runic.Agent.Standalone.Services;
 using Runic.Framework.Clients;
 using StatsN;
 using System;
@@ -52,7 +53,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
     {
         private IApplication _application { get; set; }
         private ILifetimeScope _scope { get; set; }
-
+        private List<Tuple<Type,Type>> _registeredTypes { get; set; }
         private ContainerBuilder _builder { get; set; }
 
         public IApplication Application
@@ -70,6 +71,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         public TestEnvironment()
         {
             _builder = new ContainerBuilder();
+            _registeredTypes = new List<Tuple<Type, Type>>();
         }
 
         public TestObject<IPluginManager> PluginManager { get; set; } = new TestObject<IPluginManager>();
@@ -106,17 +108,22 @@ namespace Runic.Agent.Standalone.Test.TestUtility
 
         private void Register<T>(TestObject<T> instance) where T : class
         {
-             _builder.RegisterInstance(instance.Instance);
+            if (!_registeredTypes.Any(t => t.Item2 == typeof(T)))
+            {
+                _builder.RegisterInstance(instance.Instance);
+            }
         }
 
         public TestEnvironment WithType<T, U>()
         {
+            _registeredTypes.Add(new Tuple<Type, Type>(typeof(T), typeof(U)));
             _builder.RegisterType<T>().As<U>();
             return this;
         }
 
         public TestEnvironment WithSingleInstanceType<T, U>()
         {
+            _registeredTypes.Add(new Tuple<Type, Type>(typeof(T), typeof(U)));
             _builder.RegisterType<T>().As<U>().SingleInstance();
             return this;
         }
@@ -192,6 +199,12 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             return env;
         }
 
+        public static TestEnvironment WithAgentConfig(this TestEnvironment env, IAgentConfig instance)
+        {
+            env.AgentConfig.Instance = instance;
+            return env;
+        }
+        
         public static TestEnvironment WithFlowManager(this TestEnvironment env, IFlowManager instance)
         {
             env.FlowManager.Instance = instance;
@@ -213,14 +226,14 @@ namespace Runic.Agent.Standalone.Test.TestUtility
 
         public static TestEnvironment WithStandardTypes(this TestEnvironment env)
         {
-            return env.WithType<Statsd, IStatsd>()
-                      .WithSingleInstanceType<ThreadManager, IThreadManager>()
+            return env.WithSingleInstanceType<ThreadManager, IThreadManager>()
                       .WithSingleInstanceType<InMemoryRuneClient, IRuneClient>()
                       .WithSingleInstanceType<FlowManager, IFlowManager>()
                       .WithSingleInstanceType<PatternService, IPatternService>()
+                      .WithType<NoOpDataService, IDataService>()
                       .WithType<LoggerFactory, ILoggerFactory>()
                       .WithType<StatsClient, IStatsClient>()
-                      .WithType<Application, IApplication>();
+                      .WithSingleInstanceType<Application, IApplication>();
         }
     }
 }
