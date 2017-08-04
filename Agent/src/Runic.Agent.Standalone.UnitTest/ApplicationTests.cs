@@ -1,103 +1,32 @@
 ﻿using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Runic.Agent.Standalone.Test.TestUtility;
-using Runic.Framework.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Runic.Cucumber;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace Runic.Agent.Standalone.Test
 {
-    [TestClass]
     public class ApplicationTests
     {
-        #region TestObjects
-        Flow TestFlow => new Flow()
+        private CucumberTest _test { get; set; }
+
+        public ApplicationTests()
         {
-            Name = "test_flow",
-            StepDelayMilliseconds = 10,
-            Steps = 
-                new List<Step>()
-                    {
-                        new Step()
-                        {
-                            StepName = "step1",
-                            GetNextStepFromFunctionResult = false,
-                            Function = new FunctionInformation()
-                            {
-                                AssemblyName = "Runic.Agent.Standalone.Test",
-                                AssemblyQualifiedClassName = "FakeFunction",
-                                FunctionName = "Inputs",
-                                Parameters = new Dictionary<string, Type>()
-                                {
-                                    { "input1", typeof(string) },
-                                    { "4", typeof(int) }
-                                }
-                            }
-                        }
-                    }
-        };
-        #endregion
-
-        [TestMethod]
-        public async Task TestConstantPatternExecution()
-        {
-            var environment = new TestEnvironment().WithStandardTypes();
-            
-            var mockAgentSettings = environment.AgentSettings.MockObject;
-            mockAgentSettings.Setup(s => s.FlowDurationSeconds).Returns(3);
-            mockAgentSettings.Setup(s => s.FlowPatternExecutionId).Returns("test_execution_id");
-            mockAgentSettings.Setup(s => s.FlowThreadCount).Returns(1);
-            mockAgentSettings.Setup(s => s.FlowThreadPatternName).Returns("constant");
-            mockAgentSettings.Setup(s => s.AgentFlowFilepath).Returns("test_path");
-
-            environment.AgentConfig
-                       .MockObject.Setup(c => c.AgentSettings)
-                       .Returns(environment.AgentSettings.Instance);
-            environment.WithAgentConfig(environment.AgentConfig.Instance);
-
-            var testFlow = TestFlow;
-            environment.PluginManager
-                       .MockObject
-                       .Setup(p => p.GetClassType(testFlow.Steps[0].Function.AssemblyQualifiedClassName))
-                       .Returns(typeof(FakeFunction));
-
-            environment.PluginManager
-                      .MockObject
-                      .Setup(p => p.GetPlugin(testFlow.Steps[0].Function.AssemblyName))
-                      .Returns(GetType().GetTypeInfo().Assembly);
-
-            environment.FlowManager
-                       .MockObject
-                       .Setup(f => f.GetFlow("test_flow"))
-                       .Returns(testFlow);
-
-            environment.FlowProvider
-                       .MockObject
-                       .Setup(p => p.GetFlow("test_path"))
-                       .Returns(testFlow);
-
-            environment.StartApplication();
-            var cts = new CancellationTokenSource();
-            var appTask = environment.Application.RunApplicationAsync(cts.Token);
-            await appTask;
-            FakeFunction.CreatedInstances.Any().Should().BeTrue("No FakeFunction instances found");
-            FakeFunction.CreatedInstances.Max().Value.CallList.Any().Should().BeTrue("No methods invoked on FakeFunction instance");
+            _test = new CucumberTest(GetType().GetTypeInfo().Assembly);
         }
 
-        [TestMethod]
-        public void TestGradualPatternExecution()
+        [Theory]
+        [InlineData("Constant")]
+        [InlineData("Graph")]
+        [InlineData("Gradual")]
+        public async Task TestPatternExecution(string patternType)
         {
-            throw new NotImplementedException();
-        }
+            _test.Given($"I have a test environment for a '{patternType}' flow")
+                 .When("I start the test")
+                 .Then("The fake function is invoked");
 
-        [TestMethod]
-        public void TestGraphPatternExecution()
-        {
-            throw new NotImplementedException();
+            var success = await _test.ExecuteAsync();
+            success.Should().BeTrue();
         }
     }
 }

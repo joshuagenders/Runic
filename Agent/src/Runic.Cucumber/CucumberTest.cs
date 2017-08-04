@@ -32,8 +32,9 @@ namespace Runic.Cucumber
         public async Task<bool> ExecuteAsync(CancellationToken ctx = default(CancellationToken))
         {
             var doc = _stringBuilder.ToString();
-            await _documentRunner.ExecuteAsync(doc, ctx);
-            return await Task.FromResult(true);
+            var documentTask = _documentRunner.ExecuteAsync(doc, ctx);
+            await documentTask;
+            return await Task.FromResult(!documentTask.IsFaulted);
         }
     }
 }
