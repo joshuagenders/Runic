@@ -49,18 +49,23 @@ namespace Runic.Agent.Standalone.Test
             _environment = new TestEnvironment().WithStandardTypes();
 
             var mockAgentSettings = _environment.AgentSettings.MockObject;
-            mockAgentSettings.Setup(s => s.FlowDurationSeconds).Returns(3);
             mockAgentSettings.Setup(s => s.FlowPatternExecutionId).Returns("test_execution_id");
             mockAgentSettings.Setup(s => s.FlowThreadPatternName).Returns(patternType);
             mockAgentSettings.Setup(s => s.AgentFlowFilepath).Returns("test_path");
+            mockAgentSettings.Setup(s => s.FlowDurationSeconds).Returns(3);
 
             switch (patternType.ToLowerInvariant()) {
                 case "constant":
                     mockAgentSettings.Setup(s => s.FlowThreadCount).Returns(1);
+                    mockAgentSettings.Setup(s => s.FlowDurationSeconds).Returns(3);
                     break;
                 case "graph":
+                    mockAgentSettings.Setup(s => s.FlowPoints).Returns(new string[] { "0.1", "3.0" });
                     break;
                 case "gradual":
+                    mockAgentSettings.Setup(s => s.FlowRampUpSeconds).Returns(1);
+                    mockAgentSettings.Setup(s => s.FlowRampDownSeconds).Returns(1);
+                    mockAgentSettings.Setup(s => s.FlowStepIntervalSeconds).Returns(1);
                     break;
             }
             _environment.AgentConfig
