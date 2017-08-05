@@ -126,7 +126,7 @@ namespace Runic.Agent.Core.AssemblyManagement
             return functions;
         }
 
-        private IList<Assembly> GetAssemblies()
+        public IList<Assembly> GetAssemblies()
         {
             List<Assembly> assemblyList;
             lock (_assemblies)
@@ -136,7 +136,7 @@ namespace Runic.Agent.Core.AssemblyManagement
             return assemblyList;
         }
 
-        private IList<string> GetAssemblyKeys()
+        public IList<string> GetAssemblyKeys()
         {
             return _assembliesLoaded.Where(t => t.Value).Select(t => t.Key).ToList();
         }

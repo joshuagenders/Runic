@@ -14,6 +14,7 @@ namespace Runic.Agent.Standalone
         private readonly IPatternService _patternService;
         private readonly IFlowManager _flowManager;
         private readonly ILogger _logger;
+        private readonly ILoggerFactory _loggerFactory;
         private readonly IAgentConfig _config;
         private readonly IFlowProvider _flowProvider;
         public Application(IPatternService patternService, IFlowManager flowManager, ILoggerFactory loggerFactory, IAgentConfig config, IFlowProvider flowProvider)
@@ -21,16 +22,19 @@ namespace Runic.Agent.Standalone
             _patternService = patternService;
             _flowManager = flowManager;
             _logger = loggerFactory.CreateLogger<IApplication>();
+            _loggerFactory = loggerFactory;
             _config = config;
             _flowProvider = flowProvider;
         }
 
         public async Task RunApplicationAsync(CancellationToken ctx = default(CancellationToken))
         {
-            _logger.LogInformation("Run application invoked");
-            var executionService = new ConfigExecutionService(_patternService, _flowManager, _config, _flowProvider);
+            _logger.LogInformation("Creating execution service.");
+            var executionService = new ConfigExecutionService(_patternService, _flowManager, _config, _flowProvider, _loggerFactory);
             await executionService.StartThreadPattern(ctx);
+            _logger.LogInformation("Thread pattern started.");
             await _patternService.GetCompletionTaskAsync(_config.AgentSettings.FlowPatternExecutionId, ctx);
+            _logger.LogInformation("Thread pattern complete.");
         }
     }
 }

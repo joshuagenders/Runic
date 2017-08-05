@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Runic.Cucumber.UnitTest
+namespace Runic.Cucumber.UnitTest.TestUtility
 {
     public class TestEnvironment
     {

@@ -6,18 +6,22 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Runic.Agent.Standalone.Clients
 {
     public class InMemoryRuneClient : IRuneClient
     {
+        private readonly ILogger _logger;
         public ConcurrentDictionary<string, ConcurrentBag<Rune>> RuneBags { get; set; }
         public int MaxRuneCount { get; set; } = 1024;
         public int RuneCount => RuneBags.Sum(q => q.Value.Count);
 
-        public InMemoryRuneClient()
+        public InMemoryRuneClient(ILoggerFactory loggerFactory)
         {
             RuneBags = new ConcurrentDictionary<string, ConcurrentBag<Rune>>();
+            _logger = loggerFactory.CreateLogger<InMemoryRuneClient>();
         }
 
         public async Task<RuneQuery> GetRunes(RuneQuery query)
@@ -109,6 +113,7 @@ namespace Runic.Agent.Standalone.Clients
         {
             foreach (var rune in runes)
             {
+                _logger.LogInformation(JsonConvert.SerializeObject(rune));
                 //todo ensure message is taken
                 if (RuneCount >= MaxRuneCount) TryRemoveRandomMessage();
 

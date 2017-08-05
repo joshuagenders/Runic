@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Runic.Cucumber.UnitTest
+namespace Runic.Cucumber.UnitTest.TestUtility
 {
     public class InvocationInformation
     {

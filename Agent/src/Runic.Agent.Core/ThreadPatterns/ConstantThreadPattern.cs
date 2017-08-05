@@ -25,10 +25,7 @@ namespace Runic.Agent.Core.ThreadPatterns
         {
             if (DurationSeconds == 0)
             {
-                await Task.Run(() =>
-                {
-                    _callbacks.ForEach(c => c.Invoke(ThreadCount));
-                }, ctx);
+                _callbacks.ForEach(c => c.Invoke(ThreadCount));
             }
             else
             {

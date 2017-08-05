@@ -34,6 +34,7 @@ namespace Runic.Agent.Standalone
             builder.RegisterType<FileFlowProvider>().As<IFlowProvider>();
             builder.RegisterType<FilePluginProvider>()
                    .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
+                   .WithParameter(new PositionalParameter(1, "Plugins"))
                    .As<IPluginProvider>();
 
             var loggerFactory = new LoggerFactory().AddConsole();

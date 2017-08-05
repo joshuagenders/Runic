@@ -30,6 +30,10 @@ namespace Runic.Agent.Standalone
                              Console.WriteLine("An exception occured.");
                              Console.WriteLine(result.Exception.Message);
                          }
+                         else
+                         {
+                             Console.WriteLine("Execution complete.");
+                         }
                          Console.WriteLine("Exiting application...");
                          Console.ReadLine();
                      })

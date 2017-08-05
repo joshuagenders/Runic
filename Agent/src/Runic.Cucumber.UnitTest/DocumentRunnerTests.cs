@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Runic.Cucumber.UnitTest.TestUtility;
 using System.Linq;
 using System.Reflection;
 using System.Threading;

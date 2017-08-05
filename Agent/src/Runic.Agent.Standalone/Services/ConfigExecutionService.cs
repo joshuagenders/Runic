@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Core.ThreadPatterns;
@@ -19,13 +20,15 @@ namespace Runic.Agent.Standalone.Services
         private Flow _flow;
         private IAgentConfig _config;
         private IFlowProvider _flowProvider;
+        private readonly ILogger _logger;
 
-        public ConfigExecutionService(IPatternService patternService, IFlowManager flowManager, IAgentConfig config, IFlowProvider flowProvider)
+        public ConfigExecutionService(IPatternService patternService, IFlowManager flowManager, IAgentConfig config, IFlowProvider flowProvider, ILoggerFactory loggerFactory)
         {
             _patternService = patternService;
             _flowManager = flowManager;
             _config = config;
             _flowProvider = flowProvider;
+            _logger = loggerFactory.CreateLogger<ConfigExecutionService>();
         }
 
         public async Task StartThreadPattern(CancellationToken ctx = default(CancellationToken))
@@ -52,7 +55,9 @@ namespace Runic.Agent.Standalone.Services
         private void ImportFlow()
         {
             _flow = _flowProvider.GetFlow(_config.AgentSettings.AgentFlowFilepath);
+            _logger.LogInformation($"Importing flow {_flow.Name}.");
             _flowManager.AddUpdateFlow(_flow);
+            _logger.LogInformation($"{_flow.Name} imported.");
         }
 
         private void StartConstantPattern(CancellationToken ctx = default(CancellationToken))
@@ -62,7 +67,7 @@ namespace Runic.Agent.Standalone.Services
                     ThreadCount = _config.AgentSettings.FlowThreadCount,
                     DurationSeconds = _config.AgentSettings.FlowDurationSeconds
                 };
-
+            _logger.LogInformation($"Starting constant thread pattern {_config.AgentSettings.FlowPatternExecutionId}");
             _patternService.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ctx);
         }
 
@@ -73,6 +78,7 @@ namespace Runic.Agent.Standalone.Services
                 DurationSeconds = _config.AgentSettings.FlowDurationSeconds,
                 Points = _config.AgentSettings.FlowPoints.ParsePoints()
             };
+            _logger.LogInformation($"Starting graph thread pattern {_config.AgentSettings.FlowPatternExecutionId}");
             _patternService.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ctx);
         }
 
@@ -86,7 +92,7 @@ namespace Runic.Agent.Standalone.Services
                 StepIntervalSeconds = _config.AgentSettings.FlowStepIntervalSeconds,
                 ThreadCount = _config.AgentSettings.FlowThreadCount
             };
-
+            _logger.LogInformation($"Starting gradual thread pattern {_config.AgentSettings.FlowPatternExecutionId}");
             _patternService.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ctx);
         }
     }

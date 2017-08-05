@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Runic.Cucumber.UnitTest
+namespace Runic.Cucumber.UnitTest.TestUtility
 {
     public class TestBase
     {

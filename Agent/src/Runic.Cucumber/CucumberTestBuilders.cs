@@ -105,12 +105,13 @@ namespace Runic.Cucumber
         private void AddLine(List<string> lineValues)
         {
             Action<string> addValue = (a) => _stringBuilder.Append($" {a} |");
-            Action<string> addValueLine = (a) => _stringBuilder.AppendLine($"| {a} |");
+            Action<string> addValueLine = (a) => _stringBuilder.Append($"| {a} |");
             addValueLine(lineValues[0]);
             for (var i = 1; i < lineValues.Count; i++)
             {
                 addValue(lineValues[i]);
             }
+            _stringBuilder.AppendLine();
         }
 
         /// <summary>

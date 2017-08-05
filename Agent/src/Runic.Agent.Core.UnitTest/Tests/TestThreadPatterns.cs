@@ -10,7 +10,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
     [TestClass]
     public class TestThreadPatterns
     {
-        public async Task <List<int>> InvokeThreadPattern(IThreadPattern threadPattern)
+        private async Task <List<int>> InvokeThreadPattern(IThreadPattern threadPattern)
         {
             var calls = new List<int>();
             threadPattern.RegisterThreadChangeHandler((threadCount) =>

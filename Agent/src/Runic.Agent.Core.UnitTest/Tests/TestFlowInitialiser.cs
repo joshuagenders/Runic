@@ -22,8 +22,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 new Mock<IRuneClient>().Object, 
                 new FilePluginProvider(Directory.GetCurrentDirectory()), 
                 new Mock<IStatsClient>().Object,
-                new LoggerFactory()); 
-            //todo move into testenvironment, refactor, bulidenv.with.with
+                new LoggerFactory());
         }
 
         [TestMethod]
@@ -33,9 +32,8 @@ namespace Runic.Agent.Core.UnitTest.Tests
             var flowInitialiser = new FlowInitialiser(_pluginManager, new LoggerFactory());
             flowInitialiser.InitialiseFlow(flow);
 
-            //TODO
-            //Assert.IsTrue(_pluginManager.GetAssemblies().Any());
-            //Assert.IsTrue(_pluginManager.GetAssemblyKeys().Any(k => k == TestConstants.AssemblyName));
+            Assert.IsTrue(_pluginManager.GetAssemblies().Any());
+            Assert.IsTrue(_pluginManager.GetAssemblyKeys().Any(k => k == TestConstants.AssemblyName));
         }
     }
 }

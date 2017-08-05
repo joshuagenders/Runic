@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Runic.Cucumber.UnitTest
+namespace Runic.Cucumber.UnitTest.TestUtility
 {
     public class FakeCucumberClass
     {
@@ -47,6 +47,17 @@ namespace Runic.Cucumber.UnitTest
                 StackTrace = Environment.StackTrace,
                 InvocationTarget = "ThenMethod",
                 AdditionalData = input
+            });
+        }
+
+        [Given("I have a method with no inputs")]
+        public void NoInputs()
+        {
+            CallList.Add(new InvocationInformation()
+            {
+                InvocationTime = DateTime.Now,
+                StackTrace = Environment.StackTrace,
+                InvocationTarget = "NoInputs"
             });
         }
     }

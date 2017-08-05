@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using RestMockCore;
 using Runic.Agent.Standalone.Test.TestUtility;
 using Runic.Cucumber;
 using Runic.Framework.Models;
@@ -66,6 +67,14 @@ namespace Runic.Agent.Standalone.Test
         #endregion
 
         private TestEnvironment _environment { get; set; }
+
+        [Given("I have a test server")]
+        private void GivenIHaveATestServer()
+        {
+            var server = new HttpServer();
+            server.Config.Get("/").Send("OK");
+            server.Run();
+        }
 
         [Given(@"I have a test environment for a '(.*?)' flow")]
         public void SetupTestEnvironment(string patternType = "constant")

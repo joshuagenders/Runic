@@ -1,6 +1,6 @@
 ﻿using Moq;
 
-namespace Runic.Cucumber.UnitTest
+namespace Runic.Cucumber.UnitTest.TestUtility
 {
     public class TestObject<T> where T : class
     {

@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Runic.Cucumber.UnitTest.TestUtility;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -36,7 +37,7 @@ namespace Runic.Cucumber.UnitTest
         {
             var fakeTest = new FakeCucumberClass();
             TestEnvironment.SetupMocks(fakeTest);
-            ((AssemblyAdapter)TestEnvironment.AssemblyAdapter.Instance).Methods.Count.Should().Be(3);
+            ((AssemblyAdapter)TestEnvironment.AssemblyAdapter.Instance).Methods.Count.Should().Be(4);
         }
 
         [TestMethod]

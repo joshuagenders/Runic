@@ -1,13 +1,13 @@
-﻿using Autofac;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.UnitTest.TestUtility;
 using Runic.Framework.Clients;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
+using Autofac;
 
 namespace Runic.Agent.Core.UnitTest.Tests
 {
@@ -39,14 +39,13 @@ namespace Runic.Agent.Core.UnitTest.Tests
         public void AssemblyManagement_LoadAssembly()
         {
             _pluginManager.LoadPlugin(TestConstants.AssemblyName);
-            //TODO
-            //Assert.AreEqual(_pluginManager.GetAssemblies().Count, 1);
-            //var assembly = _pluginManager.GetAssemblies().Single();
-            //var iocType = assembly.GetType("Runic.ExampleTest.RunicIoC");
-            //var runeClient = iocType.GetProperties(BindingFlags.Static | BindingFlags.Public)
-            //                        .Where(t => t.PropertyType.IsAssignableTo<IRuneClient>())
-            //                        .Select(t => t.GetValue(iocType));
-            //Assert.IsNotNull(runeClient);
+            Assert.AreEqual(_pluginManager.GetAssemblies().Count, 1);
+            var assembly = _pluginManager.GetAssemblies().Single();
+            var iocType = assembly.GetType("Runic.ExampleTest.RunicIoC");
+            var runeClient = iocType.GetProperties(BindingFlags.Static | BindingFlags.Public)
+                                    .Where(t => t.PropertyType.IsAssignableTo<IRuneClient>())
+                                    .Select(t => t.GetValue(iocType));
+            Assert.IsNotNull(runeClient);
         }
 
         [TestMethod]
@@ -62,8 +61,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         {
             _pluginManager.LoadPlugin(TestConstants.AssemblyName);
             _pluginManager.LoadPlugin(TestConstants.AssemblyName);
-            //TODO
-            //Assert.AreEqual(_pluginManager.GetAssemblies().Count, 1);
+            Assert.AreEqual(_pluginManager.GetAssemblies().Count, 1);
         }
     }
 }

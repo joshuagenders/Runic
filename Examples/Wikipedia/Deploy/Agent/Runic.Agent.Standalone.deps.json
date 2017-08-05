@@ -1,0 +1,314 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v1.1",
+    "signature": "0ad8f884bc916f32cdbf91cd07f5f97546c65823"
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v1.1": {
+      "runic.agent.standalone/1.0.0": {
+        "dependencies": {
+          "Autofac": "4.6.0",
+          "Config.Net": "3.2.0",
+          "Microsoft.Extensions.Logging.Console": "1.1.2",
+          "Newtonsoft.Json": "9.0.1",
+          "Runic.Agent.Core": "1.0.0",
+          "StatsN": "1.2.1"
+        },
+        "runtime": {
+          "Runic.Agent.Standalone.dll": {}
+        }
+      },
+      "autofac/4.6.0": {
+        "runtime": {
+          "lib/netstandard1.1/Autofac.dll": {}
+        }
+      },
+      "config.net/3.2.0": {
+        "dependencies": {
+          "Newtonsoft.Json": "9.0.1",
+          "NetBox": "1.2.0"
+        },
+        "runtime": {
+          "lib/netstandard1.6/Config.Net.dll": {}
+        }
+      },
+      "microsoft.extensions.configuration.abstractions/1.1.2": {
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "1.1.1"
+        },
+        "runtime": {
+          "lib/netstandard1.0/Microsoft.Extensions.Configuration.Abstractions.dll": {}
+        }
+      },
+      "microsoft.extensions.dependencyinjection.abstractions/1.1.1": {
+        "runtime": {
+          "lib/netstandard1.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {}
+        }
+      },
+      "microsoft.extensions.logging/1.1.2": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.1",
+          "Microsoft.Extensions.Logging.Abstractions": "1.1.2"
+        },
+        "runtime": {
+          "lib/netstandard1.1/Microsoft.Extensions.Logging.dll": {}
+        }
+      },
+      "microsoft.extensions.logging.abstractions/1.1.2": {
+        "runtime": {
+          "lib/netstandard1.1/Microsoft.Extensions.Logging.Abstractions.dll": {}
+        }
+      },
+      "microsoft.extensions.logging.console/1.1.2": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "1.1.2",
+          "Microsoft.Extensions.Logging.Abstractions": "1.1.2"
+        },
+        "runtime": {
+          "lib/netstandard1.3/Microsoft.Extensions.Logging.Console.dll": {}
+        }
+      },
+      "microsoft.extensions.primitives/1.1.1": {
+        "dependencies": {
+          "System.Runtime.CompilerServices.Unsafe": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.0/Microsoft.Extensions.Primitives.dll": {}
+        }
+      },
+      "netbox/1.2.0": {
+        "dependencies": {
+          "Newtonsoft.Json": "9.0.1"
+        },
+        "runtime": {
+          "lib/netstandard1.6/NetBox.dll": {}
+        }
+      },
+      "newtonsoft.json/9.0.1": {
+        "dependencies": {
+          "System.Runtime.Serialization.Primitives": "4.1.1"
+        },
+        "runtime": {
+          "lib/netstandard1.0/Newtonsoft.Json.dll": {}
+        }
+      },
+      "runic.framework/1.0.0": {
+        "runtime": {
+          "lib/netcoreapp1.1/Runic.Framework.dll": {}
+        }
+      },
+      "statsn/1.2.1": {
+        "dependencies": {
+          "StatsN.Contracts": "1.2.1",
+          "System.ComponentModel.EventBasedAsync": "4.0.11",
+          "System.Diagnostics.TraceSource": "4.0.0"
+        },
+        "runtime": {
+          "lib/netstandard1.3/StatsN.dll": {}
+        }
+      },
+      "statsn.contracts/1.2.1": {
+        "runtime": {
+          "lib/netstandard1.3/StatsN.Contracts.dll": {}
+        }
+      },
+      "system.componentmodel.eventbasedasync/4.0.11": {
+        "runtime": {
+          "lib/netstandard1.3/System.ComponentModel.EventBasedAsync.dll": {}
+        }
+      },
+      "system.diagnostics.tracesource/4.0.0": {
+        "runtimeTargets": {
+          "runtimes/unix/lib/netstandard1.3/System.Diagnostics.TraceSource.dll": {
+            "rid": "unix",
+            "assetType": "runtime"
+          },
+          "runtimes/win/lib/netstandard1.3/System.Diagnostics.TraceSource.dll": {
+            "rid": "win",
+            "assetType": "runtime"
+          }
+        }
+      },
+      "system.runtime.compilerservices.unsafe/4.3.0": {
+        "runtime": {
+          "lib/netstandard1.0/System.Runtime.CompilerServices.Unsafe.dll": {}
+        }
+      },
+      "system.runtime.serialization.primitives/4.1.1": {
+        "runtime": {
+          "lib/netstandard1.3/System.Runtime.Serialization.Primitives.dll": {}
+        }
+      },
+      "gherkin/4.0.0": {
+        "dependencies": {
+          "Newtonsoft.Json": "9.0.1"
+        },
+        "runtime": {
+          "Gherkin.dll": {}
+        }
+      },
+      "runic.agent.core/1.0.0": {
+        "dependencies": {
+          "Autofac": "4.6.0",
+          "Microsoft.Extensions.Logging": "1.1.2",
+          "Runic.Cucumber": "1.0.0",
+          "Runic.Framework": "1.0.0",
+          "StatsN": "1.2.1"
+        },
+        "runtime": {
+          "Runic.Agent.Core.dll": {}
+        }
+      },
+      "runic.cucumber/1.0.0": {
+        "dependencies": {
+          "Gherkin": "4.0.0"
+        },
+        "runtime": {
+          "Runic.Cucumber.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "runic.agent.standalone/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "autofac/4.6.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Y+7B007u3cYpjU4THI9/i2pSyRnHjZtRJOrjGiHYPH5C32jJZ5njWjgLVnI6nmsYjUrYcWjXLfB13J3ztd37cw==",
+      "path": "autofac/4.6.0",
+      "hashPath": "autofac.4.6.0.nupkg.sha512"
+    },
+    "config.net/3.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-sTMJQoBU1Y1pKTNqEaAdKVfMWZIXOIn4FpK/7yEZWZKOkGO/JwAc8rtowRV+zCD/DBF1vgn6PG/h4DNbVOmPuw==",
+      "path": "config.net/3.2.0",
+      "hashPath": "config.net.3.2.0.nupkg.sha512"
+    },
+    "microsoft.extensions.configuration.abstractions/1.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-I1BRk2OCjOondHFc0flHFMxLTbsOPQdB0CxexkZOHcAD1oAWC2KcpxvmmQ07kLUcYKbtSdtvPkm7YPdw8bdJ9Q==",
+      "path": "microsoft.extensions.configuration.abstractions/1.1.2",
+      "hashPath": "microsoft.extensions.configuration.abstractions.1.1.2.nupkg.sha512"
+    },
+    "microsoft.extensions.dependencyinjection.abstractions/1.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-sKsx2jEkabcI954cB6MoU2LUxv8YTByV8+ifqbFtIF8gFqPb4/CfPxwvxrYW+aXc4V44KKHOyeTDgyc4B7fjYg==",
+      "path": "microsoft.extensions.dependencyinjection.abstractions/1.1.1",
+      "hashPath": "microsoft.extensions.dependencyinjection.abstractions.1.1.1.nupkg.sha512"
+    },
+    "microsoft.extensions.logging/1.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-LydGeNbeOBTLt3qYz8L3wpRl4TIE6sLBTROiWlU5uckJOaTBCtOTonTbUWrdYEvjOEDFlKySsKUI7HmS7sjrrA==",
+      "path": "microsoft.extensions.logging/1.1.2",
+      "hashPath": "microsoft.extensions.logging.1.1.2.nupkg.sha512"
+    },
+    "microsoft.extensions.logging.abstractions/1.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-hbMEC7HYh2JJK0sSrMXFdOc0tjjRq8kDiSGzXh07AVbMnReLqWa6hA0QJx7umneMK7/9L3sKJnkB+RLGTagkOg==",
+      "path": "microsoft.extensions.logging.abstractions/1.1.2",
+      "hashPath": "microsoft.extensions.logging.abstractions.1.1.2.nupkg.sha512"
+    },
+    "microsoft.extensions.logging.console/1.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pOHZgIXP90hcHxhwH1Yh53UsPEo8hrBJm/TBC5ehBKYub+Z08zBd4f1aVBJExveLysAzIV8reEatIg0wElNJGw==",
+      "path": "microsoft.extensions.logging.console/1.1.2",
+      "hashPath": "microsoft.extensions.logging.console.1.1.2.nupkg.sha512"
+    },
+    "microsoft.extensions.primitives/1.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-MrsHOyFpwT+LBzGWp/Oq3pV1Vku8FYE6hgO+2XR0WBRtoI9EaJcpRbtBabS7pXYrkIN1/LOXACpZ9Stqmbrs6A==",
+      "path": "microsoft.extensions.primitives/1.1.1",
+      "hashPath": "microsoft.extensions.primitives.1.1.1.nupkg.sha512"
+    },
+    "netbox/1.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Xxhzs+yPm/w575peoV72d9sti7fLsTOhDF/7kZNbLO/JcAt87UnwBvbmCoRXGiOEuw+/hRaLv0LTuxZWSVgApQ==",
+      "path": "netbox/1.2.0",
+      "hashPath": "netbox.1.2.0.nupkg.sha512"
+    },
+    "newtonsoft.json/9.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-U82mHQSKaIk+lpSVCbWYKNavmNH1i5xrExDEquU1i6I5pV6UMOqRnJRSlKO3cMPfcpp0RgDY+8jUXHdQ4IfXvw==",
+      "path": "newtonsoft.json/9.0.1",
+      "hashPath": "newtonsoft.json.9.0.1.nupkg.sha512"
+    },
+    "runic.framework/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Px2odJNfRNFaXR+i77uMxjNSM5cmOrAUZAuCH27eJ34SRJKiLcGZ/qWKG8vX3PXw1ILNmoxTu7ggvtvUqcxr+Q==",
+      "path": "runic.framework/1.0.0",
+      "hashPath": "runic.framework.1.0.0.nupkg.sha512"
+    },
+    "statsn/1.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-TjGZuErJfRLraKBkH0cnC1bqxhwonYLjgQSGVFZawWeqbK3hjqwdueoFgAWzUvP67Y/i9DkbZ0NHUN6bUu4M+A==",
+      "path": "statsn/1.2.1",
+      "hashPath": "statsn.1.2.1.nupkg.sha512"
+    },
+    "statsn.contracts/1.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-CHShUx3GpKJE7WfJgC8VSmEtUFlDzP+AAm6rtE8XzzckzZt4K+MpKn5n6uXz/Dz9BIgof5uWEqerlGQwVKa+aA==",
+      "path": "statsn.contracts/1.2.1",
+      "hashPath": "statsn.contracts.1.2.1.nupkg.sha512"
+    },
+    "system.componentmodel.eventbasedasync/4.0.11": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Z7SO6vvQIR84daPE4uhaNdef9CjgjDMGYkas8epUhf0U3WGuaGgZ0Mm4QuNycMdbHUY8KEdZrtgxonkAiJaAlA==",
+      "path": "system.componentmodel.eventbasedasync/4.0.11",
+      "hashPath": "system.componentmodel.eventbasedasync.4.0.11.nupkg.sha512"
+    },
+    "system.diagnostics.tracesource/4.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6WVCczFZKXwpWpzd/iJkYnsmWTSFFiU24Xx/YdHXBcu+nFI/ehTgeqdJQFbtRPzbrO3KtRNjvkhtj4t5/WwWsA==",
+      "path": "system.diagnostics.tracesource/4.0.0",
+      "hashPath": "system.diagnostics.tracesource.4.0.0.nupkg.sha512"
+    },
+    "system.runtime.compilerservices.unsafe/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rcnXA1U9W3QUtMSGoyoNHH6w4V5Rxa/EKXmzpORUYlDAlDB34hIQoU57ATXl8xHa83VvzRm6PcElEizgUd7U5w==",
+      "path": "system.runtime.compilerservices.unsafe/4.3.0",
+      "hashPath": "system.runtime.compilerservices.unsafe.4.3.0.nupkg.sha512"
+    },
+    "system.runtime.serialization.primitives/4.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HZ6Du5QrTG8MNJbf4e4qMO3JRAkIboGT5Fk804uZtg3Gq516S7hAqTm2UZKUHa7/6HUGdVy3AqMQKbns06G/cg==",
+      "path": "system.runtime.serialization.primitives/4.1.1",
+      "hashPath": "system.runtime.serialization.primitives.4.1.1.nupkg.sha512"
+    },
+    "gherkin/4.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "runic.agent.core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "runic.cucumber/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
