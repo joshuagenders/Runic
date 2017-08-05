@@ -51,14 +51,14 @@ namespace Runic.Agent.Worker.Services
             _bus.PublishAsync(message);
         }
 
-        public async Task RunServiceAsync(CancellationToken ct)
+        public async Task RunServiceAsync(CancellationToken ctx = default(CancellationToken))
         {
             await Task.Run(() =>
             {
                 var mre = new ManualResetEventSlim(false);
-                ct.Register(() => mre.Set());
+                ctx.Register(() => mre.Set());
                 mre.Wait();
-            }, ct);
+            }, ctx);
             await _bus.ShutdownAsync();
         }
     }

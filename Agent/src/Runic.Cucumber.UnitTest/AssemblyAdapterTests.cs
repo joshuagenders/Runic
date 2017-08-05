@@ -23,7 +23,7 @@ namespace Runic.Cucumber.UnitTest
             cts.CancelAfter(1000);
             await TestEnvironment.AssemblyAdapter
                                  .Instance
-                                 .ExecuteMethodAsync(fakeTest, method, cts.Token);
+                                 .ExecuteMethodAsync(fakeTest, method, new object[] { "" }, cts.Token);
 
             fakeTest.CallList
                     .Count(c => c.InvocationTarget == "GivenMethod")
@@ -55,7 +55,7 @@ namespace Runic.Cucumber.UnitTest
 
             await TestEnvironment.AssemblyAdapter
                                  .Instance
-                                 .ExecuteMethodFromStatementAsync(statement, new object[] { }, cts.Token);
+                                 .ExecuteMethodFromStatementAsync(statement, new object[] { "" }, cts.Token);
             
             fakeTest.CallList.Count(c => c.InvocationTarget == "GivenMethod").Should().Be(1);
         }

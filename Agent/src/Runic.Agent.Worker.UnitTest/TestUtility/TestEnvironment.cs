@@ -43,7 +43,7 @@ namespace Runic.Agent.Worker.Test.TestUtility
             HandlerRegistry = handlerRegistry;
         }
 
-        public Task RunApplicationAsync(CancellationToken ct = default(CancellationToken))
+        public Task RunApplicationAsync(CancellationToken ctx = default(CancellationToken))
         {
             throw new NotImplementedException();
         }

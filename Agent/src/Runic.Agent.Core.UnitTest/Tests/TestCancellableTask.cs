@@ -44,11 +44,11 @@ namespace Runic.Agent.Core.UnitTest.Tests
             }
         }
 
-        private async Task Poll(CancellationToken ct)
+        private async Task Poll(CancellationToken ctx = default(CancellationToken))
         {
-            while (!ct.IsCancellationRequested)
+            while (!ctx.IsCancellationRequested)
             {
-                await Task.Run(() => Thread.Sleep(10), ct);
+                await Task.Run(() => Thread.Sleep(10), ctx);
             }
         }
     }

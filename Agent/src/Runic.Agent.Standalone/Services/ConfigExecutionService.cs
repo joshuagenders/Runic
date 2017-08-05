@@ -28,20 +28,20 @@ namespace Runic.Agent.Standalone.Services
             _flowProvider = flowProvider;
         }
 
-        public async Task StartThreadPattern(CancellationToken ct = default(CancellationToken))
+        public async Task StartThreadPattern(CancellationToken ctx = default(CancellationToken))
         {
             //todo standardise tokens
             ImportFlow();
             switch (_config.AgentSettings.FlowThreadPatternName.ToLowerInvariant())
             {
                 case "graph":
-                    StartGraphPattern(ct);
+                    StartGraphPattern(ctx);
                     break;
                 case "gradual":
-                    StartGradualPattern(ct);
+                    StartGradualPattern(ctx);
                     break;
                 case "constant":
-                    StartConstantPattern(ct);
+                    StartConstantPattern(ctx);
                     break;
                 default:
                     throw new ThreadPatternNotRecognisedException();
@@ -55,7 +55,7 @@ namespace Runic.Agent.Standalone.Services
             _flowManager.AddUpdateFlow(_flow);
         }
 
-        private void StartConstantPattern(CancellationToken ct = default(CancellationToken))
+        private void StartConstantPattern(CancellationToken ctx = default(CancellationToken))
         {
             var pattern = new ConstantThreadPattern()
                 {
@@ -63,32 +63,31 @@ namespace Runic.Agent.Standalone.Services
                     DurationSeconds = _config.AgentSettings.FlowDurationSeconds
                 };
 
-            _patternService.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ct);
+            _patternService.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ctx);
         }
 
-        private void StartGraphPattern(CancellationToken ct)
+        private void StartGraphPattern(CancellationToken ctx = default(CancellationToken))
         {
             var pattern = new GraphThreadPattern()
             {
                 DurationSeconds = _config.AgentSettings.FlowDurationSeconds,
                 Points = _config.AgentSettings.FlowPoints.ParsePoints()
             };
-            _patternService.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ct);
+            _patternService.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ctx);
         }
 
-        private void StartGradualPattern(CancellationToken ct)
+        private void StartGradualPattern(CancellationToken ctx = default(CancellationToken))
         {
             var pattern = new GradualThreadPattern()
             {
                 DurationSeconds = _config.AgentSettings.FlowDurationSeconds,
-                Points = _config.AgentSettings.FlowPoints.ParsePoints(),
                 RampDownSeconds = _config.AgentSettings.FlowRampDownSeconds,
                 RampUpSeconds = _config.AgentSettings.FlowRampUpSeconds,
                 StepIntervalSeconds = _config.AgentSettings.FlowStepIntervalSeconds,
                 ThreadCount = _config.AgentSettings.FlowThreadCount
             };
 
-            _patternService.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ct);
+            _patternService.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ctx);
         }
     }
 }

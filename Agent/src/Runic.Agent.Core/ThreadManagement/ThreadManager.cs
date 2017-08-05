@@ -58,7 +58,7 @@ namespace Runic.Agent.Core.ThreadManagement
             }
         }
         
-        public async Task SafeCancelAll()
+        public async Task SafeCancelAll(CancellationToken ctx = default(CancellationToken))
         {
             var updateTasks = new List<Task>();
             _threadManagers.ToList().ForEach(ftm => updateTasks.Add(ftm.Value.SafeUpdateThreadCountAsync(0)));
@@ -69,7 +69,7 @@ namespace Runic.Agent.Core.ThreadManagement
             }
         }
 
-        public async Task SetThreadLevelAsync(SetThreadLevelRequest request, CancellationToken ct)
+        public async Task SetThreadLevelAsync(SetThreadLevelRequest request, CancellationToken ctx = default(CancellationToken))
         {
             //todo implement maxthreads
             _logger.LogDebug($"Attempting to update thread level to {request.ThreadLevel} for {request.FlowName}");

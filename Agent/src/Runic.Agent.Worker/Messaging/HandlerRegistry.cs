@@ -19,21 +19,21 @@ namespace Runic.Agent.Worker.Messaging
             _threadManager = threadManager;
         }
 
-        public void RegisterMessageHandlers(CancellationToken ct = default(CancellationToken))
+        public void RegisterMessageHandlers(CancellationToken ctx)
         {
-            RegisterConstantMessageHandler(ct);
-            RegisterGraphMessageHandler(ct);
-            RegisterGradualMessageHandler(ct);
-            RegisterThreadLevelMessageHandler(ct);
+            RegisterConstantMessageHandler(ctx);
+            RegisterGraphMessageHandler(ctx);
+            RegisterGradualMessageHandler(ctx);
+            RegisterThreadLevelMessageHandler(ctx);
         }
 
-        private void RegisterThreadLevelMessageHandler(CancellationToken ct = default(CancellationToken))
+        private void RegisterThreadLevelMessageHandler(CancellationToken ctx)
         {
             _messagingService.RegisterMessageHandler(
-                async (SetThreadLevelRequest request) => await _threadManager.SetThreadLevelAsync(request, ct));
+                async (SetThreadLevelRequest request) => await _threadManager.SetThreadLevelAsync(request, ctx));
         }
 
-        private void RegisterConstantMessageHandler(CancellationToken ct = default(CancellationToken))
+        private void RegisterConstantMessageHandler(CancellationToken ctx)
         {
             _messagingService.RegisterMessageHandler(
                 (ConstantFlowExecutionRequest request) =>
@@ -43,12 +43,12 @@ namespace Runic.Agent.Worker.Messaging
                         ThreadCount = request.ThreadPattern.ThreadCount,
                         DurationSeconds = request.ThreadPattern.DurationSeconds
                     };
-                    _patternService.StartThreadPattern(request.PatternExecutionId, request.Flow, pattern, ct);
+                    _patternService.StartThreadPattern(request.PatternExecutionId, request.Flow, pattern, ctx);
                     return Task.CompletedTask;
                 });
         }
 
-        private void RegisterGraphMessageHandler(CancellationToken ct)
+        private void RegisterGraphMessageHandler(CancellationToken ctx)
         {
             _messagingService.RegisterMessageHandler(
                 (GraphFlowExecutionRequest request) =>
@@ -58,12 +58,12 @@ namespace Runic.Agent.Worker.Messaging
                         DurationSeconds = request.ThreadPattern.DurationSeconds,
                         Points = request.ThreadPattern.Points
                     };
-                    _patternService.StartThreadPattern(request.PatternExecutionId, request.Flow, pattern, ct);
+                    _patternService.StartThreadPattern(request.PatternExecutionId, request.Flow, pattern, ctx);
                     return Task.CompletedTask;
                 });
         }
 
-        private void RegisterGradualMessageHandler(CancellationToken ct)
+        private void RegisterGradualMessageHandler(CancellationToken ctx)
         {
             _messagingService.RegisterMessageHandler(
                 (GradualFlowExecutionRequest request) =>
@@ -78,7 +78,7 @@ namespace Runic.Agent.Worker.Messaging
                         ThreadCount = request.ThreadPattern.ThreadCount
                     };
 
-                    _patternService.StartThreadPattern(request.PatternExecutionId, request.Flow, pattern, ct);
+                    _patternService.StartThreadPattern(request.PatternExecutionId, request.Flow, pattern, ctx);
                     return Task.CompletedTask;
                 });
         }

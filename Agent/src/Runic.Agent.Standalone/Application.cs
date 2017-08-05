@@ -25,12 +25,12 @@ namespace Runic.Agent.Standalone
             _flowProvider = flowProvider;
         }
 
-        public async Task RunApplicationAsync(CancellationToken ct = default(CancellationToken))
+        public async Task RunApplicationAsync(CancellationToken ctx = default(CancellationToken))
         {
             _logger.LogInformation("Run application invoked");
             var executionService = new ConfigExecutionService(_patternService, _flowManager, _config, _flowProvider);
-            await executionService.StartThreadPattern(ct);
-            await _patternService.GetCompletionTaskAsync(_config.AgentSettings.FlowPatternExecutionId, ct);
+            await executionService.StartThreadPattern(ctx);
+            await _patternService.GetCompletionTaskAsync(_config.AgentSettings.FlowPatternExecutionId, ctx);
         }
     }
 }

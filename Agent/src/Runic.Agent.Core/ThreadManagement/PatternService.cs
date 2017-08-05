@@ -32,7 +32,7 @@ namespace Runic.Agent.Core.ThreadManagement
             _threadPatterns = new ConcurrentDictionary<string, CancellableTask>();
         }
         
-        public void StartThreadPattern(string flowExecutionId, Flow flow, IThreadPattern pattern, CancellationToken ct)
+        public void StartThreadPattern(string flowExecutionId, Flow flow, IThreadPattern pattern, CancellationToken ctx = default(CancellationToken))
         {
             if (_threadManager.FlowExists(flowExecutionId))
             {
@@ -41,9 +41,8 @@ namespace Runic.Agent.Core.ThreadManagement
             }
             var cts = new CancellationTokenSource();
             var patternTask = ExecutePatternAsync(flowExecutionId, flow, pattern, cts.Token);
-            //.ContinueWith(async (_) => await SafeRemoveTaskAsync(patternExecutionId));
-
             var cancellableTask = new CancellableTask(patternTask, cts);
+
             _threadPatterns.AddOrUpdate(flowExecutionId, cancellableTask,
                 (key, val) => {
                     val.Cancel();
@@ -51,7 +50,7 @@ namespace Runic.Agent.Core.ThreadManagement
                 });
         }
 
-        public async Task SafeCancelAllPatternsAsync(CancellationToken ct)
+        public async Task SafeCancelAllPatternsAsync(CancellationToken ctx = default(CancellationToken))
         {
             var updateTasks = new List<Task>();
 
@@ -60,7 +59,7 @@ namespace Runic.Agent.Core.ThreadManagement
             await Task.WhenAll(updateTasks.ToArray());
         }
 
-        public async Task StopThreadPatternAsync(string flowExecutionId, CancellationToken ct)
+        public async Task StopThreadPatternAsync(string flowExecutionId, CancellationToken ctx = default(CancellationToken))
         {
             if (_threadPatterns.TryRemove(flowExecutionId, out CancellableTask task))
             {
@@ -69,7 +68,7 @@ namespace Runic.Agent.Core.ThreadManagement
             }
         }
 
-        public async Task GetCompletionTaskAsync(string flowExecutionId, CancellationToken ct)
+        public async Task GetCompletionTaskAsync(string flowExecutionId, CancellationToken ctx = default(CancellationToken))
         {
             if (_threadPatterns.ContainsKey(flowExecutionId))
             {
@@ -88,7 +87,7 @@ namespace Runic.Agent.Core.ThreadManagement
                 await task.CancelAsync();
         }
 
-        private async Task ExecutePatternAsync(string flowExecutionId, Flow flow, IThreadPattern pattern, CancellationToken ct)
+        private async Task ExecutePatternAsync(string flowExecutionId, Flow flow, IThreadPattern pattern, CancellationToken ctx = default(CancellationToken))
         {
             _flowManager.AddUpdateFlow(flow);
 
@@ -99,10 +98,10 @@ namespace Runic.Agent.Core.ThreadManagement
                     FlowName = flow.Name,
                     ThreadLevel = threadLevel,
                     FlowId = flowExecutionId
-                }, ct);
+                }, ctx);
             });
 
-            await pattern.StartPatternAsync(ct);
+            await pattern.StartPatternAsync(ctx);
         }
         
         public void Dispose()
@@ -112,9 +111,9 @@ namespace Runic.Agent.Core.ThreadManagement
             SafeCancelAllPatternsAsync(cts.Token).Wait();
         }
 
-        public async Task SetThreadLevelAsync(SetThreadLevelRequest request, CancellationToken ct)
+        public async Task SetThreadLevelAsync(SetThreadLevelRequest request, CancellationToken ctx = default(CancellationToken))
         {
-            await _threadManager.SetThreadLevelAsync(request, ct);
+            await _threadManager.SetThreadLevelAsync(request, ctx);
         }
     }
 }

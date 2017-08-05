@@ -17,11 +17,11 @@ namespace Runic.Agent.Worker
             _handlerRegistry = handlerRegistry;
         }
 
-        public async Task RunApplicationAsync(CancellationToken ct = default(CancellationToken))
+        public async Task RunApplicationAsync(CancellationToken ctx = default(CancellationToken))
         {
-            _handlerRegistry.RegisterMessageHandlers(ct);
+            _handlerRegistry.RegisterMessageHandlers(ctx);
             //run the messaging service
-            await _messagingService.RunServiceAsync(ct);
+            await _messagingService.RunServiceAsync(ctx);
         }
     }
 }

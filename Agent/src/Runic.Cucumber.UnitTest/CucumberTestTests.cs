@@ -17,14 +17,14 @@ namespace Runic.Cucumber.UnitTest
             var test = new CucumberTest(TestEnvironment.AssemblyAdapter.Instance);
 
             var cts = new CancellationTokenSource();
-            await test.Given("I have a given \"string\"")
-                      .When("I have a when \"string\"")
-                      .Then("I have a then \"string\"")
+            await test.Given("I have a given \"givenstring\"")
+                      .When("I have a when \"whenstring\"")
+                      .Then("I have a then \"thenstring\"")
                       .ExecuteAsync();
 
-            fakeTest.CallList.Count(c => c.InvocationTarget == "GivenMethod").Should().Be(1);
-            fakeTest.CallList.Count(c => c.InvocationTarget == "WhenMethod").Should().Be(1);
-            fakeTest.CallList.Count(c => c.InvocationTarget == "ThenMethod").Should().Be(1);
+            fakeTest.CallList.Count(c => c.InvocationTarget == "GivenMethod" && c.AdditionalData == "givenstring").Should().Be(1);
+            fakeTest.CallList.Count(c => c.InvocationTarget == "WhenMethod" && c.AdditionalData == "whenstring").Should().Be(1);
+            fakeTest.CallList.Count(c => c.InvocationTarget == "ThenMethod" && c.AdditionalData == "thenstring").Should().Be(1);
         }
     }
 }

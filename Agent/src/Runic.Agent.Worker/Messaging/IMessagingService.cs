@@ -7,7 +7,7 @@ namespace Runic.Agent.Worker.Messaging
 {
     public interface IMessagingService
     {
-        Task RunServiceAsync(CancellationToken ct);
+        Task RunServiceAsync(CancellationToken ctx = default(CancellationToken));
         void PublishMessage<T>(T message);
         void RegisterMessageHandler(Func<SetThreadLevelRequest, Task> handler);
         void RegisterMessageHandler(Func<AddUpdateFlowRequest, Task> handler);

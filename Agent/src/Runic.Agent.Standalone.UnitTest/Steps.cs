@@ -14,7 +14,7 @@ namespace Runic.Agent.Standalone.Test
     public class Steps
     {
         #region TestObjects
-        Flow TestFlow => new Flow()
+        Flow FunctionFlow => new Flow()
         {
             Name = "test_flow",
             StepDelayMilliseconds = 10,
@@ -35,6 +35,30 @@ namespace Runic.Agent.Standalone.Test
                                     { "input1", typeof(string) },
                                     { "4", typeof(int) }
                                 }
+                            }
+                        }
+                    }
+        };
+        Flow CucumberFlow => new Flow()
+        {
+            Name = "test_flow",
+            StepDelayMilliseconds = 10,
+            Steps =
+                new List<Step>()
+                    {
+                        new Step()
+                        {
+                            StepName = "step1",
+                            GetNextStepFromFunctionResult = false,
+                            Cucumber = new CucmberInformation()
+                            {
+                                AssemblyName = "Runic.Agent.Standalone.Test",
+                                Document =
+                                @"Feature: MyExample
+                                  Scenario: MyScenario
+                                   Given I have a given ""method""
+                                   When I have a when ""wherever""
+                                   Then I have a then ""whomever"""
                             }
                         }
                     }
@@ -63,8 +87,9 @@ namespace Runic.Agent.Standalone.Test
                     mockAgentSettings.Setup(s => s.FlowPoints).Returns(new string[] { "0.1", "3.0" });
                     break;
                 case "gradual":
-                    mockAgentSettings.Setup(s => s.FlowRampUpSeconds).Returns(1);
-                    mockAgentSettings.Setup(s => s.FlowRampDownSeconds).Returns(1);
+                    mockAgentSettings.Setup(s => s.FlowRampUpSeconds).Returns(0);
+                    mockAgentSettings.Setup(s => s.FlowRampDownSeconds).Returns(0);
+                    mockAgentSettings.Setup(s => s.FlowThreadCount).Returns(1);
                     mockAgentSettings.Setup(s => s.FlowStepIntervalSeconds).Returns(1);
                     break;
             }
@@ -72,29 +97,47 @@ namespace Runic.Agent.Standalone.Test
                        .MockObject.Setup(c => c.AgentSettings)
                        .Returns(_environment.AgentSettings.Instance);
             _environment.WithAgentConfig(_environment.AgentConfig.Instance);
+        }
 
-            var testFlow = TestFlow;
+        public void RegisterTestFlow(Flow testFlow)
+        {
+            var assemblyName = testFlow.Steps[0].Function?.AssemblyName ?? testFlow.Steps[0].Cucumber.AssemblyName;
             _environment.PluginManager
-                       .MockObject
-                       .Setup(p => p.GetClassType(testFlow.Steps[0].Function.AssemblyQualifiedClassName))
-                       .Returns(typeof(FakeFunction));
-
-            _environment.PluginManager
-                      .MockObject
-                      .Setup(p => p.GetPlugin(testFlow.Steps[0].Function.AssemblyName))
-                      .Returns(GetType().GetTypeInfo().Assembly);
+                        .MockObject
+                        .Setup(p => p.GetPlugin(assemblyName))
+                        .Returns(GetType().GetTypeInfo().Assembly);
 
             _environment.FlowManager
-                       .MockObject
-                       .Setup(f => f.GetFlow("test_flow"))
-                       .Returns(testFlow);
+                        .MockObject
+                        .Setup(f => f.GetFlow("test_flow"))
+                        .Returns(testFlow);
 
             _environment.FlowProvider
-                       .MockObject
-                       .Setup(p => p.GetFlow("test_path"))
-                       .Returns(testFlow);
+                        .MockObject
+                        .Setup(p => p.GetFlow("test_path"))
+                        .Returns(testFlow);
+        }
 
+        [Given("I start the application")]
+        public void StartApplication()
+        {
             _environment.StartApplication();
+        }
+
+        [Given("I have a cucumber flow")]
+        public void IHaveACucumberTest()
+        {
+            RegisterTestFlow(CucumberFlow);
+        }
+
+        [Given("I have a function flow")]
+        public void IHaveAFunctionFlow()
+        {
+            RegisterTestFlow(FunctionFlow);
+            _environment.PluginManager
+                        .MockObject
+                        .Setup(p => p.GetClassType(FunctionFlow.Steps[0].Function.AssemblyQualifiedClassName))
+                        .Returns(typeof(FakeFunction));
         }
 
         [When(@"I start the test")]
@@ -109,7 +152,14 @@ namespace Runic.Agent.Standalone.Test
         public void TheFakeFunctionIsInvoked()
         {
             FakeFunction.CreatedInstances.Any().Should().BeTrue("No FakeFunction instances found");
-            FakeFunction.CreatedInstances.Max().Value.CallList.Any().Should().BeTrue("No methods invoked on FakeFunction instance");
+            FakeFunction.CreatedInstances.First().Value.CallList.Any().Should().BeTrue("No methods invoked on FakeFunction instance");
+        }
+
+        [Then(@"The fake cucumber test is invoked")]
+        public void TheFakeCucumberTestIsInvoked()
+        {
+            FakeCucumberClass.CreatedInstances.Any().Should().BeTrue("No FakeFunction instances found");
+            FakeCucumberClass.CreatedInstances.First().Value.CallList.Any().Should().BeTrue("No methods invoked on FakeFunction instance");
         }
     }
 }

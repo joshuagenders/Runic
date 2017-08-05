@@ -9,8 +9,8 @@ namespace Runic.Agent.Core.ThreadManagement
     {
         int GetThreadLevel(string flowId);
         void StopFlow(string flowExecutionId);
-        Task SafeCancelAll();
-        Task SetThreadLevelAsync(SetThreadLevelRequest request, CancellationToken ct);
+        Task SafeCancelAll(CancellationToken ctx = default(CancellationToken));
+        Task SetThreadLevelAsync(SetThreadLevelRequest request, CancellationToken ctx = default(CancellationToken));
         IList<string> GetRunningFlows();
         int GetRunningFlowCount();
         bool FlowExists(string flowExecutionId);

@@ -24,7 +24,7 @@ namespace Runic.Agent.Api.Messaging
             _bus = BusClientFactory.CreateDefault(busConfig);
         }
         
-        public async Task PublishMessageAsync<T>(T message, CancellationToken ct = default(CancellationToken))
+        public async Task PublishMessageAsync<T>(T message, CancellationToken ctx = default(CancellationToken))
         {
             await _bus.PublishAsync(message);
         }

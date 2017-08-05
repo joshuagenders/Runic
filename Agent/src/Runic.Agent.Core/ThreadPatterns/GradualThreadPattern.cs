@@ -29,10 +29,10 @@ namespace Runic.Agent.Core.ThreadPatterns
 
             AddEndPoint();
         }
-        public override async Task StartPatternAsync(CancellationToken ct)
+        public override async Task StartPatternAsync(CancellationToken ctx = default(CancellationToken))
         {
             GeneratePoints();
-            await base.StartPatternAsync(ct);
+            await base.StartPatternAsync(ctx);
         }
 
         private void AddStartPoint()

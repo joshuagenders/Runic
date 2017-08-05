@@ -8,12 +8,11 @@ namespace Runic.Agent.Core.ThreadManagement
 {
     public interface IPatternService
     {
-        Task SafeCancelAllPatternsAsync(CancellationToken ct);
-        Task StopThreadPatternAsync(string flowExecutionId, CancellationToken ct);
-        void StartThreadPattern(string flowExecutionId, Flow flow, IThreadPattern pattern, CancellationToken ct);
-        Task GetCompletionTaskAsync(string flowExecutionId, CancellationToken ct);
-
-        Task SetThreadLevelAsync(SetThreadLevelRequest request, CancellationToken ct);
+        Task SafeCancelAllPatternsAsync(CancellationToken ctx = default(CancellationToken));
+        Task StopThreadPatternAsync(string flowExecutionId, CancellationToken ctx = default(CancellationToken));
+        void StartThreadPattern(string flowExecutionId, Flow flow, IThreadPattern pattern, CancellationToken ctx = default(CancellationToken));
+        Task GetCompletionTaskAsync(string flowExecutionId, CancellationToken ctx = default(CancellationToken));
+        Task SetThreadLevelAsync(SetThreadLevelRequest request, CancellationToken ctx = default(CancellationToken));
 
         IList<string> GetRunningThreadPatterns();
         int GetRunningThreadPatternCount();

@@ -36,13 +36,13 @@ namespace Runic.Agent.Core.Harness
             StepName = StepName;
         }
 
-        public async Task<bool> OrchestrateFunctionExecutionAsync(CancellationToken ct)
+        public async Task<bool> OrchestrateFunctionExecutionAsync(CancellationToken ctx = default(CancellationToken))
         {
             try
             {
-                await ExecuteMethodWithAttribute(typeof(BeforeEachAttribute), ct);
-                await ExecuteFunctionAsync(ct);
-                await ExecuteMethodWithAttribute(typeof(AfterEachAttribute), ct);
+                await ExecuteMethodWithAttribute(typeof(BeforeEachAttribute), ctx);
+                await ExecuteFunctionAsync(ctx);
+                await ExecuteMethodWithAttribute(typeof(AfterEachAttribute), ctx);
                 _stats.CountFunctionSuccess(_functionName);
                 return true;
             }
@@ -54,9 +54,9 @@ namespace Runic.Agent.Core.Harness
             }
         }
 
-        public async Task ExecuteFunctionAsync(CancellationToken ct)
+        public async Task ExecuteFunctionAsync(CancellationToken ctx = default(CancellationToken))
         {
-            //todo pass overrides
+            //TODO pass overrides and use of dataservice
             var methods = _instance.GetType().GetRuntimeMethods();
             MethodInfo functionMethod = null;
             foreach (var method in methods)
@@ -72,12 +72,12 @@ namespace Runic.Agent.Core.Harness
                 throw new FunctionWithAttributeNotFoundException(_functionName);
             if (_getNextStepFromResult)
             {
-                var result = await ExecuteMethodWithReturnAsync(functionMethod, ct, GetMapMethodParameters(_positionalParameters, functionMethod));
+                var result = await ExecuteMethodWithReturnAsync(functionMethod, ctx, GetMapMethodParameters(_positionalParameters, functionMethod));
                 NextStep = result;
             }
             else
             {
-                await ExecuteMethodAsync(functionMethod, ct, GetMapMethodParameters(_positionalParameters, functionMethod));
+                await ExecuteMethodAsync(functionMethod, ctx, GetMapMethodParameters(_positionalParameters, functionMethod));
             }
         }
 
@@ -89,7 +89,7 @@ namespace Runic.Agent.Core.Harness
                               .Any(c => c.GetType() == typeof(AsyncStateMachineAttribute));
         }
 
-        public async Task<string> ExecuteMethodWithReturnAsync(MethodInfo method, CancellationToken ct, params object[] inputParams)
+        public async Task<string> ExecuteMethodWithReturnAsync(MethodInfo method, CancellationToken ctx = default(CancellationToken), params object[] inputParams)
         {
             if (IsAsyncMethod(method))
             {
@@ -102,7 +102,7 @@ namespace Runic.Agent.Core.Harness
             }
         }
 
-        public async Task ExecuteMethodAsync(MethodInfo method, CancellationToken ct, params object[] inputParams)
+        public async Task ExecuteMethodAsync(MethodInfo method, CancellationToken ctx = default(CancellationToken), params object[] inputParams)
         {
             if (IsAsyncMethod(method))
             {
@@ -111,7 +111,7 @@ namespace Runic.Agent.Core.Harness
             }
             else
             {
-                await Task.Run(() => method.Invoke(_instance, inputParams), ct);
+                await Task.Run(() => method.Invoke(_instance, inputParams), ctx);
             }
         }
         
@@ -149,11 +149,11 @@ namespace Runic.Agent.Core.Harness
             return methodParams;
         }
 
-        private async Task ExecuteMethodWithAttribute(Type attributeType, CancellationToken ct)
+        private async Task ExecuteMethodWithAttribute(Type attributeType, CancellationToken ctx = default(CancellationToken))
         {
             var method = GetMethodWithAttribute(attributeType);
             if (method != null)
-                await ExecuteMethodAsync(method, ct);
+                await ExecuteMethodAsync(method, ctx);
         }
     }
 }

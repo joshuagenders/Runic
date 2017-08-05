@@ -22,40 +22,69 @@ namespace Runic.Cucumber
             RegisterAttributes();
         }
 
-        public async Task ExecuteMethodAsync(object instance, MethodInfo method, CancellationToken ctx, params object[] inputParams)
+        public async Task ExecuteMethodAsync(object instance, MethodInfo method, object[] arguments, CancellationToken ctx = default(CancellationToken))
         {
+            Task task;
             if (IsAsyncMethod(method))
             {
-                var task = (Task)method.Invoke(instance, GetMapMethodParameters(inputParams, method));
+                task = (Task)method.Invoke(instance, GetMapMethodParameters(arguments, method));
                 await task;
+                if (task.IsFaulted)
+                {
+                    throw task.Exception;
+                }
             }
             else
             {
-                await Task.Run(() => method.Invoke(instance, GetMapMethodParameters(inputParams, method)), ctx);
-            }
+                method.Invoke(instance, GetMapMethodParameters(arguments, method));
+            }   
         }
 
         public async Task ExecuteMethodFromStatementAsync(string statement, object[] arguments, CancellationToken ctx = default(CancellationToken))
         {
-            var method = GetMethodTypeFromStatement(statement);
-            var instance = _stateManager.GetObject(method.DeclaringType);
+            var methodDetails = GetMethodTypeFromStatement(statement);
+            var instance = _stateManager.GetObject(methodDetails.Item1.DeclaringType);
+            //todo append, replace, error?
+            List<object> methodArgs = arguments.ToList();
+            methodArgs.AddRange(methodDetails.Item2.Cast<object>());
 
-            await ExecuteMethodAsync(instance, method, ctx, arguments);
+            await ExecuteMethodAsync(instance, methodDetails.Item1, methodArgs.ToArray(), ctx);
         }
 
-        private MethodInfo GetMethodTypeFromStatement(string statement, CancellationToken ctx = default(CancellationToken))
+        private Tuple<MethodInfo, List<string>> GetMethodTypeFromStatement(string statement, CancellationToken ctx = default(CancellationToken))
         {
+            var matches = new List<Tuple<MethodInfo, List<string>>>();
             foreach (var method in Methods)
             {
-                var attribute = method.GetCustomAttributes().First(a => a.GetType()
-                                                            .GetInterfaces()
-                                                            .Contains(typeof(IRegexMatchable))) as IRegexMatchable;
+                var attribute = method.GetCustomAttributes().Single(a => a.GetType()
+                                                                          .GetInterfaces()
+                                                                          .Contains(typeof(IRegexMatchable))) 
+                                                            as IRegexMatchable;
                 var pattern = attribute.GetMatchString;
-                if (Regex.Match(statement, pattern).Success)
-                    return method;
+                var inputArguments = new List<string>();
+                var match = Regex.Match(statement, pattern);
+                if (match.Success)
+                {
+                    for(var i = 1; i < match.Groups.Count; i++)
+                    {
+                        inputArguments.Add(match.Groups[i].Value);
+                    }
+                    matches.Add(Tuple.Create(method, inputArguments));
+                }
             }
 
-            throw new MethodNotFoundException($"Method not found for statement: {statement}");
+            if (!matches.Any())
+            {
+                throw new MethodNotFoundException($"Method not found for statement: {statement}");
+            }
+            if (matches.Count > 1)
+            {
+                throw new MultipleMethodsFoundException(
+                    $"Multiple methods found for statement: {statement}" + 
+                    string.Join(",", matches.Select(m => 
+                        m.Item1.DeclaringType.FullName + "." + m.Item1.Name)));
+            }
+            return matches.Single();
         }
 
         public void RegisterAttributes()
@@ -95,7 +124,7 @@ namespace Runic.Cucumber
                 if (p[i].HasDefaultValue)
                     methodParams[i] = p[i].DefaultValue;
                 else if (!p[i].IsOptional)
-                    methodParams[i] = p[i].ParameterType.IsByRef ? null : Activator.CreateInstance(p[i].ParameterType);
+                    methodParams[i] = p[i].ParameterType == typeof(string) ? "" : Activator.CreateInstance(p[i].ParameterType);
             }
             return methodParams;
         }

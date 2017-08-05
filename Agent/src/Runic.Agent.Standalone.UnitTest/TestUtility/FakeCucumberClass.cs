@@ -1,17 +1,21 @@
-﻿using System;
+﻿using Runic.Cucumber;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Runic.Cucumber.UnitTest
+namespace Runic.Agent.Standalone.Test.TestUtility
 {
     public class FakeCucumberClass
     {
         public List<InvocationInformation> CallList { get; }
         public Task AsyncTask { get; set; }
-
+        public static ConcurrentDictionary<DateTime, FakeCucumberClass> CreatedInstances { get; set; } = new ConcurrentDictionary<DateTime, FakeCucumberClass>();
+        
         public FakeCucumberClass()
         {
             CallList = new List<InvocationInformation>();
+            CreatedInstances.AddOrUpdate(DateTime.Now, this, (a, b) => this);
         }
 
         [Given("I have a given \"(.*)\"")]

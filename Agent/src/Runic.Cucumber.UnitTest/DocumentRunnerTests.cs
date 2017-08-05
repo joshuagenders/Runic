@@ -15,7 +15,6 @@ namespace Runic.Cucumber.UnitTest
         {
             var fakeTest = new FakeCucumberClass();
             TestEnvironment.SetupMocks(fakeTest);
-            var method = fakeTest.GetType().GetTypeInfo().GetMethod("GivenMethod");
             var assemblyAdapter = new AssemblyAdapter(fakeTest.GetType().GetTypeInfo().Assembly, TestEnvironment.TestStateManager.Instance);
             var documentRunner = new DocumentRunner(assemblyAdapter);
 

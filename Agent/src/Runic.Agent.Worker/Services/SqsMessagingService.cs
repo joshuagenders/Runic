@@ -38,7 +38,7 @@ namespace Runic.Agent.Worker.Services
             throw new NotImplementedException();
         }
 
-        public Task RunServiceAsync(CancellationToken ct)
+        public Task RunServiceAsync(CancellationToken ctx = default(CancellationToken))
         {
             throw new NotImplementedException();
         }

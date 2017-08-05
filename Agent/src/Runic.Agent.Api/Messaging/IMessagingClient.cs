@@ -5,6 +5,6 @@ namespace Runic.Agent.Api.Messaging
 {
     public interface IMessagingClient
     {
-        Task PublishMessageAsync<T>(T message, CancellationToken ct = default(CancellationToken));
+        Task PublishMessageAsync<T>(T message, CancellationToken ctx = default(CancellationToken));
     }
 }

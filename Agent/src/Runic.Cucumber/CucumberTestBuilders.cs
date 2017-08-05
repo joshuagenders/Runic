@@ -1,4 +1,8 @@
-﻿namespace Runic.Cucumber
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Runic.Cucumber
 {
     public partial class CucumberTest
     {
@@ -35,12 +39,14 @@
         public CucumberTest Scenario(string statement)
         {
             _hasScenario = true;
+            CheckAddDescriptions();
             AppendStatement("Scenario:", statement);
             return this;
         }
         public CucumberTest ScenarioOutline(string statement)
         {
             _hasScenario = true;
+            CheckAddDescriptions();
             AppendStatement("Scenario Outline:", statement);
             return this;
         }
@@ -72,6 +78,62 @@
         {
             CheckAddDescriptions();
             AppendStatement("But", statement);
+            return this;
+        }
+
+        public CucumberTest Examples(Dictionary<string,List<string>> table)
+        {
+            if (table.Count == 0)
+                return this;
+            var headers = table.Keys.ToList();
+            _stringBuilder.AppendLine("Examples:");
+            AddLine(headers);
+            
+            var rowCount = table[headers[0]].Count;
+            for (var row = 0; row < rowCount; row++)
+            {
+                var line = new List<string>();
+                foreach (var header in headers)
+                {
+                    line.Add(table[header][row]);
+                }
+                AddLine(line);
+            }
+            return this;
+        }
+
+        private void AddLine(List<string> lineValues)
+        {
+            Action<string> addValue = (a) => _stringBuilder.Append($" {a} |");
+            Action<string> addValueLine = (a) => _stringBuilder.AppendLine($"| {a} |");
+            addValueLine(lineValues[0]);
+            for (var i = 1; i < lineValues.Count; i++)
+            {
+                addValue(lineValues[i]);
+            }
+        }
+
+        /// <summary>
+        /// Takes format
+        /// list[0] = header row
+        /// list[1] = separator row
+        /// list[2..n] = value rows
+        /// </summary>
+        /// <param name="table"></param>
+        /// <returns></returns>
+        public CucumberTest Examples(List<string> table)
+        {
+            if (table.Count < 3)
+                return this;
+            _stringBuilder.AppendLine("Examples:");
+            table.ForEach(r => _stringBuilder.AppendLine(r));
+            return this;
+        }
+
+        public CucumberTest DataTable(string table)
+        {
+            _stringBuilder.AppendLine("Examples:");
+            _stringBuilder.AppendLine(table);
             return this;
         }
     }

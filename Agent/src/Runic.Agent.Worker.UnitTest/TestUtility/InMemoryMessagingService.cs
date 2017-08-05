@@ -40,7 +40,7 @@ namespace Runic.Agent.Worker.Test.TestUtility
             }
         }
 
-        public Task RunServiceAsync(CancellationToken ct)
+        public Task RunServiceAsync(CancellationToken ctx = default(CancellationToken))
         {
             return Task.CompletedTask;
         }
