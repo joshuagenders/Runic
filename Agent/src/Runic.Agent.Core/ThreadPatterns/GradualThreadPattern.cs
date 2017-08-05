@@ -51,7 +51,7 @@ namespace Runic.Agent.Core.ThreadPatterns
             {
                 Points.Add(new Point()
                 {
-                    unitsFromStart = lastPoint.unitsFromStart,
+                    unitsFromStart = lastPoint.unitsFromStart + 1,
                     threadLevel = 0
                 });
             }
