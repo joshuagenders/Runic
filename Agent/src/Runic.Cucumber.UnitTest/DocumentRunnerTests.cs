@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Runic.Cucumber.UnitTest.TestUtility;
 using System.Linq;
 using System.Reflection;
@@ -12,12 +13,12 @@ namespace Runic.Cucumber.UnitTest
     public class DocumentRunnerTests : TestBase
     {
         [TestMethod]
-        public async Task GivenWhenThenDocumentCallsAllMethods()
+        public async Task GivenWhenThenDocument_CallsAssemblyAdapter()
         {
             var fakeTest = new FakeCucumberClass();
             TestEnvironment.SetupMocks(fakeTest);
-            var assemblyAdapter = new AssemblyAdapter(fakeTest.GetType().GetTypeInfo().Assembly, TestEnvironment.TestStateManager.Instance);
-            var documentRunner = new DocumentRunner(assemblyAdapter);
+            var assemblyAdapter = new Mock<IAssemblyAdapter>();
+            var documentRunner = new DocumentRunner(assemblyAdapter.Object);
 
             var cts = new CancellationTokenSource();
             cts.CancelAfter(1000);
@@ -29,10 +30,47 @@ namespace Runic.Cucumber.UnitTest
                    Then I have a then ""whomever""";
 
             await documentRunner.ExecuteAsync(statement, cts.Token);
+            assemblyAdapter.Verify(a => 
+                a.ExecuteMethodFromStatementAsync(
+                    @"I have a given ""method""", 
+                    It.IsAny<object[]>(), 
+                    It.IsAny<CancellationToken>()));
 
-            fakeTest.CallList.Count(c => c.InvocationTarget == "GivenMethod").Should().Be(1);
-            fakeTest.CallList.Count(c => c.InvocationTarget == "WhenMethod").Should().Be(1);
-            fakeTest.CallList.Count(c => c.InvocationTarget == "ThenMethod").Should().Be(1);
+            assemblyAdapter.Verify(a =>
+                a.ExecuteMethodFromStatementAsync(
+                    @"I have a when ""wherever""",
+                    It.IsAny<object[]>(),
+                    It.IsAny<CancellationToken>()));
+
+            assemblyAdapter.Verify(a =>
+                a.ExecuteMethodFromStatementAsync(
+                    @"I have a then ""whomever""",
+                    It.IsAny<object[]>(),
+                    It.IsAny<CancellationToken>()));
+
+        }
+
+        [TestMethod]
+        public async Task BadDocument_ReturnsParserError()
+        {
+            var assemblyAdapter = new Mock<IAssemblyAdapter>();
+            var documentRunner = new DocumentRunner(assemblyAdapter.Object);
+
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(1000);
+            var statement =
+                @"Featen I have a given ""method""
+                   Whdfdfen I fdfhave a when ""wherever""
+                   Thenfdf I have a then ""whomever""";
+
+            try
+            {
+                await documentRunner.ExecuteAsync(statement, cts.Token);
+                Assert.Fail("No exception thrown");
+            }
+            catch (GherkinDocumentParserError)
+            {
+            }
         }
     }
 }

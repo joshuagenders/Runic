@@ -60,5 +60,26 @@ namespace Runic.Cucumber.UnitTest.TestUtility
                 InvocationTarget = "NoInputs"
             });
         }
+
+        [Given("I have a duplicate method")]
+        public void DuplicateMethod1()
+        {
+            CallList.Add(new InvocationInformation()
+            {
+                InvocationTime = DateTime.Now,
+                StackTrace = Environment.StackTrace,
+                InvocationTarget = "Duplicate"
+            });
+        }
+        [Given("I have a duplicate method")]
+        public void DuplicateMethod2()
+        {
+            CallList.Add(new InvocationInformation()
+            {
+                InvocationTime = DateTime.Now,
+                StackTrace = Environment.StackTrace,
+                InvocationTarget = "Duplicate"
+            });
+        }
     }
 }

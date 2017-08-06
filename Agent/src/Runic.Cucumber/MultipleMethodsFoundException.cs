@@ -2,7 +2,7 @@
 
 namespace Runic.Cucumber
 {
-    internal class MultipleMethodsFoundException : Exception
+    public class MultipleMethodsFoundException : Exception
     {
         public MultipleMethodsFoundException()
         {

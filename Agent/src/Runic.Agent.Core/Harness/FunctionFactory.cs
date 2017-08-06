@@ -60,6 +60,8 @@ namespace Runic.Agent.Core.Harness
 
             _logger.LogDebug($"type found {type.AssemblyQualifiedName}");
             var instance = Activator.CreateInstance(type);
+            //todo populate public instance testcontext properties in class
+
             _logger.LogDebug($"{step.Function.FunctionName} in {step.Function.AssemblyName} initialised");
 
             var harness = new FunctionHarness(_stats, _loggerFactory);

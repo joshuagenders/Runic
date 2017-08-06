@@ -149,22 +149,26 @@ namespace Runic.Agent.Standalone.Clients
 
         public static Rune TakeRandom(this ConcurrentBag<Rune> bag, Func<Rune, bool> predicate)
         {
-            var list = bag.Where(predicate).ToList();
             Rune rune = null;
             List<Rune> nonMatchingRunes = new List<Rune>();
             while (rune == null)
             {
-                var res = bag.Take(1).Single();
-                if (res == null || bag.Count <= 0)
-                    break;
-
-                if (predicate(res))
+                Rune result;
+                if (bag.TryTake(out result))
                 {
-                    rune = res;
+                    if (predicate(result))
+                    {
+                        rune = result;
+                        break;
+                    }
+                    else
+                    {
+                        nonMatchingRunes.Add(result);
+                    }
                 }
                 else
                 {
-                    nonMatchingRunes.Add(res);
+                    break;
                 }
             }
             nonMatchingRunes.ForEach(r => bag.Add(r));

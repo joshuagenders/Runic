@@ -1,6 +1,7 @@
 ﻿using Gherkin;
 using Gherkin.Ast;
 using Gherkin.Pickles;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,8 +20,16 @@ namespace Runic.Cucumber
 
         public async Task ExecuteAsync(string document, CancellationToken ctx = default(CancellationToken))
         {
-            var gherkinDoc = ParseTokenString(document);
-            var pickles = GetPickles(gherkinDoc);
+            List<Pickle> pickles;
+            try
+            {
+                var gherkinDoc = ParseTokenString(document);
+                pickles = GetPickles(gherkinDoc);
+            }
+            catch (Exception ex)
+            {
+                throw new GherkinDocumentParserError("The document could not be parsed", ex);
+            }
             foreach (var pickle in pickles)
             {
                 foreach (var step in pickle.Steps)
@@ -29,7 +38,7 @@ namespace Runic.Cucumber
                     await stepTask;
                     if (stepTask.IsFaulted || stepTask.Exception != null)
                     {
-                        //todo failure logic
+                        //todo failure logic and proper error propagation
                         throw stepTask.Exception;
                     }
                 }

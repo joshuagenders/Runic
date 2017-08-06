@@ -2,7 +2,7 @@
 
 namespace Runic.Cucumber
 {
-    internal class MethodNotFoundException : Exception
+    public class MethodNotFoundException : Exception
     {
         public MethodNotFoundException()
         {

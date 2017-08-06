@@ -2,7 +2,7 @@
 
 namespace Runic.Agent.Core.AssemblyManagement
 {
-    internal class ClassNotFoundInAssemblyException : Exception
+    public class ClassNotFoundInAssemblyException : Exception
     {
         public ClassNotFoundInAssemblyException()
         {

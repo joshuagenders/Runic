@@ -32,7 +32,7 @@ namespace Runic.Cucumber.UnitTest
         }
 
         [TestMethod]
-        public async Task ExecuteExamples()
+        public async Task ExecuteExamples_InvokesMultipleTimesWithParameters()
         {
             var fakeTest = new FakeCucumberClass();
             TestEnvironment.SetupMocks(fakeTest);

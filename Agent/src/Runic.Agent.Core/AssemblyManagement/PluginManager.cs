@@ -49,7 +49,7 @@ namespace Runic.Agent.Core.AssemblyManagement
             if (!File.Exists(pluginPath))
             {
                 _logger.LogError($"Could not find file {pluginPath}");
-                throw new FileNotFoundException($"Could not find file {pluginPath}");
+                throw new AssemblyNotFoundException($"Could not find file {pluginPath}");
             }
 
             Assembly assembly = LoadAssembly(pluginPath, pluginAssemblyName);
