@@ -2,6 +2,7 @@
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Data;
 using Runic.Agent.Core.FlowManagement;
+using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Worker.Clients;
 using Runic.Agent.Worker.Configuration;
@@ -30,11 +31,11 @@ namespace Runic.Agent.Worker
                 .Register<FlowManager, IFlowManager>()
                 .Register<PluginManager, IPluginManager>()
                 .Register<MessagingDataService, IDataService>()
-                //.Register<RabbitMessagingService, IDataService>()
                 .Register<RabbitMessagingService, IMessagingService>()
                 .Register<InMemoryRuneClient, IRuneClient>()
                 .Register<PatternService, IPatternService>()
                 .Register<HandlerRegistry, IHandlerRegistry>()
+                .Register<DateTimeService, IDatetimeService>()
                 .Register<Application, IApplication>();
             
             builder.RegisterInstance(statsd).As<IStatsd>();

@@ -1,5 +1,7 @@
 ﻿using FluentAssertions;
+using Moq;
 using RestMockCore;
+using Runic.Agent.Core.Services;
 using Runic.Agent.Standalone.Test.TestUtility;
 using Runic.Cucumber;
 using Runic.Framework.Models;
@@ -79,7 +81,7 @@ namespace Runic.Agent.Standalone.Test
         [Given(@"I have a test environment for a '(.*?)' flow")]
         public void SetupTestEnvironment(string patternType = "constant")
         {
-            _environment = new TestEnvironment().WithStandardTypes();
+            _environment = new TestEnvironment().WithStandardTypes().WithDatetimeService(new DateTimeService());
 
             var mockAgentSettings = _environment.AgentSettings.MockObject;
             mockAgentSettings.Setup(s => s.FlowPatternExecutionId).Returns("test_execution_id");
@@ -87,6 +89,7 @@ namespace Runic.Agent.Standalone.Test
             mockAgentSettings.Setup(s => s.AgentFlowFilepath).Returns("test_path");
             mockAgentSettings.Setup(s => s.FlowDurationSeconds).Returns(3);
 
+            
             switch (patternType.ToLowerInvariant()) {
                 case "constant":
                     mockAgentSettings.Setup(s => s.FlowThreadCount).Returns(1);

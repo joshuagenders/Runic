@@ -58,10 +58,10 @@ namespace Runic.Agent.Core.ThreadManagement
             }
         }
         
-        public async Task SafeCancelAll(CancellationToken ctx = default(CancellationToken))
+        public async Task CancelAll(CancellationToken ctx = default(CancellationToken))
         {
             var updateTasks = new List<Task>();
-            _threadManagers.ToList().ForEach(ftm => updateTasks.Add(ftm.Value.SafeUpdateThreadCountAsync(0)));
+            _threadManagers.ToList().ForEach(ftm => updateTasks.Add(ftm.Value.UpdateThreadCountAsync(0)));
             await Task.WhenAll(updateTasks.ToArray());
             foreach (var manager in _threadManagers)
             {
@@ -75,7 +75,7 @@ namespace Runic.Agent.Core.ThreadManagement
             _logger.LogDebug($"Attempting to update thread level to {request.ThreadLevel} for {request.FlowName}");
             if (_threadManagers.TryGetValue(request.FlowId, out FlowThreadManager manager))
             {
-                await manager.SafeUpdateThreadCountAsync(request.ThreadLevel);
+                await manager.UpdateThreadCountAsync(request.ThreadLevel);
             }
             else
             {
@@ -87,7 +87,7 @@ namespace Runic.Agent.Core.ThreadManagement
                     _loggerFactory);
 
                 var resolvedManager = _threadManagers.GetOrAdd(request.FlowId, newThreadManager);
-                await resolvedManager.SafeUpdateThreadCountAsync(request.ThreadLevel);
+                await resolvedManager.UpdateThreadCountAsync(request.ThreadLevel);
             }
         }
 

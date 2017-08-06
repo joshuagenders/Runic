@@ -5,6 +5,7 @@ using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Data;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.Metrics;
+using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Standalone.Clients;
 using Runic.Agent.Standalone.Configuration;
@@ -87,6 +88,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         public TestObject<IAgentSettings> AgentSettings { get; set; } = new TestObject<IAgentSettings>();
         public TestObject<IStatsdSettings> StatsdSettings { get; set; } = new TestObject<IStatsdSettings>();
         public TestObject<IFlowProvider> FlowProvider { get; set; } = new TestObject<IFlowProvider>();
+        public TestObject<IDatetimeService> DatetimeService { get; set; } = new TestObject<IDatetimeService>();
         public IContainer Build()
         {
             Register(PluginManager);
@@ -102,6 +104,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             Register(AgentSettings);
             Register(StatsdSettings);
             Register(FlowProvider);
+            Register(DatetimeService);
 
             return _builder.Build();
         }
@@ -214,6 +217,12 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         public static TestEnvironment WithStatsdSettings(this TestEnvironment env, IStatsdSettings instance)
         {
             env.StatsdSettings.Instance = instance;
+            return env;
+        }
+
+        public static TestEnvironment WithDatetimeService(this TestEnvironment env, IDatetimeService instance)
+        {
+            env.DatetimeService.Instance = instance;
             return env;
         }
 

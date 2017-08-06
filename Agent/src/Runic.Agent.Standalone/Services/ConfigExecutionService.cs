@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Runic.Agent.Core.FlowManagement;
+using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Core.ThreadPatterns;
 using Runic.Agent.Standalone.Configuration;
@@ -21,14 +22,22 @@ namespace Runic.Agent.Standalone.Services
         private IAgentConfig _config;
         private IFlowProvider _flowProvider;
         private readonly ILogger _logger;
+        private readonly IDatetimeService _datetimeService;
 
-        public ConfigExecutionService(IPatternService patternService, IFlowManager flowManager, IAgentConfig config, IFlowProvider flowProvider, ILoggerFactory loggerFactory)
+        public ConfigExecutionService(
+            IPatternService patternService, 
+            IFlowManager flowManager, 
+            IAgentConfig config, 
+            IFlowProvider flowProvider, 
+            ILoggerFactory loggerFactory, 
+            IDatetimeService datetimeService)
         {
             _patternService = patternService;
             _flowManager = flowManager;
             _config = config;
             _flowProvider = flowProvider;
             _logger = loggerFactory.CreateLogger<ConfigExecutionService>();
+            _datetimeService = datetimeService;
         }
 
         public async Task StartThreadPattern(CancellationToken ctx = default(CancellationToken))
@@ -62,7 +71,7 @@ namespace Runic.Agent.Standalone.Services
 
         private void StartConstantPattern(CancellationToken ctx = default(CancellationToken))
         {
-            var pattern = new ConstantThreadPattern()
+            var pattern = new ConstantThreadPattern(_datetimeService)
                 {
                     ThreadCount = _config.AgentSettings.FlowThreadCount,
                     DurationSeconds = _config.AgentSettings.FlowDurationSeconds
@@ -73,7 +82,7 @@ namespace Runic.Agent.Standalone.Services
 
         private void StartGraphPattern(CancellationToken ctx = default(CancellationToken))
         {
-            var pattern = new GraphThreadPattern()
+            var pattern = new GraphThreadPattern(_datetimeService)
             {
                 DurationSeconds = _config.AgentSettings.FlowDurationSeconds,
                 Points = _config.AgentSettings.FlowPoints.ParsePoints()
@@ -84,7 +93,7 @@ namespace Runic.Agent.Standalone.Services
 
         private void StartGradualPattern(CancellationToken ctx = default(CancellationToken))
         {
-            var pattern = new GradualThreadPattern()
+            var pattern = new GradualThreadPattern(_datetimeService)
             {
                 DurationSeconds = _config.AgentSettings.FlowDurationSeconds,
                 RampDownSeconds = _config.AgentSettings.FlowRampDownSeconds,

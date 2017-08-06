@@ -1,6 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadPatterns;
 using Runic.Framework.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +13,25 @@ namespace Runic.Agent.Core.UnitTest.Tests
     [TestClass]
     public class TestThreadPatterns
     {
+        private Mock<IDatetimeService> _mockDatetimeService { get; set; }
+        private SemaphoreSlim _semaphore { get; set; }
+
+        [TestInitialize]
+        public void Init()
+        {
+            _mockDatetimeService = new Mock<IDatetimeService>();
+            _semaphore = new SemaphoreSlim(0);
+            _mockDatetimeService
+                .Setup(d => d.WaitUntil(
+                            It.IsAny<int>(), 
+                            It.IsAny<CancellationToken>()))
+                .Returns(Task.Run(() =>
+                {
+                    _semaphore.Wait();
+                }));
+            _mockDatetimeService.Setup(d => d.Now).Returns(DateTime.Now);
+        }
+
         private async Task <List<int>> InvokeThreadPattern(IThreadPattern threadPattern)
         {
             var calls = new List<int>();
@@ -38,7 +60,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         [TestMethod]
         public async Task Patterns_ShrinkingGraphCallbacks()
         {
-            var gtp = new GraphThreadPattern()
+            var gtp = new GraphThreadPattern(_mockDatetimeService.Object)
             {
                 DurationSeconds = 4,
                 Points = new List<Point>()
@@ -48,7 +70,9 @@ namespace Runic.Agent.Core.UnitTest.Tests
                    new Point(){ threadLevel = 0, unitsFromStart = 10 }
                 }
             };
-            var calls = await InvokeThreadPattern(gtp);
+            var patternTask = InvokeThreadPattern(gtp);
+            _semaphore.Release(3);
+            var calls = await patternTask;
             Assert.AreEqual(3, calls.Count);
             Assert.AreEqual(2, calls[0]);
             Assert.AreEqual(5, calls[1]);
@@ -58,7 +82,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         [TestMethod]
         public async Task Patterns_ExpandingGraphCallbacks()
         {
-            var gtp = new GraphThreadPattern()
+            var gtp = new GraphThreadPattern(_mockDatetimeService.Object)
             {
                 DurationSeconds = 5,
                 Points = new List<Point>()
@@ -68,7 +92,9 @@ namespace Runic.Agent.Core.UnitTest.Tests
                    new Point(){ threadLevel = 0, unitsFromStart = 2 }
                 }
             };
-            var calls = await InvokeThreadPattern(gtp);
+            var patternTask = InvokeThreadPattern(gtp);
+            _semaphore.Release(3);
+            var calls = await patternTask;
             Assert.AreEqual(3, calls.Count);
             Assert.AreEqual(2, calls[0]);
             Assert.AreEqual(5, calls[1]);
@@ -78,11 +104,13 @@ namespace Runic.Agent.Core.UnitTest.Tests
         [TestMethod]
         public async Task Patterns_ConstantCallback()
         {
-            var ctp = new ConstantThreadPattern()
+            var ctp = new ConstantThreadPattern(_mockDatetimeService.Object)
             {
                 ThreadCount = 4
             };
-            var calls = await InvokeThreadPattern(ctp);
+            var patternTask = InvokeThreadPattern(ctp);
+            _semaphore.Release(2);
+            var calls = await patternTask;
             Assert.AreEqual(1, calls.Count);
             Assert.AreEqual(4, calls[0]);
         }
@@ -90,12 +118,14 @@ namespace Runic.Agent.Core.UnitTest.Tests
         [TestMethod]
         public async Task Patterns_TimedConstantCallback()
         {
-            var ctp = new ConstantThreadPattern()
+            var ctp = new ConstantThreadPattern(_mockDatetimeService.Object)
             {
                 ThreadCount = 4,
                 DurationSeconds = 2
             };
-            var calls = await InvokeThreadPattern(ctp);
+            var patternTask = InvokeThreadPattern(ctp);
+            _semaphore.Release(2);
+            var calls = await patternTask;
             Assert.AreEqual(2, calls.Count);
             Assert.AreEqual(4, calls[0]);
             Assert.AreEqual(0, calls[1]);
@@ -105,7 +135,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         public async Task Patterns_GradualCallback()
         {
             //todo use xunit theories
-            var gtp = new GradualThreadPattern()
+            var gtp = new GradualThreadPattern(_mockDatetimeService.Object)
             {
                 DurationSeconds = 6,
                 RampDownSeconds = 2,
@@ -113,7 +143,9 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 StepIntervalSeconds = 1,
                 ThreadCount = 6
             };
-            var calls = await InvokeThreadPattern(gtp);
+            var patternTask = InvokeThreadPattern(gtp);
+            _semaphore.Release(5);
+            var calls = await patternTask;
             Assert.AreEqual(5, calls.Count);
             Assert.AreEqual(0, calls[0]);
             Assert.AreEqual(3, calls[1]);
@@ -125,7 +157,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         [TestMethod]
         public async Task Patterns_GradualCallbackComplex()
         {
-            var gtp = new GradualThreadPattern()
+            var gtp = new GradualThreadPattern(_mockDatetimeService.Object)
             {
                 DurationSeconds = 10,
                 RampDownSeconds = 5,
@@ -133,7 +165,9 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 StepIntervalSeconds = 1,
                 ThreadCount = 4
             };
-            var calls = await InvokeThreadPattern(gtp);
+            var patternTask = InvokeThreadPattern(gtp);
+            _semaphore.Release(9);
+            var calls = await patternTask;
             Assert.AreEqual(9, calls.Count);
             Assert.AreEqual(0, calls[0]);
             Assert.AreEqual(1, calls[1]);
@@ -149,7 +183,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         [TestMethod]
         public async Task Patterns_GradualCallbackRampUpDownEdgeAndIntervalCollision()
         {
-            var gtp = new GradualThreadPattern()
+            var gtp = new GradualThreadPattern(_mockDatetimeService.Object)
             {
                 DurationSeconds = 10,
                 RampDownSeconds = 5,
@@ -157,7 +191,9 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 StepIntervalSeconds = 5,
                 ThreadCount = 2
             };
-            var calls = await InvokeThreadPattern(gtp);
+            var patternTask = InvokeThreadPattern(gtp);
+            _semaphore.Release(3);
+            var calls = await patternTask;
             Assert.AreEqual(3, calls.Count);
             Assert.AreEqual(0, calls[0]);
             Assert.AreEqual(2, calls[1]);
@@ -167,12 +203,14 @@ namespace Runic.Agent.Core.UnitTest.Tests
         [TestMethod]
         public async Task Patterns_GradualCallbackNoRampUpDown()
         {
-            var gtp = new GradualThreadPattern()
+            var gtp = new GradualThreadPattern(_mockDatetimeService.Object)
             {
                 DurationSeconds = 2,
                 ThreadCount = 2
             };
-            var calls = await InvokeThreadPattern(gtp);
+            var patternTask = InvokeThreadPattern(gtp);
+            _semaphore.Release(3);
+            var calls = await patternTask;
             Assert.AreEqual(3, calls.Count);
             Assert.AreEqual(0, calls[0]);
             Assert.AreEqual(2, calls[1]);

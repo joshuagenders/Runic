@@ -1,4 +1,5 @@
-﻿using Runic.Agent.Core.ThreadManagement;
+﻿using Runic.Agent.Core.Services;
+using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Core.ThreadPatterns;
 using Runic.Framework.Models;
 using System.Threading;
@@ -11,12 +12,14 @@ namespace Runic.Agent.Worker.Messaging
         private readonly IMessagingService _messagingService;
         private readonly IPatternService _patternService;
         private readonly IThreadManager _threadManager;
+        private readonly IDatetimeService _datetimeService;
 
-        public HandlerRegistry(IMessagingService messagingService, IPatternService threadOrchestrator, IThreadManager threadManager)
+        public HandlerRegistry(IMessagingService messagingService, IPatternService threadOrchestrator, IThreadManager threadManager, IDatetimeService datetimeService)
         {
             _messagingService = messagingService;
             _patternService = threadOrchestrator;
             _threadManager = threadManager;
+            _datetimeService = datetimeService;
         }
 
         public void RegisterMessageHandlers(CancellationToken ctx)
@@ -38,7 +41,7 @@ namespace Runic.Agent.Worker.Messaging
             _messagingService.RegisterMessageHandler(
                 (ConstantFlowExecutionRequest request) =>
                 {
-                    var pattern = new ConstantThreadPattern()
+                    var pattern = new ConstantThreadPattern(_datetimeService)
                     {
                         ThreadCount = request.ThreadPattern.ThreadCount,
                         DurationSeconds = request.ThreadPattern.DurationSeconds
@@ -53,7 +56,7 @@ namespace Runic.Agent.Worker.Messaging
             _messagingService.RegisterMessageHandler(
                 (GraphFlowExecutionRequest request) =>
                 {
-                    var pattern = new GraphThreadPattern()
+                    var pattern = new GraphThreadPattern(_datetimeService)
                     {
                         DurationSeconds = request.ThreadPattern.DurationSeconds,
                         Points = request.ThreadPattern.Points
@@ -68,7 +71,7 @@ namespace Runic.Agent.Worker.Messaging
             _messagingService.RegisterMessageHandler(
                 (GradualFlowExecutionRequest request) =>
                 {
-                    var pattern = new GradualThreadPattern()
+                    var pattern = new GradualThreadPattern(_datetimeService)
                     {
                         DurationSeconds = request.ThreadPattern.DurationSeconds,
                         Points = request.ThreadPattern.Points,

@@ -55,7 +55,7 @@ namespace Runic.Agent.Core.ThreadManagement
             var updateTasks = new List<Task>();
 
             _threadPatterns.ToList().ForEach(t => t.Value.Cancel());
-            await _threadManager.SafeCancelAll();
+            await _threadManager.CancelAll();
             await Task.WhenAll(updateTasks.ToArray());
         }
 

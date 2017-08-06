@@ -2,6 +2,7 @@
 using Runic.Agent.Core.Data;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.Metrics;
+using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Worker.Messaging;
 using Runic.Framework.Clients;
@@ -13,6 +14,8 @@ namespace Runic.Agent.Worker.Test.TestUtility
 {
     public class TestEnvironment : IApplication
     {
+        private readonly IDatetimeService _datetimeService;
+
         public IPluginManager PluginManager { get; set; }
         public IStatsClient Stats { get; set; }
         public IDataService DataService { get; set; }
@@ -30,7 +33,8 @@ namespace Runic.Agent.Worker.Test.TestUtility
             IPatternService patternService,
             IThreadManager threadManager,
             IFlowManager flowManager,
-            IHandlerRegistry handlerRegistry
+            IHandlerRegistry handlerRegistry,
+            IDatetimeService datetimeService
             )
         {
             PluginManager = pluginManager;
@@ -41,6 +45,7 @@ namespace Runic.Agent.Worker.Test.TestUtility
             ThreadManager = threadManager;
             FlowManager = flowManager;
             HandlerRegistry = handlerRegistry;
+            _datetimeService = datetimeService;
         }
 
         public Task RunApplicationAsync(CancellationToken ctx = default(CancellationToken))

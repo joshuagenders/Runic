@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Runic.Agent.Core.Services;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,13 +9,15 @@ namespace Runic.Agent.Core.ThreadPatterns
     public class ConstantThreadPattern : IThreadPattern
     {
         private List<Action<int>> _callbacks { get; set; }
+        private readonly IDatetimeService _datetimeService;
 
         public int ThreadCount { get; set; }
         public int DurationSeconds { get; set; }
 
-        public ConstantThreadPattern()
+        public ConstantThreadPattern(IDatetimeService datetimeService)
         {
             _callbacks = new List<Action<int>>();
+            _datetimeService = datetimeService;
         }
 
         public void RegisterThreadChangeHandler(Action<int> callback) => _callbacks.Add(callback);
@@ -30,7 +33,7 @@ namespace Runic.Agent.Core.ThreadPatterns
             else
             {
                 _callbacks.ForEach(c => c.Invoke(ThreadCount));
-                await Task.Run(() => ctx.WaitHandle.WaitOne(TimeSpan.FromSeconds(DurationSeconds)), ctx);
+                await _datetimeService.WaitUntil(DurationSeconds, ctx);
                 _callbacks.ForEach(c => c.Invoke(0));
             }
         }

@@ -11,6 +11,7 @@ using Runic.Agent.Worker.Messaging;
 using Runic.Framework.Clients;
 using System.IO;
 using Microsoft.Extensions.Logging;
+using Runic.Agent.Core.Services;
 
 namespace Runic.Agent.Worker.Test.TestUtility
 {
@@ -31,6 +32,7 @@ namespace Runic.Agent.Worker.Test.TestUtility
                    .Register<PluginManager, IPluginManager>()       
                    .Register<HandlerRegistry, IHandlerRegistry>()
                    .Register<MessagingDataService, IDataService>()
+                   .Register<DateTimeService, IDatetimeService>()
                    .Register<TestEnvironment, IApplication>()
                    .Register<LoggerFactory, ILoggerFactory>();
 

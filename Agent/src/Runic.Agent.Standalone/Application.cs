@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.FlowManagement;
+using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Standalone.Configuration;
 using Runic.Agent.Standalone.Providers;
@@ -17,7 +18,9 @@ namespace Runic.Agent.Standalone
         private readonly ILoggerFactory _loggerFactory;
         private readonly IAgentConfig _config;
         private readonly IFlowProvider _flowProvider;
-        public Application(IPatternService patternService, IFlowManager flowManager, ILoggerFactory loggerFactory, IAgentConfig config, IFlowProvider flowProvider)
+        private readonly IDatetimeService _datetimeService;
+
+        public Application(IPatternService patternService, IFlowManager flowManager, ILoggerFactory loggerFactory, IAgentConfig config, IFlowProvider flowProvider, IDatetimeService datetimeService)
         {
             _patternService = patternService;
             _flowManager = flowManager;
@@ -25,12 +28,13 @@ namespace Runic.Agent.Standalone
             _loggerFactory = loggerFactory;
             _config = config;
             _flowProvider = flowProvider;
+            _datetimeService = datetimeService;
         }
 
         public async Task RunApplicationAsync(CancellationToken ctx = default(CancellationToken))
         {
             _logger.LogInformation("Creating execution service.");
-            var executionService = new ConfigExecutionService(_patternService, _flowManager, _config, _flowProvider, _loggerFactory);
+            var executionService = new ConfigExecutionService(_patternService, _flowManager, _config, _flowProvider, _loggerFactory, _datetimeService);
             await executionService.StartThreadPattern(ctx);
             _logger.LogInformation("Thread pattern started.");
             await _patternService.GetCompletionTaskAsync(_config.AgentSettings.FlowPatternExecutionId, ctx);

@@ -3,11 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Runic.Agent.Core.Services;
 
 namespace Runic.Agent.Core.ThreadPatterns
 {
     public class GradualThreadPattern : GraphThreadPattern, IThreadPattern
     {
+        public GradualThreadPattern(IDatetimeService datetimeService) : base(datetimeService)
+        {
+        }
+
         public int ThreadCount { get; set; }
         public int RampUpSeconds { get; set; }
         public int RampDownSeconds { get; set; }

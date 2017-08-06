@@ -1,5 +1,4 @@
 ﻿using Runic.Agent.Core.Harness;
-using Runic.Agent.Core.Metrics;
 using Runic.Framework.Clients;
 using Runic.Framework.Models;
 using System;
@@ -40,7 +39,7 @@ namespace Runic.Agent.Core.ThreadManagement
             return _currentThreadCount;
         }
 
-        public void RequestNewThread(int id)
+        private void RequestNewThread(int id)
         {
             CancellableTask task;
             _taskPool.TryGetValue(id, out task);
@@ -53,7 +52,7 @@ namespace Runic.Agent.Core.ThreadManagement
                 var cts = new CancellationTokenSource();
                 var flowTask = new FlowRunner(_functionFactory, _harness, _flow)
                     .ExecuteFlowAsync(cts.Token)
-                    .ContinueWith(async (_) => await SafeRemoveTaskAsync(id));
+                    .ContinueWith(async (_) => await RemoveTaskAsync(id));
 
                 var cancellableTask = new CancellableTask(flowTask, cts);
                 _taskPool.AddOrUpdate(
@@ -66,7 +65,7 @@ namespace Runic.Agent.Core.ThreadManagement
             }
         }
 
-        public void RemoveTask(int id)
+        private void RemoveTask(int id)
         {
             CancellableTask task;
             _taskPool.TryRemove(id, out task);
@@ -74,7 +73,7 @@ namespace Runic.Agent.Core.ThreadManagement
                 task.Cancel();
         }
 
-        public async Task SafeRemoveTaskAsync(int id)
+        private async Task RemoveTaskAsync(int id)
         {
             CancellableTask task;
             _taskPool.TryRemove(id, out task);
@@ -82,20 +81,14 @@ namespace Runic.Agent.Core.ThreadManagement
                 await task.CancelAsync();
         }
 
-        public async Task SafeUpdateThreadCountAsync (int threadCount)
+        public async Task UpdateThreadCountAsync (int threadCount)
         {
             await _taskFactory.StartNew(() => UpdateThreads(threadCount));
         }
 
         public void StopAll()
         {
-            var completionTasks = new List<Task>();
-            foreach (var thread in _taskPool)
-            {
-                thread.Value.Cancel();
-                completionTasks.Add(thread.Value.GetCompletionTaskAsync());
-            }
-            Task.WaitAll(completionTasks.ToArray());
+            UpdateThreads(0);
         }
 
         private void UpdateThreads(int threadCount)
@@ -112,7 +105,7 @@ namespace Runic.Agent.Core.ThreadManagement
                 var removalTasks = new List<Task>();
                 for (int index = _currentThreadCount; index > threadCount; index--)
                 {
-                    removalTasks.Add(SafeRemoveTaskAsync(index));
+                    removalTasks.Add(RemoveTaskAsync(index));
                 }
                 Task.WaitAll(removalTasks.ToArray());
             }

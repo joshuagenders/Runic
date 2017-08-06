@@ -4,6 +4,7 @@ using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Data;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.Metrics;
+using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Standalone.Clients;
 using Runic.Agent.Standalone.Configuration;
@@ -32,6 +33,7 @@ namespace Runic.Agent.Standalone
             builder.RegisterType<AgentSettings>().As<IAgentSettings>().SingleInstance();
             builder.RegisterType<StatsdSettings>().As<IStatsdSettings>().SingleInstance();
             builder.RegisterType<FileFlowProvider>().As<IFlowProvider>();
+            builder.RegisterType<DateTimeService>().As<IDatetimeService>();
             builder.RegisterType<FilePluginProvider>()
                    .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                    .WithParameter(new PositionalParameter(1, "Plugins"))
