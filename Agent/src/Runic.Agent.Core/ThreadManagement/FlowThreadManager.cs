@@ -1,4 +1,5 @@
-﻿using Runic.Agent.Core.Harness;
+﻿using Microsoft.Extensions.Logging;
+using Runic.Agent.Core.Harness;
 using Runic.Framework.Clients;
 using Runic.Framework.Models;
 using System;
@@ -18,11 +19,13 @@ namespace Runic.Agent.Core.ThreadManagement
         private readonly CucumberHarness _harness;
 
         public readonly string Id;
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger _logger;
 
         private ConcurrentDictionary<int, CancellableTask> _taskPool { get; set; }
         private int _currentThreadCount { get; set; }
 
-        public FlowThreadManager(Flow flow, IStatsClient stats, FunctionFactory factory, CucumberHarness harness)
+        public FlowThreadManager(Flow flow, IStatsClient stats, FunctionFactory factory, CucumberHarness harness, ILoggerFactory loggerFactory)
         {
             Id = Guid.NewGuid().ToString("N");
 
@@ -32,6 +35,8 @@ namespace Runic.Agent.Core.ThreadManagement
             _harness = harness;
             _taskFactory = new TaskFactory(new ConcurrentExclusiveSchedulerPair().ExclusiveScheduler);
             _taskPool = new ConcurrentDictionary<int, CancellableTask>();
+            _loggerFactory = loggerFactory;
+            _logger = loggerFactory.CreateLogger<FlowThreadManager>();
         }
 
         public int GetCurrentThreadCount()
@@ -50,7 +55,7 @@ namespace Runic.Agent.Core.ThreadManagement
             else
             {
                 var cts = new CancellationTokenSource();
-                var flowTask = new FlowRunner(_functionFactory, _harness, _flow)
+                var flowTask = new FlowRunner(_functionFactory, _harness, _flow, _loggerFactory, 0)
                     .ExecuteFlowAsync(cts.Token)
                     .ContinueWith(async (_) => await RemoveTaskAsync(id));
 

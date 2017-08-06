@@ -14,13 +14,13 @@ namespace Runic.Agent.Core.Harness
     public class FunctionHarness
     {
         private readonly ILogger _logger;
-        private object _instance { get; set; }
-        private string _functionName { get; set; }
         private readonly IStatsClient _stats;
+        private object _instance { get; set; }
         private object[] _positionalParameters { get; set; }
+        private string _functionName { get; set; }
         private bool _getNextStepFromResult { get; set; }
-        public string NextStep { get; set; }
-        public string StepName { get; set; }
+        private string _stepName { get; set; }
+        private string _nextStep { get; set; }
 
         public FunctionHarness(IStatsClient stats, ILoggerFactory loggerFactory)
         {
@@ -34,7 +34,7 @@ namespace Runic.Agent.Core.Harness
             _functionName = functionName;
             _positionalParameters = positionalParameters;
             _getNextStepFromResult = getNextStepFromResult;
-            StepName = StepName;
+            _stepName = stepName;
         }
 
         public async Task<FunctionResult> OrchestrateFunctionExecutionAsync(CancellationToken ctx = default(CancellationToken))
@@ -42,7 +42,8 @@ namespace Runic.Agent.Core.Harness
             FunctionResult result = new FunctionResult()
             {
                 FunctionName = _functionName,
-                FunctionParameters = _positionalParameters,
+                StepName = _stepName,
+                FunctionParameters = _positionalParameters
             };
             var timer = new Stopwatch();
             try
@@ -53,18 +54,22 @@ namespace Runic.Agent.Core.Harness
                 await ExecuteMethodWithAttribute(typeof(AfterEachAttribute), ctx);
                 timer.Stop();
                 _stats.CountFunctionSuccess(_functionName);
+                //todo fix time in statclient to support millisecond not action
                 result.Success = true;
                 result.ExecutionTimeMilliseconds = timer.ElapsedMilliseconds;
+                result.NextStep = _nextStep;
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in function execution for step {StepName} and function {_functionName}", ex);
+                _logger.LogError($"Error in function execution for step {_stepName} and function {_functionName}", ex);
                 _stats.CountFunctionFailure(_functionName);
                 timer.Stop();
+
                 result.Exception = ex;
                 result.Success = false;
                 result.ExecutionTimeMilliseconds = timer.ElapsedMilliseconds;
             }
+            
             return result;
         }
 
@@ -87,7 +92,7 @@ namespace Runic.Agent.Core.Harness
             if (_getNextStepFromResult)
             {
                 var result = await ExecuteMethodWithReturnAsync(functionMethod, ctx, GetMapMethodParameters(_positionalParameters, functionMethod));
-                NextStep = result;
+                _nextStep = result;
             }
             else
             {

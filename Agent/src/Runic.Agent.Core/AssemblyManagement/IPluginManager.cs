@@ -11,5 +11,6 @@ namespace Runic.Agent.Core.AssemblyManagement
         Type GetClassType(string functionFullyQualifiedName);
         void LoadPlugin(string pluginAssemblyName);
         Assembly GetPlugin(string pluginAssemblyName);
+        object GetInstance(string assemblyQualifiedClassName);
     }
 }

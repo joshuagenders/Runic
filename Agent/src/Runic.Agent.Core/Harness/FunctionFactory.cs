@@ -9,11 +9,10 @@ using System.Linq;
 
 namespace Runic.Agent.Core.Harness
 {
-    public class FunctionFactory
+    public class FunctionFactory : IFunctionFactory
     {
         private readonly ILogger _logger;
         private readonly ILoggerFactory _loggerFactory;
-        private readonly Flow _flow;
         private readonly IStatsClient _stats;
         private readonly IDataService _dataService;
         private readonly IPluginManager _pluginManager;
@@ -22,47 +21,22 @@ namespace Runic.Agent.Core.Harness
         private Step _lastStep { get; set; }
         private int _lastStepCount { get; set; }
         
-        public FunctionFactory(Flow flow, IPluginManager pluginManager, IStatsClient stats, IDataService dataService, ILoggerFactory loggerFactory)
+        public FunctionFactory(IPluginManager pluginManager, IStatsClient stats, IDataService dataService, ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<FunctionFactory>();
             _loggerFactory = loggerFactory;
-            _flow = flow;
             _pluginManager = pluginManager;
             _stats = stats;
             _dataService = dataService;
         }
-        
-        public FunctionHarness CreateFunction(string stepName)
-        { 
-            return CreateFunction(GetStepByName(stepName));
-        }
 
-        private Step GetStepByName(string name)
-        {
-            //if no next step, restart
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                return _flow.Steps[0];
-            }
-            return _flow.Steps.Where(s => s.StepName == name).Single();
-        }
         //todo implement databinding for flow steps?
         //todo think about state lifecycle for functions and assemblies
         public FunctionHarness CreateFunction(Step step)
         {
             _logger.LogDebug($"Initialising {step.Function.FunctionName} in {step.Function.AssemblyName}");
             _logger.LogDebug($"Retrieving function type");
-
-            var type = _pluginManager.GetClassType(step.Function.AssemblyQualifiedClassName);
-            if (type == null)
-                throw new FunctionTypeNotFoundException();
-
-            _logger.LogDebug($"type found {type.AssemblyQualifiedName}");
-            var instance = Activator.CreateInstance(type);
-            //todo populate public instance testcontext properties in class
-
-            _logger.LogDebug($"{step.Function.FunctionName} in {step.Function.AssemblyName} initialised");
-
+            var instance = _pluginManager.GetInstance(step.Function.AssemblyQualifiedClassName);
             var harness = new FunctionHarness(_stats, _loggerFactory);
             var methodParams = _dataService.GetMethodParameterValues(
                             step.DataInput?.InputDatasource,

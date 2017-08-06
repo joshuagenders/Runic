@@ -1,10 +1,8 @@
-﻿using Runic.Agent.Core.AssemblyManagement;
+﻿using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.Harness;
 using Runic.Framework.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,38 +13,66 @@ namespace Runic.Agent.Core.ThreadManagement
         private readonly FunctionFactory _factory;
         private readonly CucumberHarness _harness;
         private readonly Flow _flow;
-        public FlowRunner(FunctionFactory factory, CucumberHarness harness, Flow flow)
+        private readonly ILogger _logger;
+        private int _maxErrors { get; set; } = -1;
+        public int ErrorCount { get; set; }
+
+        public FlowRunner(FunctionFactory factory, CucumberHarness harness, Flow flow, ILoggerFactory loggerFactory, int maxErrors)
         {
             _factory = factory;
             _harness = harness;
             _flow = flow;
+            _logger = loggerFactory.CreateLogger<FlowRunner>();
+            _maxErrors = maxErrors;
         }
 
         private async Task ExecuteFunctionAsync(CancellationToken ctx = default(CancellationToken))
         {
             FunctionHarness function = null;
+            FunctionResult result = null;
             while (!ctx.IsCancellationRequested)
             {
                 if (function == null)
                 {
                     function = _factory.CreateFunction(_flow.Steps.First());
                 }
-                else if (function?.NextStep != null)
+                else if (result?.NextStep != null)
                 {
-                    function = _factory.CreateFunction(function.NextStep);
+                    function = _factory.CreateFunction(_flow.Steps.Single(s => s.StepName == result.NextStep));
                 }
                 else
                 {
                     int functionIndex = _flow.Steps
-                                             .Where(s => s.StepName == function.StepName)
+                                             .Where(s => s.StepName == result.StepName)
                                              .Select(s => _flow.Steps.IndexOf(s))
                                              .Single();
+                    //handle null for stepname in result
                     functionIndex++;
                     functionIndex = functionIndex >= _flow.Steps.Count ? 0 : functionIndex;
 
                     function = _factory.CreateFunction(_flow.Steps[functionIndex]);
                 }
-                await function.OrchestrateFunctionExecutionAsync(ctx);
+                result = await function.OrchestrateFunctionExecutionAsync(ctx);
+                LogResult(result);
+            }
+        }
+
+        private void LogResult(Result result)
+        {
+            if (result.Success)
+            {
+                _logger.LogTrace("Success", result);
+            }
+            else
+            {
+                _logger.LogError("Error", result);
+                ErrorCount++;
+                if (_maxErrors >= 0 && ErrorCount >= _maxErrors)
+                {
+                    throw new AggregateException(
+                        result.Exception, 
+                        new MaxErrorCountExceededException($"Error count reached {ErrorCount}"));
+                }
             }
         }
 
@@ -58,7 +84,8 @@ namespace Runic.Agent.Core.ThreadManagement
                 {
                     if (step.Cucumber != null)
                     {
-                        await _harness.ExecuteTestAsync(step.Cucumber.AssemblyName, step.Cucumber.Document, ctx);
+                        var result = await _harness.ExecuteTestAsync(step.Cucumber.AssemblyName, step.Cucumber.Document, ctx);
+                        LogResult(result);
                     }
                 }
             }

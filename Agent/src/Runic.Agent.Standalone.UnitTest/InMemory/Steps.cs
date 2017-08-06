@@ -12,7 +12,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Standalone.Test
+namespace Runic.Agent.Standalone.Test.InMemory
 {
     public class Steps
     {
@@ -69,6 +69,7 @@ namespace Runic.Agent.Standalone.Test
         #endregion
 
         private TestEnvironment _environment { get; set; }
+        private FakeFunction _fakeFunction { get; set; }
 
         [Given("I have a test server")]
         private void GivenIHaveATestServer()
@@ -88,7 +89,6 @@ namespace Runic.Agent.Standalone.Test
             mockAgentSettings.Setup(s => s.FlowThreadPatternName).Returns(patternType);
             mockAgentSettings.Setup(s => s.AgentFlowFilepath).Returns("test_path");
             mockAgentSettings.Setup(s => s.FlowDurationSeconds).Returns(3);
-
             
             switch (patternType.ToLowerInvariant()) {
                 case "constant":
@@ -146,10 +146,12 @@ namespace Runic.Agent.Standalone.Test
         public void IHaveAFunctionFlow()
         {
             RegisterTestFlow(FunctionFlow);
+
+            _fakeFunction = new FakeFunction();
             _environment.PluginManager
                         .MockObject
-                        .Setup(p => p.GetClassType(FunctionFlow.Steps[0].Function.AssemblyQualifiedClassName))
-                        .Returns(typeof(FakeFunction));
+                        .Setup(p => p.GetInstance(FunctionFlow.Steps[0].Function.AssemblyQualifiedClassName))
+                        .Returns(_fakeFunction);
         }
 
         [When(@"I start the test")]
@@ -163,15 +165,14 @@ namespace Runic.Agent.Standalone.Test
         [Then(@"The fake function is invoked")]
         public void TheFakeFunctionIsInvoked()
         {
-            FakeFunction.CreatedInstances.Any().Should().BeTrue("No FakeFunction instances found");
-            FakeFunction.CreatedInstances.First().Value.CallList.Any().Should().BeTrue("No methods invoked on FakeFunction instance");
+            _fakeFunction.CallList.Any().Should().BeTrue("methods invoked on FakeFunction instance");
         }
 
         [Then(@"The fake cucumber test is invoked")]
         public void TheFakeCucumberTestIsInvoked()
         {
-            FakeCucumberClass.CreatedInstances.Any().Should().BeTrue("No FakeFunction instances found");
-            FakeCucumberClass.CreatedInstances.First().Value.CallList.Any().Should().BeTrue("No methods invoked on FakeFunction instance");
+            FakeCucumberClass.CreatedInstances.Any().Should().BeTrue("Fake Cucumber Class instance created");
+            FakeCucumberClass.CreatedInstances.First().Value.CallList.Any().Should().BeTrue("methods invoked on FakeFunction instance");
         }
     }
 }

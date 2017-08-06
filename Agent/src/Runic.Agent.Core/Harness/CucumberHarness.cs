@@ -2,6 +2,7 @@
 using Runic.Cucumber;
 using Runic.Agent.Core.AssemblyManagement;
 using System.Threading;
+using System.Diagnostics;
 
 namespace Runic.Agent.Core.Harness
 {
@@ -13,19 +14,32 @@ namespace Runic.Agent.Core.Harness
             _pluginManager = pluginManager;
         }
 
-        public async Task ExecuteTestAsync(string assemblyName, string document, CancellationToken ctx = default(CancellationToken))
+        public async Task<CucumberResult> ExecuteTestAsync(string assemblyName, string document, CancellationToken ctx = default(CancellationToken))
         {
             _pluginManager.LoadPlugin(assemblyName);
             var assembly = _pluginManager.GetPlugin(assemblyName);
             var test = new CucumberTest(assembly);
 
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
             var testTask = test.ExecuteAsync(document, ctx);
             await testTask;
+            stopWatch.Stop();
 
             if (testTask.Exception != null)
             {
-                throw testTask.Exception;
+                return new CucumberResult()
+                {
+                    Exception = testTask.Exception,
+                    Success = false,
+                    ExecutionTimeMilliseconds = stopWatch.ElapsedMilliseconds
+                };
             }
+            return new CucumberResult()
+            {
+                Success = true,
+                ExecutionTimeMilliseconds = stopWatch.ElapsedMilliseconds
+            };
         }
     }
 }

@@ -1,13 +1,10 @@
-﻿using System;
-
-namespace Runic.Agent.Core.Harness
+﻿namespace Runic.Agent.Core.Harness
 {
-    public class FunctionResult
+    public class FunctionResult : Result
     {
-        public bool Success { get; set; }
-        public Exception Exception { get; set; }
         public string FunctionName { get; set; }
+        public string StepName { get; set; }
+        public string NextStep { get; set; }
         public object[] FunctionParameters { get; set; }
-        public long ExecutionTimeMilliseconds { get; set; }
     }
 }

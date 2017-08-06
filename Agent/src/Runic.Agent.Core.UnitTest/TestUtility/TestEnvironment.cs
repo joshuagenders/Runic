@@ -9,18 +9,16 @@ namespace Runic.Agent.Core.UnitTest.TestUtility
 {
     public class TestEnvironment
     {
-        public IPluginManager PluginManager { get; set; }
+        public Mock<IPluginManager> PluginManager { get; set; }
         public Mock<IStatsClient> Stats { get; set; }
         public Mock<IDataService> DataService { get; set; }
+        public ILoggerFactory LoggerFactory { get; set; }
         public TestEnvironment()
         {
             Stats = new Mock<IStatsClient>();
             DataService = new Mock<IDataService>();
-            PluginManager = new PluginManager(
-                new Mock<IRuneClient>().Object, 
-                new FilePluginProvider(Directory.GetCurrentDirectory()), 
-                Stats.Object,
-                new LoggerFactory());
+            LoggerFactory = new LoggerFactory();
+            PluginManager = new Mock<IPluginManager>();
 
         }        
     }

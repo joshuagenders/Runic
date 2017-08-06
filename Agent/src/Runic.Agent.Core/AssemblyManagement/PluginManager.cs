@@ -31,6 +31,20 @@ namespace Runic.Agent.Core.AssemblyManagement
             _logger = loggerFactory.CreateLogger<PluginManager>();
         }
 
+        public object GetInstance(Type type)
+        {
+            _logger.LogDebug($"type found {type.AssemblyQualifiedName}");
+            var instance = Activator.CreateInstance(type);
+            //todo populate public instance testcontext properties in class
+            return instance;
+        }
+
+        public object GetInstance(string assemblyQualifiedClassName)
+        {
+            var type = GetClassType(assemblyQualifiedClassName);
+            return GetInstance(type);
+        }
+
         public void LoadPlugin(string pluginAssemblyName)
         {
             _logger.LogDebug($"Loading plugin {pluginAssemblyName}");
@@ -78,20 +92,20 @@ namespace Runic.Agent.Core.AssemblyManagement
             return assembly;
         }
 
-        public Type GetClassType(string functionFullyQualifiedName)
+        public Type GetClassType(string fullyQualifiedClassName)
         {
             _logger.LogDebug($"Searching assemblies for function");
             lock (_assemblies)
             {
                 foreach (var assembly in _assemblies)
                 {
-                    var type = assembly.GetType(functionFullyQualifiedName);
+                    var type = assembly.GetType(fullyQualifiedClassName);
                     if (type != null)
                         return type;
                 }
             }
 
-            throw new ClassNotFoundInAssemblyException(functionFullyQualifiedName);
+            throw new ClassNotFoundInAssemblyException(fullyQualifiedClassName);
         }
 
         public IList<FunctionInformation> GetAvailableFunctions()

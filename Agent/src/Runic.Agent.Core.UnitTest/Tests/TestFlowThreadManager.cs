@@ -24,12 +24,12 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 _flow,
                 _testEnvironment.Stats.Object,
                 new FunctionFactory(
-                    _flow,
-                    _testEnvironment.PluginManager,
+                    _testEnvironment.PluginManager.Object,
                     _testEnvironment.Stats.Object,
                     _testEnvironment.DataService.Object,
                     new LoggerFactory()),
-                    null);
+                    null,
+                    new LoggerFactory());
         }
 
         [TestMethod]
