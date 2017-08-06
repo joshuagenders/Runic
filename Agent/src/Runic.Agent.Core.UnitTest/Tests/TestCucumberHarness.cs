@@ -3,7 +3,6 @@ using Moq;
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Harness;
 using Runic.Agent.Core.UnitTest.TestUtility;
-using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading;

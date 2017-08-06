@@ -52,6 +52,41 @@ namespace Runic.Agent.Core.UnitTest.TestUtility
             });
         }
 
+        [Function("Register")]
+        public void DoSomeTask2()
+        {
+            CallList.Add(new InvocationInformation()
+            {
+                InvocationTime = DateTime.Now,
+                StackTrace = Environment.StackTrace,
+                InvocationTarget = "Register"
+            });
+        }
+
+        [Function("ReturnFoo")]
+        public string DoSomeTask3()
+        {
+            CallList.Add(new InvocationInformation()
+            {
+                InvocationTime = DateTime.Now,
+                StackTrace = Environment.StackTrace,
+                InvocationTarget = "ReturnFoo"
+            });
+            return "ReturnBar";
+        }
+
+        [Function("ReturnBar")]
+        public string DoSomeTask4()
+        {
+            CallList.Add(new InvocationInformation()
+            {
+                InvocationTime = DateTime.Now,
+                StackTrace = Environment.StackTrace,
+                InvocationTarget = "ReturnBar"
+            });
+            return "ReturnFoo";
+        }
+
         [Function("Inputs")]
         public void DoSomeTask1(string input1, int input2)
         {

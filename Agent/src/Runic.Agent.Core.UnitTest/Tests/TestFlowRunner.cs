@@ -81,15 +81,145 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public void ExcuteFlowRunner_ExecutesStepsInOrder()
+        public async Task ExcuteFlowRunner_ExecutesStepsInOrder()
         {
-            throw new NotImplementedException();
+            var flow = new Flow()
+            {
+                Name = "",
+                StepDelayMilliseconds = 10,
+                Steps = new List<Step>()
+                {
+                    new Step()
+                    {
+                        StepName = "1",
+                        Function = new FunctionInformation()
+                        {
+                            AssemblyName = "test",
+                            AssemblyQualifiedClassName = "Runic.Agent.Core.UnitTest.TestUtility.FakeFunction",
+                            FunctionName = "Login"
+                        }
+                    },
+                    new Step()
+                    {
+                        StepName = "2",
+                        Function = new FunctionInformation()
+                        {
+                            AssemblyName = "test",
+                            AssemblyQualifiedClassName = "Runic.Agent.Core.UnitTest.TestUtility.FakeFunction",
+                            FunctionName = "Register"
+                        }
+                    }
+                }
+            };
+
+            var pluginManager = new Mock<IPluginManager>();
+            var fakeFunction = new FakeFunction();
+            pluginManager.Setup(p => p.GetInstance(flow.Steps[0].Function.AssemblyQualifiedClassName))
+                         .Returns(fakeFunction);
+
+            var functionFactory =
+                new FunctionFactory(
+                    pluginManager.Object,
+                    _testEnvironment.Stats.Object,
+                    _testEnvironment.DataService.Object,
+                    _testEnvironment.LoggerFactory);
+            var harness = new Mock<CucumberHarness>();
+
+            int maxErrors = 0;
+            var flowRunner = new FlowRunner(
+                functionFactory,
+                new CucumberHarness(_testEnvironment.PluginManager.Object),
+                flow,
+                _testEnvironment.LoggerFactory,
+                maxErrors);
+
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(300);
+            try
+            {
+                await flowRunner.ExecuteFlowAsync(cts.Token);
+            }
+            catch (AggregateException)
+            {
+                //all g
+            }
+
+            // three method calls per iteration, at least 2 iterations = 6
+            Assert.IsTrue(fakeFunction.CallList.Count > 6, $"{fakeFunction.CallList.Count} call count was less than 6");
+            Assert.IsTrue(fakeFunction.CallList[1].InvocationTarget == "Login", $"steps not executed in order");
+            Assert.IsTrue(fakeFunction.CallList[4].InvocationTarget == "Register", $"steps not executed in order");
         }
 
         [TestMethod]
-        public void ExcuteFlowRunner_ExecutesStringStepsInOrder()
+        public async Task ExcuteFlowRunner_ExecutesStringStepsInOrder()
         {
-            throw new NotImplementedException();
+            var flow = new Flow()
+            {
+                Name = "",
+                StepDelayMilliseconds = 10,
+                Steps = new List<Step>()
+                {
+                    new Step()
+                    {
+                        StepName = "ReturnFoo",
+                        GetNextStepFromFunctionResult = true,
+                        Function = new FunctionInformation()
+                        {
+                            AssemblyName = "test",
+                            AssemblyQualifiedClassName = "Runic.Agent.Core.UnitTest.TestUtility.FakeFunction",
+                            FunctionName = "ReturnFoo"
+                        }
+                    },
+                    new Step()
+                    {
+                        StepName = "ReturnBar",
+                        GetNextStepFromFunctionResult = true,
+                        Function = new FunctionInformation()
+                        {
+                            AssemblyName = "test",
+                            AssemblyQualifiedClassName = "Runic.Agent.Core.UnitTest.TestUtility.FakeFunction",
+                            FunctionName = "ReturnBar"
+                        }
+                    }
+                }
+            };
+
+            var pluginManager = new Mock<IPluginManager>();
+            var fakeFunction = new FakeFunction();
+            pluginManager.Setup(p => p.GetInstance(flow.Steps[0].Function.AssemblyQualifiedClassName))
+                         .Returns(fakeFunction);
+
+            var functionFactory =
+                new FunctionFactory(
+                    pluginManager.Object,
+                    _testEnvironment.Stats.Object,
+                    _testEnvironment.DataService.Object,
+                    _testEnvironment.LoggerFactory);
+            var harness = new Mock<CucumberHarness>();
+
+            int maxErrors = 0;
+            var flowRunner = new FlowRunner(
+                functionFactory,
+                new CucumberHarness(_testEnvironment.PluginManager.Object),
+                flow,
+                _testEnvironment.LoggerFactory,
+                maxErrors);
+
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(300);
+            try
+            {
+                await flowRunner.ExecuteFlowAsync(cts.Token);
+            }
+            catch (AggregateException)
+            {
+                //all g
+            }
+
+            // three method calls per iteration, at least 2 iterations = 6
+            Assert.IsTrue(fakeFunction.CallList.Count > 6, $"{fakeFunction.CallList.Count} call count was less than 6");
+            Assert.IsTrue(fakeFunction.CallList[1].InvocationTarget == "ReturnFoo", $"steps not executed in order");
+            Assert.IsTrue(fakeFunction.CallList[4].InvocationTarget == "ReturnBar", $"steps not executed in order");
         }
     }
 }
