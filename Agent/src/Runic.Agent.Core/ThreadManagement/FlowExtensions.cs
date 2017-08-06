@@ -4,6 +4,7 @@ using Runic.Agent.Core.Data;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.Harness;
 using Runic.Framework.Clients;
+using Runic.Framework.Models;
 
 namespace Runic.Agent.Core.ThreadManagement
 {

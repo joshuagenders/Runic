@@ -35,7 +35,6 @@ namespace Runic.Agent.Core.AssemblyManagement
         {
             _logger.LogDebug($"type found {type.AssemblyQualifiedName}");
             var instance = Activator.CreateInstance(type);
-            //todo populate public instance testcontext properties in class
             return instance;
         }
 

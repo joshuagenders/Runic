@@ -4,6 +4,6 @@ namespace Runic.Agent.Core.Harness
 {
     public interface IFunctionFactory
     {
-        FunctionHarness CreateFunction(Step step);
+        FunctionHarness CreateFunction(Step step, TestContext testContext);
     }
 }

@@ -10,6 +10,7 @@ using Runic.Agent.Standalone.Configuration;
 using Runic.Agent.Standalone.Providers;
 using Runic.Agent.Standalone.Services;
 using Runic.Framework.Clients;
+using Runic.Framework.Models;
 using StatsN;
 using System.IO;
 
@@ -44,6 +45,14 @@ namespace Runic.Agent.Standalone
             var statsdSettings = new StatsdSettings();
             var agentSettings = new AgentSettings();
             var agentConfig = new AgentConfig(statsdSettings, agentSettings);
+
+            builder.RegisterInstance(new TestContext()
+            {
+                DeploymentDirectory = Directory.GetCurrentDirectory(),
+                FlowExecutionId = agentConfig.AgentSettings.FlowPatternExecutionId,
+                ThreadPatternName = agentConfig.AgentSettings.FlowThreadPatternName,
+                PluginDirectory = "Plugins"
+            });
 
             IStatsd statsd = Statsd.New<Udp>(options =>
             {

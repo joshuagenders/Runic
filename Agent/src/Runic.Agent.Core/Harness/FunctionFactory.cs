@@ -6,6 +6,7 @@ using Runic.Framework.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Runic.Agent.Core.Harness
 {
@@ -30,13 +31,22 @@ namespace Runic.Agent.Core.Harness
             _dataService = dataService;
         }
 
-        //todo implement databinding for flow steps?
         //todo think about state lifecycle for functions and assemblies
-        public FunctionHarness CreateFunction(Step step)
+        public FunctionHarness CreateFunction(Step step, TestContext testContext)
         {
             _logger.LogDebug($"Initialising {step.Function.FunctionName} in {step.Function.AssemblyName}");
             _logger.LogDebug($"Retrieving function type");
             var instance = _pluginManager.GetInstance(step.Function.AssemblyQualifiedClassName);
+            
+            //populate test context
+            var testContextProperties = instance.GetType().GetProperties().Where(p => p.GetType() == typeof(TestContext) && p.GetType().GetTypeInfo().IsPublic);
+            if (testContextProperties.Any())
+            {
+                foreach (var prop in testContextProperties)
+                {
+                    prop.SetValue(instance, testContext);
+                }
+            }
             var harness = new FunctionHarness(_stats, _loggerFactory);
             var methodParams = _dataService.GetMethodParameterValues(
                             step.DataInput?.InputDatasource,

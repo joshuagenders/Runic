@@ -15,6 +15,7 @@ namespace Runic.Agent.Core.ThreadManagement
         private readonly Flow _flow;
         private readonly ILogger _logger;
         private int _maxErrors { get; set; } = -1;
+        private bool _getNextStepFromResult { get; set; }
         public int ErrorCount { get; set; }
 
         public FlowRunner(FunctionFactory factory, CucumberHarness harness, Flow flow, ILoggerFactory loggerFactory, int maxErrors)
@@ -32,26 +33,51 @@ namespace Runic.Agent.Core.ThreadManagement
             FunctionResult result = null;
             while (!ctx.IsCancellationRequested)
             {
+                Step step = null;
+                //todo
+                var testContext = new TestContext()
+                {
+                };
+
+                
+                if (_getNextStepFromResult && result?.NextStep != null)
+                {
+                    var matchingStep = _flow.Steps
+                                            .Where(s => s.StepName == result.StepName)
+                                            .Select(s => s);
+                    if (!matchingStep.Any())
+                    {
+                        throw new StepNotFoundException($"Step not found for step {result.StepName}");
+                    }
+                    if (matchingStep.Count() > 1)
+                    {
+                        throw new StepNotFoundException($"Duplicate step found for step {result.StepName}");
+                    }
+                    step = matchingStep.Single();
+                }
+
                 if (function == null)
                 {
-                    function = _factory.CreateFunction(_flow.Steps.First());
-                }
-                else if (result?.NextStep != null)
-                {
-                    function = _factory.CreateFunction(_flow.Steps.Single(s => s.StepName == result.NextStep));
+                    step = _flow.Steps.First();
+                    _getNextStepFromResult = step.GetNextStepFromFunctionResult;
                 }
                 else
                 {
-                    int functionIndex = _flow.Steps
-                                             .Where(s => s.StepName == result.StepName)
-                                             .Select(s => _flow.Steps.IndexOf(s))
-                                             .Single();
+                    var matchingStep = _flow.Steps
+                                           .Where(s => s.StepName == result.StepName)
+                                           .Select(s => _flow.Steps.IndexOf(s));
+                    int functionIndex = matchingStep.Single();
+
                     //handle null for stepname in result
                     functionIndex++;
                     functionIndex = functionIndex >= _flow.Steps.Count ? 0 : functionIndex;
-
-                    function = _factory.CreateFunction(_flow.Steps[functionIndex]);
+                    step = _flow.Steps[functionIndex];
                 }
+                if (step == null)
+                    throw new StepNotFoundException($"Step not found for step {result.StepName}");
+
+                function = _factory.CreateFunction(step, testContext);
+                _getNextStepFromResult = step.GetNextStepFromFunctionResult;
                 result = await function.OrchestrateFunctionExecutionAsync(ctx);
                 LogResult(result);
             }
