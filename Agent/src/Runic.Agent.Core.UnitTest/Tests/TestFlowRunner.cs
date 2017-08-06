@@ -76,7 +76,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 //all g
             }
             
-            // three method calls per iteration, at least 2 iterations = 6
+            // three method calls per iteration, at least 2 steps = 6
             Assert.IsTrue(fakeFunction.CallList.Count > 6, $"{fakeFunction.CallList.Count} call count was less than 6");
         }
 
@@ -144,7 +144,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 //all g
             }
 
-            // three method calls per iteration, at least 2 iterations = 6
+            // three method calls per iteration, at least 2 steps = 6
             Assert.IsTrue(fakeFunction.CallList.Count > 6, $"{fakeFunction.CallList.Count} call count was less than 6");
             Assert.IsTrue(fakeFunction.CallList[1].InvocationTarget == "Login", $"steps not executed in order");
             Assert.IsTrue(fakeFunction.CallList[4].InvocationTarget == "Register", $"steps not executed in order");
@@ -216,10 +216,11 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 //all g
             }
 
-            // three method calls per iteration, at least 2 iterations = 6
-            Assert.IsTrue(fakeFunction.CallList.Count > 6, $"{fakeFunction.CallList.Count} call count was less than 6");
+            // three method calls per iteration, at least 3 steps = 9
+            Assert.IsTrue(fakeFunction.CallList.Count > 9, $"{fakeFunction.CallList.Count} call count was less than 6");
             Assert.IsTrue(fakeFunction.CallList[1].InvocationTarget == "ReturnFoo", $"steps not executed in order");
             Assert.IsTrue(fakeFunction.CallList[4].InvocationTarget == "ReturnBar", $"steps not executed in order");
+            Assert.IsTrue(fakeFunction.CallList[7].InvocationTarget == "ReturnFoo", $"steps not executed in order");
         }
     }
 }
