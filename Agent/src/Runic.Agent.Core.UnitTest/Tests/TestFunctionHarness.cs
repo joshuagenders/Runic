@@ -78,7 +78,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             var result = await functionHarness.OrchestrateFunctionExecutionAsync(cts.Token);
 
             fakeFunction.CallList.ForEach(c => Console.WriteLine(c.InvocationTarget));
-            Assert.IsTrue(result, "Function returned false - error in execution");
+            Assert.IsTrue(result.Success, "Function returned false - error in execution");
             Assert.AreEqual(3, fakeFunction.CallList.Count);
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "BeforeEach"), "BeforeEach called");
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "Login"), "Login called");

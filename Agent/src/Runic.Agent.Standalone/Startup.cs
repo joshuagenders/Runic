@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Data;
 using Runic.Agent.Core.FlowManagement;
-using Runic.Agent.Core.Metrics;
 using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Standalone.Clients;

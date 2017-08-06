@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Runic.Framework.Clients;
 using Runic.Framework.Attributes;
+using System.Diagnostics;
 
 namespace Runic.Agent.Core.Harness
 {
@@ -36,22 +37,35 @@ namespace Runic.Agent.Core.Harness
             StepName = StepName;
         }
 
-        public async Task<bool> OrchestrateFunctionExecutionAsync(CancellationToken ctx = default(CancellationToken))
+        public async Task<FunctionResult> OrchestrateFunctionExecutionAsync(CancellationToken ctx = default(CancellationToken))
         {
+            FunctionResult result = new FunctionResult()
+            {
+                FunctionName = _functionName,
+                FunctionParameters = _positionalParameters,
+            };
+            var timer = new Stopwatch();
             try
             {
+                timer.Start();
                 await ExecuteMethodWithAttribute(typeof(BeforeEachAttribute), ctx);
                 await ExecuteFunctionAsync(ctx);
                 await ExecuteMethodWithAttribute(typeof(AfterEachAttribute), ctx);
+                timer.Stop();
                 _stats.CountFunctionSuccess(_functionName);
-                return true;
+                result.Success = true;
+                result.ExecutionTimeMilliseconds = timer.ElapsedMilliseconds;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _logger.LogError($"Error in function execution for step {StepName} and function {_functionName}", e);
+                _logger.LogError($"Error in function execution for step {StepName} and function {_functionName}", ex);
                 _stats.CountFunctionFailure(_functionName);
-                return false;
+                timer.Stop();
+                result.Exception = ex;
+                result.Success = false;
+                result.ExecutionTimeMilliseconds = timer.ElapsedMilliseconds;
             }
+            return result;
         }
 
         public async Task ExecuteFunctionAsync(CancellationToken ctx = default(CancellationToken))

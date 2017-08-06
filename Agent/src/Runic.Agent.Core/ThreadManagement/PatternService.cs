@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.Harness;
-using Runic.Agent.Core.Metrics;
 using Runic.Agent.Core.ThreadPatterns;
 using Runic.Framework.Models;
 using System.Collections.Concurrent;

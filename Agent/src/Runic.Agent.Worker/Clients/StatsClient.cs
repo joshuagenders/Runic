@@ -2,7 +2,7 @@
 using Runic.Framework.Clients;
 using StatsN;
 
-namespace Runic.Agent.Core.Metrics
+namespace Runic.Agent.Worker.Clients
 {
     public class StatsClient : IStatsClient
     {

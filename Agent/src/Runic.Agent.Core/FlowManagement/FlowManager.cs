@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using Runic.Framework.Models;
-using Runic.Agent.Core.Metrics;
 using System.Linq;
 using System.Collections.Generic;
 using Runic.Framework.Clients;

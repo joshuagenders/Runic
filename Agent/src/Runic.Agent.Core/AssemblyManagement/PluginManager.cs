@@ -7,7 +7,6 @@ using System.Runtime.Loader;
 using Runic.Framework.Clients;
 using Runic.Framework.Attributes;
 using Runic.Framework.Models;
-using Runic.Agent.Core.Metrics;
 using System.IO;
 using Microsoft.Extensions.Logging;
 
