@@ -63,14 +63,8 @@ namespace Runic.Cucumber.UnitTest
                    Whdfdfen I fdfhave a when ""wherever""
                    Thenfdf I have a then ""whomever""";
 
-            try
-            {
-                await documentRunner.ExecuteAsync(statement, cts.Token);
-                Assert.Fail("No exception thrown");
-            }
-            catch (GherkinDocumentParserError)
-            {
-            }
+            var result = await documentRunner.ExecuteAsync(statement, cts.Token);
+            Assert.IsTrue(result.Exception.GetType() == typeof(GherkinDocumentParserError));
         }
     }
 }

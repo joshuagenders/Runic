@@ -12,5 +12,6 @@ namespace Runic.Framework.Clients
         void CountHttpRequestSuccess(string functionName, string responseCode);
         void CountHttpRequestFailure(string functionName, string responseCode);
         void Time(string functionName, string actionName, Action actionToTime);
+        void Time(string functionName, string actionName, int millisecondsEllapsed);
     }
 }

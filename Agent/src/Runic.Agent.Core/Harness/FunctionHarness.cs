@@ -54,7 +54,6 @@ namespace Runic.Agent.Core.Harness
                 await ExecuteMethodWithAttribute(typeof(AfterEachAttribute), ctx);
                 timer.Stop();
                 _stats.CountFunctionSuccess(_functionName);
-                //todo fix time in statclient to support millisecond not action
                 result.Success = true;
                 result.ExecutionTimeMilliseconds = timer.ElapsedMilliseconds;
                 result.NextStep = _nextStep;

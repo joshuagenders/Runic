@@ -52,5 +52,10 @@ namespace Runic.Agent.Standalone.Clients
         {
             _statsd?.Timing($"functions.{functionName}.actions.timings.{actionName}", actionToTime);
         }
+
+        public void Time(string functionName, string actionName, int millisecondsEllapsed)
+        {
+            _statsd?.Timing($"functions.{functionName}.actions.timings.{actionName}", millisecondsEllapsed);
+        }
     }
 }
