@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.Harness;
+using Runic.Agent.Core.Services;
 using Runic.Framework.Models;
 using System;
 using System.Linq;
@@ -14,17 +15,20 @@ namespace Runic.Agent.Core.ThreadManagement
         private readonly CucumberHarness _harness;
         private readonly Flow _flow;
         private readonly ILogger _logger;
+        private readonly IDatetimeService _datetimeService;
+
         private int _maxErrors { get; set; } = -1;
         private bool _getNextStepFromResult { get; set; }
         public int ErrorCount { get; set; }
 
-        public FlowRunner(FunctionFactory factory, CucumberHarness harness, Flow flow, ILoggerFactory loggerFactory, int maxErrors)
+        public FlowRunner(FunctionFactory factory, CucumberHarness harness, Flow flow, ILoggerFactory loggerFactory, IDatetimeService datetimeService, int maxErrors)
         {
             _factory = factory;
             _harness = harness;
             _flow = flow;
             _logger = loggerFactory.CreateLogger<FlowRunner>();
             _maxErrors = maxErrors;
+            _datetimeService = datetimeService;
         }
 
         private async Task ExecuteFunctionAsync(CancellationToken ctx = default(CancellationToken))
@@ -79,6 +83,7 @@ namespace Runic.Agent.Core.ThreadManagement
                 function = _factory.CreateFunction(step, testContext);
                 _getNextStepFromResult = step.GetNextStepFromFunctionResult;
                 result = await function.OrchestrateFunctionExecutionAsync(ctx);
+                await _datetimeService.WaitUntil(_flow.StepDelayMilliseconds, ctx);
                 LogResult(result);
             }
         }

@@ -42,7 +42,7 @@ namespace Runic.Agent.Core.ThreadPatterns
                 {
                     var nextPoint = Points[index + 1];
                     var waitTimeSeconds = ((nextPoint.unitsFromStart - currentPoint.unitsFromStart) * (DurationSeconds / maxX));
-                    await _datetimeService.WaitUntil((int)waitTimeSeconds, ctx);
+                    await _datetimeService.WaitUntil((int)waitTimeSeconds * 1000, ctx);
                 }
             }
             await Task.CompletedTask;

@@ -23,18 +23,16 @@ namespace Runic.Cucumber
             _documentRunner = new DocumentRunner(adapter);
         }
 
-        public async Task<bool> ExecuteAsync(string document, CancellationToken ctx = default(CancellationToken))
+        public async Task<TestResult> ExecuteAsync(string document, CancellationToken ctx = default(CancellationToken))
         {
-            await _documentRunner.ExecuteAsync(document, ctx);
-            return await Task.FromResult(true);
+            return await _documentRunner.ExecuteAsync(document, ctx);
         }
 
-        public async Task<bool> ExecuteAsync(CancellationToken ctx = default(CancellationToken))
+        public async Task<TestResult> ExecuteAsync(CancellationToken ctx = default(CancellationToken))
         {
             var doc = _stringBuilder.ToString();
             var documentTask = _documentRunner.ExecuteAsync(doc, ctx);
-            await documentTask;
-            return await Task.FromResult(!documentTask.IsFaulted);
+            return await documentTask;
         }
     }
 }

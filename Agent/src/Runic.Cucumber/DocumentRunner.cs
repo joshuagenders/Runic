@@ -18,31 +18,41 @@ namespace Runic.Cucumber
             _assemblyAdapter = assemblyAdapter;
         }
 
-        public async Task ExecuteAsync(string document, CancellationToken ctx = default(CancellationToken))
+        public async Task<TestResult> ExecuteAsync(string document, CancellationToken ctx = default(CancellationToken))
         {
             List<Pickle> pickles;
+            var testResult = new TestResult();
             try
             {
                 var gherkinDoc = ParseTokenString(document);
                 pickles = GetPickles(gherkinDoc);
+                testResult.Steps = pickles?.SelectMany(p => p.Steps.Select(s => s.Text)).ToList();
             }
             catch (Exception ex)
             {
-                throw new GherkinDocumentParserError("The document could not be parsed", ex);
+                testResult.Success = false;
+                testResult.Exception = new GherkinDocumentParserError("The document could not be parsed", ex);
+                return testResult;
             }
             foreach (var pickle in pickles)
             {
                 foreach (var step in pickle.Steps)
                 {
-                    var stepTask = ExecuteStepAsync(step, ctx);
-                    await stepTask;
-                    if (stepTask.IsFaulted || stepTask.Exception != null)
+                    try
                     {
-                        //todo failure logic and proper error propagation
-                        throw stepTask.Exception;
+                        await ExecuteStepAsync(step, ctx);
+                    }
+                    catch (Exception ex)
+                    {
+                        testResult.FailedStep = step.Text;
+                        testResult.Success = false;
+                        testResult.Exception = ex;
+                        return testResult;
                     }
                 }
             }
+            testResult.Success = true;
+            return testResult;
         }
 
         public async Task ExecuteStepAsync(PickleStep step, CancellationToken ctx = default(CancellationToken))

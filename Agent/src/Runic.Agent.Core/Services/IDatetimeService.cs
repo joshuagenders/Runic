@@ -7,6 +7,6 @@ namespace Runic.Agent.Core.Services
     public interface IDatetimeService
     {
         DateTime Now { get; }
-        Task WaitUntil(int durationSeconds, CancellationToken ctx = default(CancellationToken));
+        Task WaitUntil(int durationMilliseconds, CancellationToken ctx = default(CancellationToken));
     }
 }

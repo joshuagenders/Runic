@@ -63,6 +63,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 new CucumberHarness(_testEnvironment.PluginManager.Object), 
                 flow, 
                 _testEnvironment.LoggerFactory, 
+                _testEnvironment.DatetimeService.Object,
                 maxErrors);
 
             var cts = new CancellationTokenSource();
@@ -131,6 +132,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 new CucumberHarness(_testEnvironment.PluginManager.Object),
                 flow,
                 _testEnvironment.LoggerFactory,
+                _testEnvironment.DatetimeService.Object,
                 maxErrors);
 
             var cts = new CancellationTokenSource();
@@ -203,6 +205,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 new CucumberHarness(_testEnvironment.PluginManager.Object),
                 flow,
                 _testEnvironment.LoggerFactory,
+                _testEnvironment.DatetimeService.Object,
                 maxErrors);
 
             var cts = new CancellationTokenSource();

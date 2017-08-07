@@ -2,6 +2,7 @@
 using Moq;
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Data;
+using Runic.Agent.Core.Services;
 using Runic.Framework.Clients;
 using System.IO;
 
@@ -12,6 +13,7 @@ namespace Runic.Agent.Core.UnitTest.TestUtility
         public Mock<IPluginManager> PluginManager { get; set; }
         public Mock<IStatsClient> Stats { get; set; }
         public Mock<IDataService> DataService { get; set; }
+        public Mock<IDatetimeService> DatetimeService { get; set; }
         public ILoggerFactory LoggerFactory { get; set; }
         public TestEnvironment()
         {
@@ -19,7 +21,7 @@ namespace Runic.Agent.Core.UnitTest.TestUtility
             DataService = new Mock<IDataService>();
             LoggerFactory = new LoggerFactory();
             PluginManager = new Mock<IPluginManager>();
-
+            DatetimeService = new Mock<IDatetimeService>();
         }        
     }
 }

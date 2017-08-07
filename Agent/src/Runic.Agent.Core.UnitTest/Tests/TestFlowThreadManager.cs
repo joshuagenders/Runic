@@ -29,7 +29,8 @@ namespace Runic.Agent.Core.UnitTest.Tests
                     _testEnvironment.DataService.Object,
                     new LoggerFactory()),
                     null,
-                    new LoggerFactory());
+                    new LoggerFactory(),
+                    _testEnvironment.DatetimeService.Object);
         }
 
         [TestMethod]

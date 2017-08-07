@@ -23,21 +23,15 @@ namespace Runic.Agent.Core.Harness
             var stopWatch = new Stopwatch();
             stopWatch.Start();
             var testTask = test.ExecuteAsync(document, ctx);
-            await testTask;
+            var result = await testTask;
             stopWatch.Stop();
 
-            if (testTask.Exception != null)
-            {
-                return new CucumberResult()
-                {
-                    Exception = testTask.Exception,
-                    Success = false,
-                    ExecutionTimeMilliseconds = stopWatch.ElapsedMilliseconds
-                };
-            }
             return new CucumberResult()
             {
-                Success = true,
+                Exception = result.Exception,
+                FailedStep = result.FailedStep,
+                Steps = result.Steps,
+                Success = result.Success,
                 ExecutionTimeMilliseconds = stopWatch.ElapsedMilliseconds
             };
         }

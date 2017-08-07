@@ -28,8 +28,8 @@ namespace Runic.Agent.Standalone.Test.InMemory
                  .When("I start the test")
                  .Then("The fake function is invoked");
 
-            var success = await _test.ExecuteAsync();
-            success.Should().BeTrue();
+            var result = await _test.ExecuteAsync();
+            result.Success.Should().BeTrue();
         }
 
         [Fact]
@@ -47,8 +47,8 @@ namespace Runic.Agent.Standalone.Test.InMemory
                         { "patternType", new List<string>(){ "Constant", "Graph", "Gradual" } }
                     });
 
-            var success = await _test.ExecuteAsync();
-            success.Should().BeTrue();
+            var result = await _test.ExecuteAsync();
+            result.Success.Should().BeTrue();
         }
     }
 }
