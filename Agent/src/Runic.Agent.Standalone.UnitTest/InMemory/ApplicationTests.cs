@@ -9,33 +9,28 @@ namespace Runic.Agent.Standalone.Test.InMemory
 {
     public class ApplicationTests
     {
-        private CucumberTest _test { get; set; }
-
-        public ApplicationTests()
-        {
-            _test = new CucumberTest(GetType().GetTypeInfo().Assembly);
-        }
-
         [Theory]
         [InlineData("Constant")]
         [InlineData("Graph")]
         [InlineData("Gradual")]
         public async Task TestPatternExecution(string patternType)
         {
-            _test.Given($"I have a test environment for a '{patternType}' flow")
-                 .And("I have a function flow")
-                 .And("I start the application")
-                 .When("I start the test")
-                 .Then("The fake function is invoked");
+            var test = new CucumberTest(GetType().GetTypeInfo().Assembly);
+            test.Given($"I have a test environment for a '{patternType}' flow")
+                .And("I have a function flow")
+                .And("I start the application")
+                .When("I start the test")
+                .Then("The fake function is invoked");
 
-            var result = await _test.ExecuteAsync();
+            var result = await test.ExecuteAsync();
             result.Success.Should().BeTrue();
         }
 
         [Fact]
         public async Task TestCucumberExecution()
         {
-            _test.ScenarioOutline("Cucumber patterns")
+            var test = new CucumberTest(GetType().GetTypeInfo().Assembly);
+            test.ScenarioOutline("Cucumber patterns")
                  .Given($"I have a test environment for a '<patternType>' flow")
                  .And("I have a cucumber flow")
                  .And("I start the application")
@@ -47,7 +42,7 @@ namespace Runic.Agent.Standalone.Test.InMemory
                         { "patternType", new List<string>(){ "Constant", "Graph", "Gradual" } }
                     });
 
-            var result = await _test.ExecuteAsync();
+            var result = await test.ExecuteAsync();
             result.Success.Should().BeTrue();
         }
     }

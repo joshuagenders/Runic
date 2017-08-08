@@ -116,8 +116,10 @@ namespace Runic.Agent.Core.ThreadManagement
                     if (step.Cucumber != null)
                     {
                         var result = await _harness.ExecuteTestAsync(step.Cucumber.AssemblyName, step.Cucumber.Document, ctx);
+                        await _datetimeService.WaitUntil(_flow.StepDelayMilliseconds, ctx);
                         LogResult(result);
                     }
+
                 }
             }
         }
