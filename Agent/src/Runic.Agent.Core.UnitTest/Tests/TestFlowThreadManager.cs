@@ -23,14 +23,8 @@ namespace Runic.Agent.Core.UnitTest.Tests
             _manager = new FlowThreadManager(
                 _flow,
                 _testEnvironment.Stats.Object,
-                new FunctionFactory(
-                    _testEnvironment.PluginManager.Object,
-                    _testEnvironment.Stats.Object,
-                    _testEnvironment.DataService.Object,
-                    new LoggerFactory()),
-                    null,
-                    new LoggerFactory(),
-                    _testEnvironment.DatetimeService.Object);
+                _testEnvironment.RunnerService.Object,
+                _testEnvironment.LoggerFactory);
         }
 
         [TestMethod]
@@ -40,6 +34,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.AreEqual(1, _manager.GetCurrentThreadCount());
             await _manager.UpdateThreadCountAsync(0);
             Assert.AreEqual(0, _manager.GetCurrentThreadCount());
+            //todo verify mocks
         }
 
         [TestMethod]
@@ -49,6 +44,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.AreEqual(1, _manager.GetCurrentThreadCount());
             _manager.StopAll();
             Assert.AreEqual(0, _manager.GetCurrentThreadCount());
+            //todo verify mocks
         }
     }
 }

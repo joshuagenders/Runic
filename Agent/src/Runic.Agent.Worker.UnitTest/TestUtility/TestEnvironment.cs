@@ -13,8 +13,8 @@ namespace Runic.Agent.Worker.Test.TestUtility
 {
     public class TestEnvironment : IApplication
     {
-        private readonly IDatetimeService _datetimeService;
-
+        public IDatetimeService DatetimeService { get; set; }
+        public IRunnerService RunnerService { get; set; }
         public IPluginManager PluginManager { get; set; }
         public IStatsClient Stats { get; set; }
         public IDataService DataService { get; set; }
@@ -33,7 +33,8 @@ namespace Runic.Agent.Worker.Test.TestUtility
             IThreadManager threadManager,
             IFlowManager flowManager,
             IHandlerRegistry handlerRegistry,
-            IDatetimeService datetimeService
+            IDatetimeService datetimeService,
+            IRunnerService runnerService
             )
         {
             PluginManager = pluginManager;
@@ -44,7 +45,8 @@ namespace Runic.Agent.Worker.Test.TestUtility
             ThreadManager = threadManager;
             FlowManager = flowManager;
             HandlerRegistry = handlerRegistry;
-            _datetimeService = datetimeService;
+            DatetimeService = datetimeService;
+            RunnerService = runnerService;
         }
 
         public Task RunApplicationAsync(CancellationToken ctx = default(CancellationToken))

@@ -22,16 +22,15 @@ namespace Runic.Agent.Core.ThreadManagement
         private readonly IStatsClient _stats;
         private readonly IPluginManager _pluginManager; 
         private readonly IFlowManager _flowManager;
-        private readonly IDataService _dataService;
+        private readonly IRunnerService _runnerService;
         private readonly IDatetimeService _datetimeService;
 
         public ThreadManager(
             IFlowManager flowManager,
             IPluginManager pluginManager,
             IStatsClient stats,
-            IDataService dataService, 
-            ILoggerFactory loggerFactory,
-            IDatetimeService datetimeService)
+            IRunnerService runnerService, 
+            ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<ThreadManager>();
             _loggerFactory = loggerFactory;
@@ -39,8 +38,7 @@ namespace Runic.Agent.Core.ThreadManagement
             _flowManager = flowManager;
             _pluginManager = pluginManager;
             _stats = stats;
-            _dataService = dataService;
-            _datetimeService = datetimeService;
+            _runnerService = runnerService;
         }
 
         public int GetThreadLevel(string flowId)
@@ -86,9 +84,8 @@ namespace Runic.Agent.Core.ThreadManagement
                     request.FlowName, 
                     _pluginManager, 
                     _stats, 
-                    _dataService, 
-                    _loggerFactory, 
-                    _datetimeService);
+                    _runnerService,
+                    _loggerFactory);
 
                 var resolvedManager = _threadManagers.GetOrAdd(request.FlowId, newThreadManager);
                 await resolvedManager.UpdateThreadCountAsync(request.ThreadLevel);

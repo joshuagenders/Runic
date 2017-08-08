@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Runic.Agent.Core.ThreadManagement
+namespace Runic.Agent.Core.Services
 {
     public class MaxErrorCountExceededException : Exception
     {

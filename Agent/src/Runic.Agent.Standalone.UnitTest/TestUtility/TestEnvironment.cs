@@ -4,6 +4,7 @@ using Moq;
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Data;
 using Runic.Agent.Core.FlowManagement;
+using Runic.Agent.Core.Harness;
 using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Standalone.Clients;
@@ -87,6 +88,9 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         public TestObject<IStatsdSettings> StatsdSettings { get; set; } = new TestObject<IStatsdSettings>();
         public TestObject<IFlowProvider> FlowProvider { get; set; } = new TestObject<IFlowProvider>();
         public TestObject<IDatetimeService> DatetimeService { get; set; } = new TestObject<IDatetimeService>();
+        public TestObject<IRunnerService> RunnerService { get; set; } = new TestObject<IRunnerService>();
+        public TestObject<IFunctionFactory> FunctionFactory { get; set; } = new TestObject<IFunctionFactory>();
+
         public IContainer Build()
         {
             Register(PluginManager);
@@ -103,6 +107,8 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             Register(StatsdSettings);
             Register(FlowProvider);
             Register(DatetimeService);
+            Register(RunnerService);
+            Register(FunctionFactory);
 
             return _builder.Build();
         }
@@ -240,6 +246,8 @@ namespace Runic.Agent.Standalone.Test.TestUtility
                       .WithType<NoOpDataService, IDataService>()
                       .WithType<LoggerFactory, ILoggerFactory>()
                       .WithType<StatsClient, IStatsClient>()
+                      .WithType<RunnerService, IRunnerService>()
+                      .WithType<FunctionFactory, IFunctionFactory>()
                       .WithSingleInstanceType<Application, IApplication>();
         }
     }

@@ -1,11 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.AssemblyManagement;
-using Runic.Agent.Core.Data;
 using Runic.Agent.Core.FlowManagement;
-using Runic.Agent.Core.Harness;
 using Runic.Agent.Core.Services;
 using Runic.Framework.Clients;
-using Runic.Framework.Models;
 
 namespace Runic.Agent.Core.ThreadManagement
 {
@@ -15,17 +12,12 @@ namespace Runic.Agent.Core.ThreadManagement
             this IFlowManager flowManager,
             string flow,
             IPluginManager pluginManager,
-            IStatsClient stats, 
-            IDataService dataService,
-            ILoggerFactory loggerFactory,
-            IDatetimeService datetimeService)
+            IStatsClient stats,
+            IRunnerService runnerService,
+            ILoggerFactory loggerFactory)
         {
             var flowInstance = flowManager.GetFlow(flow);
-            return new FlowThreadManager(
-                flowInstance, 
-                stats, 
-                new FunctionFactory(pluginManager, stats, dataService, loggerFactory),
-                new CucumberHarness(pluginManager), loggerFactory, datetimeService);
+            return new FlowThreadManager(flowInstance, stats, runnerService, loggerFactory);
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Runic.Agent.Core.ThreadManagement
+namespace Runic.Agent.Core.Services
 {
-    internal class StepNotFoundException : Exception
+    public class StepNotFoundException : Exception
     {
         public StepNotFoundException()
         {

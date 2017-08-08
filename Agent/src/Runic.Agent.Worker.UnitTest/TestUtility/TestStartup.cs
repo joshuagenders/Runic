@@ -12,6 +12,7 @@ using Runic.Framework.Clients;
 using System.IO;
 using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.Services;
+using Runic.Agent.Core.Harness;
 
 namespace Runic.Agent.Worker.Test.TestUtility
 {
@@ -34,13 +35,14 @@ namespace Runic.Agent.Worker.Test.TestUtility
                    .Register<MessagingDataService, IDataService>()
                    .Register<DateTimeService, IDatetimeService>()
                    .Register<TestEnvironment, IApplication>()
-                   .Register<LoggerFactory, ILoggerFactory>();
+                   .Register<LoggerFactory, ILoggerFactory>()
+                   .Register<FunctionFactory, IFunctionFactory>();
 
             builder.RegisterType<PatternService>().As<IPatternService>().SingleInstance();
             builder.RegisterType<FlowManager>().As<IFlowManager>().SingleInstance();
             builder.RegisterType<InMemoryMessagingService>().As<IMessagingService>().SingleInstance();
             builder.RegisterType<ThreadManager>().As<IThreadManager>().SingleInstance();
-
+            builder.RegisterType<RunnerService>().As<IRunnerService>();
             return builder.Build();
         }
     }
