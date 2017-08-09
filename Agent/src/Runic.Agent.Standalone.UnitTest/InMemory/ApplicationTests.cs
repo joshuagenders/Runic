@@ -15,24 +15,18 @@ namespace Runic.Agent.Standalone.Test.InMemory
         [InlineData("Gradual")]
         public async Task TestPatternExecution(string patternType)
         {
-            //var test = new CucumberTest(GetType().GetTypeInfo().Assembly);
-            //test.Given($"I have a test environment for a '{patternType}' flow")
-            //    .And("I have a function flow")
-            //    .And("I start the application")
-            //    .When("I start the test")
-            //    .Then("The fake function is invoked");
-            //
-            //var result = await test.ExecuteAsync();
-            //if (!result.Success)
-            //{
-            //    throw result.Exception;
-            //}
-            var steps = new Steps();
-            steps.SetupTestEnvironment(patternType);
-            steps.IHaveAFunctionFlow();
-            steps.StartApplication();
-            await steps.WhenIStartTheTest();
-            steps.TheFakeFunctionIsInvoked();
+            var test = new CucumberTest(GetType().GetTypeInfo().Assembly);
+            test.Given($"I have a test environment for a '{patternType}' flow")
+                .And("I have a function flow")
+                .And("I start the application")
+                .When("I start the test")
+                .Then("The fake function is invoked");
+            
+            var result = await test.ExecuteAsync();
+            if (!result.Success)
+            {
+                throw result.Exception;
+            }
         }
 
         [Fact]

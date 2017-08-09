@@ -19,7 +19,7 @@ namespace Runic.Agent.Core.UnitTest.TestUtility
         }
 
         [Given("I have a given \"(.*)\"")]
-        public void GivenMethod()
+        public void GivenMethod(string input)
         {
             CallList.Add(new InvocationInformation()
             {
@@ -30,7 +30,7 @@ namespace Runic.Agent.Core.UnitTest.TestUtility
         }
 
         [When("I have a when \"(.*)\"")]
-        public void WhenMethod()
+        public void WhenMethod(string input)
         {
             CallList.Add(new InvocationInformation()
             {
@@ -41,7 +41,7 @@ namespace Runic.Agent.Core.UnitTest.TestUtility
         }
 
         [Then("I have a then \"(.*)\"")]
-        public void ThenMethod()
+        public void ThenMethod(string input)
         {
             CallList.Add(new InvocationInformation()
             {

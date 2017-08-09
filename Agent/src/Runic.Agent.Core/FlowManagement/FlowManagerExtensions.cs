@@ -1,12 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.AssemblyManagement;
-using Runic.Agent.Core.FlowManagement;
-using Runic.Agent.Core.Services;
+using Runic.Agent.Core.Configuration;
+using Runic.Agent.Core.Services.Interfaces;
+using Runic.Agent.Core.ThreadManagement;
 using Runic.Framework.Clients;
 
-namespace Runic.Agent.Core.ThreadManagement
+namespace Runic.Agent.Core.FlowManagement
 {
-    public static class FlowExtensions
+    public static class FlowManagerExtensions
     {
         public static FlowThreadManager GetFlowThreadManager(
             this IFlowManager flowManager,
@@ -14,7 +15,8 @@ namespace Runic.Agent.Core.ThreadManagement
             IPluginManager pluginManager,
             IStatsClient stats,
             IRunnerService runnerService,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            AgentCoreConfiguration config)
         {
             var flowInstance = flowManager.GetFlow(flow);
             return new FlowThreadManager(flowInstance, stats, runnerService, loggerFactory);

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
 using Runic.Agent.Core.AssemblyManagement;
-using Runic.Agent.Core.Data;
-using Runic.Agent.Core.Services;
+using Runic.Agent.Core.ExternalInterfaces;
+using Runic.Agent.Core.Services.Interfaces;
 using Runic.Framework.Clients;
 
 namespace Runic.Agent.Core.UnitTest.TestUtility

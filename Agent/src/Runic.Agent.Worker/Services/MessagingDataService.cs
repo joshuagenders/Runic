@@ -1,4 +1,4 @@
-﻿using Runic.Agent.Core.Data;
+﻿using Runic.Agent.Core.ExternalInterfaces;
 using System.Collections.Generic;
 
 namespace Runic.Agent.Worker.Services

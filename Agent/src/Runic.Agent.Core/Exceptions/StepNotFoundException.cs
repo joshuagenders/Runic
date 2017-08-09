@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Runic.Agent.Core.Services
+namespace Runic.Agent.Core.Exceptions
 {
     public class StepNotFoundException : Exception
     {

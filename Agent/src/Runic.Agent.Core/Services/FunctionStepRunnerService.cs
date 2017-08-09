@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Runic.Framework.Models;
-using Runic.Agent.Core.Harness;
+using Runic.Agent.Core.FunctionHarness;
+using Runic.Agent.Core.Services.Interfaces;
 
 namespace Runic.Agent.Core.Services
 {

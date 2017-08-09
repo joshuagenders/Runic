@@ -46,7 +46,7 @@ namespace Runic.Cucumber
             var instance = _stateManager.GetObject(methodDetails.Item1.DeclaringType);
             //todo append, replace, error?
             List<object> methodArgs = arguments.ToList();
-            methodArgs.AddRange(methodDetails.Item2.Cast<object>());
+            methodArgs.AddRange(methodDetails.Item2);
 
             await ExecuteMethodAsync(instance, methodDetails.Item1, methodArgs.ToArray(), ctx);
         }

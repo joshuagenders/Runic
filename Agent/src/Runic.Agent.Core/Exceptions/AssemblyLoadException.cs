@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Runic.Agent.Core.AssemblyManagement
+namespace Runic.Agent.Core.Exceptions
 {
-    internal class AssemblyLoadException : Exception
+    public class AssemblyLoadException : Exception
     {
         public AssemblyLoadException()
         {

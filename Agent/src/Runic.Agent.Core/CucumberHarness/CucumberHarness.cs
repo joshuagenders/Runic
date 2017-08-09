@@ -4,7 +4,7 @@ using Runic.Agent.Core.AssemblyManagement;
 using System.Threading;
 using System.Diagnostics;
 
-namespace Runic.Agent.Core.Harness
+namespace Runic.Agent.Core.CucumberHarness
 {
     public class CucumberHarness
     {

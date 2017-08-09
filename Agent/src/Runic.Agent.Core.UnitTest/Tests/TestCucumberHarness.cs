@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Runic.Agent.Core.AssemblyManagement;
-using Runic.Agent.Core.Harness;
 using Runic.Agent.Core.UnitTest.TestUtility;
 using System.Linq;
 using System.Reflection;
@@ -19,7 +18,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             const string assemblyName = "thisassembly";
             var pluginManager = new Mock<IPluginManager>();
             pluginManager.Setup(p => p.GetPlugin(assemblyName)).Returns(GetType().GetTypeInfo().Assembly);
-            var harness = new CucumberHarness(pluginManager.Object);
+            var harness = new CucumberHarness.CucumberHarness(pluginManager.Object);
 
             var cucumberDocument = 
                 @"Feature: MyExample

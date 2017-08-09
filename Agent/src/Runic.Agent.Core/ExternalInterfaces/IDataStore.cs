@@ -1,6 +1,6 @@
 ﻿using Runic.Framework.Models;
 
-namespace Runic.Agent.Core.Data
+namespace Runic.Agent.Core.ExternalInterfaces
 {
     public interface IDataStore
     {

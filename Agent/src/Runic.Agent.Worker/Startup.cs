@@ -1,9 +1,9 @@
 ﻿using Autofac;
 using Runic.Agent.Core.AssemblyManagement;
-using Runic.Agent.Core.Data;
+using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.Services;
-using Runic.Agent.Core.ThreadManagement;
+using Runic.Agent.Core.Services.Interfaces;
 using Runic.Agent.Worker.Clients;
 using Runic.Agent.Worker.Configuration;
 using Runic.Agent.Worker.Messaging;

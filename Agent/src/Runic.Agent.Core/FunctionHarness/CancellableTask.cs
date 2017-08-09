@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Core.Harness
+namespace Runic.Agent.Core.FunctionHarness
 {
     public class CancellableTask : IDisposable
     {

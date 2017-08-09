@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.AssemblyManagement;
-using Runic.Agent.Core.Harness;
-using Runic.Agent.Core.ThreadManagement;
+using Runic.Agent.Core.Exceptions;
+using Runic.Agent.Core.FunctionHarness;
+using Runic.Agent.Core.Services.Interfaces;
 using Runic.Framework.Models;
 using System;
 using System.Threading;

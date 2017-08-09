@@ -2,10 +2,12 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using Runic.Agent.Core.AssemblyManagement;
-using Runic.Agent.Core.Data;
+using Runic.Agent.Core.Configuration;
+using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.FlowManagement;
-using Runic.Agent.Core.Harness;
+using Runic.Agent.Core.FunctionHarness;
 using Runic.Agent.Core.Services;
+using Runic.Agent.Core.Services.Interfaces;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Standalone.Clients;
 using Runic.Agent.Standalone.Configuration;
@@ -90,7 +92,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         public TestObject<IDatetimeService> DatetimeService { get; set; } = new TestObject<IDatetimeService>();
         public TestObject<IRunnerService> RunnerService { get; set; } = new TestObject<IRunnerService>();
         public TestObject<IFunctionFactory> FunctionFactory { get; set; } = new TestObject<IFunctionFactory>();
-
+        
         public IContainer Build()
         {
             Register(PluginManager);
@@ -125,6 +127,12 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         {
             _registeredTypes.Add(new Tuple<Type, Type>(typeof(T), typeof(U)));
             _builder.RegisterType<T>().As<U>();
+            return this;
+        }
+
+        public TestEnvironment WithInstance<T>(T obj) where T : class
+        {
+            _builder.RegisterInstance<T>(obj);
             return this;
         }
 
@@ -234,7 +242,11 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         {
             return env.WithSingleInstanceType<AgentSettings, IAgentSettings>()
                       .WithSingleInstanceType<StatsdSettings, IStatsdSettings>()
-                      .WithSingleInstanceType<AgentConfig, IAgentConfig>();
+                      .WithSingleInstanceType<AgentConfig, IAgentConfig>()
+                      .WithInstance(new AgentCoreConfiguration()
+                      {
+                          MaxThreads = 10
+                      });
         }
 
         public static TestEnvironment WithStandardTypes(this TestEnvironment env)

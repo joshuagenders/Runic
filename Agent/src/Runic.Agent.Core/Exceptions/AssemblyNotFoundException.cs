@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Runic.Agent.Core.AssemblyManagement
+namespace Runic.Agent.Core.Exceptions
 {
     public class AssemblyNotFoundException : Exception
     {

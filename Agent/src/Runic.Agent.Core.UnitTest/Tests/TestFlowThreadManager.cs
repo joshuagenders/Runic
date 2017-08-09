@@ -1,6 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Runic.Agent.Core.Harness;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Runic.Agent.Core.Configuration;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Core.UnitTest.TestUtility;
 using Runic.Framework.Models;

@@ -9,6 +9,7 @@ using Runic.Framework.Attributes;
 using Runic.Framework.Models;
 using System.IO;
 using Microsoft.Extensions.Logging;
+using Runic.Agent.Core.Exceptions;
 
 namespace Runic.Agent.Core.AssemblyManagement
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Runic.Agent.Core.Data
+namespace Runic.Agent.Core.ExternalInterfaces
 {
     public interface IDataService
     {

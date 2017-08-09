@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using Runic.Agent.Core.AssemblyManagement;
-using Runic.Agent.Core.Harness;
-using Runic.Agent.Core.Services;
+using Runic.Agent.Core.Configuration;
+using Runic.Agent.Core.FunctionHarness;
+using Runic.Agent.Core.Services.Interfaces;
 using Runic.Framework.Clients;
 using Runic.Framework.Models;
 using System;
@@ -16,7 +16,6 @@ namespace Runic.Agent.Core.ThreadManagement
     {
         private readonly Flow _flow;
         private readonly TaskFactory _taskFactory;
-        private readonly FunctionFactory _functionFactory;
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger _logger;
         private readonly IStatsClient _stats;
@@ -25,7 +24,7 @@ namespace Runic.Agent.Core.ThreadManagement
         private int _currentThreadCount { get; set; }
         public readonly string Id;
         private readonly IRunnerService _runnerService;
-
+        
         public FlowThreadManager(Flow flow, IStatsClient stats, IRunnerService runnerService, ILoggerFactory loggerFactory)
         {
             Id = Guid.NewGuid().ToString("N");

@@ -1,6 +1,6 @@
 ﻿using Runic.Framework.Models;
 
-namespace Runic.Agent.Core.Harness
+namespace Runic.Agent.Core.FunctionHarness
 {
     public interface IFunctionFactory
     {

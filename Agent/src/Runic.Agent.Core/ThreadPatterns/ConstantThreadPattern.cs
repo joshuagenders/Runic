@@ -1,4 +1,4 @@
-﻿using Runic.Agent.Core.Services;
+﻿using Runic.Agent.Core.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading;

@@ -1,5 +1,4 @@
-﻿using Runic.Agent.Core.Harness;
-using Runic.Agent.Core.ThreadManagement;
+﻿using Runic.Agent.Core.Exceptions;
 using Runic.Framework.Models;
 using System.Linq;
 
@@ -23,8 +22,7 @@ namespace Runic.Agent.Core.Services
             if (_getNextStepFromResult && result?.NextStep != null)
             {
                 var matchingStep = _flow.Steps
-                                        .Where(s => s.StepName == result.NextStep)
-                                        .Select(s => s);
+                                        .Where(s => s.StepName == result.NextStep);
                 if (!matchingStep.Any())
                 {
                     throw new StepNotFoundException($"Step not found for step {result.Step.StepName}");
@@ -36,13 +34,13 @@ namespace Runic.Agent.Core.Services
                 nextStep = matchingStep.Single();
             }
 
-            if (result == null)
+            if (result == null )
             {
                 nextStep = _flow.Steps.First();
                 _lastStepIndex = 0;
                 _getNextStepFromResult = nextStep.GetNextStepFromFunctionResult;
             }
-            else
+            else if (nextStep == null)
             {
                 _lastStepIndex++;
                 _lastStepIndex= _lastStepIndex >= _flow.Steps.Count ? 0 : _lastStepIndex;

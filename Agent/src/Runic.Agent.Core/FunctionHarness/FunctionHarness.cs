@@ -1,15 +1,16 @@
-﻿using System;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Runic.Framework.Clients;
 using Runic.Framework.Attributes;
+using Runic.Agent.Core.Exceptions;
+using System;
 using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace Runic.Agent.Core.Harness
+namespace Runic.Agent.Core.FunctionHarness
 {
     public class FunctionHarness
     {

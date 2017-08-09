@@ -3,7 +3,7 @@ using Runic.Agent.Core.AssemblyManagement;
 using Runic.Framework.Models;
 using System;
 
-namespace Runic.Agent.Core.Harness
+namespace Runic.Agent.Core.FlowManagement
 {
     public class FlowInitialiser
     {

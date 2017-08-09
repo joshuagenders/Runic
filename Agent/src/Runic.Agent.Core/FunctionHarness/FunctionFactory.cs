@@ -1,14 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.AssemblyManagement;
-using Runic.Agent.Core.Data;
+using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Framework.Clients;
 using Runic.Framework.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Runic.Agent.Core.Harness
+namespace Runic.Agent.Core.FunctionHarness
 {
     public class FunctionFactory : IFunctionFactory
     {

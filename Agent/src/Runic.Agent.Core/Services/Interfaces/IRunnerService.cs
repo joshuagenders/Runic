@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Core.Services
+namespace Runic.Agent.Core.Services.Interfaces
 {
     public interface IRunnerService
     {

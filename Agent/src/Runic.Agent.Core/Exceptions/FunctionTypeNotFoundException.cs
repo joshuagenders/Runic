@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Runic.Agent.Core.Harness
+namespace Runic.Agent.Core.Exceptions
 {
-    internal class FunctionTypeNotFoundException : Exception
+    public class FunctionTypeNotFoundException : Exception
     {
         public FunctionTypeNotFoundException()
         {

@@ -8,6 +8,7 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using Autofac;
+using Runic.Agent.Core.Exceptions;
 
 namespace Runic.Agent.Core.UnitTest.Tests
 {

@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Runic.Agent.Core.Harness
+namespace Runic.Agent.Core.Exceptions
 {
-    internal class FunctionWithAttributeNotFoundException : Exception
+    public class FunctionWithAttributeNotFoundException : Exception
     {
         public FunctionWithAttributeNotFoundException()
         {

@@ -4,7 +4,7 @@ using Runic.Framework.Models;
 using Runic.Agent.Core.ThreadPatterns;
 using System.Collections.Generic;
 
-namespace Runic.Agent.Core.ThreadManagement
+namespace Runic.Agent.Core.Services.Interfaces
 {
     public interface IPatternService
     {

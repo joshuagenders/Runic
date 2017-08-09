@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Runic.Agent.Core.AssemblyManagement;
-using Runic.Agent.Core.Harness;
+using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.UnitTest.TestUtility;
 using Runic.Framework.Clients;
 using System.IO;

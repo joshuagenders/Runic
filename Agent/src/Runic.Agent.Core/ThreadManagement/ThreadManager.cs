@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.AssemblyManagement;
-using Runic.Agent.Core.Data;
+using Runic.Agent.Core.Configuration;
 using Runic.Agent.Core.FlowManagement;
-using Runic.Agent.Core.Services;
+using Runic.Agent.Core.Services.Interfaces;
 using Runic.Framework.Clients;
 using Runic.Framework.Models;
 using System.Collections.Concurrent;
@@ -17,28 +17,30 @@ namespace Runic.Agent.Core.ThreadManagement
     {
         private readonly ILogger _logger;
         private readonly ILoggerFactory _loggerFactory;
-        private static ConcurrentDictionary<string, FlowThreadManager> _threadManagers { get; set; }
-
         private readonly IStatsClient _stats;
         private readonly IPluginManager _pluginManager; 
         private readonly IFlowManager _flowManager;
         private readonly IRunnerService _runnerService;
-        private readonly IDatetimeService _datetimeService;
+        private readonly AgentCoreConfiguration _config;
+
+        private static ConcurrentDictionary<string, FlowThreadManager> _threadManagers { get; set; }
 
         public ThreadManager(
             IFlowManager flowManager,
             IPluginManager pluginManager,
             IStatsClient stats,
             IRunnerService runnerService, 
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            AgentCoreConfiguration config)
         {
             _logger = loggerFactory.CreateLogger<ThreadManager>();
             _loggerFactory = loggerFactory;
-            _threadManagers = new ConcurrentDictionary<string, FlowThreadManager>();
             _flowManager = flowManager;
             _pluginManager = pluginManager;
             _stats = stats;
             _runnerService = runnerService;
+            _threadManagers = new ConcurrentDictionary<string, FlowThreadManager>();
+            _config = config;
         }
 
         public int GetThreadLevel(string flowId)
@@ -85,7 +87,8 @@ namespace Runic.Agent.Core.ThreadManagement
                     _pluginManager, 
                     _stats, 
                     _runnerService,
-                    _loggerFactory);
+                    _loggerFactory,
+                    _config);
 
                 var resolvedManager = _threadManagers.GetOrAdd(request.FlowId, newThreadManager);
                 await resolvedManager.UpdateThreadCountAsync(request.ThreadLevel);

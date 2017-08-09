@@ -1,17 +1,18 @@
 ﻿using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.FlowManagement;
-using Runic.Agent.Core.Harness;
+using Runic.Agent.Core.FunctionHarness;
 using Runic.Agent.Core.ThreadPatterns;
 using Runic.Framework.Models;
+using Runic.Framework.Clients;
+using Runic.Agent.Core.ThreadManagement;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System;
-using Runic.Framework.Clients;
+using Runic.Agent.Core.Services.Interfaces;
 
-namespace Runic.Agent.Core.ThreadManagement
+namespace Runic.Agent.Core.Services
 {
     public class PatternService : IPatternService
     {
