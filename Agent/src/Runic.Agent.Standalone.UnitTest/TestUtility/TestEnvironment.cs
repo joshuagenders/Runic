@@ -1,51 +1,38 @@
 ﻿using Autofac;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Configuration;
 using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.FunctionHarness;
-using Runic.Agent.Core.Services;
 using Runic.Agent.Core.Services.Interfaces;
 using Runic.Agent.Core.ThreadManagement;
-using Runic.Agent.Standalone.Clients;
 using Runic.Agent.Standalone.Configuration;
 using Runic.Agent.Standalone.Providers;
-using Runic.Agent.Standalone.Services;
 using Runic.Framework.Clients;
 using StatsN;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 
 namespace Runic.Agent.Standalone.Test.TestUtility
 {
-    public class TestEnvironment : IDisposable
+    public abstract class TestEnvironment : IDisposable
     {
         private IApplication _application { get; set; }
         private ILifetimeScope _scope { get; set; }
-        private List<Tuple<Type,Type>> _registeredTypes { get; set; }
-        private ContainerBuilder _builder { get; set; }
-
+        protected List<Tuple<Type,Type>> RegisteredTypes { get; set; }
+        
         public IApplication Application
         {
-            get
-            {
-                return _application ?? new Mock<IApplication>().Object;
-            }
-            set
-            {
-                _application = value;
-            }
+            get { return _application ?? new Mock<IApplication>().Object; }
+            set { _application = value; }
         }
 
         public TestEnvironment()
         {
-            _builder = new ContainerBuilder();
-            _registeredTypes = new List<Tuple<Type, Type>>();
+            RegisteredTypes = new List<Tuple<Type, Type>>();
         }
 
         public TestObject<IPluginManager> PluginManager { get; set; } = new TestObject<IPluginManager>();
@@ -65,66 +52,6 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         public TestObject<IRunnerService> RunnerService { get; set; } = new TestObject<IRunnerService>();
         public TestObject<IFunctionFactory> FunctionFactory { get; set; } = new TestObject<IFunctionFactory>();
         public TestObject<AgentCoreConfiguration> AgentCoreConfiguration { get; set; } = new TestObject<AgentCoreConfiguration>();
-
-        public IContainer Build()
-        {
-            Register(PluginManager);
-            Register(PluginProvider);
-            Register(FlowManager);
-            Register(DataService);
-            Register(Statsd);
-            Register(StatsClient);
-            Register(PatternService);
-            Register(ThreadManager);
-            Register(RuneClient);
-            Register(AgentConfig);
-            Register(AgentSettings);
-            Register(StatsdSettings);
-            Register(FlowProvider);
-            Register(DatetimeService);
-            Register(RunnerService);
-            Register(FunctionFactory);
-            Register(AgentCoreConfiguration);
-
-            return _builder.Build();
-        }
-
-        private void Register<T>(TestObject<T> instance) where T : class
-        {
-            if (!_registeredTypes.Any(t => t.Item2 == typeof(T)))
-            {
-                _builder.RegisterInstance(instance.Instance);
-            }
-        }
-
-        public TestEnvironment WithType<T, U>()
-        {
-            _registeredTypes.Add(new Tuple<Type, Type>(typeof(T), typeof(U)));
-            _builder.RegisterType<T>().As<U>();
-            return this;
-        }
-
-        public TestEnvironment WithInstance<T>(T obj) where T : class
-        {
-            _builder.RegisterInstance<T>(obj);
-            return this;
-        }
-
-        public TestEnvironment WithSingleInstanceType<T, U>()
-        {
-            _registeredTypes.Add(new Tuple<Type, Type>(typeof(T), typeof(U)));
-            _builder.RegisterType<T>().As<U>().SingleInstance();
-            return this;
-        }
-
-        public TestEnvironment StartApplication()
-        {
-            var cts = new CancellationTokenSource();
-            var container = Build();
-            var scope = container.BeginLifetimeScope();
-            Application = scope.Resolve<IApplication>();
-            return this;
-        }
 
         public TestEnvironment With<T>(T instance) where T : class
         {
@@ -166,30 +93,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             return propValue.MockObject;
         }
 
-        public TestEnvironment WithStandardConfig()
-        {
-            return WithSingleInstanceType<AgentSettings, IAgentSettings>()
-                   .WithSingleInstanceType<StatsdSettings, IStatsdSettings>()
-                   .WithSingleInstanceType<AgentConfig, IAgentConfig>()
-                   .WithInstance(new AgentCoreConfiguration()
-                   {
-                       MaxThreads = 10
-                   });
-        }
-
-        public TestEnvironment WithStandardTypes()
-        {
-            return WithSingleInstanceType<ThreadManager, IThreadManager>()
-                   .WithSingleInstanceType<InMemoryRuneClient, IRuneClient>()
-                   .WithSingleInstanceType<FlowManager, IFlowManager>()
-                   .WithSingleInstanceType<PatternService, IPatternService>()
-                   .WithType<NoOpDataService, IDataService>()
-                   .WithType<LoggerFactory, ILoggerFactory>()
-                   .WithType<StatsClient, IStatsClient>()
-                   .WithType<RunnerService, IRunnerService>()
-                   .WithType<FunctionFactory, IFunctionFactory>()
-                   .WithSingleInstanceType<Application, IApplication>();
-        }
+        public abstract TestEnvironment StartApplication();
 
         public void Dispose()
         {

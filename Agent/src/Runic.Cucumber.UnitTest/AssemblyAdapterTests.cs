@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Runic.Cucumber.UnitTest.TestUtility;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,63 +11,63 @@ namespace Runic.Cucumber.UnitTest
     [TestClass]
     public class AssemblyAdapterTests : TestBase
     {
+        Mock<FakeCucumberClass> _fakeTest { get; set; }
+
+        [TestInitialize]
+        public override void Init()
+        {
+            base.Init();
+            _fakeTest = new Mock<FakeCucumberClass>();
+            TestEnvironment.SetupMocks(_fakeTest);
+        }
+
         [TestMethod]
         public async Task MethodExecutionShouldCallMethods()
         {
-            var fakeTest = new FakeCucumberClass();
-            TestEnvironment.SetupMocks(fakeTest);
-            var method = fakeTest.GetType()
-                                 .GetTypeInfo()
-                                 .GetMethod("GivenMethod");
+            var method = _fakeTest.Object
+                                  .GetType()
+                                  .GetTypeInfo()
+                                  .GetMethod("GivenMethod");
 
             var cts = new CancellationTokenSource();
             cts.CancelAfter(1000);
+
+            const string input = "input";
             await TestEnvironment.AssemblyAdapter
                                  .Instance
-                                 .ExecuteMethodAsync(fakeTest, method, new object[] { "" }, cts.Token);
+                                 .ExecuteMethodAsync(_fakeTest.Object, method, new object[] { input }, cts.Token);
 
-            fakeTest.CallList
-                    .Count(c => c.InvocationTarget == "GivenMethod")
-                    .Should()
-                    .Be(1);
+            _fakeTest.Verify(f => f.GivenMethod(input));
         }
 
         [TestMethod]
         public void Initialise_PopulatesMethodReferences()
         {
-            var fakeTest = new FakeCucumberClass();
-            TestEnvironment.SetupMocks(fakeTest);
             ((AssemblyAdapter)TestEnvironment.AssemblyAdapter.Instance).Methods.Count.Should().Be(6);
         }
 
         [TestMethod]
         public async Task GivenMethodAttribute_LocatesAndInvokesMethod()
         {
-            var fakeTest = new FakeCucumberClass();
-            TestEnvironment.SetupMocks(fakeTest);
-
-            var method = fakeTest.GetType()
+            var method = _fakeTest.GetType()
                                  .GetTypeInfo()
                                  .GetMethod("GivenMethod");
 
             var statement = "Given I have a given \"method\"";
             var cts = new CancellationTokenSource();
             cts.CancelAfter(1000);
-
+            const string input = "input";
             await TestEnvironment.AssemblyAdapter
                                  .Instance
-                                 .ExecuteMethodFromStatementAsync(statement, new object[] { "" }, cts.Token);
-            
-            fakeTest.CallList.Count(c => c.InvocationTarget == "GivenMethod").Should().Be(1);
+                                 .ExecuteMethodFromStatementAsync(statement, new object[] { input }, cts.Token);
+
+            _fakeTest.Verify(f => f.GivenMethod(input));
         }
 
         [TestMethod]
         public async Task MultipleMethods_ThrowsException()
         {
-            var fakeTest = new FakeCucumberClass();
-            TestEnvironment.SetupMocks(fakeTest);
-
-            var method = fakeTest.GetType()
+            var method = _fakeTest.GetType()
                                  .GetTypeInfo()
                                  .GetMethod("GivenMethod");
 
@@ -90,8 +90,7 @@ namespace Runic.Cucumber.UnitTest
         [TestMethod]
         public async Task MethodNotFound_ThrowsException()
         {
-            //todo refactor, consider testinit in testbase
-            var fakeTest = new FakeCucumberClass();
+            var fakeTest = new Mock<FakeCucumberClass>();
             TestEnvironment.SetupMocks(fakeTest);
 
             var method = fakeTest.GetType()

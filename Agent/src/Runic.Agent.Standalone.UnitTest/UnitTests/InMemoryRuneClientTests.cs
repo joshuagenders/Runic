@@ -6,7 +6,7 @@ using Runic.Framework.Models;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Runic.Agent.Standalone.Test.Unit
+namespace Runic.Agent.Standalone.Test.UnitTests
 {
     public class InMemoryRuneClientTests
     {

@@ -1,10 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading;
-using System.Linq;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Runic.Cucumber.UnitTest.TestUtility;
 using System.Collections.Generic;
+using Moq;
 
 namespace Runic.Cucumber.UnitTest
 {
@@ -14,7 +13,7 @@ namespace Runic.Cucumber.UnitTest
         [TestMethod]
         public async Task CucumberTestExecutesAllMethods()
         {
-            var fakeTest = new FakeCucumberClass();
+            var fakeTest = new Mock<FakeCucumberClass>();
             TestEnvironment.SetupMocks(fakeTest);
             var test = new CucumberTest(TestEnvironment.AssemblyAdapter.Instance);
 
@@ -25,39 +24,53 @@ namespace Runic.Cucumber.UnitTest
                       .Then("I have a then \"thenstring\"")
                       .ExecuteAsync();
 
-            fakeTest.CallList.Count(c => c.InvocationTarget == "GivenMethod" && c.AdditionalData == "givenstring").Should().Be(1);
-            fakeTest.CallList.Count(c => c.InvocationTarget == "NoInputs").Should().Be(1);
-            fakeTest.CallList.Count(c => c.InvocationTarget == "WhenMethod" && c.AdditionalData == "whenstring").Should().Be(1);
-            fakeTest.CallList.Count(c => c.InvocationTarget == "ThenMethod" && c.AdditionalData == "thenstring").Should().Be(1);
+            fakeTest.Verify(f => f.GivenMethod("givenstring"));
+            fakeTest.Verify(f => f.WhenMethod("whenstring"));
+            fakeTest.Verify(f => f.ThenMethod("thenstring"));
+            fakeTest.Verify(f => f.NoInputs());
         }
 
         [TestMethod]
         public async Task ExecuteExamples_InvokesMultipleTimesWithParameters()
         {
-            var fakeTest = new FakeCucumberClass();
+            var fakeTest = new Mock<FakeCucumberClass>();
             TestEnvironment.SetupMocks(fakeTest);
             var test = new CucumberTest(TestEnvironment.AssemblyAdapter.Instance);
             var examples = new Dictionary<string, List<string>>()
                       {
-                          { "input1" , new List<string>(){ "givenstring1", "givenstring2" } },
-                          { "input2" , new List<string>(){ "whenstring1", "whenstring2" } },
-                          { "input3" , new List<string>(){ "thenstring1", "thenstring2" } }
+                          { "given" , new List<string>(){ "givenstring1", "givenstring2" } },
+                          { "when" , new List<string>(){ "whenstring1", "whenstring2" } },
+                          { "inthenput3" , new List<string>(){ "thenstring1", "thenstring2" } }
                       };
             var cts = new CancellationTokenSource();
             await test.ScenarioOutline("My Scenario Outline")
-                      .Given(@"I have a given ""<input1>""")
+                      .Given(@"I have a given ""<given>""")
                       .And("I have a method with no inputs")
-                      .When(@"I have a when ""<input2>""")
-                      .Then(@"I have a then ""<input3>""")
+                      .When(@"I have a when ""<when>""")
+                      .Then(@"I have a then ""<then>""")
                       .Examples(examples)
                       .ExecuteAsync();
 
-            VerifyList(fakeTest.CallList, examples.SelectMany(e => e.Value).ToList());
+            VerifyList(fakeTest, examples);
         }
 
-        public void VerifyList(List<InvocationInformation> callList, List<string> additionalData)
+        public void VerifyList(Mock<FakeCucumberClass> fakeTest, Dictionary<string, List<string>> examples)
         {
-            additionalData.ForEach(d => callList.Count(c => c.AdditionalData == d).Should().Be(1));
+            foreach (var example in examples)
+            {
+                switch (example.Key)
+                {
+                    case "given":
+                        example.Value.ForEach(e => fakeTest.Verify(f => f.GivenMethod(e)));
+                        break;
+                    case "when":
+                        example.Value.ForEach(e => fakeTest.Verify(f => f.WhenMethod(e)));
+                        break;
+                    case "then":
+                        example.Value.ForEach(e => fakeTest.Verify(f => f.ThenMethod(e)));
+                        break;
+                }
+            }
         }
     }
 }

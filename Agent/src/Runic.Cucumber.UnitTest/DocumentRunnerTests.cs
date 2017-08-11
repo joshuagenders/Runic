@@ -2,8 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Runic.Cucumber.UnitTest.TestUtility;
-using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,7 +13,7 @@ namespace Runic.Cucumber.UnitTest
         [TestMethod]
         public async Task GivenWhenThenDocument_CallsAssemblyAdapter()
         {
-            var fakeTest = new FakeCucumberClass();
+            var fakeTest = new Mock<FakeCucumberClass>();
             TestEnvironment.SetupMocks(fakeTest);
             var assemblyAdapter = new Mock<IAssemblyAdapter>();
             var documentRunner = new DocumentRunner(assemblyAdapter.Object);

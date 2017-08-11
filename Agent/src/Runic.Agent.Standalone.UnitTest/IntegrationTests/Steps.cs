@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using Moq;
+﻿using Moq;
 using RestMockCore;
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.FlowManagement;
@@ -12,12 +11,11 @@ using Runic.Cucumber;
 using Runic.Framework.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Standalone.Test.InMemory
+namespace Runic.Agent.Standalone.Test.IntegrationTests
 {
     public class Steps
     {
@@ -87,8 +85,8 @@ namespace Runic.Agent.Standalone.Test.InMemory
         [Given(@"I have a test environment for a '(.*?)' flow")]
         public void SetupTestEnvironment(string patternType = "constant")
         {
-            _environment = new TestEnvironment().WithStandardTypes()
-                                                .With<IDatetimeService>(new DateTimeService());
+            _environment = new TestEnvironmentBuilder().WithStandardTypes()
+                                                       .With<IDatetimeService>(new DateTimeService());
 
             var mockAgentSettings = _environment.GetMock<IAgentSettings>();
             mockAgentSettings.Setup(s => s.FlowPatternExecutionId).Returns("test_execution_id");

@@ -7,7 +7,7 @@ namespace Runic.Cucumber.UnitTest.TestUtility
         protected TestEnvironment TestEnvironment { get; set; }
 
         [TestInitialize]
-        public void Init()
+        public virtual void Init()
         {
             TestEnvironment = new TestEnvironment();
         }

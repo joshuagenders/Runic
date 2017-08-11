@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Runic.Agent.Standalone.Test.InMemory
+namespace Runic.Agent.Standalone.Test.IntegrationTests
 {
     public class ApplicationTests
     {
