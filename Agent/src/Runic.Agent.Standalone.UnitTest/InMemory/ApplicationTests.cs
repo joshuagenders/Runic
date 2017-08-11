@@ -20,7 +20,7 @@ namespace Runic.Agent.Standalone.Test.InMemory
                 .And("I have a function flow")
                 .And("I start the application")
                 .When("I start the test")
-                .Then("The fake function is invoked");
+                .Then("The fake cucumber test is invoked");
             
             var result = await test.ExecuteAsync();
             if (!result.Success)

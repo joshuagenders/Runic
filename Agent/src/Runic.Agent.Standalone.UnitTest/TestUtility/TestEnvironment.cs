@@ -64,10 +64,10 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         public TestObject<IDatetimeService> DatetimeService { get; set; } = new TestObject<IDatetimeService>();
         public TestObject<IRunnerService> RunnerService { get; set; } = new TestObject<IRunnerService>();
         public TestObject<IFunctionFactory> FunctionFactory { get; set; } = new TestObject<IFunctionFactory>();
-        
+        public TestObject<AgentCoreConfiguration> AgentCoreConfiguration { get; set; } = new TestObject<AgentCoreConfiguration>();
+
         public IContainer Build()
         {
-
             Register(PluginManager);
             Register(PluginProvider);
             Register(FlowManager);
@@ -84,6 +84,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             Register(DatetimeService);
             Register(RunnerService);
             Register(FunctionFactory);
+            Register(AgentCoreConfiguration);
 
             return _builder.Build();
         }
@@ -125,63 +126,74 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             return this;
         }
 
-        public void Dispose()
-        {
-            _scope?.Dispose();
-        }
-    }
-
-    public static class TestEnvironmentExtensions
-    {
-        public static TestEnvironment With<T>(this TestEnvironment env, T instance) where T : class
+        public TestEnvironment With<T>(T instance) where T : class
         {
             TestObject<T> testObjectInstance = (TestObject<T>)Activator.CreateInstance(typeof(TestObject<T>));
             testObjectInstance.Instance = instance;
-            var prop = env.GetType().GetTypeInfo()
-                                    .GetProperties()
-                                    .Where(p => p.PropertyType == typeof(TestObject<T>));
-            if (!prop.Any())
-                throw new ArgumentException($"Test object for {typeof(T).Name} type was not found");
+            var props = GetType().GetTypeInfo()
+                                 .GetProperties();
 
-            prop.First().SetValue(env, instance);
-            return env;
+            var prop = props.Where(p => p.PropertyType == typeof(TestObject<T>) && 
+                                        p.PropertyType.GetGenericArguments()[0] == typeof(T));
+            if (!prop.Any())
+                throw new ArgumentException($"With<T> Test object for {typeof(T).Name} type was not found");
+
+            prop.First().SetValue(this, testObjectInstance);
+            return this;
         }
 
-        public static T Get<T>(this TestEnvironment env) where T : TestObject<T>
+        public T Get<T>() where T : class
         {
-            var prop = env.GetType().GetTypeInfo()
-                                    .GetProperties()
-                                    .Where(p => p.PropertyType == typeof(TestObject<T>));
+            var prop = GetType().GetTypeInfo()
+                                .GetProperties()
+                                .Where(p => p.PropertyType == typeof(TestObject<T>));
             if (!prop.Any())
-                throw new ArgumentException($"Test object for {typeof(T).Name} type was not found");
+                throw new ArgumentException($"Get<T> Test object for {typeof(T).Name} type was not found");
 
-            var propValue = (TestObject<T>)prop.First().GetValue(env);
+            var propValue = (TestObject<T>)prop.First().GetValue(this);
             return propValue.Instance;
         }
 
-        public static TestEnvironment WithStandardConfig(this TestEnvironment env)
+        public Mock<T> GetMock<T>() where T : class
         {
-            return env.WithSingleInstanceType<AgentSettings, IAgentSettings>()
-                      .WithSingleInstanceType<StatsdSettings, IStatsdSettings>()
-                      .WithSingleInstanceType<AgentConfig, IAgentConfig>()
-                      .WithInstance(new AgentCoreConfiguration()
-                      {
-                          MaxThreads = 10
-                      });
+            var prop = GetType().GetTypeInfo()
+                                .GetProperties()
+                                .Where(p => p.PropertyType == typeof(TestObject<T>));
+            if (!prop.Any())
+                throw new ArgumentException($"Test object for {typeof(T).Name} type was not found");
+
+            var propValue = (TestObject<T>)prop.First().GetValue(this);
+            return propValue.MockObject;
         }
 
-        public static TestEnvironment WithStandardTypes(this TestEnvironment env)
+        public TestEnvironment WithStandardConfig()
         {
-            return env.WithSingleInstanceType<ThreadManager, IThreadManager>()
-                      .WithSingleInstanceType<InMemoryRuneClient, IRuneClient>()
-                      .WithSingleInstanceType<FlowManager, IFlowManager>()
-                      .WithSingleInstanceType<PatternService, IPatternService>()
-                      .WithType<NoOpDataService, IDataService>()
-                      .WithType<LoggerFactory, ILoggerFactory>()
-                      .WithType<StatsClient, IStatsClient>()
-                      .WithType<RunnerService, IRunnerService>()
-                      .WithType<FunctionFactory, IFunctionFactory>()
-                      .WithSingleInstanceType<Application, IApplication>();
+            return WithSingleInstanceType<AgentSettings, IAgentSettings>()
+                   .WithSingleInstanceType<StatsdSettings, IStatsdSettings>()
+                   .WithSingleInstanceType<AgentConfig, IAgentConfig>()
+                   .WithInstance(new AgentCoreConfiguration()
+                   {
+                       MaxThreads = 10
+                   });
+        }
+
+        public TestEnvironment WithStandardTypes()
+        {
+            return WithSingleInstanceType<ThreadManager, IThreadManager>()
+                   .WithSingleInstanceType<InMemoryRuneClient, IRuneClient>()
+                   .WithSingleInstanceType<FlowManager, IFlowManager>()
+                   .WithSingleInstanceType<PatternService, IPatternService>()
+                   .WithType<NoOpDataService, IDataService>()
+                   .WithType<LoggerFactory, ILoggerFactory>()
+                   .WithType<StatsClient, IStatsClient>()
+                   .WithType<RunnerService, IRunnerService>()
+                   .WithType<FunctionFactory, IFunctionFactory>()
+                   .WithSingleInstanceType<Application, IApplication>();
+        }
+
+        public void Dispose()
+        {
+            _scope?.Dispose();
         }
     }
 }

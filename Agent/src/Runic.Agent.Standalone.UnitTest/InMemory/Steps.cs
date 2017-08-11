@@ -1,7 +1,12 @@
 ﻿using FluentAssertions;
 using Moq;
 using RestMockCore;
+using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.Services;
+using Runic.Agent.Core.Services.Interfaces;
+using Runic.Agent.Standalone.Configuration;
+using Runic.Agent.Standalone.Providers;
 using Runic.Agent.Standalone.Test.TestUtility;
 using Runic.Cucumber;
 using Runic.Framework.Models;
@@ -69,7 +74,7 @@ namespace Runic.Agent.Standalone.Test.InMemory
         #endregion
 
         private TestEnvironment _environment { get; set; }
-        private FakeFunction _fakeFunction { get; set; }
+        private Mock<FakeFunction> _fakeFunction { get; set; }
 
         [Given("I have a test server")]
         private void GivenIHaveATestServer()
@@ -82,9 +87,10 @@ namespace Runic.Agent.Standalone.Test.InMemory
         [Given(@"I have a test environment for a '(.*?)' flow")]
         public void SetupTestEnvironment(string patternType = "constant")
         {
-            _environment = new TestEnvironment().WithStandardTypes().With(new DateTimeService());
+            _environment = new TestEnvironment().WithStandardTypes()
+                                                .With<IDatetimeService>(new DateTimeService());
 
-            var mockAgentSettings = _environment.AgentSettings.MockObject;
+            var mockAgentSettings = _environment.GetMock<IAgentSettings>();
             mockAgentSettings.Setup(s => s.FlowPatternExecutionId).Returns("test_execution_id");
             mockAgentSettings.Setup(s => s.FlowThreadPatternName).Returns(patternType);
             mockAgentSettings.Setup(s => s.AgentFlowFilepath).Returns("test_path");
@@ -105,27 +111,24 @@ namespace Runic.Agent.Standalone.Test.InMemory
                     mockAgentSettings.Setup(s => s.FlowStepIntervalSeconds).Returns(1);
                     break;
             }
-            _environment.AgentConfig
-                       .MockObject.Setup(c => c.AgentSettings)
-                       .Returns(_environment.AgentSettings.Instance);
-            _environment.With(_environment.AgentConfig.Instance);
+            _environment.GetMock<IAgentConfig>()
+                        .Setup(c => c.AgentSettings)
+                        .Returns(_environment.Get<IAgentSettings>());
+            _environment.With(_environment.Get<IAgentConfig>());
         }
 
         public void RegisterTestFlow(Flow testFlow)
         {
             var assemblyName = testFlow.Steps[0].Function?.AssemblyName ?? testFlow.Steps[0].Cucumber.AssemblyName;
-            _environment.PluginManager
-                        .MockObject
+            _environment.GetMock<IPluginManager>()
                         .Setup(p => p.GetPlugin(assemblyName))
                         .Returns(GetType().GetTypeInfo().Assembly);
 
-            _environment.FlowManager
-                        .MockObject
+            _environment.GetMock<IFlowManager>()
                         .Setup(f => f.GetFlow("test_flow"))
                         .Returns(testFlow);
 
-            _environment.FlowProvider
-                        .MockObject
+            _environment.GetMock<IFlowProvider>()
                         .Setup(p => p.GetFlow("test_path"))
                         .Returns(testFlow);
         }
@@ -147,9 +150,8 @@ namespace Runic.Agent.Standalone.Test.InMemory
         {
             RegisterTestFlow(FunctionFlow);
 
-            _fakeFunction = new FakeFunction();
-            _environment.PluginManager
-                        .MockObject
+            _fakeFunction = new Mock<FakeFunction>();
+            _environment.GetMock<IPluginManager>()
                         .Setup(p => p.GetInstance(FunctionFlow.Steps[0].Function.AssemblyQualifiedClassName))
                         .Returns(_fakeFunction);
         }
@@ -165,13 +167,15 @@ namespace Runic.Agent.Standalone.Test.InMemory
         [Then(@"The fake function is invoked")]
         public void TheFakeFunctionIsInvoked()
         {
-            _fakeFunction.CallList.Any().Should().BeTrue("methods invoked on FakeFunction instance");
+            _fakeFunction.Verify(f => f.BeforeEach());
+            _fakeFunction.Verify(f => f.Inputs(It.IsAny<string>(), It.IsAny<int>()));
+            _fakeFunction.Verify(f => f.AfterEach());
         }
 
         [Then(@"The fake cucumber test is invoked")]
         public void TheFakeCucumberTestIsInvoked()
         {
-            
+            //todo use a mock function and verify?
         }
     }
 }
