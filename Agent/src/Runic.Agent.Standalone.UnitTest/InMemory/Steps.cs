@@ -82,7 +82,7 @@ namespace Runic.Agent.Standalone.Test.InMemory
         [Given(@"I have a test environment for a '(.*?)' flow")]
         public void SetupTestEnvironment(string patternType = "constant")
         {
-            _environment = new TestEnvironment().WithStandardTypes().WithDatetimeService(new DateTimeService());
+            _environment = new TestEnvironment().WithStandardTypes().With(new DateTimeService());
 
             var mockAgentSettings = _environment.AgentSettings.MockObject;
             mockAgentSettings.Setup(s => s.FlowPatternExecutionId).Returns("test_execution_id");
@@ -108,7 +108,7 @@ namespace Runic.Agent.Standalone.Test.InMemory
             _environment.AgentConfig
                        .MockObject.Setup(c => c.AgentSettings)
                        .Returns(_environment.AgentSettings.Instance);
-            _environment.WithAgentConfig(_environment.AgentConfig.Instance);
+            _environment.With(_environment.AgentConfig.Instance);
         }
 
         public void RegisterTestFlow(Flow testFlow)

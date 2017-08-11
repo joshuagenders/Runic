@@ -18,39 +18,11 @@ using StatsN;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 
 namespace Runic.Agent.Standalone.Test.TestUtility
 {
-    public class TestObject<T> where T : class
-    {
-        private Mock<T> _mockObject { get; set; }
-        public Mock<T> MockObject
-        {
-            get
-            {
-                if (_mockObject == null)
-                    _mockObject = new Mock<T>();
-                return _mockObject;
-            }
-            private set { _mockObject = value; }
-        }
-        public bool HasInstance { get; set; } = false;
-        private T _instance;
-        public T Instance
-        {
-            get
-            {
-                return _instance ?? MockObject.Object;
-            }
-            set
-            {
-                _instance = value;
-                HasInstance = true;
-            }
-        }
-    }
-
     public class TestEnvironment : IDisposable
     {
         private IApplication _application { get; set; }
@@ -95,6 +67,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         
         public IContainer Build()
         {
+
             Register(PluginManager);
             Register(PluginProvider);
             Register(FlowManager);
@@ -160,82 +133,30 @@ namespace Runic.Agent.Standalone.Test.TestUtility
 
     public static class TestEnvironmentExtensions
     {
-        public static TestEnvironment WithPluginManager(this TestEnvironment env, IPluginManager instance)
+        public static TestEnvironment With<T>(this TestEnvironment env, T instance) where T : class
         {
-            env.PluginManager.Instance = instance;
+            TestObject<T> testObjectInstance = (TestObject<T>)Activator.CreateInstance(typeof(TestObject<T>));
+            testObjectInstance.Instance = instance;
+            var prop = env.GetType().GetTypeInfo()
+                                    .GetProperties()
+                                    .Where(p => p.PropertyType == typeof(TestObject<T>));
+            if (!prop.Any())
+                throw new ArgumentException($"Test object for {typeof(T).Name} type was not found");
+
+            prop.First().SetValue(env, instance);
             return env;
         }
 
-        public static TestEnvironment WithPluginProvider(this TestEnvironment env, IPluginProvider instance)
+        public static T Get<T>(this TestEnvironment env) where T : TestObject<T>
         {
-            env.PluginProvider.Instance = instance;
-            return env;
-        }
+            var prop = env.GetType().GetTypeInfo()
+                                    .GetProperties()
+                                    .Where(p => p.PropertyType == typeof(TestObject<T>));
+            if (!prop.Any())
+                throw new ArgumentException($"Test object for {typeof(T).Name} type was not found");
 
-        public static TestEnvironment WithDataService(this TestEnvironment env, IDataService instance)
-        {
-            env.DataService.Instance = instance;
-            return env;
-        }
-
-        public static TestEnvironment WithStatsd(this TestEnvironment env, IStatsd instance)
-        {
-            env.Statsd.Instance = instance;
-            return env;
-        }
-
-        public static TestEnvironment WithPatternService(this TestEnvironment env, IPatternService instance)
-        {
-            env.PatternService.Instance = instance;
-            return env;
-        }
-
-        public static TestEnvironment WithStatsClient(this TestEnvironment env, IStatsClient instance)
-        {
-            env.StatsClient.Instance = instance;
-            return env;
-        }
-
-        public static TestEnvironment WithThreadManager(this TestEnvironment env, IThreadManager instance)
-        {
-            env.ThreadManager.Instance = instance;
-            return env;
-        }
-
-        public static TestEnvironment WithRuneClient(this TestEnvironment env, IRuneClient instance)
-        {
-            env.RuneClient.Instance = instance;
-            return env;
-        }
-
-        public static TestEnvironment WithAgentSettings(this TestEnvironment env, IAgentSettings instance)
-        {
-            env.AgentSettings.Instance = instance;
-            return env;
-        }
-
-        public static TestEnvironment WithAgentConfig(this TestEnvironment env, IAgentConfig instance)
-        {
-            env.AgentConfig.Instance = instance;
-            return env;
-        }
-        
-        public static TestEnvironment WithFlowManager(this TestEnvironment env, IFlowManager instance)
-        {
-            env.FlowManager.Instance = instance;
-            return env;
-        }
-
-        public static TestEnvironment WithStatsdSettings(this TestEnvironment env, IStatsdSettings instance)
-        {
-            env.StatsdSettings.Instance = instance;
-            return env;
-        }
-
-        public static TestEnvironment WithDatetimeService(this TestEnvironment env, IDatetimeService instance)
-        {
-            env.DatetimeService.Instance = instance;
-            return env;
+            var propValue = (TestObject<T>)prop.First().GetValue(env);
+            return propValue.Instance;
         }
 
         public static TestEnvironment WithStandardConfig(this TestEnvironment env)
