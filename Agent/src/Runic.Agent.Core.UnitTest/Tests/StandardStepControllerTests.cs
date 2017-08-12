@@ -9,7 +9,7 @@ using System.Linq;
 namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
-    public class StepControllerTests
+    public class StandardStepControllerTests
     {
         private Flow _flow => new Flow()
         {
@@ -24,7 +24,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         public void NullResult_ReturnsFirstStep()
         {
             var flow = _flow;
-            var stepController = new StepController(flow);
+            var stepController = new StandardStepController(flow);
             var step = stepController.GetNextStep(null);
             step.Should().Be(flow.Steps.First());
         }
@@ -40,7 +40,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 Success = true,
                 NextStep = "Step3"
             };
-            var stepController = new StepController(flow);
+            var stepController = new StandardStepController(flow);
             stepController.GetNextStep(null);
             var step = stepController.GetNextStep(result);
             step.Should().Be(flow.Steps[2]);
@@ -50,7 +50,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         public void GetStepUntilLooparound_ReturnsSteps()
         {
             var flow = _flow;
-            var stepController = new StepController(flow);
+            var stepController = new StandardStepController(flow);
             var step1 = stepController.GetNextStep(null);
 
             var result1 = new FunctionResult()

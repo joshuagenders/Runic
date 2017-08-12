@@ -1,13 +1,14 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.Standalone.Clients;
 using Runic.Agent.Standalone.Test.TestUtility;
 using Runic.Framework.Models;
 using System.Threading.Tasks;
-using Xunit;
 
 namespace Runic.Agent.Standalone.Test.UnitTests
 {
+    [TestClass]
     public class InMemoryRuneClientTests
     {
         private readonly ILoggerFactory _loggerFactory;
@@ -16,7 +17,7 @@ namespace Runic.Agent.Standalone.Test.UnitTests
             _loggerFactory = new LoggerFactory();
         }
 
-        [Fact]
+        [TestMethod]
         public async Task StoreAndGet_ReturnsRune()
         {
 
@@ -30,7 +31,7 @@ namespace Runic.Agent.Standalone.Test.UnitTests
             (rune.Result as FakeRune).Data.Should().Be("test");
         }
 
-        [Fact]
+        [TestMethod]
         public async Task StoreAndTake_TakesRune()
         {
             var runeClient = new InMemoryRuneClient(_loggerFactory);
@@ -43,7 +44,7 @@ namespace Runic.Agent.Standalone.Test.UnitTests
             (rune.Result as FakeRune).Data.Should().Be("test");
         }
 
-        [Fact]
+        [TestMethod]
         public async Task StoreAndGetMultiple_ReturnsError()
         {
             var runeClient = new InMemoryRuneClient(_loggerFactory);

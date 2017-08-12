@@ -198,31 +198,31 @@ namespace Runic.Agent.Worker.Test.Tests
             }
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void Messaging_MultipleDifferentFlowExecute()
         {
             throw new NotImplementedException();
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void Messaging_MultipleSameFlowExecute()
         {
             throw new NotImplementedException();
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void Messaging_HijackThreadPattern()
         {
             throw new NotImplementedException();
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void Messaging_HijackThreadLevel()
         {
             throw new NotImplementedException();
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void Messaging_HijackFlow()
         {
             throw new NotImplementedException();

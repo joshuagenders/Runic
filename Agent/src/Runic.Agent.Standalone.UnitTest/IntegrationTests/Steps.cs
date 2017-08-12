@@ -53,7 +53,6 @@ namespace Runic.Agent.Standalone.Test.IntegrationTests
                         new Step()
                         {
                             StepName = "step1",
-                            GetNextStepFromFunctionResult = false,
                             Cucumber = new CucmberInformation()
                             {
                                 AssemblyName = "Runic.Agent.Standalone.Test",

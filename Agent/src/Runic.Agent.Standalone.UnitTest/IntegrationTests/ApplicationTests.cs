@@ -1,25 +1,29 @@
-﻿using Runic.Cucumber;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Runic.Cucumber;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
-using Xunit;
 
 namespace Runic.Agent.Standalone.Test.IntegrationTests
 {
+    [TestClass]
     public class ApplicationTests
     {
-        [Theory]
-        [InlineData("Constant")]
-        [InlineData("Graph")]
-        [InlineData("Gradual")]
-        public async Task TestPatternExecution(string patternType)
+        [TestMethod]
+        public async Task WhenFunctionIsExecuted_ThenTestResultIsSuccess(string patternType)
         {
             var test = new CucumberTest(GetType().GetTypeInfo().Assembly);
-            test.Given($"I have a test environment for a '{patternType}' flow")
+            test.ScenarioOutline("Function Patterns")
+                .Given($"I have a test environment for a '<patternType>' flow")
                 .And("I have a function flow")
                 .And("I start the application")
                 .When("I start the test")
-                .Then("The fake function is invoked");
+                .Then("The fake function is invoked")
+                .Examples(
+                    new Dictionary<string, List<string>>()
+                    {
+                        { "patternType", new List<string>(){ "Constant", "Graph", "Gradual" } }
+                    });
             
             var result = await test.ExecuteAsync();
             if (!result.Success)
@@ -28,8 +32,8 @@ namespace Runic.Agent.Standalone.Test.IntegrationTests
             }
         }
 
-        [Fact]
-        public async Task TestCucumberExecution()
+        [TestMethod]
+        public async Task WhenCucumberIsExecuted_ThenTestResultIsSuccess()
         {
             var test = new CucumberTest(GetType().GetTypeInfo().Assembly);
             test.ScenarioOutline("Cucumber patterns")

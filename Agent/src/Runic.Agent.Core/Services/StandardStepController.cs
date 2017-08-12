@@ -1,16 +1,17 @@
 ﻿using Runic.Agent.Core.Exceptions;
+using Runic.Agent.Core.Services.Interfaces;
 using Runic.Framework.Models;
 using System.Linq;
 
 namespace Runic.Agent.Core.Services
 {
-    public class StepController
+    public class StandardStepController : IStepController
     {
         private bool _getNextStepFromResult { get; set; }
         private int _lastStepIndex { get; set; }
         private readonly Flow _flow;
 
-        public StepController(Flow flow)
+        public StandardStepController(Flow flow)
         {
             _flow = flow;
         }

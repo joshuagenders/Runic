@@ -7,6 +7,8 @@ using Runic.Agent.Core.FunctionHarness;
 using Runic.Agent.Core.Services.Interfaces;
 using Runic.Framework.Models;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,7 +40,15 @@ namespace Runic.Agent.Core.Services
         {
             Result result = null;
             IStepRunnerService service;
-            var stepController = new StepController(flow);
+            IStepController stepController;
+            if (flow.Steps.All(s => s.Distribution != null))
+            {
+                stepController = new DistributionStepController(flow.Steps);
+            }
+            else
+            {
+                stepController = new StandardStepController(flow);
+            }
             _testResultHandler.OnFlowStart(flow);
             while (!ctx.IsCancellationRequested)
             {
