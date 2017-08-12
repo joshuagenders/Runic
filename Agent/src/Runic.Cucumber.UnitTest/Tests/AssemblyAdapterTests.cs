@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Cucumber.UnitTest
+namespace Runic.Cucumber.UnitTest.Tests
 {
     [TestClass]
     public class AssemblyAdapterTests : TestBase

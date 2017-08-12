@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
-    public class TestThreadPatterns
+    public class ThreadPatternsTests
     {
         private Mock<IDatetimeService> _mockDatetimeService { get; set; }
         private SemaphoreSlim _semaphore { get; set; }

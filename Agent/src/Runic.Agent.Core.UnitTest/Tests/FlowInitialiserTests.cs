@@ -11,7 +11,7 @@ using System.Linq;
 namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
-    public class TestFlowInitialiser
+    public class FlowInitialiserTests
     {
         private PluginManager _pluginManager { get; set; }
         [TestInitialize]

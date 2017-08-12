@@ -1,11 +1,10 @@
-﻿using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Runic.Cucumber.UnitTest.TestUtility;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Cucumber.UnitTest
+namespace Runic.Cucumber.UnitTest.Tests
 {
     [TestClass]
     public class DocumentRunnerTests : TestBase

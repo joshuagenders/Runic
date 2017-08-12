@@ -5,7 +5,7 @@ using Runic.Cucumber.UnitTest.TestUtility;
 using System.Collections.Generic;
 using Moq;
 
-namespace Runic.Cucumber.UnitTest
+namespace Runic.Cucumber.UnitTest.Tests
 {
     [TestClass]
     public class CucumberTestTests : TestBase

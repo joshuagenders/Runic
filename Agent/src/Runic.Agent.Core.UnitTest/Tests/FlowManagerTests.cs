@@ -8,7 +8,7 @@ using Runic.Framework.Clients;
 namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
-    public class TestFlows
+    public class FlowManagerTests
     {
         private IFlowManager _flowManager { get; set; }
 

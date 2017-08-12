@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
-    public class TestFlowThreadManager
+    public class FlowThreadManagerTests
     {
         private TestEnvironment _testEnvironment { get; set; }
         private Flow _flow { get; set; }

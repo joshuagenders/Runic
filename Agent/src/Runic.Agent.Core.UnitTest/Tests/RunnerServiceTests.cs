@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Runic.Agent.Core.UnitTest.Tests
 {
-    class TestRunnerService
+    class RunnerServiceTests
     {
     }
 }

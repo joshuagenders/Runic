@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Runic.Agent.Worker.Test.Tests
 {
     [TestClass]
-    public class TestMessaging
+    public class MessagingTests
     {
         private TestEnvironment _testEnvironment { get; set; }
         private Flow _fakeFlow { get; set; }

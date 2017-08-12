@@ -5,7 +5,7 @@ using Runic.Agent.Worker.Test.TestUtility;
 namespace Runic.Agent.Worker.Test.Tests
 {
     [TestClass]
-    public class TestAgentConfiguration
+    public class AgentConfigurationTests
     {
         [TestMethod]
         public void Configuration_TestCommandLineInputs()

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
-    public class TestCucumberHarness
+    public class CucumberHarnessTests
     {
         [TestMethod]
         public async Task BasicCucumberTestExecutesAllMethod()

@@ -9,7 +9,7 @@ using System.Linq;
 namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
-    public class TestStepController
+    public class StepControllerTests
     {
         private Flow _flow => new Flow()
         {

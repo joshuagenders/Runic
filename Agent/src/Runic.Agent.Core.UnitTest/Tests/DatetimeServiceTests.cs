@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
-    public class TestDatetimeService
+    public class DatetimeServiceTests
     {
         [TestMethod]
         public async Task WhenWaitingUntil_DatetimeServiceWaits()

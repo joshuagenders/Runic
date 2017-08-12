@@ -13,7 +13,7 @@ using Runic.Framework.Clients;
 namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
-    public class TestFunctionHarness
+    public class FunctionHarnessTests
     {
         [TestMethod]
         public void WhenGettingMethodWithAttribute_MethodIsFound()

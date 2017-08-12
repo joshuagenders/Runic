@@ -13,7 +13,7 @@ using Runic.Agent.Core.Exceptions;
 namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
-    public class TestAssemblyManagement
+    public class AssemblyManagementTests
     {
         private PluginManager _pluginManager { get; set; }
 

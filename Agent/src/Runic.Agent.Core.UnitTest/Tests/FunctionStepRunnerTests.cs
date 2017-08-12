@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
-    public class TestFunctionStepRunner
+    public class FunctionStepRunnerTests
     {
         [TestMethod]
         public async Task FunctionStepRunner_CallsMethods()
