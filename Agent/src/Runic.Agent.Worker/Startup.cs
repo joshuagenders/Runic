@@ -1,9 +1,8 @@
 ﻿using Autofac;
+using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.ExternalInterfaces;
-using Runic.Agent.Core.FlowManagement;
-using Runic.Agent.Core.Services;
-using Runic.Agent.Core.Services.Interfaces;
+using Runic.Agent.Core.IoC;
 using Runic.Agent.Worker.Clients;
 using Runic.Agent.Worker.Configuration;
 using Runic.Agent.Worker.Messaging;
@@ -27,17 +26,16 @@ namespace Runic.Agent.Worker
                 options.BufferMetrics = false;
             });
 
-            var builder = new ContainerBuilder()
-                .Register<FlowManager, IFlowManager>()
-                .Register<PluginManager, IPluginManager>()
+            var builder = DefaultContainer.GetDefaultContainerBuilder()
                 .Register<MessagingDataService, IDataService>()
                 .Register<RabbitMessagingService, IMessagingService>()
                 .Register<InMemoryRuneClient, IRuneClient>()
-                .Register<PatternService, IPatternService>()
                 .Register<HandlerRegistry, IHandlerRegistry>()
-                .Register<DateTimeService, IDatetimeService>()
                 .Register<Application, IApplication>();
-            
+
+            var loggerFactory = new LoggerFactory().AddConsole();
+            builder.RegisterInstance(loggerFactory).SingleInstance();
+
             builder.RegisterInstance(statsd).As<IStatsd>();
             builder.RegisterType<FilePluginProvider>()
                     .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
