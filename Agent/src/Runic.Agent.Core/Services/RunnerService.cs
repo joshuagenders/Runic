@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.CucumberHarness;
 using Runic.Agent.Core.Exceptions;
+using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.FunctionHarness;
 using Runic.Agent.Core.Services.Interfaces;
 using Runic.Framework.Models;
@@ -16,17 +18,20 @@ namespace Runic.Agent.Core.Services
         private readonly IFunctionFactory _functionFactory;
         private readonly IDatetimeService _datetimeService;
         private readonly IPluginManager _pluginManager;
+        private readonly ITestResultHandler _testResultHandler;
+
         private int _errorCount { get; set; }
         private int _maxErrors { get; set; } = -1;
 
         public int ErrorCount => _errorCount;
 
-        public RunnerService(IPluginManager pluginManager, ILoggerFactory loggerFactory, IFunctionFactory functionFactory, IDatetimeService datetimeService)
+        public RunnerService(IPluginManager pluginManager, ILoggerFactory loggerFactory, IFunctionFactory functionFactory, IDatetimeService datetimeService, ITestResultHandler testResultHandler)
         {
             _logger = loggerFactory.CreateLogger<RunnerService>();
             _functionFactory = functionFactory;
             _datetimeService = datetimeService;
             _pluginManager = pluginManager;
+            _testResultHandler = testResultHandler;
         }
 
         public async Task ExecuteFlowAsync(Flow flow, CancellationToken ctx = default(CancellationToken))
@@ -34,25 +39,31 @@ namespace Runic.Agent.Core.Services
             Result result = null;
             IStepRunnerService service;
             var stepController = new StepController(flow);
+            _testResultHandler.OnFlowStart(flow);
             while (!ctx.IsCancellationRequested)
             {
                 //todo testcontext
                 var testContext = new TestContext();
                 var step = stepController.GetNextStep(result);
-
                 if (!string.IsNullOrWhiteSpace(step.Cucumber?.Document))
                 {
-                    service = new FunctionStepRunnerService(_functionFactory, _datetimeService);
+                    service = new CucumberStepRunnerService(_pluginManager);
+                    var executionResult = await service.ExecuteStepAsync(step, ctx);
+                    _testResultHandler.OnCucumberComplete(executionResult as CucumberResult);
+                    result = executionResult;
                 }
                 else
                 {
-                    service = new CucumberStepRunnerService(_pluginManager);
+                    service = new FunctionStepRunnerService(_functionFactory, _datetimeService);
+                    var executionResult = await service.ExecuteStepAsync(step, ctx);
+                    _testResultHandler.OnFunctionComplete(executionResult as FunctionResult);
+                    result = executionResult;
                 }
-
-                result = await service.ExecuteStepAsync(step, ctx);
-                await _datetimeService.WaitUntil(flow.StepDelayMilliseconds, ctx);
                 LogResult(result);
+                
+                await _datetimeService.WaitUntil(flow.StepDelayMilliseconds, ctx);
             }
+            _testResultHandler.OnFlowComplete(flow);
         }
 
         private void LogResult(Result result)

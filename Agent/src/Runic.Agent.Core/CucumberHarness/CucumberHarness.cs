@@ -3,6 +3,7 @@ using Runic.Cucumber;
 using Runic.Agent.Core.AssemblyManagement;
 using System.Threading;
 using System.Diagnostics;
+using Runic.Agent.Core.ExternalInterfaces;
 
 namespace Runic.Agent.Core.CucumberHarness
 {

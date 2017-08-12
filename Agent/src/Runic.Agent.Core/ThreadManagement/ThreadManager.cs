@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Configuration;
+using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.Services.Interfaces;
 using Runic.Framework.Clients;
@@ -22,6 +23,7 @@ namespace Runic.Agent.Core.ThreadManagement
         private readonly IFlowManager _flowManager;
         private readonly IRunnerService _runnerService;
         private readonly AgentCoreConfiguration _config;
+        private readonly ITestResultHandler _testResultHandler;
 
         private static ConcurrentDictionary<string, FlowThreadManager> _threadManagers { get; set; }
 
@@ -31,7 +33,8 @@ namespace Runic.Agent.Core.ThreadManagement
             IStatsClient stats,
             IRunnerService runnerService, 
             ILoggerFactory loggerFactory,
-            AgentCoreConfiguration config)
+            AgentCoreConfiguration config,
+            ITestResultHandler testResultHandler)
         {
             _logger = loggerFactory.CreateLogger<ThreadManager>();
             _loggerFactory = loggerFactory;
@@ -41,6 +44,7 @@ namespace Runic.Agent.Core.ThreadManagement
             _runnerService = runnerService;
             _threadManagers = new ConcurrentDictionary<string, FlowThreadManager>();
             _config = config;
+            _testResultHandler = testResultHandler;
         }
 
         public int GetThreadLevel(string flowId)
@@ -74,8 +78,9 @@ namespace Runic.Agent.Core.ThreadManagement
 
         public async Task SetThreadLevelAsync(SetThreadLevelRequest request, CancellationToken ctx = default(CancellationToken))
         {
-            //todo implement maxthreads
+            //TODO implement maxthreads
             _logger.LogDebug($"Attempting to update thread level to {request.ThreadLevel} for {request.FlowName}");
+            _testResultHandler.OnThreadChange(request.FlowId, request.ThreadLevel);
             if (_threadManagers.TryGetValue(request.FlowId, out FlowThreadManager manager))
             {
                 await manager.UpdateThreadCountAsync(request.ThreadLevel);

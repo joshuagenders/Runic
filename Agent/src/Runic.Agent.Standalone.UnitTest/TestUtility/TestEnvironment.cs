@@ -52,6 +52,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         public TestObject<IRunnerService> RunnerService { get; set; } = new TestObject<IRunnerService>();
         public TestObject<IFunctionFactory> FunctionFactory { get; set; } = new TestObject<IFunctionFactory>();
         public TestObject<AgentCoreConfiguration> AgentCoreConfiguration { get; set; } = new TestObject<AgentCoreConfiguration>();
+        public TestObject<ITestResultHandler> TestResultHandler { get; set; } = new TestObject<ITestResultHandler>();
 
         public TestEnvironment With<T>(T instance) where T : class
         {

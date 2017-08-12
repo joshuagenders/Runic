@@ -10,6 +10,6 @@ namespace Runic.Agent.Core.ExternalInterfaces
         void OnCucumberComplete(CucumberResult result);
         void OnFlowStart(Flow flow);
         void OnFlowComplete(Flow flow);
-        void OnThreadChange(Flow flow, int threadCount);
+        void OnThreadChange(string flowId, int threadCount);
     }
 }

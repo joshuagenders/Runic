@@ -49,6 +49,7 @@ namespace Runic.Agent.Worker.Test.TestUtility
             builder.RegisterType<InMemoryMessagingService>().As<IMessagingService>().SingleInstance();
             builder.RegisterType<ThreadManager>().As<IThreadManager>().SingleInstance();
             builder.RegisterType<RunnerService>().As<IRunnerService>();
+            builder.RegisterType<TestResultHandlerService>().As<ITestResultHandler>();
             return builder.Build();
         }
     }

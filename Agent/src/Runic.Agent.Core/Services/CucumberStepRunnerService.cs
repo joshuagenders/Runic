@@ -16,7 +16,9 @@ namespace Runic.Agent.Core.Services
 
         public async Task<Result> ExecuteStepAsync(Step step, CancellationToken ctx = default(CancellationToken))
         {
-            return await _harness.ExecuteTestAsync(step.Cucumber.AssemblyName, step.Cucumber.Document, ctx);
+            var result = await _harness.ExecuteTestAsync(step.Cucumber.AssemblyName, step.Cucumber.Document, ctx);
+
+            return result;
         }
     }
 }

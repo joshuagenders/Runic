@@ -1,7 +1,10 @@
 ﻿using Moq;
 using RestMockCore;
 using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.CucumberHarness;
+using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.FlowManagement;
+using Runic.Agent.Core.FunctionHarness;
 using Runic.Agent.Core.Services;
 using Runic.Agent.Core.Services.Interfaces;
 using Runic.Agent.Standalone.Configuration;
@@ -35,12 +38,7 @@ namespace Runic.Agent.Standalone.Test.IntegrationTests
                             {
                                 AssemblyName = "Runic.Agent.Standalone.Test",
                                 AssemblyQualifiedClassName = "FakeFunction",
-                                FunctionName = "Inputs",
-                                Parameters = new Dictionary<string, Type>()
-                                {
-                                    { "input1", typeof(string) },
-                                    { "4", typeof(int) }
-                                }
+                                FunctionName = "Login"
                             }
                         }
                     }
@@ -72,7 +70,7 @@ namespace Runic.Agent.Standalone.Test.IntegrationTests
         #endregion
 
         private TestEnvironment _environment { get; set; }
-        private Mock<FakeFunction> _fakeFunction { get; set; }
+        private FakeFunction _fakeFunction { get; set; }
 
         [Given("I have a test server")]
         private void GivenIHaveATestServer()
@@ -148,7 +146,7 @@ namespace Runic.Agent.Standalone.Test.IntegrationTests
         {
             RegisterTestFlow(FunctionFlow);
 
-            _fakeFunction = new Mock<FakeFunction>();
+            _fakeFunction = new FakeFunction();
             _environment.GetMock<IPluginManager>()
                         .Setup(p => p.GetInstance(FunctionFlow.Steps[0].Function.AssemblyQualifiedClassName))
                         .Returns(_fakeFunction);
@@ -165,15 +163,15 @@ namespace Runic.Agent.Standalone.Test.IntegrationTests
         [Then(@"The fake function is invoked")]
         public void TheFakeFunctionIsInvoked()
         {
-            _fakeFunction.Verify(f => f.BeforeEach());
-            _fakeFunction.Verify(f => f.Inputs(It.IsAny<string>(), It.IsAny<int>()));
-            _fakeFunction.Verify(f => f.AfterEach());
+            var handler = _environment.GetMock<ITestResultHandler>();
+            handler.Verify(h => h.OnFunctionComplete(It.Is<FunctionResult>(r => r.Success)));
         }
 
         [Then(@"The fake cucumber test is invoked")]
         public void TheFakeCucumberTestIsInvoked()
         {
-            //todo use a mock function and verify?
+            var handler = _environment.GetMock<ITestResultHandler>();
+            handler.Verify(h => h.OnCucumberComplete(It.Is<CucumberResult>(r => r.Success)));
         }
     }
 }

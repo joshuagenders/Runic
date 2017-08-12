@@ -1,14 +1,17 @@
 ﻿using Autofac;
 using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.Configuration;
 using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.IoC;
+using Runic.Agent.Core.Services;
 using Runic.Agent.Worker.Clients;
 using Runic.Agent.Worker.Configuration;
 using Runic.Agent.Worker.Messaging;
 using Runic.Agent.Worker.Services;
 using Runic.Framework.Clients;
 using StatsN;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Runic.Agent.Worker
@@ -31,12 +34,20 @@ namespace Runic.Agent.Worker
                 .Register<RabbitMessagingService, IMessagingService>()
                 .Register<InMemoryRuneClient, IRuneClient>()
                 .Register<HandlerRegistry, IHandlerRegistry>()
+                .Register<StatsClient, IStatsClient>()
                 .Register<Application, IApplication>();
 
             var loggerFactory = new LoggerFactory().AddConsole();
             builder.RegisterInstance(loggerFactory).SingleInstance();
 
+            builder.RegisterInstance(
+                new AgentCoreConfiguration()
+                {
+                    MaxThreads = 10
+                });
+
             builder.RegisterInstance(statsd).As<IStatsd>();
+            builder.RegisterType<TestResultHandlerService>().As<ITestResultHandler>();
             builder.RegisterType<FilePluginProvider>()
                     .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                     .As<IPluginProvider>();
