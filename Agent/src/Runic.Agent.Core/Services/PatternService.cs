@@ -50,7 +50,7 @@ namespace Runic.Agent.Core.Services
                 });
         }
 
-        public async Task SafeCancelAllPatternsAsync(CancellationToken ctx = default(CancellationToken))
+        public async Task CancelAllPatternsAsync(CancellationToken ctx = default(CancellationToken))
         {
             var updateTasks = new List<Task>();
 
@@ -108,7 +108,7 @@ namespace Runic.Agent.Core.Services
         {
             CancellationTokenSource cts = new CancellationTokenSource();
             cts.CancelAfter(2000);
-            SafeCancelAllPatternsAsync(cts.Token).Wait();
+            CancelAllPatternsAsync(cts.Token).Wait();
         }
 
         public async Task SetThreadLevelAsync(SetThreadLevelRequest request, CancellationToken ctx = default(CancellationToken))

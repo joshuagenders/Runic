@@ -25,7 +25,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public void FlowInitialiser_TestLibraryLoads()
+        public void WhenInitialiseFlow_PluginsAreLoaded()
         {
             var flow = TestData.GetTestFlowSingleStep;   
             var flowInitialiser = new FlowInitialiser(_pluginManager, new LoggerFactory());

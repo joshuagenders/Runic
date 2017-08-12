@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using Runic.Cucumber;
+﻿using Runic.Cucumber;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;

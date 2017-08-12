@@ -12,7 +12,7 @@ namespace Runic.Cucumber.UnitTest
     public class TestStateManagerTests
     {
         [TestMethod]
-        public void StoreAndRetrieve_ReturnsSameObject()
+        public void WhenStoringAndRetrieving_ReturnsSameObject()
         {
             TestStateManager manager = new TestStateManager();
             var obj = new DummyObj() { State = "test" };

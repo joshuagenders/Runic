@@ -28,7 +28,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public void AssemblyManagement_FunctionTypeRetrieve()
+        public void WhenAssemblyIsLoaded_FunctionTypeisRetrieved()
         {
             _pluginManager.LoadPlugin(TestConstants.AssemblyName);
             var type = _pluginManager.GetClassType(TestConstants.AssemblyQualifiedClassName);
@@ -37,7 +37,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public void AssemblyManagement_LoadAssembly()
+        public void WhenAssemblyIsLoaded_RuneClientPropertyCanBeLocated()
         {
             _pluginManager.LoadPlugin(TestConstants.AssemblyName);
             Assert.AreEqual(_pluginManager.GetAssemblies().Count, 1);
@@ -50,7 +50,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public void AssemblyManagement_GetFunctionInfo()
+        public void GetFunctionInfo_ReturnsFunctionInfo()
         {
             _pluginManager.LoadPlugin(TestConstants.AssemblyName);
             var functions = _pluginManager.GetAvailableFunctions();
@@ -58,7 +58,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public void AssemblyManagement_DualLoadIsSafe()
+        public void WhenAssemblyIsLoadedTwice_AssemblyIsLoadedOnce()
         {
             _pluginManager.LoadPlugin(TestConstants.AssemblyName);
             _pluginManager.LoadPlugin(TestConstants.AssemblyName);
@@ -66,44 +66,44 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public void AssemblyManagement_AssemblyNotFoundThrowsException()
+        public void WhenLoadingMissingPlugin_ThrowsException()
         {
             Assert.ThrowsException<AssemblyNotFoundException>(() => _pluginManager.LoadPlugin("SomeAssembly"));
         }
 
         [TestMethod]
-        public void AssemblyManagement_ClassNotFoundThrowsException()
+        public void WhenLoadingAMissingClass_ThrowsException()
         {
             _pluginManager.LoadPlugin(TestConstants.AssemblyName);
             Assert.ThrowsException<ClassNotFoundInAssemblyException>(() => _pluginManager.GetClassType("SomeClass"));
         }
 
         [TestMethod]
-        public void AssemblyManagement_GetUnloadedPluginThrowsException()
+        public void WhenGettingUnloadedPlugin_ThrowsException()
         {
             Assert.ThrowsException<AssemblyNotFoundException>(() => _pluginManager.GetPlugin("someplugin"));
         }
 
         [TestMethod]
-        public void AssemblyManagement_GetAssembliesWithoutLoadReturnsEmptyList()
+        public void WhenGettingAssembliesWithoutLoad_ReturnsEmptyList()
         {
             Assert.IsFalse(_pluginManager.GetAssemblies().Any());
         }
 
         [TestMethod]
-        public void AssemblyManagement_GetAssemblyKeysWithoutLoadReturnsEmptyList()
+        public void WhenGettingAssemblyKeysWithoutLoad_ReturnsEmptyList()
         {
             Assert.IsFalse(_pluginManager.GetAssemblyKeys().Any());
         }
 
         [TestMethod]
-        public void AssemblyManagement_GetFunctionsWithoutLoadReturnsEmptyList()
+        public void WhenGettingFunctionsWithoutLoad_ReturnsEmptyList()
         {
             Assert.IsFalse(_pluginManager.GetAvailableFunctions().Any());
         }
 
         [TestMethod]
-        public void AssemblyManagement_GetClassWithoutLoadThrowsException()
+        public void WhenGettingClassWithoutLoad_ThrowsException()
         {
             Assert.ThrowsException<ClassNotFoundInAssemblyException>(() => _pluginManager.GetClassType("SomeClass"));
         }

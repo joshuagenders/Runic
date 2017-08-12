@@ -9,7 +9,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
     public class TestCancellableTask
     {
         [TestMethod]
-        public void CancellableTask_PollingSleepTaskCancels()
+        public void WhenCancellableTaskIsCancelled_TaskCompletes()
         {
             var cts = new CancellationTokenSource();
             cts.CancelAfter(10000);
@@ -27,7 +27,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task CancellableTask_PollingSleepTaskCancelsAsync()
+        public async Task WhenAsyncCancellableTaskIsCancelled_TaskCompletes()
         {
             var cts = new CancellationTokenSource();
             cts.CancelAfter(10000);

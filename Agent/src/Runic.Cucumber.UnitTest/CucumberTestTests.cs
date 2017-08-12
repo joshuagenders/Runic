@@ -11,7 +11,7 @@ namespace Runic.Cucumber.UnitTest
     public class CucumberTestTests : TestBase
     {
         [TestMethod]
-        public async Task CucumberTestExecutesAllMethods()
+        public async Task CucumberTest_ExecutesAllMethods()
         {
             var fakeTest = new Mock<FakeCucumberClass>();
             TestEnvironment.SetupMocks(fakeTest);

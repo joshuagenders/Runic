@@ -22,7 +22,7 @@ namespace Runic.Agent.Worker.Test.Tests
         }
 
         [TestMethod]
-        public async Task Messaging_ConstantFlowExecute()
+        public async Task WorkerConstantFlowExecute_ExecutesFlow()
         {
             using (var scope = new TestStartup().BuildContainer().BeginLifetimeScope())
             {
@@ -55,7 +55,7 @@ namespace Runic.Agent.Worker.Test.Tests
                     Assert.IsTrue(runningFlows.Contains(flowExecutionId), "running flow not found");
                     Assert.IsTrue(runningThreadPatterns.Contains(flowExecutionId), "running thread pattern not found");
 
-                    await _testEnvironment.PatternService.SafeCancelAllPatternsAsync(cts.Token);
+                    await _testEnvironment.PatternService.CancelAllPatternsAsync(cts.Token);
                 }
                 catch (OperationCanceledException)
                 {
@@ -65,7 +65,7 @@ namespace Runic.Agent.Worker.Test.Tests
         }
 
         [TestMethod]
-        public async Task Messaging_StartStopFlow()
+        public async Task WorkerStartStopFlow_StartsAndStops()
         {
             using (var scope = new TestStartup().BuildContainer().BeginLifetimeScope())
             {
@@ -110,7 +110,7 @@ namespace Runic.Agent.Worker.Test.Tests
         }
 
         [TestMethod]
-        public async Task Messaging_GradualFlowExecute()
+        public async Task GradualFlowExecute_ExecutesFlow()
         {
             using (var scope = new TestStartup().BuildContainer().BeginLifetimeScope())
             {
@@ -142,7 +142,7 @@ namespace Runic.Agent.Worker.Test.Tests
                     var runningThreadPatterns = _testEnvironment.PatternService.GetRunningThreadPatterns();
                     Assert.IsTrue(runningFlows.Contains(flowExecutionId), "running flow not found");
                     Assert.IsTrue(runningThreadPatterns.Contains(flowExecutionId), "running thread pattern not found");
-                    await _testEnvironment.PatternService.SafeCancelAllPatternsAsync(cts.Token);
+                    await _testEnvironment.PatternService.CancelAllPatternsAsync(cts.Token);
                 }
                 catch (OperationCanceledException)
                 {
@@ -152,7 +152,7 @@ namespace Runic.Agent.Worker.Test.Tests
         }
 
         [TestMethod]
-        public async Task Messaging_GraphFlowExecute()
+        public async Task GraphFlowExecute_ExecutesFlow()
         {
             using (var scope = new TestStartup().BuildContainer().BeginLifetimeScope())
             {
@@ -189,7 +189,7 @@ namespace Runic.Agent.Worker.Test.Tests
                     Assert.IsTrue(runningFlows.Contains(flowExecutionId), "running flow not found");
                     Assert.IsTrue(runningThreadPatterns.Contains(flowExecutionId), "running thread pattern not found");
 
-                    await _testEnvironment.PatternService.SafeCancelAllPatternsAsync(cts.Token);
+                    await _testEnvironment.PatternService.CancelAllPatternsAsync(cts.Token);
                 }
                 catch (OperationCanceledException)
                 {
@@ -229,7 +229,7 @@ namespace Runic.Agent.Worker.Test.Tests
         }
         
         [TestMethod]
-        public async Task Messaging_TestFlowStartMessage()
+        public async Task FlowStartMessage_ExecutesFlow()
         {
             using (var scope = new TestStartup().BuildContainer().BeginLifetimeScope())
             {
@@ -255,7 +255,7 @@ namespace Runic.Agent.Worker.Test.Tests
                 Assert.AreEqual(1, _testEnvironment.ThreadManager.GetRunningFlowCount(), "Running flows was not 1");
                 Assert.AreEqual(1, _testEnvironment.PatternService.GetRunningThreadPatternCount(), "Running thread patterns was not 1");
 
-                await _testEnvironment.PatternService.SafeCancelAllPatternsAsync(cts.Token);
+                await _testEnvironment.PatternService.CancelAllPatternsAsync(cts.Token);
             }
         }
     }

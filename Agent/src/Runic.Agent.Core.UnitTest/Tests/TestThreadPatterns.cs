@@ -58,7 +58,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task Patterns_ShrinkingGraphCallbacks()
+        public async Task ShrinkingGraph_CallbacksAreInvoked()
         {
             var gtp = new GraphThreadPattern(_mockDatetimeService.Object)
             {
@@ -80,7 +80,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task Patterns_ExpandingGraphCallbacks()
+        public async Task ExpandingGraph_CallbacksAreInvoked()
         {
             var gtp = new GraphThreadPattern(_mockDatetimeService.Object)
             {
@@ -102,7 +102,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task Patterns_ConstantCallback()
+        public async Task Constant_CallbacksAreInvoked()
         {
             var ctp = new ConstantThreadPattern(_mockDatetimeService.Object)
             {
@@ -116,7 +116,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task Patterns_TimedConstantCallback()
+        public async Task TimedConstant_CallbacksAreInvoked()
         {
             var ctp = new ConstantThreadPattern(_mockDatetimeService.Object)
             {
@@ -132,7 +132,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task Patterns_GradualCallback()
+        public async Task Gradual_CallbacksAreInvoked()
         {
             //todo use xunit theories
             var gtp = new GradualThreadPattern(_mockDatetimeService.Object)
@@ -155,7 +155,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task Patterns_GradualCallbackComplex()
+        public async Task GradualComplex_CallbacksAreInvoked()
         {
             var gtp = new GradualThreadPattern(_mockDatetimeService.Object)
             {
@@ -181,7 +181,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task Patterns_GradualCallbackRampUpDownEdgeAndIntervalCollision()
+        public async Task GradualWithRampUpDownEdgeAndIntervalCollision_CallbacksAreInvoked()
         {
             var gtp = new GradualThreadPattern(_mockDatetimeService.Object)
             {
@@ -201,7 +201,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task Patterns_GradualCallbackNoRampUpDown()
+        public async Task GradualWithNoRampUpDown_CallbacksAreInvoked()
         {
             var gtp = new GradualThreadPattern(_mockDatetimeService.Object)
             {

@@ -8,7 +8,7 @@ namespace Runic.Agent.Core.Services.Interfaces
 {
     public interface IPatternService
     {
-        Task SafeCancelAllPatternsAsync(CancellationToken ctx = default(CancellationToken));
+        Task CancelAllPatternsAsync(CancellationToken ctx = default(CancellationToken));
         Task StopThreadPatternAsync(string flowExecutionId, CancellationToken ctx = default(CancellationToken));
         void StartThreadPattern(string flowExecutionId, Flow flow, IThreadPattern pattern, CancellationToken ctx = default(CancellationToken));
         Task GetCompletionTaskAsync(string flowExecutionId, CancellationToken ctx = default(CancellationToken));

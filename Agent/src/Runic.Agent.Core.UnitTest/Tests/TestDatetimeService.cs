@@ -10,7 +10,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
     public class TestDatetimeService
     {
         [TestMethod]
-        public async Task TestDatetimeServiceWaits()
+        public async Task WhenWaitingUntil_DatetimeServiceWaits()
         {
             CancellationTokenSource cts = new CancellationTokenSource();
             var service = new DateTimeService();

@@ -27,7 +27,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task FlowThreadManager_UpdateThreadSetsThreadCount()
+        public async Task WhenUpdatingThreadCount_ThreadCountIsUpdated()
         {
             await _manager.UpdateThreadCountAsync(1);
             Assert.AreEqual(1, _manager.GetCurrentThreadCount());
@@ -37,7 +37,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task FlowThreadManager_StopAllStopsAll()
+        public async Task WhenStopAll_ThreadCountIsZero()
         {
             await _manager.UpdateThreadCountAsync(1);
             Assert.AreEqual(1, _manager.GetCurrentThreadCount());

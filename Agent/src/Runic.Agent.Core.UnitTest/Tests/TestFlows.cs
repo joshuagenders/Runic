@@ -19,7 +19,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public void FlowManager_TestUpdate()
+        public void WhenUpdatingFlow_NewFlowIsReturned()
         {
             var inputFlow = TestData.GetTestFlowSingleStep;
             var updatedInput = TestData.GetTestFlowTwoSteps;
@@ -32,7 +32,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public void FlowManager_TestStoreAndGet()
+        public void WhenAddingAndGettingFlow_SameFlowIsReturned()
         {
             var inputFlow = new Flow { Name = "Test" };
             _flowManager.AddUpdateFlow(inputFlow);

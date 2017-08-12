@@ -16,7 +16,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
     public class TestFunctionHarness
     {
         [TestMethod]
-        public void FunctionHarness_GetMethodWithAttribute()
+        public void WhenGettingMethodWithAttribute_MethodIsFound()
         {
             var fakeFunction = new FakeFunction();
             var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new LoggerFactory());
@@ -26,7 +26,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task FunctionHarness_BeforeEachExecute()
+        public async Task WhenExecutingBeforeEach_MethodIsInvoked()
         {
             var fakeFunction = new FakeFunction();
             var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new LoggerFactory());
@@ -47,7 +47,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task FunctionHarness_FunctionExecute()
+        public async Task WhenExecutingFunction_MethodIsInvoked()
         {
             var fakeFunction = new FakeFunction();
             var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new LoggerFactory());
@@ -68,7 +68,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task FunctionHarness_BindAndExecute()
+        public async Task WhenAFunctionIsBoundAndExecuted_MethodsAreInvoked()
         {
             var cts = new CancellationTokenSource();
             cts.CancelAfter(1000);
@@ -76,7 +76,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new LoggerFactory());
             functionHarness.Bind(fakeFunction, "step1", "Login", false);
             var result = await functionHarness.OrchestrateFunctionExecutionAsync(cts.Token);
-
+            //todo verify mock
             fakeFunction.CallList.ForEach(c => Console.WriteLine(c.InvocationTarget));
             Assert.IsTrue(result.Success, "Function returned false - error in execution");
             Assert.AreEqual(3, fakeFunction.CallList.Count);
@@ -86,7 +86,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task FunctionHarness_AsyncFunctionWaitsUntilCompletion()
+        public async Task WhenAsyncFunctionIsCalled_HarnessWaitsToCompletion()
         {
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
@@ -103,7 +103,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task FunctionHarness_InputParameterBinding()
+        public async Task WhenInputParametersAreBound_InputsArePassedToMethods()
         {
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
@@ -123,7 +123,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task FunctionHarness_InputParameterBindingOverrideDefault()
+        public async Task WhenInputParametersAreBound_OverrideDefaultOveridesTheInput()
         {
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
@@ -145,7 +145,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task FunctionHarness_InputParameterBindingWithDefault()
+        public async Task WhenInvokingMethodWithDefaults_MethodsAreInvokedWithDefault()
         {
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
