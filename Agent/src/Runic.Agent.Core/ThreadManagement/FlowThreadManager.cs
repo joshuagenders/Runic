@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Runic.Agent.Core.Configuration;
+﻿using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.FunctionHarness;
 using Runic.Agent.Core.Services.Interfaces;
 using Runic.Framework.Clients;
@@ -16,8 +15,7 @@ namespace Runic.Agent.Core.ThreadManagement
     {
         private readonly Flow _flow;
         private readonly TaskFactory _taskFactory;
-        private readonly ILoggerFactory _loggerFactory;
-        private readonly ILogger _logger;
+        private readonly ILoggingHandler _log;
         private readonly IStatsClient _stats;
 
         private ConcurrentDictionary<int, CancellableTask> _taskPool { get; set; }
@@ -25,14 +23,12 @@ namespace Runic.Agent.Core.ThreadManagement
         public readonly string Id;
         private readonly IRunnerService _runnerService;
         
-        public FlowThreadManager(Flow flow, IStatsClient stats, IRunnerService runnerService, ILoggerFactory loggerFactory)
+        public FlowThreadManager(Flow flow, IStatsClient stats, IRunnerService runnerService, ILoggingHandler loggingHandler)
         {
             Id = Guid.NewGuid().ToString("N");
-            _logger = loggerFactory.CreateLogger<FlowThreadManager>();
+            _log = loggingHandler;
             _taskFactory = new TaskFactory(new ConcurrentExclusiveSchedulerPair().ExclusiveScheduler);
             _taskPool = new ConcurrentDictionary<int, CancellableTask>();
-
-            _loggerFactory = loggerFactory;
             _flow = flow;
             _runnerService = runnerService;
             _stats = stats;
@@ -45,6 +41,7 @@ namespace Runic.Agent.Core.ThreadManagement
 
         private void RequestNewThread(int id)
         {
+            _log.Info($"New thread requested, id {id}");
             CancellableTask task;
             _taskPool.TryGetValue(id, out task);
             if (task != null)
@@ -68,6 +65,7 @@ namespace Runic.Agent.Core.ThreadManagement
 
         private void RemoveTask(int id)
         {
+            _log.Info($"Remove task requested, id {id}");
             CancellableTask task;
             _taskPool.TryRemove(id, out task);
             if (task != null)
@@ -76,6 +74,7 @@ namespace Runic.Agent.Core.ThreadManagement
 
         private async Task RemoveTaskAsync(int id)
         {
+            _log.Info($"Remove task requested, id {id}");
             CancellableTask task;
             _taskPool.TryRemove(id, out task);
             if (task != null)
@@ -84,6 +83,7 @@ namespace Runic.Agent.Core.ThreadManagement
 
         public async Task UpdateThreadCountAsync (int threadCount)
         {
+            _log.Info($"Update thread count to {threadCount} for flow {_flow.Name}");
             await _taskFactory.StartNew(() => UpdateThreads(threadCount));
         }
 

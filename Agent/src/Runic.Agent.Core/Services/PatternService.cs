@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Runic.Agent.Core.FlowManagement;
+﻿using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.FunctionHarness;
 using Runic.Agent.Core.ThreadPatterns;
 using Runic.Framework.Models;
@@ -11,21 +10,22 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Runic.Agent.Core.Services.Interfaces;
+using Runic.Agent.Core.ExternalInterfaces;
 
 namespace Runic.Agent.Core.Services
 {
     public class PatternService : IPatternService
     {
-        private readonly ILogger _logger;
+        private readonly ILoggingHandler _log;
         private readonly IStatsClient _stats;
         private readonly IThreadManager _threadManager;
         private readonly IFlowManager _flowManager;
         
         private static ConcurrentDictionary<string, CancellableTask> _threadPatterns { get; set; }
 
-        public PatternService(IFlowManager flowManager, IStatsClient stats, IThreadManager IThreadManager, ILoggerFactory loggerFactory)
+        public PatternService(IFlowManager flowManager, IStatsClient stats, IThreadManager IThreadManager, ILoggingHandler loggingHandler)
         {
-            _logger = loggerFactory.CreateLogger<PatternService>();
+            _log = loggingHandler;
             _threadManager = IThreadManager;
             _stats = stats;
             _flowManager = flowManager;
@@ -34,6 +34,7 @@ namespace Runic.Agent.Core.Services
         
         public void StartThreadPattern(string flowExecutionId, Flow flow, IThreadPattern pattern, CancellationToken ctx = default(CancellationToken))
         {
+            _log.Info($"Executing pattern for flow {flow.Name} {flowExecutionId}");
             if (_threadManager.FlowExists(flowExecutionId))
             {
                 //pattern already exists
@@ -52,6 +53,7 @@ namespace Runic.Agent.Core.Services
 
         public async Task CancelAllPatternsAsync(CancellationToken ctx = default(CancellationToken))
         {
+            _log.Info($"Cancelling all patterns");
             var updateTasks = new List<Task>();
 
             _threadPatterns.ToList().ForEach(t => t.Value.Cancel());
@@ -61,6 +63,7 @@ namespace Runic.Agent.Core.Services
 
         public async Task StopThreadPatternAsync(string flowExecutionId, CancellationToken ctx = default(CancellationToken))
         {
+            _log.Info($"Stopping pattern for flow {flowExecutionId}");
             if (_threadPatterns.TryRemove(flowExecutionId, out CancellableTask task))
             {
                 task.Cancel();
@@ -79,8 +82,9 @@ namespace Runic.Agent.Core.Services
         public IList<string> GetRunningThreadPatterns ()  => _threadPatterns.Select(p => p.Key).ToList();
         public int GetRunningThreadPatternCount () => _threadPatterns.Count;
 
-        private async Task SafeRemoveThreadPatternAsync(string id)
+        private async Task RemoveThreadPatternAsync(string id)
         {
+            _log.Info($"Removing Thread pattern with id {id}");
             CancellableTask task;
             _threadPatterns.TryRemove(id, out task);
             if (task != null)
@@ -89,6 +93,7 @@ namespace Runic.Agent.Core.Services
 
         private async Task ExecutePatternAsync(string flowExecutionId, Flow flow, IThreadPattern pattern, CancellationToken ctx = default(CancellationToken))
         {
+            _log.Info($"Executing pattern for flow {flow.Name} {flowExecutionId}");
             _flowManager.AddUpdateFlow(flow);
 
             pattern.RegisterThreadChangeHandler(async (threadLevel) =>
@@ -113,6 +118,7 @@ namespace Runic.Agent.Core.Services
 
         public async Task SetThreadLevelAsync(SetThreadLevelRequest request, CancellationToken ctx = default(CancellationToken))
         {
+            _log.Info($"Setting thread level of flow {request.FlowName} {request.FlowId} to {request.ThreadLevel}");
             await _threadManager.SetThreadLevelAsync(request, ctx);
         }
     }

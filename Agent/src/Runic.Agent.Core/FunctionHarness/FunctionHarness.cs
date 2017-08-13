@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Runic.Framework.Clients;
+﻿using Runic.Framework.Clients;
 using Runic.Framework.Attributes;
 using Runic.Agent.Core.Exceptions;
 using System;
@@ -9,12 +8,13 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Runic.Agent.Core.ExternalInterfaces;
 
 namespace Runic.Agent.Core.FunctionHarness
 {
     public class FunctionHarness
     {
-        private readonly ILogger _logger;
+        private readonly ILoggingHandler _log;
         private readonly IStatsClient _stats;
         private object _instance { get; set; }
         private object[] _positionalParameters { get; set; }
@@ -23,10 +23,10 @@ namespace Runic.Agent.Core.FunctionHarness
         private string _stepName { get; set; }
         private string _nextStep { get; set; }
 
-        public FunctionHarness(IStatsClient stats, ILoggerFactory loggerFactory)
+        public FunctionHarness(IStatsClient stats, ILoggingHandler loggingHandler)
         {
             _stats = stats;
-            _logger = loggerFactory.CreateLogger<FunctionHarness>();
+            _log = loggingHandler;
         }
 
         public void Bind(object functionInstance, string stepName, string functionName, bool getNextStepFromResult, params object[] positionalParameters)
@@ -61,7 +61,7 @@ namespace Runic.Agent.Core.FunctionHarness
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in function execution for step {_stepName} and function {_functionName}", ex);
+                _log.Error($"Error in function execution for step {_stepName} and function {_functionName}", ex);
                 _stats.CountFunctionFailure(_functionName);
                 timer.Stop();
 

@@ -11,7 +11,6 @@ using Runic.Agent.Worker.Messaging;
 using Runic.Agent.Worker.Services;
 using Runic.Framework.Clients;
 using StatsN;
-using System.Collections.Generic;
 using System.IO;
 
 namespace Runic.Agent.Worker

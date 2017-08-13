@@ -5,10 +5,10 @@ using Runic.Agent.Core.UnitTest.TestUtility;
 using Runic.Framework.Clients;
 using System.IO;
 using System.Linq;
-using Microsoft.Extensions.Logging;
 using System.Reflection;
 using Autofac;
 using Runic.Agent.Core.Exceptions;
+using Runic.Agent.Core.ExternalInterfaces;
 
 namespace Runic.Agent.Core.UnitTest.Tests
 {
@@ -24,7 +24,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 new Mock<IRuneClient>().Object, 
                 new FilePluginProvider(Directory.GetCurrentDirectory()),
                 new Mock<IStatsClient>().Object, 
-                new LoggerFactory());
+                new Mock<ILoggingHandler>().Object);
         }
 
         [TestMethod]

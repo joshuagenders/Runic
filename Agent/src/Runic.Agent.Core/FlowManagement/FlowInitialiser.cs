@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using Runic.Agent.Core.AssemblyManagement;
+﻿using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Framework.Models;
 using System;
 
@@ -7,13 +7,13 @@ namespace Runic.Agent.Core.FlowManagement
 {
     public class FlowInitialiser
     {
-        private readonly ILogger _logger;
+        private readonly ILoggingHandler _log;
         private readonly IPluginManager _pluginManager;
 
-        public FlowInitialiser(IPluginManager pluginManager, ILoggerFactory loggerFactory)
+        public FlowInitialiser(IPluginManager pluginManager, ILoggingHandler loggingHandler)
         {
             _pluginManager = pluginManager;
-            _logger = loggerFactory.CreateLogger<FlowInitialiser>();
+            _log = loggingHandler;
         }
 
         public void InitialiseFlow(Flow flow)
@@ -25,16 +25,17 @@ namespace Runic.Agent.Core.FlowManagement
                     //load the library if needed
                     LoadLibrary(step);
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    _logger.LogError($"Encountered error initialising flow {flow.Name}", e);
+                    _log.Error($"Encountered error initialising flow {flow.Name}", ex);
+                    throw ex;
                 }
             }
         }
 
         private void LoadLibrary(Step step)
         {
-            _logger.LogDebug($"Attempting to load library for {step.Function.FunctionName} in {step.Function.AssemblyName}");
+            _log.Debug($"Attempting to load library for {step.Function.FunctionName} in {step.Function.AssemblyName}");
             _pluginManager.LoadPlugin(step.Function.AssemblyName);
         }
     }

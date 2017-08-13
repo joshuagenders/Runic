@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.UnitTest.TestUtility;
 using Runic.Framework.Clients;
@@ -21,14 +22,14 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 new Mock<IRuneClient>().Object, 
                 new FilePluginProvider(Directory.GetCurrentDirectory()), 
                 new Mock<IStatsClient>().Object,
-                new LoggerFactory());
+                new Mock<ILoggingHandler>().Object);
         }
 
         [TestMethod]
         public void WhenInitialiseFlow_PluginsAreLoaded()
         {
             var flow = TestData.GetTestFlowSingleStep;   
-            var flowInitialiser = new FlowInitialiser(_pluginManager, new LoggerFactory());
+            var flowInitialiser = new FlowInitialiser(_pluginManager, new Mock<ILoggingHandler>().Object);
             flowInitialiser.InitialiseFlow(flow);
 
             Assert.IsTrue(_pluginManager.GetAssemblies().Any());

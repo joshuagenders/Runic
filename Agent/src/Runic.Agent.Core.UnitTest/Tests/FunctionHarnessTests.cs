@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Runic.Agent.Core.FunctionHarness;
 using Runic.Agent.Core.UnitTest.TestUtility;
 using Runic.Framework.Attributes;
 using System;
@@ -9,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Runic.Framework.Clients;
+using Runic.Agent.Core.ExternalInterfaces;
 
 namespace Runic.Agent.Core.UnitTest.Tests
 {
@@ -19,7 +19,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         public void WhenGettingMethodWithAttribute_MethodIsFound()
         {
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new LoggerFactory());
+            var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new Mock<ILoggingHandler>().Object);
             functionHarness.Bind(fakeFunction, "step1", "Login", false);
             var method = functionHarness.GetMethodWithAttribute(typeof(BeforeEachAttribute));
             Assert.IsNotNull(method, "beforeeach method not found");
@@ -29,7 +29,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         public async Task WhenExecutingBeforeEach_MethodIsInvoked()
         {
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new LoggerFactory());
+            var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new Mock<ILoggingHandler>().Object);
             functionHarness.Bind(fakeFunction, "step1", "Login", false);
             var method = functionHarness.GetMethodWithAttribute(typeof(BeforeEachAttribute));
             var cts = new CancellationTokenSource();
@@ -50,7 +50,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         public async Task WhenExecutingFunction_MethodIsInvoked()
         {
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new LoggerFactory());
+            var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new Mock<ILoggingHandler>().Object);
             functionHarness.Bind(fakeFunction, "step1", "AsyncWait", false);
             var cts = new CancellationTokenSource();
             try
@@ -73,7 +73,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             var cts = new CancellationTokenSource();
             cts.CancelAfter(1000);
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new LoggerFactory());
+            var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new Mock<ILoggingHandler>().Object);
             functionHarness.Bind(fakeFunction, "step1", "Login", false);
             var result = await functionHarness.OrchestrateFunctionExecutionAsync(cts.Token);
             //todo verify mock
@@ -91,7 +91,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new LoggerFactory());
+            var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new Mock<ILoggingHandler>().Object);
             functionHarness.Bind(fakeFunction, "step1", "AsyncWait", false);
             await functionHarness.OrchestrateFunctionExecutionAsync(cts.Token);
             
@@ -108,7 +108,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new LoggerFactory());
+            var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new Mock<ILoggingHandler>().Object);
 
             var uniqueString = Guid.NewGuid().ToString("n");
             var randomInt = new Random().Next();
@@ -128,7 +128,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new LoggerFactory());
+            var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new Mock<ILoggingHandler>().Object);
 
             var uniqueString = Guid.NewGuid().ToString("n");
             var uniqueString2 = Guid.NewGuid().ToString("n");
@@ -150,7 +150,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
             var fakeFunction = new FakeFunction();
-            var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new LoggerFactory());
+            var functionHarness = new FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new Mock<ILoggingHandler>().Object);
 
             var uniqueString = Guid.NewGuid().ToString("n");
             var randomInt = new Random().Next();

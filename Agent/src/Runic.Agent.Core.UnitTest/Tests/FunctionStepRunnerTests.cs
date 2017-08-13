@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.FunctionHarness;
 using Runic.Agent.Core.Services;
 using Runic.Agent.Core.UnitTest.TestUtility;
@@ -19,7 +20,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             var functionFactory = new Mock<IFunctionFactory>();
             var functionHarness = new FunctionHarness.FunctionHarness(
                 environment.Stats.Object,
-                environment.LoggerFactory);
+                new Mock<ILoggingHandler>().Object);
 
             var fakeFunction = new FakeFunction();
             functionHarness.Bind(fakeFunction, "step1", "Login", false);

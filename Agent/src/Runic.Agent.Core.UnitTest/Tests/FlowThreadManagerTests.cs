@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Runic.Agent.Core.Configuration;
+using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Core.UnitTest.TestUtility;
 using Runic.Framework.Models;
@@ -23,7 +25,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 _flow,
                 _testEnvironment.Stats.Object,
                 _testEnvironment.RunnerService.Object,
-                _testEnvironment.LoggerFactory);
+                new Mock<ILoggingHandler>().Object);
         }
 
         [TestMethod]

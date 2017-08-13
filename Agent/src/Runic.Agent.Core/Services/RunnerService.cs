@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Runic.Agent.Core.AssemblyManagement;
+﻿using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.CucumberHarness;
 using Runic.Agent.Core.Exceptions;
 using Runic.Agent.Core.ExternalInterfaces;
@@ -7,7 +6,6 @@ using Runic.Agent.Core.FunctionHarness;
 using Runic.Agent.Core.Services.Interfaces;
 using Runic.Framework.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +14,7 @@ namespace Runic.Agent.Core.Services
 {
     public class RunnerService : IRunnerService
     {
-        private readonly ILogger<RunnerService> _logger;
+        private readonly ILoggingHandler _log;
         private readonly IFunctionFactory _functionFactory;
         private readonly IDatetimeService _datetimeService;
         private readonly IPluginManager _pluginManager;
@@ -27,13 +25,13 @@ namespace Runic.Agent.Core.Services
 
         public int ErrorCount => _errorCount;
 
-        public RunnerService(IPluginManager pluginManager, ILoggerFactory loggerFactory, IFunctionFactory functionFactory, IDatetimeService datetimeService, ITestResultHandler testResultHandler)
+        public RunnerService(IPluginManager pluginManager, IFunctionFactory functionFactory, IDatetimeService datetimeService, ITestResultHandler testResultHandler, ILoggingHandler loggingHandler)
         {
-            _logger = loggerFactory.CreateLogger<RunnerService>();
             _functionFactory = functionFactory;
             _datetimeService = datetimeService;
             _pluginManager = pluginManager;
             _testResultHandler = testResultHandler;
+            _log = loggingHandler;
         }
 
         public async Task ExecuteFlowAsync(Flow flow, CancellationToken ctx = default(CancellationToken))
@@ -80,11 +78,11 @@ namespace Runic.Agent.Core.Services
         {
             if (result.Success)
             {
-                _logger.LogTrace("Success", result);
+                _log.Info("Success", result);
             }
             else
             {
-                _logger.LogError("Error", result);
+                _log.Error("Error", result);
                 _errorCount++;
                 if (_maxErrors >= 0 && ErrorCount >= _maxErrors)
                 {

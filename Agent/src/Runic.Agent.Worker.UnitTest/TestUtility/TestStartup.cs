@@ -27,7 +27,8 @@ namespace Runic.Agent.Worker.Test.TestUtility
             var builder = new ContainerBuilder();
             builder.RegisterInstance(new Mock<IDataService>().Object).As<IDataService>();
             builder.RegisterInstance(new Mock<IStatsClient>().Object).As<IStatsClient>();
-            
+            builder.RegisterInstance(new Mock<ILoggingHandler>().Object).As<ILoggingHandler>();
+
             builder.RegisterType<FilePluginProvider>()
                    .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
                    .As<IPluginProvider>();

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Runic.Agent.Core.AssemblyManagement;
+﻿using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Configuration;
 using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.FlowManagement;
@@ -16,8 +15,7 @@ namespace Runic.Agent.Core.ThreadManagement
 {
     public class ThreadManager : IThreadManager
     {
-        private readonly ILogger _logger;
-        private readonly ILoggerFactory _loggerFactory;
+        private readonly ILoggingHandler _log;
         private readonly IStatsClient _stats;
         private readonly IPluginManager _pluginManager; 
         private readonly IFlowManager _flowManager;
@@ -32,12 +30,11 @@ namespace Runic.Agent.Core.ThreadManagement
             IPluginManager pluginManager,
             IStatsClient stats,
             IRunnerService runnerService, 
-            ILoggerFactory loggerFactory,
+            ILoggingHandler loggingHandler,
             AgentCoreConfiguration config,
             ITestResultHandler testResultHandler)
         {
-            _logger = loggerFactory.CreateLogger<ThreadManager>();
-            _loggerFactory = loggerFactory;
+            _log = loggingHandler;
             _flowManager = flowManager;
             _pluginManager = pluginManager;
             _stats = stats;
@@ -79,7 +76,7 @@ namespace Runic.Agent.Core.ThreadManagement
         public async Task SetThreadLevelAsync(SetThreadLevelRequest request, CancellationToken ctx = default(CancellationToken))
         {
             //TODO implement maxthreads
-            _logger.LogDebug($"Attempting to update thread level to {request.ThreadLevel} for {request.FlowName}");
+            _log.Debug($"Attempting to update thread level to {request.ThreadLevel} for {request.FlowName}");
             _testResultHandler.OnThreadChange(request.FlowId, request.ThreadLevel);
             if (_threadManagers.TryGetValue(request.FlowId, out FlowThreadManager manager))
             {
@@ -92,7 +89,7 @@ namespace Runic.Agent.Core.ThreadManagement
                     _pluginManager, 
                     _stats, 
                     _runnerService,
-                    _loggerFactory,
+                    _log,
                     _config);
 
                 var resolvedManager = _threadManagers.GetOrAdd(request.FlowId, newThreadManager);

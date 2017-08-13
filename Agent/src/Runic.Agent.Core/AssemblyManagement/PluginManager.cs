@@ -8,8 +8,8 @@ using Runic.Framework.Clients;
 using Runic.Framework.Attributes;
 using Runic.Framework.Models;
 using System.IO;
-using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.Exceptions;
+using Runic.Agent.Core.ExternalInterfaces;
 
 namespace Runic.Agent.Core.AssemblyManagement
 {
@@ -17,24 +17,24 @@ namespace Runic.Agent.Core.AssemblyManagement
     {
         private readonly ConcurrentBag<Assembly> _assemblies;
         private readonly ConcurrentDictionary<string, bool> _assembliesLoaded;
-        private readonly ILogger _logger;
+        private readonly ILoggingHandler _log;
         private readonly IStatsClient _stats;
         private readonly IRuneClient _runeClient;
         private readonly IPluginProvider _provider;
 
-        public PluginManager(IRuneClient client, IPluginProvider provider, IStatsClient stats, ILoggerFactory loggerFactory)
+        public PluginManager(IRuneClient client, IPluginProvider provider, IStatsClient stats, ILoggingHandler loggingHandler)
         {
             _assemblies = new ConcurrentBag<Assembly>();
             _assembliesLoaded = new ConcurrentDictionary<string, bool>();
             _runeClient = client;
             _provider = provider;
             _stats = stats;
-            _logger = loggerFactory.CreateLogger<PluginManager>();
+            _log = loggingHandler;
         }
 
         public object GetInstance(Type type)
         {
-            _logger.LogDebug($"type found {type.AssemblyQualifiedName}");
+            _log.Debug($"type found {type.AssemblyQualifiedName}");
             var instance = Activator.CreateInstance(type);
             return instance;
         }
@@ -47,7 +47,7 @@ namespace Runic.Agent.Core.AssemblyManagement
 
         public void LoadPlugin(string pluginAssemblyName)
         {
-            _logger.LogDebug($"Loading plugin {pluginAssemblyName}");
+            _log.Debug($"Loading plugin {pluginAssemblyName}");
             bool loaded;
             lock (_assembliesLoaded)
             {
@@ -58,18 +58,20 @@ namespace Runic.Agent.Core.AssemblyManagement
 
             _provider.RetrieveSourceDll(pluginAssemblyName);
             var pluginPath = _provider.GetFilepath(pluginAssemblyName);
-            _logger.LogDebug($"Plugin path {pluginPath}");
+            _log.Debug($"Plugin path {pluginPath}");
             if (!File.Exists(pluginPath))
             {
-                _logger.LogError($"Could not find file {pluginPath}");
+                _log.Error($"Could not find file {pluginPath}");
                 throw new AssemblyNotFoundException($"Could not find file {pluginPath}");
             }
 
             Assembly assembly = LoadAssembly(pluginPath, pluginAssemblyName);
 
             if (assembly == null)
+            {
+                _log.Error($"Could not load assembly {pluginPath}, {pluginAssemblyName}");
                 throw new AssemblyLoadException($"Could not load assembly {pluginPath}, {pluginAssemblyName}");
-
+            }
             assembly.PopulateStaticPropertiesWithInstance(_runeClient)
                     .PopulateStaticPropertiesWithInstance(_stats);
 
@@ -94,7 +96,7 @@ namespace Runic.Agent.Core.AssemblyManagement
 
         public Type GetClassType(string fullyQualifiedClassName)
         {
-            _logger.LogDebug($"Searching assemblies for function");
+            _log.Debug($"Searching assemblies for function");
             lock (_assemblies)
             {
                 foreach (var assembly in _assemblies)
@@ -161,6 +163,7 @@ namespace Runic.Agent.Core.AssemblyManagement
             {
                 return GetAssemblies().Single(a => a.FullName == pluginAssemblyName);
             }
+            _log.Error($"Unable to locate assembly by key {pluginAssemblyName}");
             throw new AssemblyNotFoundException($"Unable to locate assembly by key {pluginAssemblyName}");
         }
     }
