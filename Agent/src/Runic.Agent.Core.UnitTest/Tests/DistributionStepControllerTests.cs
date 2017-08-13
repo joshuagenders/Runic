@@ -9,24 +9,28 @@ namespace Runic.Agent.Core.UnitTest.Tests
     public class DistributionStepControllerTests
     {
         [TestMethod]
+        [Ignore]
         public void WhenSingleStepIsUsed_NextStepAlwaysReturnsStep()
         {
             throw new NotImplementedException();
         }
 
         [TestMethod]
+        [Ignore]
         public void WhenStepsHaveNoCommonFactor_ThenQueueSizeIsSumOfDistributionAllocation()
         {
             throw new NotImplementedException();
         }
 
         [TestMethod]
+        [Ignore]
         public void WhenQueueIsEmptied_QueueIsRefreshed()
         {
             throw new NotImplementedException();
         }
 
         [TestMethod]
+        [Ignore]
         public void WhenStepsHaveCommonFactor_ThenQueueSizeIsSumOfDitributionAllocationOverGCF()
         {
             throw new NotImplementedException();

@@ -110,7 +110,7 @@ namespace Runic.Agent.Worker.Test.Tests
         }
 
         [TestMethod]
-        public async Task GradualFlowExecute_ExecutesFlow()
+        public async Task WhenGradualFlowExecutes_ExecutesFlow()
         {
             using (var scope = new TestStartup().BuildContainer().BeginLifetimeScope())
             {
@@ -152,7 +152,7 @@ namespace Runic.Agent.Worker.Test.Tests
         }
 
         [TestMethod]
-        public async Task GraphFlowExecute_ExecutesFlow()
+        public async Task WhenGraphFlowExecutes_ExecutesFlow()
         {
             using (var scope = new TestStartup().BuildContainer().BeginLifetimeScope())
             {
@@ -197,39 +197,9 @@ namespace Runic.Agent.Worker.Test.Tests
                 }
             }
         }
-
-        [TestMethod]
-        public void Messaging_MultipleDifferentFlowExecute()
-        {
-            throw new NotImplementedException();
-        }
-
-        [TestMethod]
-        public void Messaging_MultipleSameFlowExecute()
-        {
-            throw new NotImplementedException();
-        }
-
-        [TestMethod]
-        public void Messaging_HijackThreadPattern()
-        {
-            throw new NotImplementedException();
-        }
-
-        [TestMethod]
-        public void Messaging_HijackThreadLevel()
-        {
-            throw new NotImplementedException();
-        }
-
-        [TestMethod]
-        public void Messaging_HijackFlow()
-        {
-            throw new NotImplementedException();
-        }
         
         [TestMethod]
-        public async Task FlowStartMessage_ExecutesFlow()
+        public async Task WhenFlowStartMessageSent_FlowIsExecuted()
         {
             using (var scope = new TestStartup().BuildContainer().BeginLifetimeScope())
             {

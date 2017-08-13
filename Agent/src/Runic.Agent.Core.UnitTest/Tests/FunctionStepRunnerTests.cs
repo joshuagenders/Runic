@@ -13,7 +13,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
     public class FunctionStepRunnerTests
     {
         [TestMethod]
-        public async Task FunctionStepRunner_CallsMethods()
+        public async Task WhenFunctionStepRunnerISExecuted_MethodsAreInvoked()
         {
             var environment = new TestEnvironment();
             var functionFactory = new Mock<IFunctionFactory>();

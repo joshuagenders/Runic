@@ -21,7 +21,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         };
     
         [TestMethod]
-        public void NullResult_ReturnsFirstStep()
+        public void WhenNullResult_ReturnsFirstStep()
         {
             var flow = _flow;
             var stepController = new StandardStepController(flow);
@@ -30,7 +30,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public void StringNextStep_ReturnsStep()
+        public void WhenStringReturnedAsNextStepFromFunction_ReturnsNextStep()
         {
             var flow = _flow;
             flow.Steps[0].GetNextStepFromFunctionResult = true;
@@ -47,7 +47,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public void GetStepUntilLooparound_ReturnsSteps()
+        public void WhenGettingStepsLoopsAround_ReturnsSteps()
         {
             var flow = _flow;
             var stepController = new StandardStepController(flow);

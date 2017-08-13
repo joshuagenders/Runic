@@ -18,7 +18,7 @@ namespace Runic.Agent.Standalone.Test.UnitTests
         }
 
         [TestMethod]
-        public async Task StoreAndGet_ReturnsRune()
+        public async Task WhenStoringAndGettting_ReturnsRune()
         {
 
             var runeClient = new InMemoryRuneClient(_loggerFactory);
@@ -32,7 +32,7 @@ namespace Runic.Agent.Standalone.Test.UnitTests
         }
 
         [TestMethod]
-        public async Task StoreAndTake_TakesRune()
+        public async Task WhenStoringAndTaking_TakesRune()
         {
             var runeClient = new InMemoryRuneClient(_loggerFactory);
             await runeClient.SendRunes(new FakeRune() { Data = "test" });
@@ -45,7 +45,7 @@ namespace Runic.Agent.Standalone.Test.UnitTests
         }
 
         [TestMethod]
-        public async Task StoreAndGetMultiple_ReturnsError()
+        public async Task WhenStoreAndGetMultiple_ReturnsError()
         {
             var runeClient = new InMemoryRuneClient(_loggerFactory);
             await runeClient.SendRunes(new FakeRune() { Data = "test" });

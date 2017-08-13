@@ -13,7 +13,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
     public class CucumberStepRunnerTests
     {
         [TestMethod]
-        public async Task CucumberStepRunner_CallsMethods()
+        public async Task WhenCucumberStepRunnerIsExecuted_MethodsAreInvoked()
         {
             var environment = new TestEnvironment();
 

@@ -8,7 +8,7 @@ namespace Runic.Agent.Worker.Test.Tests
     public class AgentConfigurationTests
     {
         [TestMethod]
-        public void Configuration_TestCommandLineInputs()
+        public void WhenConfigurationIsLoaded_CommandLineInputsAreParsed()
         {
             WorkerConfiguration.LoadConfiguration(TestConstants.CommandLineArguments);
 

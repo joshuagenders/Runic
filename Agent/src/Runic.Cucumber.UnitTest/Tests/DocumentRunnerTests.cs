@@ -10,7 +10,7 @@ namespace Runic.Cucumber.UnitTest.Tests
     public class DocumentRunnerTests : TestBase
     {
         [TestMethod]
-        public async Task GivenWhenThenDocument_CallsAssemblyAdapter()
+        public async Task WhenAGivenWhenThenDocumentIsExecuted_CallsAssemblyAdapter()
         {
             var fakeTest = new Mock<FakeCucumberClass>();
             TestEnvironment.SetupMocks(fakeTest);
@@ -48,7 +48,7 @@ namespace Runic.Cucumber.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task BadDocument_ReturnsParserError()
+        public async Task WhenBadDocumentIsExecuted_ReturnsParserError()
         {
             var assemblyAdapter = new Mock<IAssemblyAdapter>();
             var documentRunner = new DocumentRunner(assemblyAdapter.Object);

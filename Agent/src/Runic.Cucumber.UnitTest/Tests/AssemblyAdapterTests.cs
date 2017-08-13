@@ -22,7 +22,7 @@ namespace Runic.Cucumber.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task MethodExecutionShouldCallMethods()
+        public async Task WhenGivenMethodIsExecuted_MethodIsInvoked()
         {
             var method = _fakeTest.Object
                                   .GetType()
@@ -41,13 +41,13 @@ namespace Runic.Cucumber.UnitTest.Tests
         }
 
         [TestMethod]
-        public void Initialise_PopulatesMethodReferences()
+        public void WhenInitialised_PopulatesMethodReferences()
         {
             ((AssemblyAdapter)TestEnvironment.AssemblyAdapter.Instance).Methods.Count.Should().Be(6);
         }
 
         [TestMethod]
-        public async Task GivenMethodAttribute_LocatesAndInvokesMethod()
+        public async Task WhenGivenMethodAttributeExecuted_LocatesAndInvokesMethod()
         {
             var method = _fakeTest.GetType()
                                  .GetTypeInfo()
@@ -65,7 +65,7 @@ namespace Runic.Cucumber.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task MultipleMethods_ThrowsException()
+        public async Task WhenDuplicateMethodExecuted_ThrowsException()
         {
             var method = _fakeTest.GetType()
                                  .GetTypeInfo()
@@ -88,7 +88,7 @@ namespace Runic.Cucumber.UnitTest.Tests
         }
 
         [TestMethod]
-        public async Task MethodNotFound_ThrowsException()
+        public async Task WhenMethodNotFound_ThrowsException()
         {
             var fakeTest = new Mock<FakeCucumberClass>();
             TestEnvironment.SetupMocks(fakeTest);

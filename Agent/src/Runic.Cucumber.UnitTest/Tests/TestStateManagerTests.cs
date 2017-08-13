@@ -23,7 +23,7 @@ namespace Runic.Cucumber.UnitTest.Tests
         }
 
         [TestMethod]
-        public void CreateAndRetrieve_ReturnsNewObject()
+        public void WhenCreateAndRetrieve_ReturnsNewObject()
         {
             TestStateManager manager = new TestStateManager();
             var obj = manager.GetObject<DummyObj>();
@@ -32,7 +32,7 @@ namespace Runic.Cucumber.UnitTest.Tests
         }
 
         [TestMethod]
-        public void DuplicateStore_OverwritesObject()
+        public void WhenObjectIsStoredTwice_OverwritesObject()
         {
             TestStateManager manager = new TestStateManager();
             var obj = new DummyObj() { State = "test" };
@@ -45,7 +45,7 @@ namespace Runic.Cucumber.UnitTest.Tests
         }
 
         [TestMethod]
-        public void DuplicateRetrieve_ReturnsSameObject()
+        public void WhenObjectIsRetrievedTwice_ReturnsSameObject()
         {
             TestStateManager manager = new TestStateManager();
             var obj = new DummyObj() { State = "test" };

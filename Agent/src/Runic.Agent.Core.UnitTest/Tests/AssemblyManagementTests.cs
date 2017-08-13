@@ -50,7 +50,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         }
 
         [TestMethod]
-        public void GetFunctionInfo_ReturnsFunctionInfo()
+        public void WhenGettingFunctionInfo_ReturnsFunctionInfo()
         {
             _pluginManager.LoadPlugin(TestConstants.AssemblyName);
             var functions = _pluginManager.GetAvailableFunctions();

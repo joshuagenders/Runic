@@ -13,7 +13,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
     public class CucumberHarnessTests
     {
         [TestMethod]
-        public async Task BasicCucumberTestExecutesAllMethod()
+        public async Task WhenBasicCucumberTestExecutes_AllMethodsAreInvoked()
         {
             const string assemblyName = "thisassembly";
             var pluginManager = new Mock<IPluginManager>();

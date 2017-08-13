@@ -7,6 +7,7 @@ namespace Runic.Agent.Standalone.Test.SystemTests
     public class ApplicationTests
     {
         [TestMethod]
+        [Ignore]
         public void WhenFunctionTestIsExecuted_MultipleStepsAreExecutedAndSuccessful()
         {
             throw new NotImplementedException();
