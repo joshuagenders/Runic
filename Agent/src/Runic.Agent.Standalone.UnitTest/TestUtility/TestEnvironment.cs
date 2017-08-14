@@ -22,7 +22,6 @@ namespace Runic.Agent.Standalone.Test.TestUtility
     {
         private IApplication _application { get; set; }
         private ILifetimeScope _scope { get; set; }
-        protected List<Tuple<Type,Type>> RegisteredTypes { get; set; }
         
         public IApplication Application
         {
@@ -32,7 +31,6 @@ namespace Runic.Agent.Standalone.Test.TestUtility
 
         public TestEnvironment()
         {
-            RegisteredTypes = new List<Tuple<Type, Type>>();
         }
 
         public TestObject<IPluginManager> PluginManager { get; set; } = new TestObject<IPluginManager>();

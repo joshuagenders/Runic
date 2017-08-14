@@ -13,6 +13,7 @@ using Runic.Agent.Standalone.Services;
 using Runic.Framework.Clients;
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 
 namespace Runic.Agent.Standalone.Test.TestUtility
@@ -23,40 +24,34 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         public TestEnvironmentBuilder()
         {
             _builder = new ContainerBuilder();
+            RegisterTestObjects();
         }
 
         public IContainer Build()
         {
-            Register(PluginManager);
-            Register(PluginProvider);
-            Register(FlowManager);
-            Register(DataService);
-            Register(Statsd);
-            Register(StatsClient);
-            Register(PatternService);
-            Register(ThreadManager);
-            Register(RuneClient);
-            Register(AgentConfig);
-            Register(AgentSettings);
-            Register(StatsdSettings);
-            Register(FlowProvider);
-            Register(DatetimeService);
-            Register(RunnerService);
-            Register(FunctionFactory);
-            Register(AgentCoreConfiguration);
-            Register(TestResultHandler);
-            Register(LoggingHandler);
-            Register(AgentObserver);
-
             return _builder.Build();
+        }
+
+        private void RegisterTestObjects()
+        {
+            var props = GetType().GetTypeInfo()
+                                 .GetProperties();
+            var genericProps = props.Where(p => p.PropertyType.IsConstructedGenericType);
+            var testObjects = genericProps.Where(p => p.PropertyType.GetGenericTypeDefinition().Equals(typeof(TestObject<>)))
+                                          .ToList();
+
+            foreach (var prop in testObjects)
+            {
+                var testObject = prop.GetValue(this);
+                var instance = testObject.GetType().GetProperty("Instance").GetValue(testObject);
+                var asType = prop.PropertyType.GenericTypeArguments[0];
+                _builder.RegisterInstance(instance).As(asType);
+            }
         }
 
         private void Register<T>(TestObject<T> instance) where T : class
         {
-            if (!RegisteredTypes.Any(t => t.Item2 == typeof(T)))
-            {
-                _builder.RegisterInstance(instance.Instance);
-            }
+            _builder.RegisterInstance(instance.Instance);
         }
 
         public override TestEnvironment StartApplication()
@@ -70,7 +65,6 @@ namespace Runic.Agent.Standalone.Test.TestUtility
 
         public TestEnvironmentBuilder WithType<T, U>()
         {
-            RegisteredTypes.Add(new Tuple<Type, Type>(typeof(T), typeof(U)));
             _builder.RegisterType<T>().As<U>();
             return this;
         }
@@ -83,7 +77,6 @@ namespace Runic.Agent.Standalone.Test.TestUtility
 
         public TestEnvironmentBuilder WithSingleInstanceType<T, U>()
         {
-            RegisteredTypes.Add(new Tuple<Type, Type>(typeof(T), typeof(U)));
             _builder.RegisterType<T>().As<U>().SingleInstance();
             return this;
         }
