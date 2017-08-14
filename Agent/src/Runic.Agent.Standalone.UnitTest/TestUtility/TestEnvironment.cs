@@ -54,6 +54,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         public TestObject<AgentCoreConfiguration> AgentCoreConfiguration { get; set; } = new TestObject<AgentCoreConfiguration>();
         public TestObject<ITestResultHandler> TestResultHandler { get; set; } = new TestObject<ITestResultHandler>();
         public TestObject<ILoggingHandler> LoggingHandler { get; set; } = new TestObject<ILoggingHandler>();
+        public TestObject<IAgentObserver> AgentObserver { get; set; } = new TestObject<IAgentObserver>();
 
         public TestEnvironment With<T>(T instance) where T : class
         {

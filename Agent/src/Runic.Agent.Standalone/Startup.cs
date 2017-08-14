@@ -49,6 +49,8 @@ namespace Runic.Agent.Standalone
                 PluginDirectory = "Plugins"
             });
 
+            builder.RegisterType<AgentObserver>().As<IAgentObserver>().SingleInstance();
+
             IStatsd statsd = Statsd.New<Udp>(options =>
             {
                 options.Port = agentConfig.StatsdSettings.Port;

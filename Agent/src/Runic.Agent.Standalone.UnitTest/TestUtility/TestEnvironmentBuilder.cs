@@ -46,6 +46,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             Register(AgentCoreConfiguration);
             Register(TestResultHandler);
             Register(LoggingHandler);
+            Register(AgentObserver);
 
             return _builder.Build();
         }
