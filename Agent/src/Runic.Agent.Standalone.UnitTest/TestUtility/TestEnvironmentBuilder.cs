@@ -32,6 +32,23 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             return _builder.Build();
         }
 
+        public TestEnvironmentBuilder With<T>(T instance) where T : class
+        {
+            var props = GetType().GetTypeInfo()
+                                 .GetProperties();
+
+            var prop = props.Where(p => p.PropertyType == typeof(TestObject<T>) &&
+                                        p.PropertyType.GenericTypeArguments[0] == typeof(T));
+            if (prop.Any())
+            {
+                var testObj = prop.First().GetValue(this);
+                testObj.GetType().GetProperty("Instance").SetValue(testObj, instance);
+            }
+
+            _builder.RegisterInstance(instance);
+            return this;
+        }
+
         private void RegisterTestObjects()
         {
             var props = GetType().GetTypeInfo()
@@ -47,11 +64,6 @@ namespace Runic.Agent.Standalone.Test.TestUtility
                 var asType = prop.PropertyType.GenericTypeArguments[0];
                 _builder.RegisterInstance(instance).As(asType);
             }
-        }
-
-        private void Register<T>(TestObject<T> instance) where T : class
-        {
-            _builder.RegisterInstance(instance.Instance);
         }
 
         public override TestEnvironment StartApplication()

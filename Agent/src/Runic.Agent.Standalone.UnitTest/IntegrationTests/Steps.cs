@@ -109,7 +109,6 @@ namespace Runic.Agent.Standalone.Test.IntegrationTests
             _environment.GetMock<IAgentConfig>()
                         .Setup(c => c.AgentSettings)
                         .Returns(_environment.Get<IAgentSettings>());
-            _environment.With(_environment.Get<IAgentConfig>());
         }
 
         public void RegisterTestFlow(Flow testFlow)

@@ -12,7 +12,6 @@ using Runic.Agent.Standalone.Providers;
 using Runic.Framework.Clients;
 using StatsN;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -27,10 +26,6 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         {
             get { return _application ?? new Mock<IApplication>().Object; }
             set { _application = value; }
-        }
-
-        public TestEnvironment()
-        {
         }
 
         public TestObject<IPluginManager> PluginManager { get; set; } = new TestObject<IPluginManager>();
@@ -53,22 +48,6 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         public TestObject<ITestResultHandler> TestResultHandler { get; set; } = new TestObject<ITestResultHandler>();
         public TestObject<ILoggingHandler> LoggingHandler { get; set; } = new TestObject<ILoggingHandler>();
         public TestObject<IAgentObserver> AgentObserver { get; set; } = new TestObject<IAgentObserver>();
-
-        public TestEnvironment With<T>(T instance) where T : class
-        {
-            TestObject<T> testObjectInstance = (TestObject<T>)Activator.CreateInstance(typeof(TestObject<T>));
-            testObjectInstance.Instance = instance;
-            var props = GetType().GetTypeInfo()
-                                 .GetProperties();
-
-            var prop = props.Where(p => p.PropertyType == typeof(TestObject<T>) && 
-                                        p.PropertyType.GetGenericArguments()[0] == typeof(T));
-            if (!prop.Any())
-                throw new ArgumentException($"With<T> Test object for {typeof(T).Name} type was not found");
-
-            prop.First().SetValue(this, testObjectInstance);
-            return this;
-        }
 
         public T Get<T>() where T : class
         {
