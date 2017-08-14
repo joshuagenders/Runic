@@ -45,6 +45,9 @@ namespace Runic.Agent.Worker.Test.TestUtility
                        MaxThreads = 10
                    });
 
+            var agentObserver = new AgentObserver();
+            builder.RegisterInstance(agentObserver).As<IAgentObserver>();
+
             builder.RegisterType<PatternService>().As<IPatternService>().SingleInstance();
             builder.RegisterType<FlowManager>().As<IFlowManager>().SingleInstance();
             builder.RegisterType<InMemoryMessagingService>().As<IMessagingService>().SingleInstance();

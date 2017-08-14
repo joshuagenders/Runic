@@ -2,13 +2,10 @@
 using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.ExternalInterfaces;
-using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.IoC;
-using Runic.Agent.Core.Services;
-using Runic.Agent.Core.Services.Interfaces;
-using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Standalone.Clients;
 using Runic.Agent.Standalone.Configuration;
+using Runic.Agent.Standalone.Logging;
 using Runic.Agent.Standalone.Providers;
 using Runic.Agent.Standalone.Services;
 using Runic.Framework.Clients;
@@ -30,6 +27,7 @@ namespace Runic.Agent.Standalone
             builder.RegisterType<AgentConfig>().As<IAgentConfig>().SingleInstance();
             builder.RegisterType<AgentSettings>().As<IAgentSettings>().SingleInstance();
             builder.RegisterType<StatsdSettings>().As<IStatsdSettings>().SingleInstance();
+            builder.RegisterType<LoggingHandler>().As<ILoggingHandler>();
             builder.RegisterType<FileFlowProvider>().As<IFlowProvider>();
             builder.RegisterType<FilePluginProvider>()
                    .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
@@ -59,7 +57,7 @@ namespace Runic.Agent.Standalone
                 options.BufferMetrics = false;
             });
             builder.RegisterInstance(statsd).As<IStatsd>().SingleInstance();
-            
+
             return builder.Build();
         }
     }   

@@ -10,5 +10,6 @@ namespace Runic.Agent.Core.ThreadPatterns
         Task StartPatternAsync(CancellationToken ctx = default(CancellationToken));
         int GetMaxDurationSeconds();
         int GetMaxThreadCount();
+        string GetPatternType();
     }
 }

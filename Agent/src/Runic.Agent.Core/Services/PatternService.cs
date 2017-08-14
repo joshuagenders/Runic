@@ -20,15 +20,16 @@ namespace Runic.Agent.Core.Services
         private readonly IStatsClient _stats;
         private readonly IThreadManager _threadManager;
         private readonly IFlowManager _flowManager;
-        
+        private readonly IAgentObserver _agentObserver;
         private static ConcurrentDictionary<string, CancellableTask> _threadPatterns { get; set; }
 
-        public PatternService(IFlowManager flowManager, IStatsClient stats, IThreadManager IThreadManager, ILoggingHandler loggingHandler)
+        public PatternService(IFlowManager flowManager, IStatsClient stats, IThreadManager IThreadManager, ILoggingHandler loggingHandler, IAgentObserver agentObserver)
         {
             _log = loggingHandler;
             _threadManager = IThreadManager;
             _stats = stats;
             _flowManager = flowManager;
+            _agentObserver = agentObserver;
             _threadPatterns = new ConcurrentDictionary<string, CancellableTask>();
         }
         
@@ -43,7 +44,11 @@ namespace Runic.Agent.Core.Services
             var cts = new CancellationTokenSource();
             var patternTask = ExecutePatternAsync(flowExecutionId, flow, pattern, cts.Token);
             var cancellableTask = new CancellableTask(patternTask, cts);
-
+            _agentObserver.Update(new PatternInformation()
+            {
+                PatternExecutionId = flowExecutionId,
+                PatternType = pattern.GetPatternType()
+            });
             _threadPatterns.AddOrUpdate(flowExecutionId, cancellableTask,
                 (key, val) => {
                     val.Cancel();
@@ -120,6 +125,12 @@ namespace Runic.Agent.Core.Services
         {
             _log.Info($"Setting thread level of flow {request.FlowName} {request.FlowId} to {request.ThreadLevel}");
             await _threadManager.SetThreadLevelAsync(request, ctx);
+            _agentObserver.Update(
+                new FlowInformation()
+                {
+                    FlowExecutionId = request.FlowId,
+                    ThreadCount = request.ThreadLevel
+                });
         }
     }
 }

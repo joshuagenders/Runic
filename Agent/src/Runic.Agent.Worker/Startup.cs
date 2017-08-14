@@ -36,6 +36,9 @@ namespace Runic.Agent.Worker
                 .Register<StatsClient, IStatsClient>()
                 .Register<Application, IApplication>();
 
+            var agentObserver = new AgentObserver();
+            builder.RegisterInstance(agentObserver).As<IAgentObserver>();
+
             var loggerFactory = new LoggerFactory().AddConsole();
             builder.RegisterInstance(loggerFactory).SingleInstance();
 

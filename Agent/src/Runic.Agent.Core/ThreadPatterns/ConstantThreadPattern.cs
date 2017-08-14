@@ -37,5 +37,7 @@ namespace Runic.Agent.Core.ThreadPatterns
                 _callbacks.ForEach(c => c.Invoke(0));
             }
         }
+
+        public string GetPatternType() => "constant";
     }
 }

@@ -19,6 +19,7 @@ namespace Runic.Agent.Core.Services
         private readonly IDatetimeService _datetimeService;
         private readonly IPluginManager _pluginManager;
         private readonly ITestResultHandler _testResultHandler;
+        private readonly IAgentObserver _agentObserver;
 
         private int _errorCount { get; set; }
         private int _maxErrors { get; set; } = -1;

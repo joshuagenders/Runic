@@ -47,5 +47,6 @@ namespace Runic.Agent.Core.ThreadPatterns
             }
             await Task.CompletedTask;
         }
+        public virtual string GetPatternType() => "graph";
     }
 }

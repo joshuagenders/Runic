@@ -144,5 +144,6 @@ namespace Runic.Agent.Core.ThreadPatterns
         }
 
         public override int GetMaxThreadCount() => ThreadCount;
+        public override string GetPatternType() => "gradual";
     }
 }
