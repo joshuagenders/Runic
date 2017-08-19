@@ -13,7 +13,7 @@ using Runic.Agent.Core.ExternalInterfaces;
 namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
-    public class AssemblyManagementTests
+    public class PluginManagerTests
     {
         private PluginManager _pluginManager { get; set; }
 

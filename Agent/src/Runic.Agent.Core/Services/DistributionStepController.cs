@@ -12,7 +12,9 @@ namespace Runic.Agent.Core.Services
     {
         private List<Step> _steps { get; set; }
         private ConcurrentQueue<Step> _stepQueue { get; set; }
-        
+
+        public int QueueSize => _stepQueue.Count;
+
         public DistributionStepController(List<Step> steps)
         {
             _steps = steps;
@@ -36,8 +38,7 @@ namespace Runic.Agent.Core.Services
 
         private void PopulateStepQueue()
         {
-            var gcd = GCD(_steps.Select(s => s.Distribution.DistributionAllocation)
-                                .Cast<int>()
+            var gcd = GCD(_steps.Select(s => Convert.ToInt32(s.Distribution.DistributionAllocation))
                                 .ToArray());
 
             var distributions = new Dictionary<Step, int>();

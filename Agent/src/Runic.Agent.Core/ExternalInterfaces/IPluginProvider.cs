@@ -1,4 +1,4 @@
-﻿namespace Runic.Agent.Core.AssemblyManagement
+﻿namespace Runic.Agent.Core.ExternalInterfaces
 {
     public interface IPluginProvider
     {

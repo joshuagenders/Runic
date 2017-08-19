@@ -1,4 +1,4 @@
-﻿using Runic.Agent.Core.AssemblyManagement;
+﻿using Runic.Agent.Core.ExternalInterfaces;
 using System.IO;
 
 namespace Runic.Agent.Core.UnitTest.TestUtility
