@@ -125,8 +125,7 @@ namespace Runic.Agent.Core.FunctionHarness
         {
             if (IsAsyncMethod(method))
             {
-                var task = (Task)method.Invoke(_instance, inputParams);
-                await task;
+                await (Task)method.Invoke(_instance, inputParams);
             }
             else
             {

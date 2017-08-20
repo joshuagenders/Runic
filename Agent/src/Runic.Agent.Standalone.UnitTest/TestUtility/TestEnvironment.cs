@@ -10,6 +10,7 @@ using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Standalone.Configuration;
 using Runic.Agent.Standalone.Providers;
 using Runic.Framework.Clients;
+using Runic.Framework.Models;
 using StatsN;
 using System;
 using System.Linq;
@@ -48,6 +49,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         public TestObject<ITestResultHandler> TestResultHandler { get; set; } = new TestObject<ITestResultHandler>();
         public TestObject<ILoggingHandler> LoggingHandler { get; set; } = new TestObject<ILoggingHandler>();
         public TestObject<IAgentObserver> AgentObserver { get; set; } = new TestObject<IAgentObserver>();
+        public TestObject<TestContext> TestContext { get; set; } = new TestObject<TestContext>();
 
         public T Get<T>() where T : class
         {

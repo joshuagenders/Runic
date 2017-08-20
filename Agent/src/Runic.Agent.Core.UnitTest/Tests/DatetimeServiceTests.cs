@@ -15,7 +15,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             CancellationTokenSource cts = new CancellationTokenSource();
             var service = new DateTimeService();
             var expectedFinish = DateTime.Now.AddSeconds(1);
-            await service.WaitUntil(1000, cts.Token);
+            await service.WaitMilliseconds(1000, cts.Token);
             Assert.IsTrue(DateTime.Now >= expectedFinish);
         }
     }

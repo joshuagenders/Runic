@@ -35,8 +35,16 @@ namespace Runic.Agent.Core.FlowManagement
 
         private void LoadLibrary(Step step)
         {
-            _log.Debug($"Attempting to load library for {step.Function.FunctionName} in {step.Function.AssemblyName}");
-            _pluginManager.LoadPlugin(step.Function.AssemblyName);
+            if (step.Function != null)
+            {
+                _log.Debug($"Attempting to load library for {step.Function.FunctionName} in {step.Function.AssemblyName}");
+                _pluginManager.LoadPlugin(step.Function.AssemblyName);
+            }
+            else if (step.Cucumber != null)
+            {
+                _log.Debug($"Attempting to load library for cucumber in {step.Cucumber.AssemblyName}");
+                _pluginManager.LoadPlugin(step.Cucumber.AssemblyName);
+            }
         }
     }
 }

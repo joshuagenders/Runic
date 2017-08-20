@@ -11,7 +11,6 @@ using Runic.Agent.Standalone.Clients;
 using Runic.Agent.Standalone.Configuration;
 using Runic.Agent.Standalone.Services;
 using Runic.Framework.Clients;
-using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -49,7 +48,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             return this;
         }
 
-        private void RegisterTestObjects()
+        protected virtual void RegisterTestObjects()
         {
             var props = GetType().GetTypeInfo()
                                  .GetProperties();

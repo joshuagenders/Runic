@@ -33,7 +33,7 @@ namespace Runic.Agent.Core.ThreadPatterns
             else
             {
                 _callbacks.ForEach(c => c.Invoke(ThreadCount));
-                await _datetimeService.WaitUntil(DurationSeconds, ctx);
+                await _datetimeService.WaitMilliseconds(DurationSeconds * 1000, ctx);
                 _callbacks.ForEach(c => c.Invoke(0));
             }
         }

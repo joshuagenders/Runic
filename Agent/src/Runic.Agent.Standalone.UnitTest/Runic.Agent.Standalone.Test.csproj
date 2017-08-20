@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Runic.Agent.ExampleTest\Runic.Agent.ExampleTest.csproj" />
     <ProjectReference Include="..\Runic.Agent.Standalone\Runic.Agent.Standalone.csproj" />
     <ProjectReference Include="..\Runic.Cucumber\Runic.Cucumber.csproj" />
   </ItemGroup>

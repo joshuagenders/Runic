@@ -22,7 +22,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             _mockDatetimeService = new Mock<IDatetimeService>();
             _semaphore = new SemaphoreSlim(0);
             _mockDatetimeService
-                .Setup(d => d.WaitUntil(
+                .Setup(d => d.WaitMilliseconds(
                             It.IsAny<int>(), 
                             It.IsAny<CancellationToken>()))
                 .Returns(Task.Run(() =>
