@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Microsoft.Extensions.Logging;
-using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.PluginManagement;
 using Runic.Agent.Core.Configuration;
 using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.IoC;

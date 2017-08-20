@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Core.Services.Interfaces
+namespace Runic.Agent.Core.Services
 {
     public interface IDatetimeService
     {

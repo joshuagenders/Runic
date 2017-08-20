@@ -1,8 +1,8 @@
-﻿using Runic.Agent.Core.AssemblyManagement;
+﻿using Runic.Agent.Core.PluginManagement;
 using Runic.Agent.Core.Configuration;
 using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.FlowManagement;
-using Runic.Agent.Core.Services.Interfaces;
+using Runic.Agent.Core.Services;
 using Runic.Framework.Clients;
 using Runic.Framework.Models;
 using System.Collections.Concurrent;

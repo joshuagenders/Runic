@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.FlowManagement;
-using Runic.Agent.Core.Services.Interfaces;
+using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadPatterns;
 using Runic.Agent.Standalone.Configuration;
 using Runic.Agent.Standalone.Providers;

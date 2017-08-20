@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Reflection;
 
-namespace Runic.Agent.Core.AssemblyManagement
+namespace Runic.Agent.Core.PluginManagement
 {
     public static class PluginExtensions
     {

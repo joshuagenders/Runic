@@ -1,8 +1,8 @@
-﻿using Runic.Framework.Models;
+﻿using Runic.Agent.Core.Services;
+using Runic.Framework.Models;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Runic.Agent.Core.Services.Interfaces;
 
 namespace Runic.Agent.Core.ThreadPatterns
 {

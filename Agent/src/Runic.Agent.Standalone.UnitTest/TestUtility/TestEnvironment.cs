@@ -1,11 +1,10 @@
 ﻿using Autofac;
 using Moq;
-using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.PluginManagement;
 using Runic.Agent.Core.Configuration;
 using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.FunctionHarness;
-using Runic.Agent.Core.Services.Interfaces;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Standalone.Configuration;
 using Runic.Agent.Standalone.Providers;
@@ -15,6 +14,7 @@ using StatsN;
 using System;
 using System.Linq;
 using System.Reflection;
+using Runic.Agent.Core.Services;
 
 namespace Runic.Agent.Standalone.Test.TestUtility
 {

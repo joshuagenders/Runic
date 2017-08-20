@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.PluginManagement;
 using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.UnitTest.TestUtility;

@@ -1,12 +1,11 @@
 ﻿using Moq;
 using RestMockCore;
-using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.PluginManagement;
 using Runic.Agent.Core.CucumberHarness;
 using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.FunctionHarness;
 using Runic.Agent.Core.Services;
-using Runic.Agent.Core.Services.Interfaces;
 using Runic.Agent.Standalone.Configuration;
 using Runic.Agent.Standalone.Providers;
 using Runic.Agent.Standalone.Test.TestUtility;

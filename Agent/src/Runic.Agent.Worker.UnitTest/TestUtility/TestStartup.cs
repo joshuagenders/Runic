@@ -2,7 +2,7 @@
 using Runic.Agent.Worker.Configuration;
 using Moq;
 using Runic.Agent.Core.FlowManagement;
-using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.PluginManagement;
 using Runic.Agent.Worker.Services;
 using Runic.Agent.Worker.Clients;
 using Runic.Agent.Core.ThreadManagement;
@@ -13,7 +13,6 @@ using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.FunctionHarness;
-using Runic.Agent.Core.Services.Interfaces;
 using Runic.Agent.Core.Configuration;
 
 namespace Runic.Agent.Worker.Test.TestUtility

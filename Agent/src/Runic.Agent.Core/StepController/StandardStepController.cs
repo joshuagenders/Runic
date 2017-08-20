@@ -1,9 +1,8 @@
 ﻿using Runic.Agent.Core.Exceptions;
-using Runic.Agent.Core.Services.Interfaces;
 using Runic.Framework.Models;
 using System.Linq;
 
-namespace Runic.Agent.Core.Services
+namespace Runic.Agent.Core.StepController
 {
     public class StandardStepController : IStepController
     {

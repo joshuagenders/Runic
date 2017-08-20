@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
-using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.PluginManagement;
 using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Standalone.Clients;
 using Runic.Agent.Standalone.Logging;

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Runic.Agent.Core.AssemblyManagement
+namespace Runic.Agent.Core.PluginManagement
 {
     public interface IPluginManager
     {

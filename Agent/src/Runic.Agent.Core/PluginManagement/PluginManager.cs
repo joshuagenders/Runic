@@ -11,7 +11,7 @@ using System.IO;
 using Runic.Agent.Core.Exceptions;
 using Runic.Agent.Core.ExternalInterfaces;
 
-namespace Runic.Agent.Core.AssemblyManagement
+namespace Runic.Agent.Core.PluginManagement
 {
     public class PluginManager : IPluginManager
     {

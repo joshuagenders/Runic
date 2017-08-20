@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Runic.Framework.Models;
 using Runic.Agent.Core.FunctionHarness;
-using Runic.Agent.Core.Services.Interfaces;
+using Runic.Agent.Core.StepController;
 
 namespace Runic.Agent.Core.Services
 {

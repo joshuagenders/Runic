@@ -1,14 +1,14 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.PluginManagement;
 using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.FunctionHarness;
 using Runic.Agent.Core.Services;
-using Runic.Agent.Core.Services.Interfaces;
 using Runic.Agent.ExampleTest.Functions;
 using Runic.Agent.Standalone.Configuration;
 using Runic.Agent.Standalone.Providers;
 using Runic.Agent.Standalone.Test.TestUtility;
+using Runic.Framework.Clients;
 using Runic.Framework.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -81,6 +81,8 @@ namespace Runic.Agent.Standalone.Test.SystemTests
             _environment.GetMock<IFlowProvider>()
                         .Setup(p => p.GetFlow("test_path"))
                         .Returns(flow);
+            ArticleFunctions.RuneClient = _environment.Get<IRuneClient>();
+            ArticleFunctions.StatsClient = _environment.Get<IStatsClient>();
         }
 
         private Flow TestFlow => new Flow()

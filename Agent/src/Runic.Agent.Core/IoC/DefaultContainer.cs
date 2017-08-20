@@ -1,8 +1,7 @@
 ﻿using Autofac;
-using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.PluginManagement;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.Services;
-using Runic.Agent.Core.Services.Interfaces;
 using Runic.Agent.Core.ThreadManagement;
 
 namespace Runic.Agent.Core.IoC

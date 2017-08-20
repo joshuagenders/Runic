@@ -1,9 +1,8 @@
 ﻿﻿using System.Threading.Tasks;
 using Runic.Cucumber;
-using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.PluginManagement;
 using System.Threading;
 using System.Diagnostics;
-using Runic.Agent.Core.ExternalInterfaces;
 
 namespace Runic.Agent.Core.CucumberHarness
 {

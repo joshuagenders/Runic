@@ -1,4 +1,4 @@
-﻿using Runic.Agent.Core.Services.Interfaces;
+﻿using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Core.ThreadPatterns;
 using Runic.Framework.Models;

@@ -1,4 +1,4 @@
-﻿using Runic.Agent.Core.AssemblyManagement;
+﻿using Runic.Agent.Core.PluginManagement;
 using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Framework.Models;
 using System;
