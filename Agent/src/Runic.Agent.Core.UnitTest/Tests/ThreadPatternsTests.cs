@@ -57,6 +57,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             return calls;
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenShrinkingGraphExecutes_CallbacksAreInvoked()
         {
@@ -79,6 +80,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.AreEqual(0, calls[2]);
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenExpandingGraphPatternExecuted_CallbacksAreInvoked()
         {
@@ -101,6 +103,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.AreEqual(0, calls[2]);
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenConstantThreadPatternIsExecuted_CallbacksAreInvoked()
         {
@@ -115,6 +118,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.AreEqual(4, calls[0]);
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenConstantPatternWithDurationIsExecuted_CallbacksAreInvoked()
         {
@@ -131,6 +135,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.AreEqual(0, calls[1]);
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenGradualFlowExecutes_CallbacksAreInvoked()
         {
@@ -153,6 +158,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.AreEqual(0, calls[4]);
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenAComplexGradualFlowIsExecuted_CallbacksAreInvoked()
         {
@@ -179,6 +185,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.AreEqual(0, calls[8]);
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenGradualWithRampUpDownEdgeAndIntervalCollisionExecutes_CallbacksAreInvoked()
         {
@@ -199,6 +206,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.AreEqual(0, calls[2]);
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenGradualWithNoRampUpDownExecutes_CallbacksAreInvoked()
         {

@@ -8,6 +8,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
     [TestClass]
     public class CancellableTaskTests
     {
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenCancellableTaskIsCancelled_TaskCompletes()
         {
@@ -26,6 +27,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             }
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenAsyncCancellableTaskIsCancelled_TaskCompletes()
         {

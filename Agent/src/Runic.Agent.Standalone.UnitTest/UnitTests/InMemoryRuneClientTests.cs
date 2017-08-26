@@ -11,6 +11,7 @@ namespace Runic.Agent.Standalone.Test.UnitTests
     [TestClass]
     public class InMemoryRuneClientTests
     {
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenStoringAndGettting_ReturnsRune()
         {
@@ -24,6 +25,7 @@ namespace Runic.Agent.Standalone.Test.UnitTests
             (rune.Result as FakeRune).Data.Should().Be("test");
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenStoringAndTaking_TakesRune()
         {
@@ -37,6 +39,7 @@ namespace Runic.Agent.Standalone.Test.UnitTests
             (rune.Result as FakeRune).Data.Should().Be("test");
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenStoreAndGetMultiple_ReturnsError()
         {

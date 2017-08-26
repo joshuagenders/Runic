@@ -18,6 +18,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             _flowManager = new FlowManager(new Mock<IStatsClient>().Object);
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenUpdatingFlow_NewFlowIsReturned()
         {
@@ -31,6 +32,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.AreEqual(2, flow.Steps.Count);
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenAddingAndGettingFlow_SameFlowIsReturned()
         {

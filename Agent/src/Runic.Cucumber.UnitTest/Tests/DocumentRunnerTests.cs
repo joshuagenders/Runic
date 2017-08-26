@@ -9,6 +9,7 @@ namespace Runic.Cucumber.UnitTest.Tests
     [TestClass]
     public class DocumentRunnerTests : TestBase
     {
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenAGivenWhenThenDocumentIsExecuted_CallsAssemblyAdapter()
         {
@@ -47,6 +48,7 @@ namespace Runic.Cucumber.UnitTest.Tests
 
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenBadDocumentIsExecuted_ReturnsParserError()
         {

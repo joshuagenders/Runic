@@ -9,6 +9,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
     [TestClass]
     public class DatetimeServiceTests
     {
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenWaitingUntil_DatetimeServiceWaits()
         {

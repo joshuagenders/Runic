@@ -12,6 +12,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
     [TestClass]
     public class CucumberHarnessTests
     {
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenBasicCucumberTestExecutes_AllMethodsAreInvoked()
         {

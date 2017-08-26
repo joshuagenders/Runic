@@ -13,6 +13,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
     [TestClass]
     public class FunctionStepRunnerTests
     {
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenFunctionStepRunnerISExecuted_MethodsAreInvoked()
         {

@@ -10,6 +10,7 @@ namespace Runic.Cucumber.UnitTest.Tests
     [TestClass]
     public class CucumberTestTests : TestBase
     {
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenCucumberTestIsExecuted_ExecutesAllMethodsWithParameters()
         {
@@ -30,6 +31,7 @@ namespace Runic.Cucumber.UnitTest.Tests
             fakeTest.Verify(f => f.NoInputs());
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenCucumberTestWithExampleExecuted_InvokesMultipleTimesWithParameters()
         {

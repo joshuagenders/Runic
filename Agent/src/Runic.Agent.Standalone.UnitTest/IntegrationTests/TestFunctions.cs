@@ -1,6 +1,6 @@
 ﻿using Runic.Framework.Attributes;
 
-namespace Runic.Agent.Standalone.Test.SystemTests
+namespace Runic.Agent.Standalone.Test.IntegrationTests
 {
     public class TestFunctions
     {

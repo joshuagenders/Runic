@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Runic.Agent.Worker.Test.Tests
 {
     [TestClass]
-    public class MessagingTests
+    public class FlowExecutionTests
     {
         private TestEnvironment _testEnvironment { get; set; }
         private Flow _fakeFlow { get; set; }
@@ -21,6 +21,7 @@ namespace Runic.Agent.Worker.Test.Tests
             _fakeFlow = TestData.GetTestFlowSingleStepLooping;
         }
 
+        [TestCategory("IntegrationTest")]
         [TestMethod]
         public async Task WorkerConstantFlowExecute_ExecutesFlow()
         {
@@ -64,6 +65,7 @@ namespace Runic.Agent.Worker.Test.Tests
             }
         }
 
+        [TestCategory("IntegrationTest")]
         [TestMethod]
         public async Task WorkerStartStopFlow_StartsAndStops()
         {
@@ -109,6 +111,7 @@ namespace Runic.Agent.Worker.Test.Tests
             }
         }
 
+        [TestCategory("IntegrationTest")]
         [TestMethod]
         public async Task WhenGradualFlowExecutes_ExecutesFlow()
         {
@@ -151,6 +154,7 @@ namespace Runic.Agent.Worker.Test.Tests
             }
         }
 
+        [TestCategory("IntegrationTest")]
         [TestMethod]
         public async Task WhenGraphFlowExecutes_ExecutesFlow()
         {
@@ -197,7 +201,8 @@ namespace Runic.Agent.Worker.Test.Tests
                 }
             }
         }
-        
+
+        [TestCategory("IntegrationTest")]
         [TestMethod]
         public async Task WhenFlowStartMessageSent_FlowIsExecuted()
         {

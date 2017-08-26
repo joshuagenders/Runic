@@ -7,6 +7,7 @@ namespace Runic.Agent.Worker.Test.Tests
     [TestClass]
     public class AgentConfigurationTests
     {
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenConfigurationIsLoaded_CommandLineInputsAreParsed()
         {

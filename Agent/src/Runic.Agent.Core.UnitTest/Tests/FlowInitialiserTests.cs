@@ -25,6 +25,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 new Mock<ILoggingHandler>().Object);
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenInitialiseFlow_PluginsAreLoaded()
         {

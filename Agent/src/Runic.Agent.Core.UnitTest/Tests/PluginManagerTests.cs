@@ -27,6 +27,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 new Mock<ILoggingHandler>().Object);
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenAssemblyIsLoaded_FunctionTypeisRetrieved()
         {
@@ -36,6 +37,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.AreEqual(type.Name, "FakeFunction");
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenAssemblyIsLoaded_RuneClientPropertyCanBeLocated()
         {
@@ -49,6 +51,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.IsNotNull(runeClient);
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenGettingFunctionInfo_ReturnsFunctionInfo()
         {
@@ -57,6 +60,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.IsTrue(functions.Any());
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenAssemblyIsLoadedTwice_AssemblyIsLoadedOnce()
         {
@@ -65,12 +69,14 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.AreEqual(_pluginManager.GetAssemblies().Count, 1);
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenLoadingMissingPlugin_ThrowsException()
         {
             Assert.ThrowsException<AssemblyNotFoundException>(() => _pluginManager.LoadPlugin("SomeAssembly"));
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenLoadingAMissingClass_ThrowsException()
         {
@@ -78,30 +84,35 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.ThrowsException<ClassNotFoundInAssemblyException>(() => _pluginManager.GetClassType("SomeClass"));
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenGettingUnloadedPlugin_ThrowsException()
         {
             Assert.ThrowsException<AssemblyNotFoundException>(() => _pluginManager.GetPlugin("someplugin"));
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenGettingAssembliesWithoutLoad_ReturnsEmptyList()
         {
             Assert.IsFalse(_pluginManager.GetAssemblies().Any());
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenGettingAssemblyKeysWithoutLoad_ReturnsEmptyList()
         {
             Assert.IsFalse(_pluginManager.GetAssemblyKeys().Any());
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenGettingFunctionsWithoutLoad_ReturnsEmptyList()
         {
             Assert.IsFalse(_pluginManager.GetAvailableFunctions().Any());
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenGettingClassWithoutLoad_ThrowsException()
         {

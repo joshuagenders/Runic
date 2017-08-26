@@ -11,6 +11,7 @@ namespace Runic.Cucumber.UnitTest.Tests
     [TestClass]
     public class TestStateManagerTests
     {
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenStoringAndRetrieving_ReturnsSameObject()
         {
@@ -22,6 +23,7 @@ namespace Runic.Cucumber.UnitTest.Tests
             returnedObj.State.Should().Be("test");
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenCreateAndRetrieve_ReturnsNewObject()
         {
@@ -31,6 +33,7 @@ namespace Runic.Cucumber.UnitTest.Tests
             obj.State.Should().BeNull();
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenObjectIsStoredTwice_OverwritesObject()
         {
@@ -44,6 +47,7 @@ namespace Runic.Cucumber.UnitTest.Tests
             returnedObj.State.Should().Be("test2");
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenObjectIsRetrievedTwice_ReturnsSameObject()
         {

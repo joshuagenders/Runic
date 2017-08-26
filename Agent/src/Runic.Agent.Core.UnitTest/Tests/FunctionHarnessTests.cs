@@ -15,6 +15,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
     [TestClass]
     public class FunctionHarnessTests
     {
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenGettingMethodWithAttribute_MethodIsFound()
         {
@@ -25,6 +26,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.IsNotNull(method, "beforeeach method not found");
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenExecutingBeforeEach_MethodIsInvoked()
         {
@@ -46,6 +48,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             }
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenExecutingFunction_MethodIsInvoked()
         {
@@ -67,6 +70,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             }
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenAFunctionIsBoundAndExecuted_MethodsAreInvoked()
         {
@@ -85,6 +89,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "AfterEach"), "AfterEach called");
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenAsyncFunctionIsCalled_HarnessWaitsToCompletion()
         {
@@ -102,6 +107,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "AfterEach"), "AfterEach called");
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenInputParametersAreBound_InputsArePassedToMethods()
         {
@@ -122,6 +128,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.AdditionalData == $"input1={uniqueString},input2={randomInt}"));
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenInputParametersAreBound_OverrideDefaultOveridesTheInput()
         {
@@ -144,6 +151,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.AdditionalData == $"input1={uniqueString},input2={randomInt},input3={uniqueString2}"));
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenInvokingMethodWithDefaults_MethodsAreInvokedWithDefault()
         {

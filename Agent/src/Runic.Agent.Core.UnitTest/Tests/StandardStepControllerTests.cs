@@ -19,7 +19,8 @@ namespace Runic.Agent.Core.UnitTest.Tests
                     new Step() { StepName = "Step2" },
                 }
         };
-    
+
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenNullResult_ReturnsFirstStep()
         {
@@ -29,6 +30,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             step.Should().Be(flow.Steps.First());
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenStringReturnedAsNextStepFromFunction_ReturnsNextStep()
         {
@@ -46,6 +48,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             step.Should().Be(flow.Steps[2]);
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenGettingStepsLoopsAround_ReturnsSteps()
         {

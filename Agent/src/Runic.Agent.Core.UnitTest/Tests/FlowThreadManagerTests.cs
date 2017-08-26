@@ -28,6 +28,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 new Mock<ILoggingHandler>().Object);
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenUpdatingThreadCount_ThreadCountIsUpdated()
         {
@@ -38,6 +39,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             //todo verify mocks
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenStopAll_ThreadCountIsZero()
         {

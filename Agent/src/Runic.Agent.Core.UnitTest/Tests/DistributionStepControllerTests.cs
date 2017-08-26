@@ -10,7 +10,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
     [TestClass]
     public class DistributionStepControllerTests
     {
-
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenSingleStepIsUsed_NextStepAlwaysReturnsStep()
         {
@@ -40,6 +40,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             }
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenStepsHaveNoCommonFactor_ThenQueueSizeIsSumOfDistributionAllocation()
         {
@@ -69,6 +70,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             controller.QueueSize.Should().Be(200);
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenQueueIsEmptied_QueueIsRefreshed()
         {
@@ -97,6 +99,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             step.Should().Be(steps[0]);
         }
 
+        [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenStepsHaveCommonFactor_ThenQueueSizeIsSumOfDitributionAllocationOverGCF()
         {
