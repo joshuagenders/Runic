@@ -21,7 +21,7 @@ namespace Runic.Agent.Worker.Test.Tests
             _fakeFlow = TestData.GetTestFlowSingleStepLooping;
         }
 
-        [TestCategory("IntegrationTest")]
+        [TestCategory("FunctionalTest")]
         [TestMethod]
         public async Task WorkerConstantFlowExecute_ExecutesFlow()
         {
@@ -47,14 +47,8 @@ namespace Runic.Agent.Worker.Test.Tests
                     });
 
                     Thread.Sleep(1150);
-                    var runningFlows = _testEnvironment.ThreadManager.GetRunningFlows();
-                    var runningThreadPatterns = _testEnvironment.PatternService.GetRunningThreadPatterns();
-                    var runningPatternCount = _testEnvironment.PatternService.GetRunningThreadPatternCount();
-                    var runningFlowCount = _testEnvironment.ThreadManager.GetRunningFlowCount();
-                    Assert.IsTrue(runningPatternCount == 1, $"Running pattern count not 1, {runningPatternCount}");
-                    Assert.IsTrue(runningFlowCount == 1, $"Running flow count not 1, {runningFlowCount}");
-                    Assert.IsTrue(runningFlows.Contains(flowExecutionId), "running flow not found");
-                    Assert.IsTrue(runningThreadPatterns.Contains(flowExecutionId), "running thread pattern not found");
+                    AssertRunningThreadPatterns(flowExecutionId);
+                    AssertRunningFlows(flowExecutionId);
 
                     await _testEnvironment.PatternService.CancelAllPatternsAsync(cts.Token);
                 }
@@ -65,7 +59,7 @@ namespace Runic.Agent.Worker.Test.Tests
             }
         }
 
-        [TestCategory("IntegrationTest")]
+        [TestCategory("FunctionalTest")]
         [TestMethod]
         public async Task WorkerStartStopFlow_StartsAndStops()
         {
@@ -89,29 +83,22 @@ namespace Runic.Agent.Worker.Test.Tests
                 });
 
                 Thread.Sleep(1150);
-                var runningFlows = _testEnvironment.ThreadManager.GetRunningFlows();
-                var runningThreadPatterns = _testEnvironment.PatternService.GetRunningThreadPatterns();
-                var runningPatternCount = _testEnvironment.PatternService.GetRunningThreadPatternCount();
-                var runningFlowCount = _testEnvironment.ThreadManager.GetRunningFlowCount();
-                Assert.IsTrue(runningPatternCount == 1, $"Running pattern count not 1, {runningPatternCount}");
-                Assert.IsTrue(runningFlowCount == 1, $"Running flow count not 1, {runningFlowCount}");
-                Assert.IsTrue(runningFlows.Contains(flowExecutionId), "running flow not found");
-                Assert.IsTrue(runningThreadPatterns.Contains(flowExecutionId), "running thread pattern not found");
+                AssertRunningThreadPatterns(flowExecutionId);
+                AssertRunningFlows(flowExecutionId);
+
                 try
                 {
                     await _testEnvironment.PatternService.StopThreadPatternAsync(flowExecutionId, cts.Token);
                     _testEnvironment.ThreadManager.StopFlow(flowExecutionId);
-                    runningPatternCount = _testEnvironment.PatternService.GetRunningThreadPatternCount();
-                    runningFlowCount = _testEnvironment.ThreadManager.GetRunningFlowCount();
-                    Assert.IsTrue(runningPatternCount == 0, $"Running pattern count not 0, {runningPatternCount}");
-                    Assert.IsTrue(runningFlowCount == 0, $"Running flow count not 0, {runningFlowCount}");
+                    AssertNoRunningFlows(flowExecutionId);
+                    AssertNoRunningThreadPatterns(flowExecutionId);
                 }
                 catch (TaskCanceledException) { } //all g - todo handle better
                 catch (AggregateException) { } //all g 
             }
         }
 
-        [TestCategory("IntegrationTest")]
+        [TestCategory("FunctionalTest")]
         [TestMethod]
         public async Task WhenGradualFlowExecutes_ExecutesFlow()
         {
@@ -141,10 +128,8 @@ namespace Runic.Agent.Worker.Test.Tests
                         });
 
                     Thread.Sleep(1250);
-                    var runningFlows = _testEnvironment.ThreadManager.GetRunningFlows();
-                    var runningThreadPatterns = _testEnvironment.PatternService.GetRunningThreadPatterns();
-                    Assert.IsTrue(runningFlows.Contains(flowExecutionId), "running flow not found");
-                    Assert.IsTrue(runningThreadPatterns.Contains(flowExecutionId), "running thread pattern not found");
+                    AssertRunningThreadPatterns(flowExecutionId);
+                    AssertRunningFlows(flowExecutionId);
                     await _testEnvironment.PatternService.CancelAllPatternsAsync(cts.Token);
                 }
                 catch (OperationCanceledException)
@@ -154,7 +139,7 @@ namespace Runic.Agent.Worker.Test.Tests
             }
         }
 
-        [TestCategory("IntegrationTest")]
+        [TestCategory("FunctionalTest")]
         [TestMethod]
         public async Task WhenGraphFlowExecutes_ExecutesFlow()
         {
@@ -184,14 +169,8 @@ namespace Runic.Agent.Worker.Test.Tests
                     });
 
                     Thread.Sleep(250);
-                    var runningFlows = _testEnvironment.ThreadManager.GetRunningFlows();
-                    var runningThreadPatterns = _testEnvironment.PatternService.GetRunningThreadPatterns();
-                    var runningPatternCount = _testEnvironment.PatternService.GetRunningThreadPatternCount();
-                    var runningFlowCount = _testEnvironment.ThreadManager.GetRunningFlowCount();
-                    Assert.IsTrue(runningPatternCount == 1, $"Running pattern count not 1, {runningPatternCount}");
-                    Assert.IsTrue(runningFlowCount == 1, $"Running flow count not 1, {runningFlowCount}");
-                    Assert.IsTrue(runningFlows.Contains(flowExecutionId), "running flow not found");
-                    Assert.IsTrue(runningThreadPatterns.Contains(flowExecutionId), "running thread pattern not found");
+                    AssertRunningThreadPatterns(flowExecutionId);
+                    AssertRunningFlows(flowExecutionId);
 
                     await _testEnvironment.PatternService.CancelAllPatternsAsync(cts.Token);
                 }
@@ -202,7 +181,7 @@ namespace Runic.Agent.Worker.Test.Tests
             }
         }
 
-        [TestCategory("IntegrationTest")]
+        [TestCategory("FunctionalTest")]
         [TestMethod]
         public async Task WhenFlowStartMessageSent_FlowIsExecuted()
         {
@@ -232,6 +211,42 @@ namespace Runic.Agent.Worker.Test.Tests
 
                 await _testEnvironment.PatternService.CancelAllPatternsAsync(cts.Token);
             }
+        }
+
+        private void AssertRunningFlows(string flowExecutionId)
+        {
+            var runningFlows = _testEnvironment.ThreadManager.GetRunningFlows();
+            Assert.IsTrue(runningFlows.Contains(flowExecutionId), "running flow not found");
+
+            var runningFlowCount = _testEnvironment.ThreadManager.GetRunningFlowCount();
+            Assert.IsTrue(runningFlowCount == 1, $"Running flow count not 1, {runningFlowCount}");
+        }
+
+        private void AssertRunningThreadPatterns(string flowExecutionId)
+        {
+            var runningThreadPatterns = _testEnvironment.PatternService.GetRunningThreadPatterns();
+            Assert.IsTrue(runningThreadPatterns.Contains(flowExecutionId), "running thread pattern not found");
+
+            var runningPatternCount = _testEnvironment.PatternService.GetRunningThreadPatternCount();
+            Assert.IsTrue(runningPatternCount == 1, $"Running pattern count not 1, {runningPatternCount}");
+        }
+
+        private void AssertNoRunningThreadPatterns(string flowExecutionId)
+        {
+            var runningThreadPatterns = _testEnvironment.PatternService.GetRunningThreadPatterns();
+            Assert.IsFalse(runningThreadPatterns.Contains(flowExecutionId), "running thread pattern found");
+
+            var runningPatternCount = _testEnvironment.PatternService.GetRunningThreadPatternCount();
+            Assert.IsTrue(runningPatternCount == 0, $"Running pattern count not 1, {runningPatternCount}");
+        }
+
+        private void AssertNoRunningFlows(string flowExecutionId)
+        {
+            var runningFlows = _testEnvironment.ThreadManager.GetRunningFlows();
+            Assert.IsFalse(runningFlows.Contains(flowExecutionId), "running flow not found");
+
+            var runningFlowCount = _testEnvironment.ThreadManager.GetRunningFlowCount();
+            Assert.IsTrue(runningFlowCount == 0, $"Running flow count not 1, {runningFlowCount}");
         }
     }
 }

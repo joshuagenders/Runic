@@ -98,7 +98,6 @@ namespace Runic.Agent.Core.Services
         private async Task ExecutePatternAsync(string flowExecutionId, Flow flow, IThreadPattern pattern, CancellationToken ctx = default(CancellationToken))
         {
             _log.Info($"Executing pattern for flow {flow.Name} {flowExecutionId}");
-            _flowManager.AddUpdateFlow(flow);
 
             pattern.RegisterThreadChangeHandler(async (threadLevel) =>
             {

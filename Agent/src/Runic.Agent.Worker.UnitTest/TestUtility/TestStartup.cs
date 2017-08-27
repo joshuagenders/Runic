@@ -27,6 +27,7 @@ namespace Runic.Agent.Worker.Test.TestUtility
             builder.RegisterInstance(new Mock<IDataService>().Object).As<IDataService>();
             builder.RegisterInstance(new Mock<IStatsClient>().Object).As<IStatsClient>();
             builder.RegisterInstance(new Mock<ILoggingHandler>().Object).As<ILoggingHandler>();
+            builder.RegisterInstance(new Mock<ITestResultHandler>().Object).As<ITestResultHandler>();
 
             builder.RegisterType<FilePluginProvider>()
                    .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
@@ -52,7 +53,6 @@ namespace Runic.Agent.Worker.Test.TestUtility
             builder.RegisterType<InMemoryMessagingService>().As<IMessagingService>().SingleInstance();
             builder.RegisterType<ThreadManager>().As<IThreadManager>().SingleInstance();
             builder.RegisterType<RunnerService>().As<IRunnerService>();
-            builder.RegisterType<TestResultHandlerService>().As<ITestResultHandler>();
             return builder.Build();
         }
     }

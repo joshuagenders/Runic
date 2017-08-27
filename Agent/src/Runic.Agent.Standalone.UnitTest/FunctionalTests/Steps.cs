@@ -17,7 +17,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Standalone.Test.IntegrationTests
+namespace Runic.Agent.Standalone.Test.FunctionalTests
 {
     public class Steps
     {

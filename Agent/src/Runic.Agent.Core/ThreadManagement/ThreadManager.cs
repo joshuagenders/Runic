@@ -77,7 +77,7 @@ namespace Runic.Agent.Core.ThreadManagement
         {
             //TODO implement maxthreads
             _log.Debug($"Attempting to update thread level to {request.ThreadLevel} for {request.FlowName}");
-            _testResultHandler.OnThreadChange(request.FlowId, request.ThreadLevel);
+            
             if (_threadManagers.TryGetValue(request.FlowId, out FlowThreadManager manager))
             {
                 await manager.UpdateThreadCountAsync(request.ThreadLevel);
@@ -95,6 +95,8 @@ namespace Runic.Agent.Core.ThreadManagement
                 var resolvedManager = _threadManagers.GetOrAdd(request.FlowId, newThreadManager);
                 await resolvedManager.UpdateThreadCountAsync(request.ThreadLevel);
             }
+            _testResultHandler.OnThreadChange(_flowManager.GetFlow(request.FlowName), request.ThreadLevel);
+            _stats.SetThreadLevel(request.FlowName, request.ThreadLevel);
         }
 
         public IList<string> GetRunningFlows() => _threadManagers.Select(t => t.Key).ToList();

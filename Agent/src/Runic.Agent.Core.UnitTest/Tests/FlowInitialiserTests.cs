@@ -30,7 +30,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         public void WhenInitialiseFlow_PluginsAreLoaded()
         {
             var flow = TestData.GetTestFlowSingleStep;   
-            var flowInitialiser = new FlowInitialiser(_pluginManager, new Mock<ILoggingHandler>().Object);
+            var flowInitialiser = new FlowInitialiser(_pluginManager, new Mock<IFlowManager>().Object, new Mock<ILoggingHandler>().Object);
             flowInitialiser.InitialiseFlow(flow);
 
             Assert.IsTrue(_pluginManager.GetAssemblies().Any());

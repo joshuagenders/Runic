@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Standalone.Test.IntegrationTests
+namespace Runic.Agent.Standalone.Test.FunctionalTests
 {
     [TestClass]
     public class CucumberTests
     {
-        [TestCategory("IntegrationTest")]
+        [TestCategory("FunctionalTest")]
         [TestMethod]
         public async Task WhenFunctionIsExecuted_ThenTestResultIsSuccess()
         {
@@ -33,7 +33,7 @@ namespace Runic.Agent.Standalone.Test.IntegrationTests
             }
         }
 
-        [TestCategory("IntegrationTest")]
+        [TestCategory("FunctionalTest")]
         [TestMethod]
         public async Task WhenCucumberIsExecuted_ThenTestResultIsSuccess()
         {

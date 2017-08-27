@@ -9,15 +9,18 @@ namespace Runic.Agent.Core.FlowManagement
     {
         private readonly ILoggingHandler _log;
         private readonly IPluginManager _pluginManager;
+        private readonly IFlowManager _flowManager;
 
-        public FlowInitialiser(IPluginManager pluginManager, ILoggingHandler loggingHandler)
+        public FlowInitialiser(IPluginManager pluginManager, IFlowManager flowManager, ILoggingHandler loggingHandler)
         {
             _pluginManager = pluginManager;
+            _flowManager = flowManager;
             _log = loggingHandler;
         }
 
         public void InitialiseFlow(Flow flow)
         {
+            _flowManager.AddUpdateFlow(flow);
             foreach (var step in flow.Steps)
             {
                 try

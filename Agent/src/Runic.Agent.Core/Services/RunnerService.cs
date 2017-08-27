@@ -20,24 +20,26 @@ namespace Runic.Agent.Core.Services
         private readonly IDatetimeService _datetimeService;
         private readonly IPluginManager _pluginManager;
         private readonly ITestResultHandler _testResultHandler;
-        
+        private readonly IFlowManager _flowManager;
+
         private int _errorCount { get; set; }
         private int _maxErrors { get; set; } = -1;
 
         public int ErrorCount => _errorCount;
 
-        public RunnerService(IPluginManager pluginManager, IFunctionFactory functionFactory, IDatetimeService datetimeService, ITestResultHandler testResultHandler, ILoggingHandler loggingHandler)
+        public RunnerService(IPluginManager pluginManager, IFunctionFactory functionFactory, IDatetimeService datetimeService, ITestResultHandler testResultHandler, ILoggingHandler loggingHandler, IFlowManager flowManager)
         {
             _functionFactory = functionFactory;
             _datetimeService = datetimeService;
             _pluginManager = pluginManager;
             _testResultHandler = testResultHandler;
             _log = loggingHandler;
+            _flowManager = flowManager;
         }
 
         public async Task ExecuteFlowAsync(Flow flow, CancellationToken ctx = default(CancellationToken))
         {
-            FlowInitialiser flowInitialier = new FlowInitialiser(_pluginManager, _log);
+            FlowInitialiser flowInitialier = new FlowInitialiser(_pluginManager, _flowManager, _log);
             flowInitialier.InitialiseFlow(flow);
 
             Result result = null;
