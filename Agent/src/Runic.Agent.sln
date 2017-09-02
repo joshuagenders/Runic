@@ -23,7 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Cucumber.UnitTest", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gherkin", "Gherkin\Gherkin.csproj", "{73098342-42D5-4D15-9F85-818B313EA113}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runic.Agent.ExampleTest", "Runic.Agent.ExampleTest\Runic.Agent.ExampleTest.csproj", "{BA5B4706-7535-4025-BCAC-569D7B40FF53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.ExampleTest", "Runic.Agent.ExampleTest\Runic.Agent.ExampleTest.csproj", "{BA5B4706-7535-4025-BCAC-569D7B40FF53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runic.Agent.Aws", "Runic.Agent.Aws\Runic.Agent.Aws.csproj", "{138A4B7A-F3AA-4796-B142-0FFF57D0A9C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,10 @@ Global
 		{BA5B4706-7535-4025-BCAC-569D7B40FF53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA5B4706-7535-4025-BCAC-569D7B40FF53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA5B4706-7535-4025-BCAC-569D7B40FF53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{138A4B7A-F3AA-4796-B142-0FFF57D0A9C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{138A4B7A-F3AA-4796-B142-0FFF57D0A9C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{138A4B7A-F3AA-4796-B142-0FFF57D0A9C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{138A4B7A-F3AA-4796-B142-0FFF57D0A9C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

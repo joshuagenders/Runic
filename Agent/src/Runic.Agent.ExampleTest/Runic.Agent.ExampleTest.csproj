@@ -9,4 +9,8 @@
     <PackageReference Include="Runic.Framework" Version="1.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Runic.Cucumber\Runic.Cucumber.csproj" />
+  </ItemGroup>
+
 </Project>

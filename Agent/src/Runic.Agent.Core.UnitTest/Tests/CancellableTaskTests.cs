@@ -14,7 +14,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         {
             var cts = new CancellationTokenSource();
             cts.CancelAfter(10000);
-            var cancellableTask = new CancellableTask(Task.Run(async () => await Poll(cts.Token), cts.Token), cts);
+            var cancellableTask = new CancellableTask(Task.Run(async () => await Poll(cts.Token), cts.Token), new SafeCancellationToken(), cts);
             try
             {
                 cancellableTask.Cancel();
@@ -35,7 +35,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             cts.CancelAfter(10000);
             try
             {
-                var cancellableTask = new CancellableTask(Task.Run(async () => await Poll(cts.Token), cts.Token), cts);
+                var cancellableTask = new CancellableTask(Task.Run(async () => await Poll(cts.Token), cts.Token), new SafeCancellationToken(), cts);
                 await cancellableTask.CancelAsync();
                 Assert.IsTrue(cancellableTask.IsComplete());
 

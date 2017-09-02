@@ -37,7 +37,7 @@ namespace Runic.Agent.Core.Services
             _flowManager = flowManager;
         }
 
-        public async Task ExecuteFlowAsync(Flow flow, CancellationToken ctx = default(CancellationToken))
+        public async Task ExecuteFlowAsync(Flow flow, SafeCancellationToken safeToken, CancellationToken ctx = default(CancellationToken))
         {
             FlowInitialiser flowInitialier = new FlowInitialiser(_pluginManager, _flowManager, _log);
             flowInitialier.InitialiseFlow(flow);
@@ -56,7 +56,7 @@ namespace Runic.Agent.Core.Services
             _testResultHandler.OnFlowStart(flow);
             try
             {
-                while (!ctx.IsCancellationRequested)
+                while (!ctx.IsCancellationRequested && !safeToken.IsCancelled)
                 {
                     //todo testcontext
                     var testContext = new TestContext();
@@ -77,6 +77,8 @@ namespace Runic.Agent.Core.Services
                     }
                     LogResult(result);
 
+                    if (safeToken.IsCancelled || ctx.IsCancellationRequested)
+                        break;
                     await _datetimeService.WaitMilliseconds(flow.StepDelayMilliseconds, ctx);
                 }
             }

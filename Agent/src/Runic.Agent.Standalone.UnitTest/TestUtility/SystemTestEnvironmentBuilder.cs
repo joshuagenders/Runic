@@ -19,7 +19,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         public ILoggingHandler LoggingHandler { get; set; }
         public IAgentObserver AgentObserver { get; set; }
         public IDataService DataService { get; set; }
-
+        
         public TestEnvironmentBuilder New()
         {
             var loggerFactory = new LoggerFactory().AddConsole();
@@ -31,6 +31,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             //builder.TestResultHandler.Instance = TestResultHandler ?? new TestResultHandler();
             builder.LoggingHandler.Instance = LoggingHandler ?? new LoggingHandler(loggerFactory);
             builder.AgentObserver.Instance = AgentObserver ?? new AgentObserver();
+            builder.WithInstance(builder.GetMock<IStatsClient>().Object as IStatsClient);
             builder.TestContext.Instance = new TestContext()
             {
                 DeploymentDirectory = Directory.GetCurrentDirectory(),

@@ -51,11 +51,12 @@ namespace Runic.Agent.Core.ThreadManagement
             else
             {
                 var cts = new CancellationTokenSource();
-                var flowTask = _runnerService.ExecuteFlowAsync(_flow, cts.Token)
+                var safeToken = new SafeCancellationToken();
+                var flowTask = _runnerService.ExecuteFlowAsync(_flow, safeToken, cts.Token)
                                              .ContinueWith(async (_) => await RemoveTaskAsync(id));
 
-                var cancellableTask = new CancellableTask(flowTask, cts);
-                _taskPool.AddOrUpdate(id, cancellableTask, 
+                var cancellableTask = new CancellableTask(flowTask, safeToken, cts);
+                _taskPool.AddOrUpdate(id, cancellableTask,
                     (key, val) => {
                         val.Cancel();
                         return cancellableTask;

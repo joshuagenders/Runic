@@ -4,13 +4,20 @@ using System.Threading.Tasks;
 
 namespace Runic.Agent.Core.FunctionHarness
 {
+    public class SafeCancellationToken
+    {
+        public bool IsCancelled { get; set; }
+    }
+
     public class CancellableTask : IDisposable
     {
         private readonly CancellationTokenSource _cts;
         private readonly Task _task;
         private readonly ManualResetEventSlim _mre;
+        private readonly SafeCancellationToken _safeToken;
+        public SafeCancellationToken SafeToken => _safeToken;
 
-        public CancellableTask(Task task, CancellationTokenSource cts)
+        public CancellableTask(Task task, SafeCancellationToken safeToken, CancellationTokenSource cts)
         {
             _mre = new ManualResetEventSlim(false);
             _task = task.ContinueWith((r) =>
@@ -18,6 +25,7 @@ namespace Runic.Agent.Core.FunctionHarness
                 _mre.Set();
             });
             _cts = cts;
+            _safeToken = safeToken;
         }
 
         public async Task GetCompletionTaskAsync()
@@ -44,20 +52,28 @@ namespace Runic.Agent.Core.FunctionHarness
             return false;
         }
 
-        public void Cancel()
+        public void CancelUnsafe()
         {
             _cts.Cancel();
         }
 
+        public void Cancel()
+        {
+            _cts.CancelAfter(5000);
+            SafeToken.IsCancelled = true;
+            _task.GetAwaiter().GetResult();
+        }
+
         public async Task CancelAsync()
         {
-            _cts.Cancel();
+            _cts.CancelAfter(5000);
+            SafeToken.IsCancelled = true;
             await _task;
         }
 
         public void Dispose()
         {
-            Cancel();
+            CancelUnsafe();
         }
     }
 }

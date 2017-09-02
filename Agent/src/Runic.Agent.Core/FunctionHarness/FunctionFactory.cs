@@ -5,6 +5,7 @@ using Runic.Framework.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System;
 
 namespace Runic.Agent.Core.FunctionHarness
 {
@@ -44,15 +45,26 @@ namespace Runic.Agent.Core.FunctionHarness
                 }
             }
             var harness = new FunctionHarness(_stats, _log);
-            var methodParams = _dataService.GetMethodParameterValues(
-                            step.DataInput?.InputDatasource,
-                            step.DataInput?.DatasourceMapping);
+            //todo think about how parameters should be passed
+            //var methodParams = _dataService.GetMethodParameterValues(
+            //                step.DataInput?.InputDatasource,
+            //                step.DataInput?.DatasourceMapping);
+            var methodParams = GetParams(step.Function.Parameters);
             harness.Bind(instance,
                          step.StepName,
                          step.Function.FunctionName,
                          step.GetNextStepFromFunctionResult,
                          methodParams);
             return harness;
+        }
+
+        private object[] GetParams(Dictionary<string,Type> parameters)
+        {
+            if (parameters == null || !parameters.Any())
+            {
+                return new object[] { };
+            }
+            return parameters.Select(p => Convert.ChangeType(p.Key, p.Value)).ToArray();
         }
     }
 }

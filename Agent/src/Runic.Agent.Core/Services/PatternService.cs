@@ -41,8 +41,9 @@ namespace Runic.Agent.Core.Services
                 return;
             }
             var cts = new CancellationTokenSource();
+            var safeToken = new SafeCancellationToken();
             var patternTask = ExecutePatternAsync(flowExecutionId, flow, pattern, cts.Token);
-            var cancellableTask = new CancellableTask(patternTask, cts);
+            var cancellableTask = new CancellableTask(patternTask, safeToken, cts);
             _agentObserver.Update(new PatternInformation()
             {
                 PatternExecutionId = flowExecutionId,
