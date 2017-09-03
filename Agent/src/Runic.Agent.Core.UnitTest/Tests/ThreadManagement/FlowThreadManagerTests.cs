@@ -7,7 +7,7 @@ using Runic.Agent.Core.UnitTest.TestUtility;
 using Runic.Framework.Models;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Core.UnitTest.Tests
+namespace Runic.Agent.Core.UnitTest.Tests.StepController
 {
     [TestClass]
     public class FlowThreadManagerTests

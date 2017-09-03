@@ -6,8 +6,6 @@ using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.FunctionHarness;
 using Runic.Agent.Core.ThreadManagement;
-using Runic.Agent.Standalone.Configuration;
-using Runic.Agent.Standalone.Providers;
 using Runic.Framework.Clients;
 using Runic.Framework.Models;
 using StatsN;
@@ -17,32 +15,19 @@ using System.Reflection;
 using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadPatterns;
 
-namespace Runic.Agent.Standalone.Test.TestUtility
+namespace Runic.Agent.TestUtility
 {
-    public abstract class TestEnvironment : IDisposable
-    {
-        private IApplication _application { get; set; }
-        private ILifetimeScope _scope { get; set; }
-        
-        public IApplication Application
-        {
-            get { return _application ?? new Mock<IApplication>().Object; }
-            set { _application = value; }
-        }
-
+    public abstract class TestEnvironment
+    {        
         public TestObject<IPluginManager> PluginManager { get; set; } = new TestObject<IPluginManager>();
         public TestObject<IPluginProvider> PluginProvider { get; set; } = new TestObject<IPluginProvider>();
         public TestObject<IFlowManager> FlowManager { get; set; } = new TestObject<IFlowManager>();
         public TestObject<IDataService> DataService { get; set; } = new TestObject<IDataService>();
         public TestObject<IStatsd> Statsd { get; set; } = new TestObject<IStatsd>();
-        public TestObject<IStatsClient> StatsClient{ get; set; } = new TestObject<IStatsClient>();
+        public TestObject<IStatsClient> StatsClient { get; set; } = new TestObject<IStatsClient>();
         public TestObject<IPatternController> PatternService { get; set; } = new TestObject<IPatternController>();
         public TestObject<IThreadManager> ThreadManager { get; set; } = new TestObject<IThreadManager>();
         public TestObject<IRuneClient> RuneClient { get; set; } = new TestObject<IRuneClient>();
-        public TestObject<IAgentConfig> AgentConfig { get; set; } = new TestObject<IAgentConfig>();
-        public TestObject<IAgentSettings> AgentSettings { get; set; } = new TestObject<IAgentSettings>();
-        public TestObject<IStatsdSettings> StatsdSettings { get; set; } = new TestObject<IStatsdSettings>();
-        public TestObject<IFlowProvider> FlowProvider { get; set; } = new TestObject<IFlowProvider>();
         public TestObject<IDatetimeService> DatetimeService { get; set; } = new TestObject<IDatetimeService>();
         public TestObject<IRunnerService> RunnerService { get; set; } = new TestObject<IRunnerService>();
         public TestObject<IFunctionFactory> FunctionFactory { get; set; } = new TestObject<IFunctionFactory>();
@@ -76,10 +61,5 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         }
 
         public abstract TestEnvironment StartApplication();
-
-        public void Dispose()
-        {
-            _scope?.Dispose();
-        }
     }
 }

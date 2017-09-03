@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.Standalone.Clients;
-using Runic.Agent.Standalone.Test.TestUtility;
+using Runic.Agent.TestUtility.Runes;
 using Runic.Framework.Models;
 using System.Threading.Tasks;
 

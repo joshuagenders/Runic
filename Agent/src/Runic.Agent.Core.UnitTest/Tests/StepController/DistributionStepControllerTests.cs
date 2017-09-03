@@ -5,7 +5,7 @@ using Runic.Agent.Core.StepController;
 using Runic.Framework.Models;
 using System.Collections.Generic;
 
-namespace Runic.Agent.Core.UnitTest.Tests
+namespace Runic.Agent.Core.UnitTest.Tests.StepController
 {
     [TestClass]
     public class DistributionStepControllerTests

@@ -8,7 +8,7 @@ using Runic.Agent.Core.UnitTest.TestUtility;
 using Runic.Framework.Models;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Core.UnitTest.Tests
+namespace Runic.Agent.Core.UnitTest.Tests.Services
 {
     [TestClass]
     public class FunctionStepRunnerTests
@@ -19,7 +19,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         {
             var environment = new TestEnvironment();
             var functionFactory = new Mock<IFunctionFactory>();
-            var functionHarness = new FunctionHarness.FunctionHarness(
+            var functionHarness = new Core.FunctionHarness.FunctionHarness(
                 environment.Stats.Object,
                 new Mock<ILoggingHandler>().Object);
 

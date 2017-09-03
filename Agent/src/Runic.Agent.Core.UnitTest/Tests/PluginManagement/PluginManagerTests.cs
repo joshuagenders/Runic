@@ -10,7 +10,7 @@ using Autofac;
 using Runic.Agent.Core.Exceptions;
 using Runic.Agent.Core.ExternalInterfaces;
 
-namespace Runic.Agent.Core.UnitTest.Tests
+namespace Runic.Agent.Core.UnitTest.Tests.PluginManagement
 {
     [TestClass]
     public class PluginManagerTests

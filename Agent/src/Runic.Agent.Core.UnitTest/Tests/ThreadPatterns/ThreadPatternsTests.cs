@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Core.UnitTest.Tests
+namespace Runic.Agent.Core.UnitTest.Tests.StepController
 {
     [TestClass]
     public class ThreadPatternsTests

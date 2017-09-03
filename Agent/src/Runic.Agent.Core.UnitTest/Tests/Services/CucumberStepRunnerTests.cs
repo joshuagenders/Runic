@@ -7,7 +7,7 @@ using Runic.Framework.Models;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Core.UnitTest.Tests
+namespace Runic.Agent.Core.UnitTest.Tests.Services
 {
     [TestClass]
     public class CucumberStepRunnerTests

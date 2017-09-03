@@ -6,7 +6,7 @@ using Runic.Framework.Models;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Runic.Agent.Core.UnitTest.Tests
+namespace Runic.Agent.Core.UnitTest.Tests.StepController
 {
     [TestClass]
     public class StandardStepControllerTests

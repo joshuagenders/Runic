@@ -1,23 +1,16 @@
 ﻿using Autofac;
 using Microsoft.Extensions.Logging;
-using Runic.Agent.Core.Configuration;
-using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.FunctionHarness;
 using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Core.ThreadPatterns;
-using Runic.Agent.Standalone.Clients;
-using Runic.Agent.Standalone.Configuration;
-using Runic.Agent.Standalone.Services;
-using Runic.Framework.Clients;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 
-namespace Runic.Agent.Standalone.Test.TestUtility
+namespace Runic.Agent.TestUtility
 {
-    public class TestEnvironmentBuilder : TestEnvironment
+    public abstract class TestEnvironmentBuilder : TestEnvironment
     {
         private ContainerBuilder _builder { get; set; }
         public TestEnvironmentBuilder()
@@ -65,15 +58,6 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             }
         }
 
-        public override TestEnvironment StartApplication()
-        {
-            var cts = new CancellationTokenSource();
-            var container = Build();
-            var scope = container.BeginLifetimeScope();
-            Application = scope.Resolve<IApplication>();
-            return this;
-        }
-
         public TestEnvironmentBuilder WithType<T, U>()
         {
             _builder.RegisterType<T>().As<U>();
@@ -92,29 +76,14 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             return this;
         }
 
-        public TestEnvironmentBuilder WithStandardConfig()
-        {
-            return WithSingleInstanceType<AgentSettings, IAgentSettings>()
-                   .WithSingleInstanceType<StatsdSettings, IStatsdSettings>()
-                   .WithSingleInstanceType<AgentConfig, IAgentConfig>()
-                   .WithInstance(new AgentCoreConfiguration()
-                   {
-                       MaxThreads = 10
-                   });
-        }
-
-        public TestEnvironmentBuilder WithStandardTypes()
+        public virtual TestEnvironmentBuilder WithStandardTypes()
         {
             return WithSingleInstanceType<ThreadManager, IThreadManager>()
-                   .WithSingleInstanceType<InMemoryRuneClient, IRuneClient>()
                    .WithSingleInstanceType<FlowManager, IFlowManager>()
                    .WithSingleInstanceType<PatternController, IPatternController>()
-                   .WithType<NoOpDataService, IDataService>()
                    .WithType<LoggerFactory, ILoggerFactory>()
-                   .WithType<StatsClient, IStatsClient>()
                    .WithType<RunnerService, IRunnerService>()
-                   .WithType<FunctionFactory, IFunctionFactory>()
-                   .WithSingleInstanceType<Application, IApplication>();
+                   .WithType<FunctionFactory, IFunctionFactory>();
         }
     }
 }

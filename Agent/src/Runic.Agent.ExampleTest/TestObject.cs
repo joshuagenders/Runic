@@ -1,6 +1,6 @@
 ﻿using Moq;
 
-namespace Runic.Agent.Standalone.Test.TestUtility
+namespace Runic.Agent.TestUtility
 {
     public class TestObject<T> where T : class
     {

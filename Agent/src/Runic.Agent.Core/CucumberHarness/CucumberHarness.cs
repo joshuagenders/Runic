@@ -3,7 +3,6 @@ using Runic.Cucumber;
 using Runic.Agent.Core.PluginManagement;
 using System.Threading;
 using System.Diagnostics;
-using Runic.Agent.Core.Exceptions;
 
 namespace Runic.Agent.Core.CucumberHarness
 {

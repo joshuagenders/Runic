@@ -5,7 +5,7 @@ using Runic.Agent.Core.FlowManagement;
 using Moq;
 using Runic.Framework.Clients;
 
-namespace Runic.Agent.Core.UnitTest.Tests
+namespace Runic.Agent.Core.UnitTest.Tests.FlowManagement
 {
     [TestClass]
     public class FlowManagerTests

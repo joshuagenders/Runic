@@ -9,7 +9,7 @@ using Runic.Framework.Clients;
 using System.IO;
 using System.Linq;
 
-namespace Runic.Agent.Core.UnitTest.Tests
+namespace Runic.Agent.Core.UnitTest.Tests.FlowManagement
 {
     [TestClass]
     public class FlowInitialiserTests

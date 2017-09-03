@@ -1,6 +1,6 @@
 ﻿using Runic.Framework.Models;
 
-namespace Runic.Agent.Standalone.Test.TestUtility
+namespace Runic.Agent.TestUtility.Runes
 {
     public class FakeRune : Rune
     {

@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Core.UnitTest.Tests
+namespace Runic.Agent.Core.UnitTest.Tests.CucumberHarness
 {
     [TestClass]
     public class CucumberHarnessTests
@@ -19,7 +19,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             const string assemblyName = "thisassembly";
             var pluginManager = new Mock<IPluginManager>();
             pluginManager.Setup(p => p.GetPlugin(assemblyName)).Returns(GetType().GetTypeInfo().Assembly);
-            var harness = new CucumberHarness.CucumberHarness(pluginManager.Object);
+            var harness = new Core.CucumberHarness.CucumberHarness(pluginManager.Object);
 
             var cucumberDocument = 
                 @"Feature: MyExample

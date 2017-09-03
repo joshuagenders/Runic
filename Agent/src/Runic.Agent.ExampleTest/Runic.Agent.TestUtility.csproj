@@ -6,10 +6,12 @@
 
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.9.9" />
+    <PackageReference Include="Moq" Version="4.7.99" />
     <PackageReference Include="Runic.Framework" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Runic.Agent.Core\Runic.Agent.Core.csproj" />
     <ProjectReference Include="..\Runic.Cucumber\Runic.Cucumber.csproj" />
   </ItemGroup>
 
