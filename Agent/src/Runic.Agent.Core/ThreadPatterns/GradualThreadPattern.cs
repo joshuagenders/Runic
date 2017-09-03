@@ -1,149 +1,57 @@
 ﻿using Runic.Agent.Core.Services;
-using Runic.Framework.Models;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using System;
 
 namespace Runic.Agent.Core.ThreadPatterns
 {
-    public class GradualThreadPattern : GraphThreadPattern, IThreadPattern
+    public class GradualThreadPattern : IThreadPattern
     {
-        public GradualThreadPattern(IDatetimeService datetimeService) : base(datetimeService)
+        private readonly IDatetimeService _datetimeService;
+
+        public GradualThreadPattern(IDatetimeService datetimeService)
         {
+            _datetimeService = datetimeService;
         }
 
         public int ThreadCount { get; set; }
         public int RampUpSeconds { get; set; }
         public int RampDownSeconds { get; set; }
-        public int StepIntervalSeconds { get; set; }
+        public int DurationSeconds { get; set; }
 
-        private void GeneratePoints()
+        public int GetMaxThreadCount() => ThreadCount;
+        public string GetPatternType() => "gradual";
+
+        public int GetCurrentThreadLevel(DateTime startTime)
         {
-            Points = new List<Point>();
-
-            AddStartPoint();
-
-            if (RampUpSeconds > 0)
-                AddRampUpPoints();
-
-            AddMaxLevelPoint();
-
-            if (RampDownSeconds > 0)
-                AddRampdownPoints();
-
-            AddEndPoint();
-        }
-        public override async Task StartPatternAsync(CancellationToken ctx = default(CancellationToken))
-        {
-            GeneratePoints();
-            await base.StartPatternAsync(ctx);
-        }
-
-        private void AddStartPoint()
-        {
-            Points.Add(new Point()
+            var now = _datetimeService.Now;
+            if (now > startTime.AddSeconds(DurationSeconds))
             {
-                threadLevel = 0,
-                unitsFromStart = 0
-            });
-        }
-
-        private void AddEndPoint()
-        {
-            var lastPoint = Points[Points.Count - 1];
-            if (lastPoint.threadLevel != 0)
+                return 0;
+            }
+            if (now < startTime)
             {
-                Points.Add(new Point()
-                {
-                    unitsFromStart = lastPoint.unitsFromStart + 1,
-                    threadLevel = 0
-                });
+                return 0;
             }
-        }
-
-        private void AddRampUpPoints()
-        {
-            //add ramp up points
-            int rampupIntervalCount = RampUpSeconds / StepIntervalSeconds;
-            if (rampupIntervalCount <= 0)
-                rampupIntervalCount = 1;
-            var startX = Points[Points.Count - 1].unitsFromStart + 1;
-
-            var previousThreadCount = 0;
-            var nextThreadCount = 0;
-            int stepAmount = ThreadCount / rampupIntervalCount;
-            if (stepAmount < 1)
-                stepAmount = 1;
-
-            for (int i = 1; i <= rampupIntervalCount; i++)
-            {    
-                nextThreadCount = stepAmount * i;
-                if (nextThreadCount != previousThreadCount &&
-                    nextThreadCount >=0 &&
-                    nextThreadCount <= ThreadCount)
-                {
-                    Points.Add(new Point()
-                    {
-                        unitsFromStart = (i * StepIntervalSeconds) + startX,
-                        threadLevel = nextThreadCount
-                    });
-                    previousThreadCount = nextThreadCount;
-                }
-            }
-        }
-
-        private void AddMaxLevelPoint()
-        {
-            var lastPoint = Points[Points.Count - 1];
-            if (lastPoint.threadLevel != ThreadCount)
+            if (now > startTime.AddSeconds(DurationSeconds))
             {
-                //add max thread level
-                Points.Add(new Point()
-                {
-                    unitsFromStart = lastPoint.unitsFromStart + 1,
-                    threadLevel = ThreadCount
-                });
+                return 0;
             }
-        }
-
-        private void AddRampdownPoints()
-        {
-            //add ramp down points
-            int rampdownIntervalCount = RampDownSeconds / StepIntervalSeconds;
-            if (rampdownIntervalCount <= 0)
-                rampdownIntervalCount = 1;
-
-            var lastPoint = Points[Points.Count - 1];
-            var startX = DurationSeconds - RampDownSeconds > lastPoint.unitsFromStart 
-                ? DurationSeconds - RampDownSeconds 
-                : lastPoint.unitsFromStart + 1;
-
-            if (startX <= 1)
-                startX = 1;
-
-            var previousThreadCount = lastPoint.threadLevel;
-            int stepAmount = ThreadCount / rampdownIntervalCount;
-            if (stepAmount < 1)
-                stepAmount = 1;
-
-            for (int i = 1; i <= rampdownIntervalCount; i++)
+            if (now < startTime.AddSeconds(RampUpSeconds))
             {
-                var nextThreadCount = previousThreadCount - stepAmount;
-                if (nextThreadCount != previousThreadCount && 
-                    nextThreadCount <= ThreadCount && 
-                    nextThreadCount >=0)
-                {
-                    Points.Add(new Point()
-                    {
-                        unitsFromStart = (i * StepIntervalSeconds) + startX,
-                        threadLevel = nextThreadCount
-                    });
-                    previousThreadCount = nextThreadCount;
-                }
+                double gradient = (double)ThreadCount / RampUpSeconds;
+                var threadLevel = (int)(gradient * now.Subtract(startTime).Seconds);
+                return threadLevel == 0 ? 1 : threadLevel;
             }
+            if (now > startTime.AddSeconds(DurationSeconds - RampDownSeconds))
+            {
+                double gradient = (double)ThreadCount / RampDownSeconds;
+                var timeEllapsed = now.Subtract(startTime.AddSeconds(DurationSeconds - RampDownSeconds)).Seconds;
+                var threadLevel = ThreadCount - (int)(gradient * timeEllapsed);
+                return threadLevel == 0 ? 1 : threadLevel;
+            }
+
+            return ThreadCount;
         }
 
-        public override int GetMaxThreadCount() => ThreadCount;
-        public override string GetPatternType() => "gradual";
+        public int GetMaxDurationSeconds() => DurationSeconds;
     }
 }

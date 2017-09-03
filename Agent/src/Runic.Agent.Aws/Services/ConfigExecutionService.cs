@@ -12,7 +12,7 @@ namespace Runic.Agent.Aws.Services
 {
     public class ConfigExecutionService
     {
-        private readonly IPatternService _patternService;
+        private readonly IPatternController _patternController;
         private readonly IFlowManager _flowManager;
         private Flow _flow;
         private IAgentConfig _config;
@@ -21,14 +21,14 @@ namespace Runic.Agent.Aws.Services
         private readonly IDatetimeService _datetimeService;
 
         public ConfigExecutionService(
-            IPatternService patternService, 
+            IPatternController patternController, 
             IFlowManager flowManager, 
             IAgentConfig config, 
             IFlowProvider flowProvider, 
             ILoggerFactory loggerFactory, 
             IDatetimeService datetimeService)
         {
-            _patternService = patternService;
+            _patternController = patternController;
             _flowManager = flowManager;
             _config = config;
             _flowProvider = flowProvider;
@@ -37,8 +37,7 @@ namespace Runic.Agent.Aws.Services
         }
 
         public async Task StartThreadPattern(CancellationToken ctx = default(CancellationToken))
-        {
-            //todo standardise tokens
+        { 
             await ImportFlow();
             switch (_config.AgentSettings.FlowThreadPatternName.ToLowerInvariant())
             {
@@ -73,7 +72,7 @@ namespace Runic.Agent.Aws.Services
                     DurationSeconds = _config.AgentSettings.FlowDurationSeconds
                 };
             _logger.LogInformation($"Starting constant thread pattern {_config.AgentSettings.FlowPatternExecutionId}");
-            _patternService.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ctx);
+            _patternController.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ctx);
         }
 
         private void StartGraphPattern(CancellationToken ctx = default(CancellationToken))
@@ -84,7 +83,7 @@ namespace Runic.Agent.Aws.Services
                 Points = _config.AgentSettings.FlowPoints.ParsePoints()
             };
             _logger.LogInformation($"Starting graph thread pattern {_config.AgentSettings.FlowPatternExecutionId}");
-            _patternService.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ctx);
+            _patternController.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ctx);
         }
 
         private void StartGradualPattern(CancellationToken ctx = default(CancellationToken))
@@ -94,11 +93,10 @@ namespace Runic.Agent.Aws.Services
                 DurationSeconds = _config.AgentSettings.FlowDurationSeconds,
                 RampDownSeconds = _config.AgentSettings.FlowRampDownSeconds,
                 RampUpSeconds = _config.AgentSettings.FlowRampUpSeconds,
-                StepIntervalSeconds = _config.AgentSettings.FlowStepIntervalSeconds,
                 ThreadCount = _config.AgentSettings.FlowThreadCount
             };
             _logger.LogInformation($"Starting gradual thread pattern {_config.AgentSettings.FlowPatternExecutionId}");
-            _patternService.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ctx);
+            _patternController.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ctx);
         }
     }
 }

@@ -56,9 +56,9 @@ namespace Runic.Agent.Core.ThreadManagement
 
         public void StopFlow(string flowExecutionId)
         {
-            if (_threadManagers.TryRemove(flowExecutionId, out FlowThreadManager IThreadManager))
+            if (_threadManagers.TryRemove(flowExecutionId, out FlowThreadManager threadManager))
             {
-                IThreadManager.StopAll();
+                threadManager.StopAll();
             }
         }
         

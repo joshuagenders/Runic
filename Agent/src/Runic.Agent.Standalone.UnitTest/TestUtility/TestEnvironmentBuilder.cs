@@ -6,6 +6,7 @@ using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.FunctionHarness;
 using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadManagement;
+using Runic.Agent.Core.ThreadPatterns;
 using Runic.Agent.Standalone.Clients;
 using Runic.Agent.Standalone.Configuration;
 using Runic.Agent.Standalone.Services;
@@ -107,7 +108,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             return WithSingleInstanceType<ThreadManager, IThreadManager>()
                    .WithSingleInstanceType<InMemoryRuneClient, IRuneClient>()
                    .WithSingleInstanceType<FlowManager, IFlowManager>()
-                   .WithSingleInstanceType<PatternService, IPatternService>()
+                   .WithSingleInstanceType<PatternController, IPatternController>()
                    .WithType<NoOpDataService, IDataService>()
                    .WithType<LoggerFactory, ILoggerFactory>()
                    .WithType<StatsClient, IStatsClient>()

@@ -14,7 +14,7 @@ namespace Runic.Agent.Core.IoC
 
             builder.RegisterType<PluginManager>().As<IPluginManager>().SingleInstance();
             builder.RegisterType<FlowManager>().As<IFlowManager>().SingleInstance();
-            builder.RegisterType<PatternService>().As<IPatternService>().SingleInstance();
+            //builder.RegisterType<PatternService>().As<IPatternService>().SingleInstance();
             builder.RegisterType<ThreadManager>().As<IThreadManager>().SingleInstance();
             builder.RegisterType<DateTimeService>().As<IDatetimeService>();
             builder.RegisterType<RunnerService>().As<IRunnerService>();

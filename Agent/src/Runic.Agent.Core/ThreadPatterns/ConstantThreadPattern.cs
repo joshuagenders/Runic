@@ -1,14 +1,12 @@
 ﻿using Runic.Agent.Core.Services;
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Runic.Agent.Core.ThreadPatterns
 {
     public class ConstantThreadPattern : IThreadPattern
     {
-        private List<Action<int>> _callbacks { get; set; }
+        private List<Tuple<DateTime,int>> _threadEvents { get; set; }
         private readonly IDatetimeService _datetimeService;
 
         public int ThreadCount { get; set; }
@@ -16,26 +14,24 @@ namespace Runic.Agent.Core.ThreadPatterns
 
         public ConstantThreadPattern(IDatetimeService datetimeService)
         {
-            _callbacks = new List<Action<int>>();
+            _threadEvents = new List<Tuple<DateTime, int>>();
             _datetimeService = datetimeService;
         }
 
-        public void RegisterThreadChangeHandler(Action<int> callback) => _callbacks.Add(callback);
         public int GetMaxDurationSeconds() => DurationSeconds;
         public int GetMaxThreadCount() => ThreadCount;
 
-        public async Task StartPatternAsync(CancellationToken ctx = default(CancellationToken))
+        public int GetCurrentThreadLevel(DateTime startTime)
         {
-            if (DurationSeconds == 0)
+            if (DurationSeconds > 0 && _datetimeService.Now > startTime.AddSeconds(DurationSeconds))
             {
-                _callbacks.ForEach(c => c.Invoke(ThreadCount));
+                return 0;
             }
-            else
+            if (_datetimeService.Now < startTime)
             {
-                _callbacks.ForEach(c => c.Invoke(ThreadCount));
-                await _datetimeService.WaitMilliseconds(DurationSeconds * 1000, ctx);
-                _callbacks.ForEach(c => c.Invoke(0));
+                return 0;
             }
+            return ThreadCount;
         }
 
         public string GetPatternType() => "constant";

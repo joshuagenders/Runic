@@ -5,13 +5,7 @@ VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Core", "Runic.Agent.Core\Runic.Agent.Core.csproj", "{560768FC-9863-49A5-AF57-FC8BB256E956}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Worker", "Runic.Agent.Worker\Runic.Agent.Worker.csproj", "{A934A746-A8B2-4B9E-BFD0-3FCB276E8CBB}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Core.UnitTest", "Runic.Agent.Core.UnitTest\Runic.Agent.Core.UnitTest.csproj", "{DE08AD1D-FB3E-4356-97D8-F04F2E92CE3D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Worker.Test", "Runic.Agent.Worker.UnitTest\Runic.Agent.Worker.Test.csproj", "{68DBCD72-9853-4D45-8A2D-09597D544D59}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Api", "Runic.Agent.Api\Runic.Agent.Api.csproj", "{BE65539A-A02F-46E5-9BBE-4E71BABE1FC3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Standalone", "Runic.Agent.Standalone\Runic.Agent.Standalone.csproj", "{1AFA36AC-006A-4FAF-84CB-E9426AFFD99C}"
 EndProject
@@ -25,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gherkin", "Gherkin\Gherkin.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.ExampleTest", "Runic.Agent.ExampleTest\Runic.Agent.ExampleTest.csproj", "{BA5B4706-7535-4025-BCAC-569D7B40FF53}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runic.Agent.Aws", "Runic.Agent.Aws\Runic.Agent.Aws.csproj", "{138A4B7A-F3AA-4796-B142-0FFF57D0A9C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Aws", "Runic.Agent.Aws\Runic.Agent.Aws.csproj", "{138A4B7A-F3AA-4796-B142-0FFF57D0A9C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,22 +31,10 @@ Global
 		{560768FC-9863-49A5-AF57-FC8BB256E956}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{560768FC-9863-49A5-AF57-FC8BB256E956}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{560768FC-9863-49A5-AF57-FC8BB256E956}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A934A746-A8B2-4B9E-BFD0-3FCB276E8CBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A934A746-A8B2-4B9E-BFD0-3FCB276E8CBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A934A746-A8B2-4B9E-BFD0-3FCB276E8CBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A934A746-A8B2-4B9E-BFD0-3FCB276E8CBB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DE08AD1D-FB3E-4356-97D8-F04F2E92CE3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DE08AD1D-FB3E-4356-97D8-F04F2E92CE3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE08AD1D-FB3E-4356-97D8-F04F2E92CE3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE08AD1D-FB3E-4356-97D8-F04F2E92CE3D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{68DBCD72-9853-4D45-8A2D-09597D544D59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{68DBCD72-9853-4D45-8A2D-09597D544D59}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{68DBCD72-9853-4D45-8A2D-09597D544D59}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{68DBCD72-9853-4D45-8A2D-09597D544D59}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BE65539A-A02F-46E5-9BBE-4E71BABE1FC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BE65539A-A02F-46E5-9BBE-4E71BABE1FC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BE65539A-A02F-46E5-9BBE-4E71BABE1FC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE65539A-A02F-46E5-9BBE-4E71BABE1FC3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1AFA36AC-006A-4FAF-84CB-E9426AFFD99C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1AFA36AC-006A-4FAF-84CB-E9426AFFD99C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1AFA36AC-006A-4FAF-84CB-E9426AFFD99C}.Release|Any CPU.ActiveCfg = Release|Any CPU

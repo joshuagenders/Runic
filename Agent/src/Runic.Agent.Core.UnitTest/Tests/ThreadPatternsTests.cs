@@ -32,61 +32,33 @@ namespace Runic.Agent.Core.UnitTest.Tests
             _mockDatetimeService.Setup(d => d.Now).Returns(DateTime.Now);
         }
 
-        private async Task <List<int>> InvokeThreadPattern(IThreadPattern threadPattern)
-        {
-            var calls = new List<int>();
-            threadPattern.RegisterThreadChangeHandler((threadCount) =>
-            {
-                calls.Add(threadCount);
-            });
-
-            var cts = new CancellationTokenSource();
-            var maxDuration = threadPattern.GetMaxDurationSeconds();
-            if (maxDuration == 0)
-                maxDuration = 2;
-
-            cts.CancelAfter(maxDuration * 1000 + 1000);
-            try
-            {
-                await threadPattern.StartPatternAsync(cts.Token);
-            }
-            catch (TaskCanceledException)
-            {
-                // all g
-            }
-            return calls;
-        }
-
         [TestCategory("UnitTest")]
         [TestMethod]
-        public async Task WhenShrinkingGraphExecutes_CallbacksAreInvoked()
+        public void WhenShrinkingGraphExecutes_CorrectThreadLevelsReturned()
         {
-            var gtp = new GraphThreadPattern(_mockDatetimeService.Object)
+            var pattern = new GraphThreadPattern(_mockDatetimeService.Object)
             {
-                DurationSeconds = 4,
+                DurationSeconds = 20,
                 Points = new List<Point>()
                 {
                    new Point(){ threadLevel = 2, unitsFromStart = 0 },
-                   new Point(){ threadLevel = 5, unitsFromStart = 5 },
-                   new Point(){ threadLevel = 0, unitsFromStart = 10 }
+                   new Point(){ threadLevel = 5, unitsFromStart = 50 },
+                   new Point(){ threadLevel = 0, unitsFromStart = 100 }
                 }
             };
-            var patternTask = InvokeThreadPattern(gtp);
-            _semaphore.Release(3);
-            var calls = await patternTask;
-            Assert.AreEqual(3, calls.Count);
-            Assert.AreEqual(2, calls[0]);
-            Assert.AreEqual(5, calls[1]);
-            Assert.AreEqual(0, calls[2]);
+            var startTime = new DateTime(2017, 1, 1, 1, 1, 0);
+            AssertThreadLevel(pattern, startTime, 1, 2);
+            AssertThreadLevel(pattern, startTime, 11, 5);
+            AssertThreadLevel(pattern, startTime, 21, 0);
         }
 
         [TestCategory("UnitTest")]
         [TestMethod]
-        public async Task WhenExpandingGraphPatternExecuted_CallbacksAreInvoked()
+        public void WhenExpandingGraphPatternExecuted_CorrectThreadLevelsReturned()
         {
-            var gtp = new GraphThreadPattern(_mockDatetimeService.Object)
+            var pattern = new GraphThreadPattern(_mockDatetimeService.Object)
             {
-                DurationSeconds = 5,
+                DurationSeconds = 60,
                 Points = new List<Point>()
                 {
                    new Point(){ threadLevel = 2, unitsFromStart = 0 },
@@ -94,134 +66,123 @@ namespace Runic.Agent.Core.UnitTest.Tests
                    new Point(){ threadLevel = 0, unitsFromStart = 2 }
                 }
             };
-            var patternTask = InvokeThreadPattern(gtp);
-            _semaphore.Release(3);
-            var calls = await patternTask;
-            Assert.AreEqual(3, calls.Count);
-            Assert.AreEqual(2, calls[0]);
-            Assert.AreEqual(5, calls[1]);
-            Assert.AreEqual(0, calls[2]);
+            var startTime = new DateTime(2017, 1, 1, 1, 1, 0);
+            AssertThreadLevel(pattern, startTime, 1, 2);
+            AssertThreadLevel(pattern, startTime, 31, 5);
+            AssertThreadLevel(pattern, startTime, 61, 0);
         }
 
         [TestCategory("UnitTest")]
         [TestMethod]
-        public async Task WhenConstantThreadPatternIsExecuted_CallbacksAreInvoked()
+        public void WhenConstantThreadPatternIsExecuted_CorrectThreadLevelsReturned()
         {
-            var ctp = new ConstantThreadPattern(_mockDatetimeService.Object)
+            var pattern = new ConstantThreadPattern(_mockDatetimeService.Object)
             {
                 ThreadCount = 4
             };
-            var patternTask = InvokeThreadPattern(ctp);
-            _semaphore.Release(2);
-            var calls = await patternTask;
-            Assert.AreEqual(1, calls.Count);
-            Assert.AreEqual(4, calls[0]);
+            var startTime = new DateTime(2017, 1, 1, 1, 1, 0);
+            AssertThreadLevel(pattern, startTime, 1, 4);
+            AssertThreadLevel(pattern, startTime, 5425, 4);
         }
 
         [TestCategory("UnitTest")]
         [TestMethod]
-        public async Task WhenConstantPatternWithDurationIsExecuted_CallbacksAreInvoked()
+        public void WhenConstantPatternWithDurationIsExecuted_CorrectThreadLevelsReturned()
         {
-            var ctp = new ConstantThreadPattern(_mockDatetimeService.Object)
+            var pattern = new ConstantThreadPattern(_mockDatetimeService.Object)
             {
                 ThreadCount = 4,
-                DurationSeconds = 2
+                DurationSeconds = 20
             };
-            var patternTask = InvokeThreadPattern(ctp);
-            _semaphore.Release(2);
-            var calls = await patternTask;
-            Assert.AreEqual(2, calls.Count);
-            Assert.AreEqual(4, calls[0]);
-            Assert.AreEqual(0, calls[1]);
+            var startTime = new DateTime(2017, 1, 1, 1, 1, 0);
+            AssertThreadLevel(pattern, startTime, 1, 4);
+            AssertThreadLevel(pattern, startTime, 19, 4);
+            AssertThreadLevel(pattern, startTime, 21, 0);
         }
 
         [TestCategory("UnitTest")]
         [TestMethod]
-        public async Task WhenGradualFlowExecutes_CallbacksAreInvoked()
+        public void WhenGradualFlowExecutes_CorrectThreadLevelsReturned()
         {
-            var gtp = new GradualThreadPattern(_mockDatetimeService.Object)
+            var pattern = new GradualThreadPattern(_mockDatetimeService.Object)
             {
-                DurationSeconds = 6,
-                RampDownSeconds = 2,
-                RampUpSeconds = 2,
-                StepIntervalSeconds = 1,
-                ThreadCount = 6
+                DurationSeconds = 60,
+                RampDownSeconds = 9,
+                RampUpSeconds = 9,
+                ThreadCount = 3
             };
-            var patternTask = InvokeThreadPattern(gtp);
-            _semaphore.Release(5);
-            var calls = await patternTask;
-            Assert.AreEqual(5, calls.Count);
-            Assert.AreEqual(0, calls[0]);
-            Assert.AreEqual(3, calls[1]);
-            Assert.AreEqual(6, calls[2]);
-            Assert.AreEqual(3, calls[3]);
-            Assert.AreEqual(0, calls[4]);
+            var startTime = new DateTime(2017, 1, 1, 1, 1, 0);
+            AssertThreadLevel(pattern, startTime, 1, 1);
+            AssertThreadLevel(pattern, startTime, 8, 2);
+            AssertThreadLevel(pattern, startTime, 10, 3);
+
+            AssertThreadLevel(pattern, startTime, 30, 3);
+            
+            AssertThreadLevel(pattern, startTime, 50, 3);
+            AssertThreadLevel(pattern, startTime, 54, 2);
+            AssertThreadLevel(pattern, startTime, 58, 1);
+
+            AssertThreadLevel(pattern, startTime, 62, 0);
         }
 
         [TestCategory("UnitTest")]
         [TestMethod]
-        public async Task WhenAComplexGradualFlowIsExecuted_CallbacksAreInvoked()
+        public void WhenAComplexGradualFlowIsExecuted_CorrectThreadLevelsReturned()
         {
-            var gtp = new GradualThreadPattern(_mockDatetimeService.Object)
+            var pattern = new GradualThreadPattern(_mockDatetimeService.Object)
             {
-                DurationSeconds = 10,
+                DurationSeconds = 14,
                 RampDownSeconds = 5,
                 RampUpSeconds = 5,
-                StepIntervalSeconds = 1,
                 ThreadCount = 4
             };
-            var patternTask = InvokeThreadPattern(gtp);
-            _semaphore.Release(9);
-            var calls = await patternTask;
-            Assert.AreEqual(9, calls.Count);
-            Assert.AreEqual(0, calls[0]);
-            Assert.AreEqual(1, calls[1]);
-            Assert.AreEqual(2, calls[2]);
-            Assert.AreEqual(3, calls[3]);
-            Assert.AreEqual(4, calls[4]);
-            Assert.AreEqual(3, calls[5]);
-            Assert.AreEqual(2, calls[6]);
-            Assert.AreEqual(1, calls[7]);
-            Assert.AreEqual(0, calls[8]);
+            var startTime = new DateTime(2017, 1, 1, 1, 1, 0);
+
+            AssertThreadLevel(pattern, startTime, 1, 1);
+            AssertThreadLevel(pattern, startTime, 3, 2);
+            AssertThreadLevel(pattern, startTime, 4, 3);
+            AssertThreadLevel(pattern, startTime, 5, 4);
+            AssertThreadLevel(pattern, startTime, 11, 3);
+            AssertThreadLevel(pattern, startTime, 12, 2);
+            AssertThreadLevel(pattern, startTime, 13, 1);
+            AssertThreadLevel(pattern, startTime, 15, 0);
         }
 
         [TestCategory("UnitTest")]
         [TestMethod]
-        public async Task WhenGradualWithRampUpDownEdgeAndIntervalCollisionExecutes_CallbacksAreInvoked()
+        public void WhenGradualWithRampUpDownEdgeAndIntervalCollisionExecutes_CorrectThreadLevelsReturned()
         {
-            var gtp = new GradualThreadPattern(_mockDatetimeService.Object)
+            var pattern = new GradualThreadPattern(_mockDatetimeService.Object)
             {
-                DurationSeconds = 10,
-                RampDownSeconds = 5,
-                RampUpSeconds = 5,
-                StepIntervalSeconds = 5,
+                DurationSeconds = 14,
+                RampDownSeconds = 7,
+                RampUpSeconds = 7,
                 ThreadCount = 2
             };
-            var patternTask = InvokeThreadPattern(gtp);
-            _semaphore.Release(3);
-            var calls = await patternTask;
-            Assert.AreEqual(3, calls.Count);
-            Assert.AreEqual(0, calls[0]);
-            Assert.AreEqual(2, calls[1]);
-            Assert.AreEqual(0, calls[2]);
+            var startTime = new DateTime(2017, 1, 1, 1, 1, 0);
+            AssertThreadLevel(pattern, startTime, 0, 1);
+            AssertThreadLevel(pattern, startTime, 7, 2);
+            AssertThreadLevel(pattern, startTime, 15, 0);
         }
 
         [TestCategory("UnitTest")]
         [TestMethod]
-        public async Task WhenGradualWithNoRampUpDownExecutes_CallbacksAreInvoked()
+        public void WhenGradualWithNoRampUpDownExecutes__CorrectThreadLevelsReturned()
         {
-            var gtp = new GradualThreadPattern(_mockDatetimeService.Object)
+            var pattern = new GradualThreadPattern(_mockDatetimeService.Object)
             {
                 DurationSeconds = 2,
                 ThreadCount = 2
             };
-            var patternTask = InvokeThreadPattern(gtp);
-            _semaphore.Release(3);
-            var calls = await patternTask;
-            Assert.AreEqual(3, calls.Count);
-            Assert.AreEqual(0, calls[0]);
-            Assert.AreEqual(2, calls[1]);
-            Assert.AreEqual(0, calls[2]);
+            var startTime = new DateTime(2017, 1, 1, 1, 1, 0);
+            AssertThreadLevel(pattern, startTime, 2, 2);
+            AssertThreadLevel(pattern, startTime, 4, 0);
+        }
+
+        private void AssertThreadLevel(IThreadPattern pattern, DateTime startTime, int secondsEllapsed, int expectedThreadLevel)
+        {
+            _mockDatetimeService.Setup(s => s.Now).Returns(startTime.AddSeconds(secondsEllapsed));
+            Assert.AreEqual(expectedThreadLevel, pattern.GetCurrentThreadLevel(startTime));
         }
     }
 }

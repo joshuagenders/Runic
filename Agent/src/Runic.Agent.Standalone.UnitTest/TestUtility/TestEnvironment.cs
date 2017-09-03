@@ -15,6 +15,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Runic.Agent.Core.Services;
+using Runic.Agent.Core.ThreadPatterns;
 
 namespace Runic.Agent.Standalone.Test.TestUtility
 {
@@ -35,7 +36,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         public TestObject<IDataService> DataService { get; set; } = new TestObject<IDataService>();
         public TestObject<IStatsd> Statsd { get; set; } = new TestObject<IStatsd>();
         public TestObject<IStatsClient> StatsClient{ get; set; } = new TestObject<IStatsClient>();
-        public TestObject<IPatternService> PatternService { get; set; } = new TestObject<IPatternService>();
+        public TestObject<IPatternController> PatternService { get; set; } = new TestObject<IPatternController>();
         public TestObject<IThreadManager> ThreadManager { get; set; } = new TestObject<IThreadManager>();
         public TestObject<IRuneClient> RuneClient { get; set; } = new TestObject<IRuneClient>();
         public TestObject<IAgentConfig> AgentConfig { get; set; } = new TestObject<IAgentConfig>();
@@ -48,7 +49,6 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         public TestObject<AgentCoreConfiguration> AgentCoreConfiguration { get; set; } = new TestObject<AgentCoreConfiguration>();
         public TestObject<ITestResultHandler> TestResultHandler { get; set; } = new TestObject<ITestResultHandler>();
         public TestObject<ILoggingHandler> LoggingHandler { get; set; } = new TestObject<ILoggingHandler>();
-        public TestObject<IAgentObserver> AgentObserver { get; set; } = new TestObject<IAgentObserver>();
         public TestObject<TestContext> TestContext { get; set; } = new TestObject<TestContext>();
 
         public T Get<T>() where T : class

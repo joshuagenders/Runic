@@ -3,50 +3,63 @@ using Runic.Framework.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Runic.Agent.Core.ThreadPatterns
 {
     public class GraphThreadPattern : IThreadPattern
     {
         private readonly IDatetimeService _datetimeService;
-
-        private IList<Action<int>> _callbacks { get; set; }
-
+        
         public IList<Point> Points { get; set; }
         public int DurationSeconds { get; set; }
 
         public GraphThreadPattern(IDatetimeService datetimeService)
         {
-            _callbacks = new List<Action<int>>();
             _datetimeService = datetimeService;
         }
 
-        public void RegisterThreadChangeHandler(Action<int> callback) => _callbacks.Add(callback);
         public virtual int GetMaxDurationSeconds() => DurationSeconds;
         public virtual int GetMaxThreadCount() => Points.Max(p => p.threadLevel);
 
-        public virtual async Task StartPatternAsync(CancellationToken ctx = default(CancellationToken))
+        public List<Tuple<DateTime, int>> GetThreadChangeEvents(DateTime startTime)
         {
             double maxX = Points.Max(p => p.unitsFromStart);
-            for (int index = 0; index < Points.Count; index++)
-            {
-                if (ctx.IsCancellationRequested)
-                    return;
-                var currentPoint = Points[index];
-
-                _callbacks.ToList().ForEach(setthread => setthread(currentPoint.threadLevel));
-
-                if (index < Points.Count - 1)
-                {
-                    var nextPoint = Points[index + 1];
-                    var waitTimeSeconds = ((nextPoint.unitsFromStart - currentPoint.unitsFromStart) * (DurationSeconds / maxX));
-                    await _datetimeService.WaitMilliseconds((int)waitTimeSeconds * 1000, ctx);
-                }
-            }
-            await Task.CompletedTask;
+            double secondsPerPoint = (DurationSeconds / maxX);
+            var threadEvents = Points.Select(p => Tuple.Create(startTime.AddSeconds(secondsPerPoint * p.unitsFromStart), p.threadLevel)).ToList();
+            threadEvents.Add(Tuple.Create(startTime.AddSeconds(DurationSeconds), 0));
+            return threadEvents;
         }
+
         public virtual string GetPatternType() => "graph";
+
+        public int GetCurrentThreadLevel(DateTime startTime)
+        {
+            if (_datetimeService.Now > startTime.AddSeconds(DurationSeconds))
+            {
+                return 0;
+            }
+            if (_datetimeService.Now < startTime)
+            {
+                return 0;
+            }
+            
+            double maxX = Points.Max(p => p.unitsFromStart);
+            double secondsPerPoint = (DurationSeconds / maxX);
+            var timeEllapsedSeconds = _datetimeService.Now.Subtract(startTime).Seconds;
+            var currentPosition = timeEllapsedSeconds / secondsPerPoint;
+
+            Point point = Points[0];
+            for (var index = 1; index < Points.Count; index++)
+            {
+                if (point.unitsFromStart > currentPosition)
+                {
+                    break;
+                }
+                if (currentPosition < Points[index].unitsFromStart)
+                    break;
+                point = Points[index];
+            }
+            return point.threadLevel;
+        }
     }
 }

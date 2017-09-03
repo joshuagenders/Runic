@@ -6,12 +6,13 @@ using Runic.Agent.Aws.Services;
 using System.Threading;
 using System.Threading.Tasks;
 using Runic.Agent.Aws.Providers;
+using Runic.Agent.Core.ThreadPatterns;
 
 namespace Runic.Agent.Aws
 {
     public class Application : IApplication
     {
-        private readonly IPatternService _patternService;
+        private readonly IPatternController _patternController;
         private readonly IFlowManager _flowManager;
         private readonly ILogger _logger;
         private readonly ILoggerFactory _loggerFactory;
@@ -19,9 +20,9 @@ namespace Runic.Agent.Aws
         private readonly IFlowProvider _flowProvider;
         private readonly IDatetimeService _datetimeService;
 
-        public Application(IPatternService patternService, IFlowManager flowManager, ILoggerFactory loggerFactory, IAgentConfig config, IFlowProvider flowProvider, IDatetimeService datetimeService)
+        public Application(IPatternController patternController, IFlowManager flowManager, ILoggerFactory loggerFactory, IAgentConfig config, IFlowProvider flowProvider, IDatetimeService datetimeService)
         {
-            _patternService = patternService;
+            _patternController = patternController;
             _flowManager = flowManager;
             _logger = loggerFactory.CreateLogger<IApplication>();
             _loggerFactory = loggerFactory;
@@ -33,10 +34,10 @@ namespace Runic.Agent.Aws
         public async Task RunApplicationAsync(CancellationToken ctx = default(CancellationToken))
         {
             _logger.LogInformation("Creating execution service.");
-            var executionService = new ConfigExecutionService(_patternService, _flowManager, _config, _flowProvider, _loggerFactory, _datetimeService);
+            var executionService = new ConfigExecutionService(_patternController, _flowManager, _config, _flowProvider, _loggerFactory, _datetimeService);
             await executionService.StartThreadPattern(ctx);
             _logger.LogInformation("Thread pattern started.");
-            await _patternService.GetCompletionTaskAsync(_config.AgentSettings.FlowPatternExecutionId, ctx);
+            await _patternController.Run(ctx);
             _logger.LogInformation("Thread pattern complete.");
         }
     }
