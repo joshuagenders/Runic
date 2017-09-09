@@ -13,23 +13,20 @@ namespace Runic.Agent.Standalone.Services
     public class ConfigExecutionService
     {
         private readonly IPatternController _patternController;
-        private readonly IFlowManager _flowManager;
         private Flow _flow;
-        private IAgentConfig _config;
-        private IFlowProvider _flowProvider;
+        private readonly IAgentConfig _config;
+        private readonly IFlowProvider _flowProvider;
         private readonly ILogger _logger;
         private readonly IDatetimeService _datetimeService;
 
         public ConfigExecutionService(
             IPatternController patternController, 
-            IFlowManager flowManager, 
             IAgentConfig config, 
             IFlowProvider flowProvider, 
             ILoggerFactory loggerFactory, 
             IDatetimeService datetimeService)
         {
             _patternController = patternController;
-            _flowManager = flowManager;
             _config = config;
             _flowProvider = flowProvider;
             _logger = loggerFactory.CreateLogger<ConfigExecutionService>();
@@ -61,7 +58,6 @@ namespace Runic.Agent.Standalone.Services
         {
             _flow = _flowProvider.GetFlow(_config.AgentSettings.AgentFlowFilepath);
             _logger.LogInformation($"Importing flow {_flow.Name}.");
-            _flowManager.AddUpdateFlow(_flow);
             _logger.LogInformation($"{_flow.Name} imported.");
         }
 

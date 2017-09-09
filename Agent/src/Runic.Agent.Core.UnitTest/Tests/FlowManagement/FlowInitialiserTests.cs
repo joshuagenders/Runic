@@ -1,13 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Runic.Agent.Core.PluginManagement;
-using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.UnitTest.TestUtility;
 using Runic.Framework.Clients;
 using System.IO;
 using System.Linq;
+using Runic.Agent.Core.Services;
 
 namespace Runic.Agent.Core.UnitTest.Tests.FlowManagement
 {
@@ -20,9 +19,8 @@ namespace Runic.Agent.Core.UnitTest.Tests.FlowManagement
         {
             _pluginManager = new PluginManager(
                 new Mock<IRuneClient>().Object, 
-                new FilePluginProvider(Directory.GetCurrentDirectory()), 
-                new Mock<IStatsClient>().Object,
-                new Mock<ILoggingHandler>().Object);
+                new FilePluginProvider(Directory.GetCurrentDirectory()),
+                new Mock<IEventService>().Object);
         }
 
         [TestCategory("UnitTest")]
@@ -30,7 +28,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.FlowManagement
         public void WhenInitialiseFlow_PluginsAreLoaded()
         {
             var flow = TestData.GetTestFlowSingleStep;   
-            var flowInitialiser = new FlowInitialiser(_pluginManager, new Mock<IFlowManager>().Object, new Mock<ILoggingHandler>().Object);
+            var flowInitialiser = new FlowInitialiser(_pluginManager, new Mock<IEventService>().Object);
             flowInitialiser.InitialiseFlow(flow);
 
             Assert.IsTrue(_pluginManager.GetAssemblies().Any());

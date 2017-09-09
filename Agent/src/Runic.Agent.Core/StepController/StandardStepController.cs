@@ -38,7 +38,7 @@ namespace Runic.Agent.Core.StepController
             {
                 nextStep = _flow.Steps.First();
                 _lastStepIndex = 0;
-                _getNextStepFromResult = nextStep.GetNextStepFromFunctionResult;
+                _getNextStepFromResult = nextStep.Function.GetNextStepFromFunctionResult;
             }
             else if (nextStep == null)
             {

@@ -15,8 +15,8 @@ namespace Runic.Agent.Core.UnitTest.Tests.StepController
         {
             Steps = new List<Step>()
                 {
-                    new Step() { StepName = "Step1" },
-                    new Step() { StepName = "Step2" },
+                    new Step() { StepName = "Step1", Function = new FunctionInformation() },
+                    new Step() { StepName = "Step2", Function = new FunctionInformation() },
                 }
         };
 
@@ -35,7 +35,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.StepController
         public void WhenStringReturnedAsNextStepFromFunction_ReturnsNextStep()
         {
             var flow = _flow;
-            flow.Steps[0].GetNextStepFromFunctionResult = true;
+            flow.Steps[0].Function.GetNextStepFromFunctionResult = true;
             flow.Steps.Add(new Step() { StepName = "Step3" });
             var result = new FunctionResult()
             {
@@ -72,7 +72,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.StepController
 
             step1.Should().Be(flow.Steps[0]);
             step2.Should().Be(flow.Steps[1]);
-            step1.Should().Be(flow.Steps[0]);
+            step3.Should().Be(flow.Steps[0]);
         }
     }
 }

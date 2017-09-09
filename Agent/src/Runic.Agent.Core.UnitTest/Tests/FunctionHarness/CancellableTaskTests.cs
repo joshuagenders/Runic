@@ -13,8 +13,8 @@ namespace Runic.Agent.Core.UnitTest.Tests.FunctionHarness
         public void WhenCancellableTaskIsCancelled_TaskCompletes()
         {
             var cts = new CancellationTokenSource();
-            cts.CancelAfter(10000);
-            var cancellableTask = new CancellableTask(Task.Run(async () => await Poll(cts.Token), cts.Token), new SafeCancellationToken(), cts);
+            cts.CancelAfter(2000);
+            var cancellableTask = new CancellableTask(Task.Run(async () => await Poll(cts.Token), cts.Token), cts);
             try
             {
                 cancellableTask.Cancel();
@@ -32,10 +32,10 @@ namespace Runic.Agent.Core.UnitTest.Tests.FunctionHarness
         public async Task WhenAsyncCancellableTaskIsCancelled_TaskCompletes()
         {
             var cts = new CancellationTokenSource();
-            cts.CancelAfter(10000);
+            cts.CancelAfter(2000);
             try
             {
-                var cancellableTask = new CancellableTask(Task.Run(async () => await Poll(cts.Token), cts.Token), new SafeCancellationToken(), cts);
+                var cancellableTask = new CancellableTask(Task.Run(async () => await Poll(cts.Token), cts.Token), cts);
                 await cancellableTask.CancelAsync();
                 Assert.IsTrue(cancellableTask.IsComplete());
 

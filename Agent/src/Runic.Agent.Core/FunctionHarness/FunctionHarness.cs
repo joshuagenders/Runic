@@ -1,6 +1,7 @@
-﻿using Runic.Framework.Clients;
+﻿using Runic.Agent.Core.Exceptions;
+using Runic.Agent.Core.Services;
 using Runic.Framework.Attributes;
-using Runic.Agent.Core.Exceptions;
+using Runic.Framework.Models;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -8,43 +9,36 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Runic.Agent.Core.ExternalInterfaces;
 
 namespace Runic.Agent.Core.FunctionHarness
 {
     public class FunctionHarness
     {
-        private readonly ILoggingHandler _log;
-        private readonly IStatsClient _stats;
+        private readonly IDataService _dataService;
+        private readonly IEventService _eventService;
+
         private object _instance { get; set; }
-        private object[] _positionalParameters { get; set; }
-        private string _functionName { get; set; }
-        private bool _getNextStepFromResult { get; set; }
-        private string _stepName { get; set; }
+        private Step _step { get; set; }
         private string _nextStep { get; set; }
 
-        public FunctionHarness(IStatsClient stats, ILoggingHandler loggingHandler)
+        public FunctionHarness(IEventService eventService, IDataService dataService)
         {
-            _stats = stats;
-            _log = loggingHandler;
+            _eventService = eventService;
+            _dataService = dataService;
         }
 
-        public void Bind(object functionInstance, string stepName, string functionName, bool getNextStepFromResult, params object[] positionalParameters)
+        public void Bind(object functionInstance, Step step)
         {
             _instance = functionInstance;
-            _functionName = functionName;
-            _positionalParameters = positionalParameters;
-            _getNextStepFromResult = getNextStepFromResult;
-            _stepName = stepName;
+            _step = step;
         }
 
         public async Task<FunctionResult> OrchestrateFunctionExecutionAsync(CancellationToken ctx = default(CancellationToken))
         {
             FunctionResult result = new FunctionResult()
             {
-                FunctionName = _functionName,
-                StepName = _stepName,
-                FunctionParameters = _positionalParameters
+                FunctionName = _step.Function.FunctionName,
+                StepName = _step.StepName
             };
             var timer = new Stopwatch();
             try
@@ -54,15 +48,13 @@ namespace Runic.Agent.Core.FunctionHarness
                 await ExecuteFunctionAsync(ctx);
                 await ExecuteMethodWithAttribute(typeof(AfterEachAttribute), ctx);
                 timer.Stop();
-                _stats.CountFunctionSuccess(_functionName);
                 result.Success = true;
                 result.ExecutionTimeMilliseconds = timer.ElapsedMilliseconds;
                 result.NextStep = _nextStep;
             }
             catch (Exception ex)
             {
-                _log.Error($"Error in function execution for step {_stepName} and function {_functionName}", ex);
-                _stats.CountFunctionFailure(_functionName);
+                _eventService.Error($"Error in function execution for step {_step?.StepName} and function {_step?.Function?.FunctionName}", ex);
                 timer.Stop();
 
                 result.Exception = ex;
@@ -81,22 +73,24 @@ namespace Runic.Agent.Core.FunctionHarness
             foreach (var method in methods)
             {
                 var attribute = method.GetCustomAttribute<FunctionAttribute>();
-                if (attribute != null && attribute.Name == _functionName)
+                if (attribute != null && attribute.Name == _step.Function.FunctionName)
                 {
                     functionMethod = method;
                     break;
                 }
             }
             if (functionMethod == null)
-                throw new FunctionWithAttributeNotFoundException(_functionName);
-            if (_getNextStepFromResult)
+                throw new FunctionWithAttributeNotFoundException(_step.Function.FunctionName);
+            if (_step.Function.GetNextStepFromFunctionResult)
             {
-                var result = await ExecuteMethodWithReturnAsync(functionMethod, ctx, GetMapMethodParameters(_positionalParameters, functionMethod));
+                var parameters = _dataService.GetParams(_step.Function.Parameters?.ToArray(), functionMethod);
+                var result = await ExecuteMethodWithReturnAsync(functionMethod, ctx, parameters);
                 _nextStep = result;
             }
             else
             {
-                await ExecuteMethodAsync(functionMethod, ctx, GetMapMethodParameters(_positionalParameters, functionMethod));
+                var parameters = _dataService.GetParams(_step.Function.Parameters?.ToArray(), functionMethod);
+                await ExecuteMethodAsync(functionMethod, ctx, parameters);
             }
         }
 
@@ -105,7 +99,7 @@ namespace Runic.Agent.Core.FunctionHarness
             return method.ReturnType.IsAssignableFrom(typeof(Task)) ||
                         method.ReturnTypeCustomAttributes
                               .GetCustomAttributes(false)
-                              .Any(c => c.GetType() == typeof(AsyncStateMachineAttribute));
+                              .Any(c => c is AsyncStateMachineAttribute);
         }
 
         public async Task<string> ExecuteMethodWithReturnAsync(MethodInfo method, CancellationToken ctx = default(CancellationToken), params object[] inputParams)
@@ -129,7 +123,7 @@ namespace Runic.Agent.Core.FunctionHarness
             }
             else
             {
-                await Task.Run(() => method.Invoke(_instance, inputParams), ctx);
+                method.Invoke(_instance, inputParams);
             }
         }
         
@@ -143,28 +137,6 @@ namespace Runic.Agent.Core.FunctionHarness
                     return method;
             }
             return null;
-        }
-
-        private object[] GetMapMethodParameters(object[] positionalParameters, MethodInfo methodInfo)
-        {
-            var p = methodInfo.GetParameters();
-            var methodParams = new object[p.Length];
-
-            //add positional params
-            for (var i = 0; i < positionalParameters.Length; i++)
-            {
-                if (i < p.Length)
-                    methodParams[i] = positionalParameters[i];
-            }
-            //add defaults for remaining params
-            for (var i = positionalParameters.Length; i < p.Length; i++)
-            {
-                if(p[i].HasDefaultValue)
-                    methodParams[i] = p[i].DefaultValue;
-                else if (!p[i].IsOptional)
-                    methodParams[i] = p[i].ParameterType.IsByRef ? null : Activator.CreateInstance(p[i].ParameterType);
-            }
-            return methodParams;
         }
 
         private async Task ExecuteMethodWithAttribute(Type attributeType, CancellationToken ctx = default(CancellationToken))

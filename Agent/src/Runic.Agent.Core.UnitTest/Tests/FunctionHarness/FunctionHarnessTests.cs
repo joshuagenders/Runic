@@ -1,72 +1,48 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Runic.Agent.Core.UnitTest.TestUtility;
+using Runic.Agent.Core.Services;
 using Runic.Framework.Attributes;
+using Runic.Framework.Models;
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Runic.Framework.Clients;
-using Runic.Agent.Core.ExternalInterfaces;
+using System.Collections.Generic;
 
-namespace Runic.Agent.Core.UnitTest.Tests.FunctionHarness
+namespace Runic.Agent.Core.UnitTest.Tests.t
 {
     [TestClass]
     public class FunctionHarnessTests
     {
+        private Core.FunctionHarness.FunctionHarness GetFunctionHarness(object instance = null, Step step = null, IDataService dataService = null)
+        {
+            var fakeFunction = instance ?? new FakeFunction();
+            var mockDataService = new Mock<IDataService>();
+            mockDataService.Setup(d => d.GetParams(It.IsAny<string[]>(), It.IsAny<MethodInfo>())).Returns(new string[] { });
+            var functionHarness = new Core.FunctionHarness.FunctionHarness(new Mock<IEventService>().Object, dataService ?? mockDataService.Object);
+            var fakeStep = step ?? new Step()
+            {
+                StepName = "step1",
+                Function = new FunctionInformation()
+                {
+                    FunctionName = "Login"
+                },
+                
+            };
+            functionHarness.Bind(fakeFunction, fakeStep);
+
+            return functionHarness;
+        }
+
         [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenGettingMethodWithAttribute_MethodIsFound()
         {
-            var fakeFunction = new FakeFunction();
-            var functionHarness = new Core.FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new Mock<ILoggingHandler>().Object);
-            functionHarness.Bind(fakeFunction, "step1", "Login", false);
+            var functionHarness = GetFunctionHarness();
             var method = functionHarness.GetMethodWithAttribute(typeof(BeforeEachAttribute));
             Assert.IsNotNull(method, "beforeeach method not found");
-        }
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
-        public async Task WhenExecutingBeforeEach_MethodIsInvoked()
-        {
-            var fakeFunction = new FakeFunction();
-            var functionHarness = new Core.FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new Mock<ILoggingHandler>().Object);
-            functionHarness.Bind(fakeFunction, "step1", "Login", false);
-            var method = functionHarness.GetMethodWithAttribute(typeof(BeforeEachAttribute));
-            var cts = new CancellationTokenSource();
-            try
-            {
-                cts.CancelAfter(5000);
-                var task = functionHarness.ExecuteMethodAsync(method, cts.Token);
-                await task;
-                Assert.IsNull(task.Exception);
-            }
-            catch (TaskCanceledException)
-            {
-                //all g
-            }
-        }
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
-        public async Task WhenExecutingFunction_MethodIsInvoked()
-        {
-            var fakeFunction = new FakeFunction();
-            var functionHarness = new Core.FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new Mock<ILoggingHandler>().Object);
-            functionHarness.Bind(fakeFunction, "step1", "AsyncWait", false);
-            var cts = new CancellationTokenSource();
-            try
-            {
-                cts.CancelAfter(5000);
-                var task = functionHarness.ExecuteFunctionAsync(cts.Token);
-                await task;
-                Assert.IsTrue(fakeFunction.AsyncTask.IsCompleted);
-                Assert.IsNull(task.Exception);
-            }
-            catch (TaskCanceledException)
-            {
-                //all g
-            }
         }
 
         [TestCategory("UnitTest")]
@@ -74,18 +50,17 @@ namespace Runic.Agent.Core.UnitTest.Tests.FunctionHarness
         public async Task WhenAFunctionIsBoundAndExecuted_MethodsAreInvoked()
         {
             var cts = new CancellationTokenSource();
-            cts.CancelAfter(1000);
+            cts.CancelAfter(60000);
+
             var fakeFunction = new FakeFunction();
-            var functionHarness = new Core.FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new Mock<ILoggingHandler>().Object);
-            functionHarness.Bind(fakeFunction, "step1", "Login", false);
+            var step = new Step() { StepName = "Step1", Function = new FunctionInformation() { FunctionName = "Login" } };
+            
+            var functionHarness = GetFunctionHarness(fakeFunction, step);
+
             var result = await functionHarness.OrchestrateFunctionExecutionAsync(cts.Token);
-            //todo verify mock
-            fakeFunction.CallList.ForEach(c => Console.WriteLine(c.InvocationTarget));
+
             Assert.IsTrue(result.Success, "Function returned false - error in execution");
-            Assert.AreEqual(3, fakeFunction.CallList.Count);
-            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "BeforeEach"), "BeforeEach called");
-            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "Login"), "Login called");
-            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "AfterEach"), "AfterEach called");
+            AssertFunctionCall(fakeFunction, "Login");
         }
 
         [TestCategory("UnitTest")]
@@ -94,16 +69,15 @@ namespace Runic.Agent.Core.UnitTest.Tests.FunctionHarness
         {
             var cts = new CancellationTokenSource();
             cts.CancelAfter(5000);
+
             var fakeFunction = new FakeFunction();
-            var functionHarness = new Core.FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new Mock<ILoggingHandler>().Object);
-            functionHarness.Bind(fakeFunction, "step1", "AsyncWait", false);
+            var step = new Step() { Function = new FunctionInformation() { FunctionName = "AsyncWait" } };
+            var functionHarness = GetFunctionHarness(fakeFunction, step);
+
             await functionHarness.OrchestrateFunctionExecutionAsync(cts.Token);
             
             Assert.IsTrue(fakeFunction.AsyncTask.IsCompleted);
-            Assert.AreEqual(3, fakeFunction.CallList.Count);
-            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "BeforeEach"), "BeforeEach called");
-            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "AsyncWait"), "AsyncWait called");
-            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "AfterEach"), "AfterEach called");
+            AssertFunctionCall(fakeFunction, "AsyncWait");
         }
 
         [TestCategory("UnitTest")]
@@ -111,19 +85,30 @@ namespace Runic.Agent.Core.UnitTest.Tests.FunctionHarness
         public async Task WhenInputParametersAreBound_InputsArePassedToMethods()
         {
             var cts = new CancellationTokenSource();
-            cts.CancelAfter(5000);
-            var fakeFunction = new FakeFunction();
-            var functionHarness = new Core.FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new Mock<ILoggingHandler>().Object);
+            cts.CancelAfter(120000);
 
+            var fakeFunction = new FakeFunction();
+
+            var mockDataService = new Mock<IDataService>();
             var uniqueString = Guid.NewGuid().ToString("n");
             var randomInt = new Random().Next();
-            functionHarness.Bind(fakeFunction, "step1", "Inputs", false, uniqueString, randomInt);
+
+            mockDataService.Setup(d => d.GetParams(It.IsAny<string[]>(), It.IsAny<MethodInfo>())).Returns(new object[] { uniqueString, randomInt });
+
+            var step = new Step()
+            {
+                StepName = "step1",
+                Function = new FunctionInformation()
+                {
+                    FunctionName = "Inputs",
+                    Parameters = new List<string>(){ uniqueString, randomInt.ToString() }
+                }
+            };
+
+            var functionHarness = GetFunctionHarness(fakeFunction, step, mockDataService.Object);
             await functionHarness.OrchestrateFunctionExecutionAsync(cts.Token);
 
-            Assert.AreEqual(3, fakeFunction.CallList.Count);
-            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "BeforeEach"), "BeforeEach called");
-            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "Inputs"), "Inputs called");
-            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "AfterEach"), "AfterEach called");
+            AssertFunctionCall(fakeFunction, "Inputs");
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.AdditionalData == $"input1={uniqueString},input2={randomInt}"));
         }
 
@@ -132,21 +117,31 @@ namespace Runic.Agent.Core.UnitTest.Tests.FunctionHarness
         public async Task WhenInputParametersAreBound_OverrideDefaultOveridesTheInput()
         {
             var cts = new CancellationTokenSource();
-            cts.CancelAfter(5000);
+            cts.CancelAfter(1000);
+
             var fakeFunction = new FakeFunction();
-            var functionHarness = new Core.FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new Mock<ILoggingHandler>().Object);
+            var mockDataService = new Mock<IDataService>();
 
             var uniqueString = Guid.NewGuid().ToString("n");
             var uniqueString2 = Guid.NewGuid().ToString("n");
             var randomInt = new Random().Next();
 
-            functionHarness.Bind(fakeFunction, "step1", "InputsWithDefault", false, uniqueString, randomInt, uniqueString2);
+            mockDataService.Setup(d => d.GetParams(It.IsAny<string[]>(), It.IsAny<MethodInfo>())).Returns(new object[] { uniqueString, randomInt, uniqueString2 });
+
+            var step = new Step()
+            {
+                StepName = "step1",
+                Function = new FunctionInformation()
+                {
+                    FunctionName = "InputsWithDefault",
+                    Parameters = new List<string>(){ uniqueString, randomInt.ToString(), uniqueString2 }
+                }
+            };
+
+            var functionHarness = GetFunctionHarness(fakeFunction, step, mockDataService.Object);
             await functionHarness.OrchestrateFunctionExecutionAsync(cts.Token);
 
-            Assert.AreEqual(3, fakeFunction.CallList.Count);
-            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "BeforeEach"), "BeforeEach called");
-            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "InputsWithDefault"), "InputsWithDefault called");
-            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "AfterEach"), "AfterEach called");
+            AssertFunctionCall(fakeFunction, "InputsWithDefault");
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.AdditionalData == $"input1={uniqueString},input2={randomInt},input3={uniqueString2}"));
         }
 
@@ -155,20 +150,37 @@ namespace Runic.Agent.Core.UnitTest.Tests.FunctionHarness
         public async Task WhenInvokingMethodWithDefaults_MethodsAreInvokedWithDefault()
         {
             var cts = new CancellationTokenSource();
-            cts.CancelAfter(5000);
-            var fakeFunction = new FakeFunction();
-            var functionHarness = new Core.FunctionHarness.FunctionHarness(new Mock<IStatsClient>().Object, new Mock<ILoggingHandler>().Object);
+            cts.CancelAfter(1000);
 
+            var fakeFunction = new FakeFunction();
+
+            var mockDataService = new Mock<IDataService>();
             var uniqueString = Guid.NewGuid().ToString("n");
             var randomInt = new Random().Next();
-            functionHarness.Bind(fakeFunction, "step1", "InputsWithDefault", false, uniqueString, randomInt);
-            await functionHarness.OrchestrateFunctionExecutionAsync(cts.Token);
+            mockDataService.Setup(d => d.GetParams(It.IsAny<string[]>(), It.IsAny<MethodInfo>())).Returns(new object[]{ uniqueString, randomInt, "default" });
+          
+            var step = new Step()
+            {
+                StepName = "step1",
+                Function = new FunctionInformation()
+                {
+                    FunctionName = "InputsWithDefault",
+                    Parameters = new List<string>(){ uniqueString, randomInt.ToString() }
+                }
+            };
 
+            var functionHarness = GetFunctionHarness(fakeFunction, step, mockDataService.Object);
+            await functionHarness.OrchestrateFunctionExecutionAsync(cts.Token);
+            AssertFunctionCall(fakeFunction, "InputsWithDefault");
+            Assert.IsTrue(fakeFunction.CallList.Any(c => c.AdditionalData == $"input1={uniqueString},input2={randomInt},input3=default"));
+        }
+
+        private void AssertFunctionCall(FakeFunction fakeFunction, string functionName)
+        {
             Assert.AreEqual(3, fakeFunction.CallList.Count);
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "BeforeEach"), "BeforeEach called");
-            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "InputsWithDefault"), "InputsWithDefault called");
+            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == functionName), $"{functionName} called");
             Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == "AfterEach"), "AfterEach called");
-            Assert.IsTrue(fakeFunction.CallList.Any(c => c.AdditionalData == $"input1={uniqueString},input2={randomInt},input3=default"));
         }
     }
 }

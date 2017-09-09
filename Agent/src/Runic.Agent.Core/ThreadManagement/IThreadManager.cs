@@ -8,11 +8,11 @@ namespace Runic.Agent.Core.ThreadManagement
     public interface IThreadManager
     {
         int GetThreadLevel(string flowId);
-        void StopFlow(string flowExecutionId);
+        Task SetThreadLevelAsync(string flowId, Flow flow, int threadLevel, CancellationToken ctx = default(CancellationToken));
+        void StopFlow(string flowId);
         Task CancelAll(CancellationToken ctx = default(CancellationToken));
-        Task SetThreadLevelAsync(SetThreadLevelRequest request, CancellationToken ctx = default(CancellationToken));
         IList<string> GetRunningFlows();
         int GetRunningFlowCount();
-        bool FlowExists(string flowExecutionId);
+        bool FlowExists(string flowId);
     }
 }

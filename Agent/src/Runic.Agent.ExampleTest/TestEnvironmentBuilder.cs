@@ -1,6 +1,4 @@
 ﻿using Autofac;
-using Microsoft.Extensions.Logging;
-using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.FunctionHarness;
 using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadManagement;
@@ -13,7 +11,7 @@ namespace Runic.Agent.TestUtility
     public abstract class TestEnvironmentBuilder : TestEnvironment
     {
         private ContainerBuilder _builder { get; set; }
-        public TestEnvironmentBuilder()
+        protected TestEnvironmentBuilder()
         {
             _builder = new ContainerBuilder();
             RegisterTestObjects();
@@ -41,7 +39,7 @@ namespace Runic.Agent.TestUtility
             return this;
         }
 
-        protected virtual void RegisterTestObjects()
+        public void RegisterTestObjects()
         {
             var props = GetType().GetTypeInfo()
                                  .GetProperties();
@@ -79,9 +77,7 @@ namespace Runic.Agent.TestUtility
         public virtual TestEnvironmentBuilder WithStandardTypes()
         {
             return WithSingleInstanceType<ThreadManager, IThreadManager>()
-                   .WithSingleInstanceType<FlowManager, IFlowManager>()
                    .WithSingleInstanceType<PatternController, IPatternController>()
-                   .WithType<LoggerFactory, ILoggerFactory>()
                    .WithType<RunnerService, IRunnerService>()
                    .WithType<FunctionFactory, IFunctionFactory>();
         }

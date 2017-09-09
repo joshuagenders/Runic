@@ -62,13 +62,7 @@ namespace Runic.Agent.Core.Services
 
         public async Task Stop(string id, CancellationToken ctx)
         {
-            var request = new SetThreadLevelRequest()
-            {
-                FlowId = id,
-                FlowName = _runningFlows[id].Name,
-                ThreadLevel = 0
-            };
-            await _threadManager.SetThreadLevelAsync(request);
+            await _threadManager.SetThreadLevelAsync(id, _runningFlows[id], 0);
             _threadManager.StopFlow(id);
             _runningFlows.TryRemove(id, out Flow flow);
             _runningPatterns.TryRemove(id, out Tuple<DateTime,IThreadPattern> pattern);
@@ -90,13 +84,7 @@ namespace Runic.Agent.Core.Services
                 foreach (var pattern in _runningPatterns)
                 {
                     var threadCount = pattern.Value.Item2.GetCurrentThreadLevel(pattern.Value.Item1);
-                    var request = new SetThreadLevelRequest()
-                    {
-                        FlowId = pattern.Key,
-                        FlowName = _runningFlows[pattern.Key].Name,
-                        ThreadLevel = threadCount
-                    };
-                    await _threadManager.SetThreadLevelAsync(request);
+                    await _threadManager.SetThreadLevelAsync(pattern.Key, _runningFlows[pattern.Key], threadCount);
                     if (threadCount == 0)
                     {
                         await Stop(pattern.Key, ctx);   

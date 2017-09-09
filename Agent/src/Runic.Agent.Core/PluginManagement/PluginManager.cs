@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Loader;
+﻿using Runic.Agent.Core.Exceptions;
+using Runic.Agent.Core.ExternalInterfaces;
+using Runic.Agent.Core.Services;
 using Runic.Framework.Clients;
 using Runic.Framework.Attributes;
 using Runic.Framework.Models;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
-using Runic.Agent.Core.Exceptions;
-using Runic.Agent.Core.ExternalInterfaces;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Loader;
 
 namespace Runic.Agent.Core.PluginManagement
 {
@@ -17,24 +18,22 @@ namespace Runic.Agent.Core.PluginManagement
     {
         private readonly ConcurrentBag<Assembly> _assemblies;
         private readonly ConcurrentDictionary<string, bool> _assembliesLoaded;
-        private readonly ILoggingHandler _log;
-        private readonly IStatsClient _stats;
         private readonly IRuneClient _runeClient;
         private readonly IPluginProvider _provider;
+        private readonly IEventService _eventService;
 
-        public PluginManager(IRuneClient client, IPluginProvider provider, IStatsClient stats, ILoggingHandler loggingHandler)
+        public PluginManager(IRuneClient client, IPluginProvider provider, IEventService eventService)
         {
             _assemblies = new ConcurrentBag<Assembly>();
             _assembliesLoaded = new ConcurrentDictionary<string, bool>();
             _runeClient = client;
             _provider = provider;
-            _stats = stats;
-            _log = loggingHandler;
+            _eventService = eventService;
         }
 
         public object GetInstance(Type type)
         {
-            _log.Debug($"type found {type.AssemblyQualifiedName}");
+            _eventService.Debug($"type found {type.AssemblyQualifiedName}");
             var instance = Activator.CreateInstance(type);
             return instance;
         }
@@ -47,7 +46,7 @@ namespace Runic.Agent.Core.PluginManagement
 
         public void LoadPlugin(string pluginAssemblyName)
         {
-            _log.Debug($"Loading plugin {pluginAssemblyName}");
+            _eventService.Debug($"Loading plugin {pluginAssemblyName}");
             bool loaded;
             lock (_assembliesLoaded)
             {
@@ -58,10 +57,10 @@ namespace Runic.Agent.Core.PluginManagement
 
             _provider.RetrieveSourceDll(pluginAssemblyName);
             var pluginPath = _provider.GetFilepath(pluginAssemblyName);
-            _log.Debug($"Plugin path {pluginPath}");
+            _eventService.Debug($"Plugin path {pluginPath}");
             if (!File.Exists(pluginPath))
             {
-                _log.Error($"Could not find file {pluginPath}");
+                _eventService.Error($"Could not find file {pluginPath}");
                 throw new AssemblyNotFoundException($"Could not find file {pluginPath}");
             }
 
@@ -69,13 +68,10 @@ namespace Runic.Agent.Core.PluginManagement
 
             if (assembly == null)
             {
-                _log.Error($"Could not load assembly {pluginPath}, {pluginAssemblyName}");
+                _eventService.Error($"Could not load assembly {pluginPath}, {pluginAssemblyName}");
                 throw new AssemblyLoadException($"Could not load assembly {pluginPath}, {pluginAssemblyName}");
             }
-            assembly.PopulateStaticPropertiesWithInstance(_runeClient)
-                    .PopulateStaticPropertiesWithInstance(_stats);
-
-            _stats.CountPluginLoaded();
+            assembly.PopulateStaticPropertiesWithInstance(_runeClient);
         }
 
         private Assembly LoadAssembly(string pluginPath, string pluginAssemblyName)
@@ -94,20 +90,20 @@ namespace Runic.Agent.Core.PluginManagement
             return assembly;
         }
 
-        public Type GetClassType(string fullyQualifiedClassName)
+        public Type GetClassType(string functionFullyQualifiedName)
         {
-            _log.Debug($"Searching assemblies for function");
+            _eventService.Debug($"Searching assemblies for function");
             lock (_assemblies)
             {
                 foreach (var assembly in _assemblies)
                 {
-                    var type = assembly.GetType(fullyQualifiedClassName);
+                    var type = assembly.GetType(functionFullyQualifiedName);
                     if (type != null)
                         return type;
                 }
             }
 
-            throw new ClassNotFoundInAssemblyException(fullyQualifiedClassName);
+            throw new ClassNotFoundInAssemblyException(functionFullyQualifiedName);
         }
 
         public IList<FunctionInformation> GetAvailableFunctions()
@@ -128,8 +124,7 @@ namespace Runic.Agent.Core.PluginManagement
                                 AssemblyName = assembly.FullName,
                                 AssemblyQualifiedClassName = type.FullName,
                                 FunctionName = attribute.Name,
-                                Parameters = method.GetParameters()
-                                                    .ToDictionary(p => p.Name, p => p.ParameterType),
+                                //todo methodparams
                                 RequiredRunes = method.GetCustomAttributes<RequiresRunesAttribute>()
                                                      ?.SelectMany(s => s.Runes)
                                                       .ToList()
@@ -158,12 +153,11 @@ namespace Runic.Agent.Core.PluginManagement
 
         public Assembly GetPlugin(string pluginAssemblyName)
         {
-            bool loaded;
-            if (_assembliesLoaded.TryGetValue(pluginAssemblyName, out loaded) && loaded)
+            if (_assembliesLoaded.TryGetValue(pluginAssemblyName, out bool loaded) && loaded)
             {
                 return GetAssemblies().Single(a => a.FullName == pluginAssemblyName);
             }
-            _log.Error($"Unable to locate assembly by key {pluginAssemblyName}");
+            _eventService.Error($"Unable to locate assembly by key {pluginAssemblyName}");
             throw new AssemblyNotFoundException($"Unable to locate assembly by key {pluginAssemblyName}");
         }
     }

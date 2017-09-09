@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Runic.Agent.Core.Configuration;
-using Runic.Agent.Core.ExternalInterfaces;
+using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Core.UnitTest.TestUtility;
 using Runic.Framework.Models;
@@ -23,9 +22,8 @@ namespace Runic.Agent.Core.UnitTest.Tests.StepController
             _flow = TestData.GetTestFlowSingleStep;
             _manager = new FlowThreadManager(
                 _flow,
-                _testEnvironment.Stats.Object,
                 _testEnvironment.RunnerService.Object,
-                new Mock<ILoggingHandler>().Object);
+                new Mock<IEventService>().Object);
         }
 
         [TestCategory("UnitTest")]

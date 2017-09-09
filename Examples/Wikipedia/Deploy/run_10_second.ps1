@@ -1,1 +1,0 @@
-dotnet Agent/Runic.Agent.Standalone.dll PatternExecutionId=TestPatternId FlowFilepath=WikipediaFlow.json ThreadPatternName=Constant DurationSeconds=10 ThreadCount=3

@@ -37,7 +37,7 @@ namespace Runic.Agent.Core.UnitTest.TestUtility
                             FunctionName = TestConstants.FunctionName,
                             AssemblyQualifiedClassName = TestConstants.AssemblyQualifiedClassName
                         },
-                        Repeat = 2,
+                        RepeatCount = 2,
                     }
                 }
         };

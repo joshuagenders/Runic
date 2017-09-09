@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gherkin", "Gherkin\Gherkin.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.TestUtility", "Runic.Agent.ExampleTest\Runic.Agent.TestUtility.csproj", "{BA5B4706-7535-4025-BCAC-569D7B40FF53}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Aws", "Runic.Agent.Aws\Runic.Agent.Aws.csproj", "{138A4B7A-F3AA-4796-B142-0FFF57D0A9C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runic.Agent.Framework", "Runic.Agent.Framework\Runic.Agent.Framework.csproj", "{C6F7D9E6-017B-4BFB-9CB4-BC7DF8C937DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,10 +59,10 @@ Global
 		{BA5B4706-7535-4025-BCAC-569D7B40FF53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA5B4706-7535-4025-BCAC-569D7B40FF53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA5B4706-7535-4025-BCAC-569D7B40FF53}.Release|Any CPU.Build.0 = Release|Any CPU
-		{138A4B7A-F3AA-4796-B142-0FFF57D0A9C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{138A4B7A-F3AA-4796-B142-0FFF57D0A9C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{138A4B7A-F3AA-4796-B142-0FFF57D0A9C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{138A4B7A-F3AA-4796-B142-0FFF57D0A9C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6F7D9E6-017B-4BFB-9CB4-BC7DF8C937DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6F7D9E6-017B-4BFB-9CB4-BC7DF8C937DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6F7D9E6-017B-4BFB-9CB4-BC7DF8C937DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6F7D9E6-017B-4BFB-9CB4-BC7DF8C937DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

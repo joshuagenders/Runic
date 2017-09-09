@@ -2,7 +2,7 @@
 
 namespace Runic.Agent.Core.Exceptions
 {
-    internal class StepDequeueFailedException : Exception
+    public class StepDequeueFailedException : Exception
     {
         public StepDequeueFailedException()
         {

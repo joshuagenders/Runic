@@ -13,8 +13,7 @@ namespace Runic.Framework.Models
     public class Step
     {
         public string StepName { get; set; }
-        public bool GetNextStepFromFunctionResult { get; set; }
-        public int Repeat { get; set; }
+        public int RepeatCount { get; set; }
         public DataInput DataInput { get; set; }
         public Distribution Distribution { get; set; }
         public FunctionInformation Function { get; set; }
@@ -32,8 +31,10 @@ namespace Runic.Framework.Models
         public string AssemblyName { get; set; }
         public string AssemblyQualifiedClassName { get; set; }
         public string FunctionName { get; set; }
-        public Dictionary<string, Type> Parameters { get; set; }
+        public Dictionary<string, Type> MethodParameters { get; set; }
+        public List<string> InputParameters { get; set; }
         public List<string> RequiredRunes { get; set; }
+        public bool GetNextStepFromFunctionResult { get; set; }
     }
 
     public class DataInput

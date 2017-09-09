@@ -32,9 +32,8 @@ namespace Runic.Agent.Core.UnitTest.Tests.CucumberHarness
             await harness.ExecuteTestAsync(assemblyName, cucumberDocument, cts.Token);
             pluginManager.Verify(p => p.GetPlugin(assemblyName));
 
-            FakeCucumberClass test = null;
-            var maxKey = FakeCucumberClass.FakeCucumberClasses.Keys.ToList().OrderBy(a => a).Last();
-            if (maxKey == null || !FakeCucumberClass.FakeCucumberClasses.TryGetValue(maxKey, out test))
+            var maxKey = FakeCucumberClass.FakeCucumberClasses.Keys.OrderBy(a => a).Last();
+            if (!FakeCucumberClass.FakeCucumberClasses.TryGetValue(maxKey, out FakeCucumberClass test))
             {
                 Assert.Fail("No cucumber test class found in static FakeCucumberClasses Dictionary");
             }
