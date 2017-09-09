@@ -27,7 +27,9 @@ namespace Gherkin.Pickles
                 {
                     backgroundSteps = PickleSteps(scenarioDefinition);
                 }
+#pragma warning disable S3247 // Duplicate casts should not be made
                 else if (scenarioDefinition is Scenario)
+#pragma warning restore S3247 // Duplicate casts should not be made
                 {
                     CompileScenario(pickles, backgroundSteps, (Scenario)scenarioDefinition, featureTags, feature.Language);
                 }
@@ -38,7 +40,9 @@ namespace Gherkin.Pickles
             return pickles;
         }
 
+#pragma warning disable S3242 // Method parameters should be declared with base types
         protected virtual void CompileScenario(List<Pickle> pickles, IEnumerable<PickleStep> backgroundSteps, Scenario scenario, IEnumerable<Tag> featureTags, string language)
+#pragma warning restore S3242 // Method parameters should be declared with base types
         {
             if (!scenario.Steps.Any())
                 return;
@@ -67,7 +71,9 @@ namespace Gherkin.Pickles
             return new[] { item };
         }
 
+#pragma warning disable S3242 // Method parameters should be declared with base types
         protected virtual void CompileScenarioOutline(List<Pickle> pickles, IEnumerable<PickleStep> backgroundSteps, ScenarioOutline scenarioOutline, IEnumerable<Tag> featureTags, string language)
+#pragma warning restore S3242 // Method parameters should be declared with base types
         {
             if (!scenarioOutline.Steps.Any())
                 return;
@@ -132,22 +138,24 @@ namespace Gherkin.Pickles
         protected virtual List<Argument> CreatePickleArguments(StepArgument argument)
         {
             var noCells = Enumerable.Empty<TableCell>();
+#pragma warning disable S4142 // Duplicate values should not be passed as arguments
             return CreatePickleArguments(argument, noCells, noCells);
+#pragma warning restore S4142 // Duplicate values should not be passed as arguments
         }
 
         protected virtual List<Argument> CreatePickleArguments(StepArgument argument, IEnumerable<TableCell> variableCells, IEnumerable<TableCell> valueCells)
         {
             var result = new List<Argument>();
             if (argument == null) return result;
-            if (argument is DataTable) {
-                DataTable t = (DataTable)argument;
+            if (argument is DataTable t)
+            {
                 var rows = t.Rows;
                 var newRows = new List<PickleRow>(rows.Count());
-                foreach(var row in rows)
+                foreach (var row in rows)
                 {
                     var cells = row.Cells;
                     var newCells = new List<PickleCell>();
-                    foreach(var cell in cells)
+                    foreach (var cell in cells)
                     {
                         newCells.Add(
                                 new PickleCell(
@@ -159,21 +167,26 @@ namespace Gherkin.Pickles
                     newRows.Add(new PickleRow(newCells));
                 }
                 result.Add(new PickleTable(newRows));
-            } else if (argument is DocString) {
-                DocString ds = (DocString)argument;
+            }
+            else if (argument is DocString ds)
+            {
                 result.Add(
                         new PickleString(
                                 PickleLocation(ds.Location),
                                 Interpolate(ds.Content, variableCells, valueCells)
                         )
                 );
-            } else {
+            }
+            else
+            {
                 throw new InvalidOperationException("Unexpected argument type: " + argument);
             }
             return result;
         }
 
+#pragma warning disable S3242 // Method parameters should be declared with base types
         protected virtual PickleStep[] PickleSteps(ScenarioDefinition scenarioDefinition)
+#pragma warning restore S3242 // Method parameters should be declared with base types
         {
             var result = new List<PickleStep>();
             foreach(var step in scenarioDefinition.Steps)

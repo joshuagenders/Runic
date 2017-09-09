@@ -66,7 +66,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.StepController
                 };
             var controller = new DistributionStepController(steps);
             
-            Step step = controller.GetNextStep(null);
+            controller.GetNextStep(null);
             controller.QueueSize.Should().Be(200);
         }
 

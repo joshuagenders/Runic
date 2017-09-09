@@ -18,7 +18,6 @@ namespace Runic.Agent.Core.UnitTest.Tests.Services
         {
             var environment = new TestEnvironment();
 
-            var fakeCucumber = new FakeCucumberClass();
             environment.PluginManager
                        .Setup(p => p.GetPlugin(It.IsAny<string>()))
                        .Returns(GetType().GetTypeInfo().Assembly);

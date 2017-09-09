@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Runic.Agent.Core.UnitTest.TestUtility
 {
-    public class TestData
+    public static class TestData
     {
         public static Flow GetTestFlowSingleStep => new Flow()
         {

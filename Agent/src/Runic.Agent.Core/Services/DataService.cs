@@ -30,7 +30,7 @@ namespace Runic.Agent.Core.Services
             return GetMapMethodParameters(testDataMappedValues, methodInfo);
         }
 
-        private object[] GetMapMethodParameters(object[] positionalParameters, MethodInfo methodInfo)
+        private object[] GetMapMethodParameters(object[] positionalParameters, MethodBase methodInfo)
         {
             var p = methodInfo.GetParameters();
             var methodParams = new object[p.Length];

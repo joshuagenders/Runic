@@ -1,14 +1,17 @@
 ﻿using Autofac;
+using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.ExternalInterfaces;
 using Runic.Agent.Core.IoC;
 using Runic.Agent.Core.Services;
 using Runic.Agent.Standalone.Clients;
 using Runic.Agent.Standalone.Configuration;
+using Runic.Agent.Standalone.Logging;
 using Runic.Agent.Standalone.Providers;
 using Runic.Agent.Standalone.Services;
 using Runic.Framework.Clients;
 using Runic.Framework.Models;
 using StatsN;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Runic.Agent.Standalone
@@ -31,6 +34,13 @@ namespace Runic.Agent.Standalone
                    .WithParameter(new PositionalParameter(1, "Plugins"))
                    .As<IPluginProvider>();
             
+            RegisterInstances(builder);
+
+            return builder.Build();
+        }
+
+        private void RegisterInstances(ContainerBuilder builder)
+        {
             var statsdSettings = new StatsdSettings();
             var agentSettings = new AgentSettings();
             var agentConfig = new AgentConfig(statsdSettings, agentSettings);
@@ -43,7 +53,6 @@ namespace Runic.Agent.Standalone
                 PluginDirectory = "Plugins"
             });
 
-            
             IStatsd statsd = Statsd.New<Udp>(options =>
             {
                 options.Port = agentConfig.StatsdSettings.Port;
@@ -51,9 +60,14 @@ namespace Runic.Agent.Standalone
                 options.Prefix = agentConfig.StatsdSettings.Prefix;
                 options.BufferMetrics = false;
             });
-            builder.RegisterInstance(statsd).As<IStatsd>().SingleInstance();
 
-            return builder.Build();
+            builder.RegisterInstance(statsd).As<IStatsd>().SingleInstance();
+            var statsHandler = new StatsHandler(statsd);
+            var loggerFactory = new LoggerFactory();
+            var loggingHandler = new LoggingHandler(loggerFactory);
+
+            builder.RegisterType<IEventHandler>()
+                   .WithParameter(new PositionalParameter(0, new List<IEventHandler>() { statsHandler, loggingHandler }));
         }
     }   
 }

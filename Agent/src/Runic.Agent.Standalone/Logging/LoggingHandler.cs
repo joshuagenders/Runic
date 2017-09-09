@@ -40,7 +40,7 @@ namespace Runic.Agent.Standalone.Logging
 
         public void Error(string message, Exception ex = null)
         {
-            throw new NotImplementedException();
+            _log.LogError(message, ex);
         }
 
         public void Info(string message)
@@ -55,32 +55,32 @@ namespace Runic.Agent.Standalone.Logging
 
         public void Info(string message, Exception ex = null)
         {
-            throw new NotImplementedException();
+            _log.LogInformation(message, ex);
         }
 
         public void OnFlowAdded(Flow flow)
         {
-            throw new NotImplementedException();
+            _log.LogInformation("Flow added", flow);
         }
 
         public void OnFlowComplete(Flow flow)
         {
-            throw new NotImplementedException();
+            _log.LogInformation("Flow complete", flow);
         }
 
         public void OnFlowStart(Flow flow)
         {
-            throw new NotImplementedException();
+            _log.LogInformation("Flow started", flow);
         }
 
         public void OnTestResult(Result result)
         {
-            throw new NotImplementedException();
+            _log.LogInformation("Test Result", result);
         }
 
         public void OnThreadChange(Flow flow, int threadLevel)
         {
-            throw new NotImplementedException();
+            _log.LogInformation($"Thread Change on flow {flow.Name} to {threadLevel}");
         }
 
         public void Warning(string message)
@@ -95,7 +95,7 @@ namespace Runic.Agent.Standalone.Logging
 
         public void Warning(string message, Exception ex = null)
         {
-            throw new NotImplementedException();
+            _log.LogWarning(message, ex);
         }
     }
 }

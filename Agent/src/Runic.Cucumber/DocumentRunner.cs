@@ -34,6 +34,12 @@ namespace Runic.Cucumber
                 testResult.Exception = new GherkinDocumentParserError("The document could not be parsed", ex);
                 return testResult;
             }
+            if (pickles == null)
+            {
+                testResult.Success = false;
+                testResult.Exception = new GherkinDocumentParserError("The document could not be parsed");
+                return testResult;
+            }
             foreach (var pickle in pickles)
             {
                 foreach (var step in pickle.Steps)

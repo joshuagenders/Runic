@@ -51,7 +51,7 @@ namespace Runic.Cucumber
             await ExecuteMethodAsync(instance, methodDetails.Item1, methodArgs.ToArray(), ctx);
         }
 
-        private Tuple<MethodInfo, List<string>> GetMethodTypeFromStatement(string statement, CancellationToken ctx = default(CancellationToken))
+        private Tuple<MethodInfo, List<string>> GetMethodTypeFromStatement(string statement)
         {
             var matches = new List<Tuple<MethodInfo, List<string>>>();
             foreach (var method in Methods)
@@ -104,10 +104,10 @@ namespace Runic.Cucumber
             return method.ReturnType.IsAssignableFrom(typeof(Task)) ||
                         method.ReturnTypeCustomAttributes
                               .GetCustomAttributes(false)
-                              .Any(c => c.GetType() == typeof(AsyncStateMachineAttribute));
+                              .Any(c => c is AsyncStateMachineAttribute);
         }
 
-        private object[] GetMapMethodParameters(object[] positionalParameters, MethodInfo methodInfo)
+        private object[] GetMapMethodParameters(object[] positionalParameters, MethodBase methodInfo)
         {
             var p = methodInfo.GetParameters();
             var methodParams = new object[p.Length];

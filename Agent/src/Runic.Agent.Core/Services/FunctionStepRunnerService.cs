@@ -9,12 +9,10 @@ namespace Runic.Agent.Core.Services
     public class FunctionStepRunnerService : IStepRunnerService
     {
         private readonly IFunctionFactory _functionFactory;
-        private readonly IDatetimeService _datetimeService;
-
+       
         public FunctionStepRunnerService(IFunctionFactory functionFactory, IDatetimeService datetimeService)
         {
             _functionFactory = functionFactory;
-            _datetimeService = datetimeService;
         }
 
         public async Task<Result> ExecuteStepAsync(Step step, CancellationToken ctx = default(CancellationToken))

@@ -42,7 +42,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.t
         {
             var functionHarness = GetFunctionHarness();
             var method = functionHarness.GetMethodWithAttribute(typeof(BeforeEachAttribute));
-            Assert.IsNotNull(method, "beforeeach method not found");
+            Assert.IsNotNull(method, "BeforeEach method not found");
         }
 
         [TestCategory("UnitTest")]

@@ -4,18 +4,14 @@ using Moq;
 using Runic.Agent.Standalone.Configuration;
 using Runic.Agent.Standalone.Providers;
 using Runic.Agent.TestUtility;
-using System.Threading;
 using Runic.Agent.Core.Configuration;
-using Runic.Framework.Clients;
-using Runic.Agent.Core.ExternalInterfaces;
 
 namespace Runic.Agent.Standalone.Test.TestUtility
 {
-    public class StandaloneTestEnvironment : TestEnvironmentBuilder, IDisposable
+    public sealed class StandaloneTestEnvironment : TestEnvironmentBuilder
     {
         private IApplication _application { get; set; }
-        private ILifetimeScope _scope { get; set; }
-
+        
         public TestObject<IAgentConfig> AgentConfig { get; set; } = new TestObject<IAgentConfig>();
         public TestObject<IAgentSettings> AgentSettings { get; set; } = new TestObject<IAgentSettings>();
         public TestObject<IStatsdSettings> StatsdSettings { get; set; } = new TestObject<IStatsdSettings>();
@@ -29,7 +25,6 @@ namespace Runic.Agent.Standalone.Test.TestUtility
 
         public override TestEnvironment StartApplication()
         {
-            var cts = new CancellationTokenSource();
             var container = Build();
             var scope = container.BeginLifetimeScope();
             Application = scope.Resolve<IApplication>();
@@ -53,11 +48,6 @@ namespace Runic.Agent.Standalone.Test.TestUtility
                        MaxThreads = 10
                    });
             return this;
-        }
-
-        public void Dispose()
-        {
-            _scope?.Dispose();
         }
     }
 }
