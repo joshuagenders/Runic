@@ -46,14 +46,28 @@ namespace Runic.Agent.Core.FunctionHarness
 
         public void Cancel()
         {
-            _cts.Cancel();
-            _task.GetAwaiter().GetResult();
+            try
+            {
+                _cts.Cancel();
+                _task.GetAwaiter().GetResult();
+            }
+            catch (TaskCanceledException)
+            {
+                //do nothing
+            }
         }
 
         public async Task CancelAsync()
         {
-            _cts.Cancel();
-            await _task;
+            try
+            { 
+                _cts.Cancel();
+                await _task;
+            }
+            catch (TaskCanceledException)
+            {
+                //do nothing
+            }
         }
 
         public void Dispose()
