@@ -42,24 +42,6 @@ namespace Runic.Agent.Core.Services
             _runningPatterns.TryAdd(id, Tuple.Create(_datetimeService.Now, pattern));
         }
 
-        public async Task StopFlow(Flow flow, CancellationToken ctx)
-        {
-            var ids = _runningFlows.Where(f => f.Value == flow).Select(f=> f.Key);
-            foreach (var id in ids)
-            {
-                await Stop(id, ctx);
-            }
-        }
-
-        public async Task StopThreadPattern(IThreadPattern threadPattern, CancellationToken ctx)
-        {
-            var ids = _runningPatterns.Where(p => p.Value == threadPattern).Select(p => p.Key);
-            foreach (var id in ids)
-            {
-                await Stop(id, ctx);
-            }
-        }
-
         public async Task Stop(string id, CancellationToken ctx)
         {
             await _threadManager.SetThreadLevelAsync(id, _runningFlows[id], 0);
@@ -75,6 +57,8 @@ namespace Runic.Agent.Core.Services
                 await Stop(id, ctx);
             }
             await _threadManager.CancelAll();
+            _runningPatterns.Clear();
+            _runningFlows.Clear();
         }
 
         public async Task Run(CancellationToken ctx)
