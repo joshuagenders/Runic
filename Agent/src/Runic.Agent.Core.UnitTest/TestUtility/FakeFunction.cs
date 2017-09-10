@@ -41,6 +41,17 @@ namespace Runic.Agent.Core.UnitTest.TestUtility
             });
         }
 
+        [Function("FakeFunction")]
+        public void DoFakeFunction()
+        {
+            CallList.Add(new InvocationInformation()
+            {
+                InvocationTime = DateTime.Now,
+                StackTrace = Environment.StackTrace,
+                InvocationTarget = "FakeFunction"
+            });
+        }
+
         [Function("Login")]
         public void DoSomeTask1()
         {

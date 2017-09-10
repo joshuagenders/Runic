@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.ExternalInterfaces;
+using Runic.Agent.Core.FunctionHarness;
 using Runic.Agent.Core.IoC;
 using Runic.Agent.Core.Services;
 using Runic.Agent.Standalone.Clients;
@@ -27,6 +28,8 @@ namespace Runic.Agent.Standalone
             builder.RegisterType<Application>().As<IApplication>();
             builder.RegisterType<AgentConfig>().As<IAgentConfig>().SingleInstance();
             builder.RegisterType<AgentSettings>().As<IAgentSettings>().SingleInstance();
+            builder.RegisterType<FunctionFactory>().As<IFunctionFactory>().SingleInstance();
+            builder.RegisterType<FileTestDataService>().As<ITestDataService>();
             builder.RegisterType<StatsdSettings>().As<IStatsdSettings>().SingleInstance();
             builder.RegisterType<FileFlowProvider>().As<IFlowProvider>();
             builder.RegisterType<FilePluginProvider>()
@@ -39,7 +42,7 @@ namespace Runic.Agent.Standalone
             return builder.Build();
         }
 
-        private void RegisterInstances(ContainerBuilder builder)
+        protected virtual void RegisterInstances(ContainerBuilder builder)
         {
             var statsdSettings = new StatsdSettings();
             var agentSettings = new AgentSettings();

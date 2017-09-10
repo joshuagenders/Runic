@@ -29,6 +29,8 @@ namespace Runic.Agent.TestUtility
         public TestObject<IRunnerService> RunnerService { get; set; } = new TestObject<IRunnerService>();
         public TestObject<IFunctionFactory> FunctionFactory { get; set; } = new TestObject<IFunctionFactory>();
         public TestObject<AgentCoreConfiguration> AgentCoreConfiguration { get; set; } = new TestObject<AgentCoreConfiguration>();
+        public TestObject<IEventService> EventService { get; set; } = new TestObject<IEventService>();
+        public TestObject<IEventHandler> EventHandler { get; set; } = new TestObject<IEventHandler>();
         public TestObject<TestContext> TestContext { get; set; } = new TestObject<TestContext>();
 
         public T Get<T>() where T : class

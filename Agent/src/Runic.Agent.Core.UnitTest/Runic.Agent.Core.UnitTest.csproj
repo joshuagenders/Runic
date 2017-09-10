@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Runic.Agent.Core\Runic.Agent.Core.csproj" />
+    <ProjectReference Include="..\Runic.Agent.ExampleTest\Runic.Agent.TestUtility.csproj" />
   </ItemGroup>
 
   <ItemGroup>

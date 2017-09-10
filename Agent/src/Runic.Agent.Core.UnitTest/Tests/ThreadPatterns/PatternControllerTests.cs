@@ -4,6 +4,7 @@ using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Core.ThreadPatterns;
 using Runic.Agent.Core.UnitTest.TestUtility;
+using Runic.Agent.TestUtility;
 using Runic.Framework.Models;
 using System;
 using System.Linq;
@@ -15,13 +16,19 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
     [TestClass]
     public class PatternControllerTests
     {
+        private TestEnvironmentBuilder _environment { get; set; }
+
+        [TestInitialize]
+        public void Init()
+        {
+            _environment = new UnitEnvironment();
+        }
+
         [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenRunningPattern_ThenThreadLevelsAreSet()
         {
-            var datetimeService = new DateTimeService();
-            var threadManager = new Mock<IThreadManager>();
-            var patternController = new PatternController(datetimeService, threadManager.Object);
+            var patternController = new PatternController(new DateTimeService(), _environment.Get<IThreadManager>());
             var flow = TestData.GetTestFlowSingleStep;
             var pattern = new Mock<IThreadPattern>();
 
@@ -35,12 +42,12 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
 
             var controllerTask = patternController.Run(cts.Token);
             Thread.Sleep(50);
-            threadManager.Verify(t => t.SetThreadLevelAsync(It.IsAny<string>(), It.IsAny<Flow>(), 20, It.IsAny<CancellationToken>()));
+            _environment.GetMock<IThreadManager>().Verify(t => t.SetThreadLevelAsync(It.IsAny<string>(), It.IsAny<Flow>(), 20, It.IsAny<CancellationToken>()));
 
             pattern.Setup(p => p.GetCurrentThreadLevel(It.IsAny<DateTime>())).Returns(0);
             Thread.Sleep(100);
             await controllerTask;
-            threadManager.Verify(t => t.SetThreadLevelAsync(It.IsAny<string>(), It.IsAny<Flow>(), 0, It.IsAny<CancellationToken>()));
+            _environment.GetMock<IThreadManager>().Verify(t => t.SetThreadLevelAsync(It.IsAny<string>(), It.IsAny<Flow>(), 0, It.IsAny<CancellationToken>()));
             Assert.IsFalse(patternController.GetRunningThreadPatterns().Any(p => p.Item1 == "id"));
             Assert.IsFalse(patternController.GetRunningFlows().Any(p => p.Item1 == "id"));
         }
@@ -49,9 +56,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
         [TestMethod]
         public async Task WhenStoppingPattern_ThenFlowAndPatternStops()
         {
-            var datetimeService = new DateTimeService();
-            var threadManager = new Mock<IThreadManager>();
-            var patternController = new PatternController(datetimeService, threadManager.Object);
+            var patternController = new PatternController(new DateTimeService(), _environment.Get<IThreadManager>());
             var flow = TestData.GetTestFlowSingleStep;
             var pattern = new Mock<IThreadPattern>();
 
@@ -65,12 +70,12 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
 
             var controllerTask = patternController.Run(cts.Token);
             Thread.Sleep(50);
-            threadManager.Verify(t => t.SetThreadLevelAsync(It.IsAny<string>(), It.IsAny<Flow>(), 20, It.IsAny<CancellationToken>()));
+            _environment.GetMock<IThreadManager>().Verify(t => t.SetThreadLevelAsync(It.IsAny<string>(), It.IsAny<Flow>(), 20, It.IsAny<CancellationToken>()));
 
             await patternController.StopAll(cts.Token);
             await controllerTask;
 
-            threadManager.Verify(t => t.SetThreadLevelAsync(It.IsAny<string>(), It.IsAny<Flow>(), 0, It.IsAny<CancellationToken>()));
+            _environment.GetMock<IThreadManager>().Verify(t => t.SetThreadLevelAsync(It.IsAny<string>(), It.IsAny<Flow>(), 0, It.IsAny<CancellationToken>()));
             Assert.IsFalse(patternController.GetRunningThreadPatterns().Any(p => p.Item1 == "id"));
             Assert.IsFalse(patternController.GetRunningFlows().Any(p => p.Item1 == "id"));
         }

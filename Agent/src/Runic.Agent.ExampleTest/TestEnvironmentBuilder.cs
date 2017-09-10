@@ -1,8 +1,5 @@
 ﻿using Autofac;
-using Runic.Agent.Core.FunctionHarness;
-using Runic.Agent.Core.Services;
-using Runic.Agent.Core.ThreadManagement;
-using Runic.Agent.Core.ThreadPatterns;
+using Runic.Agent.Core.IoC;
 using System.Linq;
 using System.Reflection;
 
@@ -76,10 +73,8 @@ namespace Runic.Agent.TestUtility
 
         public virtual TestEnvironmentBuilder WithStandardTypes()
         {
-            return WithSingleInstanceType<ThreadManager, IThreadManager>()
-                   .WithSingleInstanceType<PatternController, IPatternController>()
-                   .WithType<RunnerService, IRunnerService>()
-                   .WithType<FunctionFactory, IFunctionFactory>();
+            TypeList.GetDefaultTypeList().ForEach(t => _builder.RegisterType(t.Item1).As(t.Item2));
+            return this;
         }
     }
 }

@@ -3,6 +3,7 @@ using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadManagement;
 using System.Collections.Generic;
 using System;
+using Runic.Agent.Core.ThreadPatterns;
 
 namespace Runic.Agent.Core.IoC
 {
@@ -17,7 +18,8 @@ namespace Runic.Agent.Core.IoC
                 Tuple.Create(typeof(DateTimeService), typeof(IDatetimeService)),
                 Tuple.Create(typeof(RunnerService), typeof(IRunnerService)),
                 Tuple.Create(typeof(DataService), typeof(IDataService)),
-                Tuple.Create(typeof(EventService), typeof(IEventService))
+                Tuple.Create(typeof(EventService), typeof(IEventService)),
+                Tuple.Create(typeof(PatternController), typeof(IPatternController))
             };
         }
     }

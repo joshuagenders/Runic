@@ -1,8 +1,10 @@
 ﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Runic.Agent.Core.PluginManagement;
 using Runic.Agent.Core.Services;
 using Runic.Agent.Core.UnitTest.TestUtility;
+using Runic.Agent.TestUtility;
 using Runic.Framework.Models;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -16,12 +18,12 @@ namespace Runic.Agent.Core.UnitTest.Tests.Services
         [TestMethod]
         public async Task WhenCucumberStepRunnerIsExecuted_MethodsAreInvoked()
         {
-            var environment = new TestEnvironment();
+            var environment = new UnitEnvironment();
 
-            environment.PluginManager
+            environment.GetMock<IPluginManager>()
                        .Setup(p => p.GetPlugin(It.IsAny<string>()))
                        .Returns(GetType().GetTypeInfo().Assembly);
-            var cucumberRunner = new CucumberStepRunnerService(environment.PluginManager.Object);
+            var cucumberRunner = new CucumberStepRunnerService(environment.Get<IPluginManager>());
 
             var cucumberDocument =
                 @"Feature: MyExample

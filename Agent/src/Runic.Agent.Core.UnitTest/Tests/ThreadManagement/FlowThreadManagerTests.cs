@@ -3,6 +3,7 @@ using Moq;
 using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Core.UnitTest.TestUtility;
+using Runic.Agent.TestUtility;
 using Runic.Framework.Models;
 using System.Threading.Tasks;
 
@@ -11,19 +12,19 @@ namespace Runic.Agent.Core.UnitTest.Tests.StepController
     [TestClass]
     public class FlowThreadManagerTests
     {
-        private TestEnvironment _testEnvironment { get; set; }
+        private TestEnvironmentBuilder _testEnvironment { get; set; }
         private Flow _flow { get; set; }
         private FlowThreadManager _manager { get; set; }
 
         [TestInitialize]
         public void Init()
         {
-            _testEnvironment = new TestEnvironment();
+            _testEnvironment = new UnitEnvironment();
             _flow = TestData.GetTestFlowSingleStep;
             _manager = new FlowThreadManager(
                 _flow,
-                _testEnvironment.RunnerService.Object,
-                new Mock<IEventService>().Object);
+                _testEnvironment.Get<IRunnerService>(),
+                _testEnvironment.Get<IEventService>());
         }
 
         [TestCategory("UnitTest")]
