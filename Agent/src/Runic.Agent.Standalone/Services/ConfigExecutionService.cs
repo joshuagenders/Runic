@@ -1,18 +1,17 @@
 ﻿using Microsoft.Extensions.Logging;
-using Runic.Agent.Core.FlowManagement;
-using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadPatterns;
 using Runic.Agent.Standalone.Configuration;
 using Runic.Agent.Standalone.Providers;
-using Runic.Framework.Models;
+using Runic.Agent.Framework.Models;
 using System.Threading;
 using System.Threading.Tasks;
+using Runic.Agent.TestHarness.Services;
 
 namespace Runic.Agent.Standalone.Services
 {
     public class ConfigExecutionService
     {
-        private readonly IPatternController _patternController;
+        private readonly IFlowPatternController _patternController;
         private Flow _flow;
         private readonly IAgentConfig _config;
         private readonly IFlowProvider _flowProvider;
@@ -20,7 +19,7 @@ namespace Runic.Agent.Standalone.Services
         private readonly IDatetimeService _datetimeService;
 
         public ConfigExecutionService(
-            IPatternController patternController, 
+            IFlowPatternController patternController, 
             IAgentConfig config, 
             IFlowProvider flowProvider, 
             ILoggerFactory loggerFactory, 
@@ -69,7 +68,7 @@ namespace Runic.Agent.Standalone.Services
                     DurationSeconds = _config.AgentSettings.FlowDurationSeconds
                 };
             _logger.LogInformation($"Starting constant thread pattern {_config.AgentSettings.FlowPatternExecutionId}");
-            _patternController.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ctx);
+            _patternController.AddThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ctx);
         }
 
         private void StartGraphPattern(CancellationToken ctx = default(CancellationToken))
@@ -80,7 +79,7 @@ namespace Runic.Agent.Standalone.Services
                 Points = _config.AgentSettings.FlowPoints.ParsePoints()
             };
             _logger.LogInformation($"Starting graph thread pattern {_config.AgentSettings.FlowPatternExecutionId}");
-            _patternController.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ctx);
+            _patternController.AddThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ctx);
         }
 
         private void StartGradualPattern(CancellationToken ctx = default(CancellationToken))
@@ -93,7 +92,7 @@ namespace Runic.Agent.Standalone.Services
                 ThreadCount = _config.AgentSettings.FlowThreadCount
             };
             _logger.LogInformation($"Starting gradual thread pattern {_config.AgentSettings.FlowPatternExecutionId}");
-            _patternController.StartThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ctx);
+            _patternController.AddThreadPattern(_config.AgentSettings.FlowPatternExecutionId, _flow, pattern, ctx);
         }
     }
 }

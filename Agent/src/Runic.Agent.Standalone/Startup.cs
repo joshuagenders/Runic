@@ -1,7 +1,6 @@
-﻿using Autofac;
-using Microsoft.Extensions.Logging;
-using Runic.Agent.Core.ExternalInterfaces;
-using Runic.Agent.Core.FunctionHarness;
+﻿using Microsoft.Extensions.Logging;
+using Runic.Agent.Framework.ExternalInterfaces;
+using Runic.Agent.TestHarness.Harness;
 using Runic.Agent.Core.IoC;
 using Runic.Agent.Core.Services;
 using Runic.Agent.Standalone.Clients;
@@ -9,11 +8,12 @@ using Runic.Agent.Standalone.Configuration;
 using Runic.Agent.Standalone.Logging;
 using Runic.Agent.Standalone.Providers;
 using Runic.Agent.Standalone.Services;
-using Runic.Framework.Clients;
-using Runic.Framework.Models;
+using Runic.Agent.Framework.Clients;
+using Runic.Agent.Framework.Models;
 using StatsN;
 using System.Collections.Generic;
 using System.IO;
+using Runic.Agent.TestHarness.Services;
 
 namespace Runic.Agent.Standalone
 {
@@ -22,7 +22,7 @@ namespace Runic.Agent.Standalone
         public IContainer BuildContainer(string[] args = null)
         {
             var builder = new ContainerBuilder();
-            TypeList.GetDefaultTypeList().ForEach(t => builder.RegisterType(t.Item1).As(t.Item2));
+            CoreServiceCollection.GetDefaultTypeList().ForEach(t => builder.RegisterType(t.Item1).As(t.Item2));
             builder.RegisterType<DataService>().As<IDataService>().SingleInstance();
             builder.RegisterType<InMemoryRuneClient>().As<IRuneClient>().SingleInstance();
             builder.RegisterType<Application>().As<IApplication>();

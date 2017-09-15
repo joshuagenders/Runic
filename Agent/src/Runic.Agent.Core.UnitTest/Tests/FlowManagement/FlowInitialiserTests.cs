@@ -3,7 +3,7 @@ using Moq;
 using Runic.Agent.Core.PluginManagement;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.UnitTest.TestUtility;
-using Runic.Framework.Clients;
+using Runic.Agent.Framework.Clients;
 using System.IO;
 using System.Linq;
 using Runic.Agent.Core.Services;

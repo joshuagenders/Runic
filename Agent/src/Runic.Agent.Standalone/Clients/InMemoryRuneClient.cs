@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Runic.Framework.Clients;
-using Runic.Framework.Models;
+using Runic.Agent.Framework.Clients;
+using Runic.Agent.Framework.Models;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Collections.Generic;
@@ -122,8 +122,7 @@ namespace Runic.Agent.Standalone.Clients
         {
             var bags = RuneBags.Where(r => r.Value.Count > 0)
                                .ToList();
-            Rune result;
-            bags[new Random().Next(0, bags.Count - 1)].Value.TryTake(out result);
+            bags[new Random().Next(0, bags.Count - 1)].Value.TryTake(out Rune result);
         }
 
         private ConcurrentBag<Rune> GetOrCreateBag(string runeName)
@@ -148,8 +147,7 @@ namespace Runic.Agent.Standalone.Clients
             List<Rune> nonMatchingRunes = new List<Rune>();
             while (rune == null)
             {
-                Rune result;
-                if (bag.TryTake(out result))
+                if (bag.TryTake(out Rune result))
                 {
                     if (predicate(result))
                     {

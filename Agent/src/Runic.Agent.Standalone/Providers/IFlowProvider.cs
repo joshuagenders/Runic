@@ -1,4 +1,4 @@
-﻿using Runic.Framework.Models;
+﻿using Runic.Agent.Framework.Models;
 
 namespace Runic.Agent.Standalone.Providers
 {

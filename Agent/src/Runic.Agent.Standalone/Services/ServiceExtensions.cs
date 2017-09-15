@@ -1,4 +1,4 @@
-﻿using Runic.Framework.Models;
+﻿using Runic.Agent.Framework.Models;
 using System.Collections.Generic;
 
 namespace Runic.Agent.Standalone.Services
@@ -13,8 +13,8 @@ namespace Runic.Agent.Standalone.Services
                 var split = point.Split('.');
                 points.Add(new Point()
                 {
-                    unitsFromStart = int.Parse(split[0]),
-                    threadLevel = int.Parse(split[1])
+                    UnitsFromStart = int.Parse(split[0]),
+                    ThreadLevel = int.Parse(split[1])
                 });
             }
             return points;

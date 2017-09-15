@@ -2,6 +2,7 @@
 using Moq;
 using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadPatterns;
+using Runic.Agent.TestHarness.Services;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

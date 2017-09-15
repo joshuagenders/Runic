@@ -1,5 +1,6 @@
 ﻿using Runic.Agent.Core.Services;
-using Runic.Framework.Models;
+using Runic.Agent.Framework.Models;
+using Runic.Agent.TestHarness.Services;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;

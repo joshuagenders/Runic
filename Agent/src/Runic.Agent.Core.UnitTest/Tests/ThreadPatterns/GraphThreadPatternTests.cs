@@ -2,7 +2,8 @@
 using Moq;
 using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadPatterns;
-using Runic.Framework.Models;
+using Runic.Agent.Framework.Models;
+using Runic.Agent.TestHarness.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -22,9 +23,9 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
                 DurationSeconds = 60,
                 Points = new List<Point>()
                 {
-                   new Point(){ threadLevel = 2, unitsFromStart = 0 },
-                   new Point(){ threadLevel = 5, unitsFromStart = 1 },
-                   new Point(){ threadLevel = 0, unitsFromStart = 2 }
+                   new Point(){ ThreadLevel = 2, UnitsFromStart = 0 },
+                   new Point(){ ThreadLevel = 5, UnitsFromStart = 1 },
+                   new Point(){ ThreadLevel = 0, UnitsFromStart = 2 }
                 }
             };
             var startTime = new DateTime(2017, 1, 1, 1, 1, 0);
@@ -42,9 +43,9 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
                 DurationSeconds = 20,
                 Points = new List<Point>()
                 {
-                   new Point(){ threadLevel = 2, unitsFromStart = 0 },
-                   new Point(){ threadLevel = 5, unitsFromStart = 50 },
-                   new Point(){ threadLevel = 0, unitsFromStart = 100 }
+                   new Point(){ ThreadLevel = 2, UnitsFromStart = 0 },
+                   new Point(){ ThreadLevel = 5, UnitsFromStart = 50 },
+                   new Point(){ ThreadLevel = 0, UnitsFromStart = 100 }
                 }
             };
             var startTime = new DateTime(2017, 1, 1, 1, 1, 0);

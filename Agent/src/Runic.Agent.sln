@@ -19,7 +19,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gherkin", "Gherkin\Gherkin.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.TestUtility", "Runic.Agent.ExampleTest\Runic.Agent.TestUtility.csproj", "{BA5B4706-7535-4025-BCAC-569D7B40FF53}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runic.Agent.Framework", "Runic.Agent.Framework\Runic.Agent.Framework.csproj", "{C6F7D9E6-017B-4BFB-9CB4-BC7DF8C937DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Framework", "Runic.Agent.Framework\Runic.Agent.Framework.csproj", "{C6F7D9E6-017B-4BFB-9CB4-BC7DF8C937DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runic.Agent.TestHarness", "Runic.Agent.TestHarness\Runic.Agent.TestHarness.csproj", "{2CD3644B-8429-4376-83A1-5B2BC4A19EA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runic.Agent.TestHarness.UnitTest", "Runic.Agent.TestHarness.UnitTest\Runic.Agent.TestHarness.UnitTest.csproj", "{5AA845CF-AA8D-4C06-B965-59F2FE6488B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +67,14 @@ Global
 		{C6F7D9E6-017B-4BFB-9CB4-BC7DF8C937DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6F7D9E6-017B-4BFB-9CB4-BC7DF8C937DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6F7D9E6-017B-4BFB-9CB4-BC7DF8C937DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CD3644B-8429-4376-83A1-5B2BC4A19EA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CD3644B-8429-4376-83A1-5B2BC4A19EA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CD3644B-8429-4376-83A1-5B2BC4A19EA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CD3644B-8429-4376-83A1-5B2BC4A19EA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AA845CF-AA8D-4C06-B965-59F2FE6488B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AA845CF-AA8D-4C06-B965-59F2FE6488B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AA845CF-AA8D-4C06-B965-59F2FE6488B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AA845CF-AA8D-4C06-B965-59F2FE6488B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

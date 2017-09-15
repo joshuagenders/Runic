@@ -2,10 +2,9 @@
 using Moq;
 using Runic.Agent.Core.PluginManagement;
 using Runic.Agent.Core.UnitTest.TestUtility;
-using Runic.Framework.Clients;
+using Runic.Agent.Framework.Clients;
 using System.IO;
 using System.Linq;
-using Runic.Agent.Core.Exceptions;
 using Runic.Agent.Core.Services;
 
 namespace Runic.Agent.Core.UnitTest.Tests.PluginManagement
@@ -26,25 +25,6 @@ namespace Runic.Agent.Core.UnitTest.Tests.PluginManagement
 
         [TestCategory("UnitTest")]
         [TestMethod]
-        public void WhenAssemblyIsLoaded_FunctionTypeisRetrieved()
-        {
-            _pluginManager.LoadPlugin(TestConstants.AssemblyName);
-            var type = _pluginManager.GetClassType(TestConstants.AssemblyQualifiedClassName);
-            Assert.IsNotNull(type);
-            Assert.AreEqual("FakeFunction", type.Name);
-        }
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
-        public void WhenGettingFunctionInfo_ReturnsFunctionInfo()
-        {
-            _pluginManager.LoadPlugin(TestConstants.AssemblyName);
-            var functions = _pluginManager.GetAvailableFunctions();
-            Assert.IsTrue(functions.Any());
-        }
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
         public void WhenAssemblyIsLoadedTwice_AssemblyIsLoadedOnce()
         {
             _pluginManager.LoadPlugin(TestConstants.AssemblyName);
@@ -57,14 +37,6 @@ namespace Runic.Agent.Core.UnitTest.Tests.PluginManagement
         public void WhenLoadingMissingPlugin_ThrowsException()
         {
             Assert.ThrowsException<AssemblyNotFoundException>(() => _pluginManager.LoadPlugin("SomeAssembly"));
-        }
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
-        public void WhenLoadingAMissingClass_ThrowsException()
-        {
-            _pluginManager.LoadPlugin(TestConstants.AssemblyName);
-            Assert.ThrowsException<ClassNotFoundInAssemblyException>(() => _pluginManager.GetClassType("SomeClass"));
         }
 
         [TestCategory("UnitTest")]
@@ -93,13 +65,6 @@ namespace Runic.Agent.Core.UnitTest.Tests.PluginManagement
         public void WhenGettingFunctionsWithoutLoad_ReturnsEmptyList()
         {
             Assert.IsFalse(_pluginManager.GetAvailableFunctions().Any());
-        }
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
-        public void WhenGettingClassWithoutLoad_ThrowsException()
-        {
-            Assert.ThrowsException<ClassNotFoundInAssemblyException>(() => _pluginManager.GetClassType("SomeClass"));
         }
     }
 }

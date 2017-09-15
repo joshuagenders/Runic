@@ -1,4 +1,4 @@
-﻿using Runic.Agent.Core.ExternalInterfaces;
+﻿using Runic.Agent.Framework.ExternalInterfaces;
 using System.IO;
 
 namespace Runic.Agent.Core.UnitTest.TestUtility
@@ -19,6 +19,7 @@ namespace Runic.Agent.Core.UnitTest.TestUtility
 
         public void RetrieveSourceDll(string key)
         {
+            // Method intentionally left empty.
         }
     }
 }

@@ -5,11 +5,12 @@ using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Core.ThreadPatterns;
 using Runic.Agent.Core.UnitTest.TestUtility;
 using Runic.Agent.TestUtility;
-using Runic.Framework.Models;
+using Runic.Agent.Framework.Models;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Runic.Agent.TestHarness.Services;
 
 namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
 {
@@ -28,14 +29,14 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
         [TestMethod]
         public async Task WhenRunningPattern_ThenThreadLevelsAreSet()
         {
-            var patternController = new PatternController(new DateTimeService(), _environment.Get<IThreadManager>());
+            var patternController = new FlowPatternController(new DateTimeService(), _environment.Get<IThreadManager>());
             var flow = TestData.GetTestFlowSingleStep;
             var pattern = new Mock<IThreadPattern>();
 
             var cts = new CancellationTokenSource();
             cts.CancelAfter(1200);
             
-            patternController.StartThreadPattern("id", flow, pattern.Object, cts.Token);
+            patternController.AddThreadPattern("id", flow, pattern.Object, cts.Token);
             Assert.IsTrue(patternController.GetRunningThreadPatterns().Any(p => p.Item1 == "id"));
             Assert.IsTrue(patternController.GetRunningFlows().Any(p => p.Item1 == "id"));
             pattern.Setup(p => p.GetCurrentThreadLevel(It.IsAny<DateTime>())).Returns(20);
@@ -56,14 +57,14 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
         [TestMethod]
         public async Task WhenStoppingPattern_ThenFlowAndPatternStops()
         {
-            var patternController = new PatternController(new DateTimeService(), _environment.Get<IThreadManager>());
+            var patternController = new FlowPatternController(new DateTimeService(), _environment.Get<IThreadManager>());
             var flow = TestData.GetTestFlowSingleStep;
             var pattern = new Mock<IThreadPattern>();
 
             var cts = new CancellationTokenSource();
             cts.CancelAfter(1200);
 
-            patternController.StartThreadPattern("id", flow, pattern.Object, cts.Token);
+            patternController.AddThreadPattern("id", flow, pattern.Object, cts.Token);
             Assert.IsTrue(patternController.GetRunningThreadPatterns().Any(p => p.Item1 == "id"));
             Assert.IsTrue(patternController.GetRunningFlows().Any(p => p.Item1 == "id"));
             pattern.Setup(p => p.GetCurrentThreadLevel(It.IsAny<DateTime>())).Returns(20);

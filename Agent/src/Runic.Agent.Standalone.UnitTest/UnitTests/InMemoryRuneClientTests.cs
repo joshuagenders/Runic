@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.Standalone.Clients;
 using Runic.Agent.TestUtility.Runes;
-using Runic.Framework.Models;
+using Runic.Agent.Framework.Models;
 using System.Threading.Tasks;
 
 namespace Runic.Agent.Standalone.Test.UnitTests

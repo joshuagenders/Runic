@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Runic.Framework.Models;
+using Runic.Agent.Framework.Models;
 using System.IO;
 
 namespace Runic.Agent.Standalone.Providers

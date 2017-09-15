@@ -1,10 +1,8 @@
-﻿using Runic.Agent.Core.Exceptions;
-using Runic.Agent.Core.ExternalInterfaces;
+﻿using Runic.Agent.Framework.ExternalInterfaces;
 using Runic.Agent.Core.Services;
-using Runic.Framework.Clients;
-using Runic.Framework.Attributes;
-using Runic.Framework.Models;
-using System;
+using Runic.Agent.Framework.Clients;
+using Runic.Agent.Framework.Attributes;
+using Runic.Agent.Framework.Models;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -29,19 +27,6 @@ namespace Runic.Agent.Core.PluginManagement
             _runeClient = client;
             _provider = provider;
             _eventService = eventService;
-        }
-
-        public object GetInstance(Type type)
-        {
-            _eventService.Debug($"type found {type.AssemblyQualifiedName}");
-            var instance = Activator.CreateInstance(type);
-            return instance;
-        }
-
-        public object GetInstance(string assemblyQualifiedClassName)
-        {
-            var type = GetClassType(assemblyQualifiedClassName);
-            return GetInstance(type);
         }
 
         public void LoadPlugin(string pluginAssemblyName)
@@ -90,22 +75,6 @@ namespace Runic.Agent.Core.PluginManagement
             return assembly;
         }
 
-        public Type GetClassType(string functionFullyQualifiedName)
-        {
-            _eventService.Debug($"Searching assemblies for function");
-            lock (_assemblies)
-            {
-                foreach (var assembly in _assemblies)
-                {
-                    var type = assembly.GetType(functionFullyQualifiedName);
-                    if (type != null)
-                        return type;
-                }
-            }
-
-            throw new ClassNotFoundInAssemblyException(functionFullyQualifiedName);
-        }
-
         public IList<FunctionInformation> GetAvailableFunctions()
         {
             var functions = new List<FunctionInformation>();
@@ -126,7 +95,7 @@ namespace Runic.Agent.Core.PluginManagement
                                 FunctionName = attribute.Name,
                                 //todo methodparams
                                 RequiredRunes = method.GetCustomAttributes<RequiresRunesAttribute>()
-                                                     ?.SelectMany(s => s.Runes)
+                                                     ?.SelectMany(s => s.GetRunes())
                                                       .ToList()
                             });
                         }

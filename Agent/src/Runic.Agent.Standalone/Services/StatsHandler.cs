@@ -1,6 +1,6 @@
 ﻿using Runic.Agent.Core.Services;
-using Runic.Agent.Core.StepController;
-using Runic.Framework.Models;
+using Runic.Agent.TestHarness.StepController;
+using Runic.Agent.Framework.Models;
 using StatsN;
 using System;
 
@@ -15,10 +15,22 @@ namespace Runic.Agent.Standalone.Services
             _statsd = statsd;
         }
 
-        public void Debug(string message, Exception ex = null){ }
-        public void Error(string message, Exception ex = null) { }
-        public void Info(string message, Exception ex = null) { }
-        public void Warning(string message, Exception ex = null) { }
+        public void Debug(string message, Exception ex = null)
+        {
+            // Method intentionally left empty.
+        }
+        public void Error(string message, Exception ex = null)
+        {
+            // Method intentionally left empty.
+        }
+        public void Info(string message, Exception ex = null)
+        {
+            // Method intentionally left empty.
+        }
+        public void Warning(string message, Exception ex = null)
+        {
+            // Method intentionally left empty.
+        }
 
         public void OnFlowComplete(Flow flow)
         {

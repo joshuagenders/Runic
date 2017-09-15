@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Runic.Agent.Core.Services;
-using Runic.Agent.Core.StepController;
-using Runic.Framework.Models;
+using Runic.Agent.TestHarness.StepController;
 using System;
+using Runic.Agent.Framework.Models;
 
 namespace Runic.Agent.Standalone.Logging
 {

@@ -1,5 +1,4 @@
-﻿using System;
-using Runic.Agent.Core.ExternalInterfaces;
+﻿using Runic.Agent.Framework.ExternalInterfaces;
 
 namespace Runic.Agent.Standalone.Services
 {

@@ -1,6 +1,6 @@
 ﻿using Runic.Agent.Core.PluginManagement;
 using Runic.Agent.Core.Services;
-using Runic.Framework.Models;
+using Runic.Agent.Framework.Models;
 using System;
 
 namespace Runic.Agent.Core.FlowManagement

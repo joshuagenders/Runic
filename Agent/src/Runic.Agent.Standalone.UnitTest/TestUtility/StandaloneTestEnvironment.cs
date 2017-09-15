@@ -7,10 +7,10 @@ using Runic.Agent.TestUtility;
 using Runic.Agent.Core.Services;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using Runic.Framework.Models;
+using Runic.Agent.Framework.Models;
 using Runic.Agent.Standalone.Logging;
 using Runic.Agent.Core.PluginManagement;
-using Runic.Framework.Clients;
+using Runic.Agent.TestHarness.Services;
 
 namespace Runic.Agent.Standalone.Test.TestUtility
 {
@@ -46,7 +46,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             var loggerFactory = new LoggerFactory();
             builder.RegisterInstance(loggerFactory).As<ILoggerFactory>();
             var loggingHandler = new LoggingHandler(loggerFactory);
-
+            
             builder.RegisterInstance(AgentConfig.Instance).As<IAgentConfig>();
             builder.RegisterInstance(AgentSettings.Instance).As<IAgentSettings>();
             builder.RegisterInstance(StatsdSettings.Instance).As<IStatsdSettings>();
@@ -54,7 +54,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
             builder.RegisterInstance(PluginManager.Instance).As<IPluginManager>();
 
             builder.RegisterType<IEventHandler>()
-                   .WithParameter(new PositionalParameter(0, new List<IEventHandler>() { loggingHandler }));
+                   .WithParameter(new PositionalParameter(0, new List<IEventHandler>() { loggingHandler, EventHandler.Instance }));
         }
     }
 

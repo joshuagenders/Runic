@@ -1,4 +1,4 @@
-﻿using Runic.Framework.Models;
+﻿using Runic.Agent.Framework.Models;
 using System.Collections.Generic;
 
 namespace Runic.Agent.Core.UnitTest.TestUtility

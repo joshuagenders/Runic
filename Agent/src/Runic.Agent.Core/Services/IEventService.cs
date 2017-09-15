@@ -1,5 +1,4 @@
-﻿using Runic.Framework.Models;
-using Runic.Agent.Core.StepController;
+﻿using Runic.Agent.Framework.Models;
 using System;
 
 namespace Runic.Agent.Core.Services
@@ -11,7 +10,7 @@ namespace Runic.Agent.Core.Services
         void Warning(string message, Exception ex = null);
         void Error(string message, Exception ex = null);
 
-        void OnTestResult(Result result);
+        //void OnTestResult(Result result);
         void OnFlowStart(Flow flow);
         void OnFlowComplete(Flow flow);
         void OnThreadChange(Flow flow, int threadLevel);

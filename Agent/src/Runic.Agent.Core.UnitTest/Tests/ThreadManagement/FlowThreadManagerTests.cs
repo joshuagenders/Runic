@@ -4,8 +4,9 @@ using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Core.UnitTest.TestUtility;
 using Runic.Agent.TestUtility;
-using Runic.Framework.Models;
+using Runic.Agent.Framework.Models;
 using System.Threading.Tasks;
+using Runic.Agent.TestHarness.Services;
 
 namespace Runic.Agent.Core.UnitTest.Tests.StepController
 {

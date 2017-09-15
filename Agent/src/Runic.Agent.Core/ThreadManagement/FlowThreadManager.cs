@@ -1,6 +1,6 @@
-﻿using Runic.Agent.Core.FunctionHarness;
-using Runic.Agent.Core.Services;
-using Runic.Framework.Models;
+﻿using Runic.Agent.Core.Services;
+using Runic.Agent.Framework.Models;
+using Runic.Agent.TestHarness.Services;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

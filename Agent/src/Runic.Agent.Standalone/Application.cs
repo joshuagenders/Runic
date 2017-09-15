@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
-using Runic.Agent.Core.FlowManagement;
-using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadPatterns;
 using Runic.Agent.Standalone.Configuration;
 using Runic.Agent.Standalone.Providers;
 using Runic.Agent.Standalone.Services;
+using Runic.Agent.TestHarness.Services;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,14 +11,14 @@ namespace Runic.Agent.Standalone
 {
     public class Application : IApplication
     {
-        private readonly IPatternController _patternController;
+        private readonly IFlowPatternController _patternController;
         private readonly ILogger _logger;
         private readonly ILoggerFactory _loggerFactory;
         private readonly IAgentConfig _config;
         private readonly IFlowProvider _flowProvider;
         private readonly IDatetimeService _datetimeService;
 
-        public Application(IPatternController patternController, ILoggerFactory loggerFactory, IAgentConfig config, IFlowProvider flowProvider, IDatetimeService datetimeService)
+        public Application(IFlowPatternController patternController, ILoggerFactory loggerFactory, IAgentConfig config, IFlowProvider flowProvider, IDatetimeService datetimeService)
         {
             _patternController = patternController;
             _logger = loggerFactory.CreateLogger<IApplication>();
