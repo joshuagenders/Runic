@@ -3,29 +3,25 @@ using Moq;
 using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadManagement;
 using Runic.Agent.Core.UnitTest.TestUtility;
-using Runic.Agent.TestUtility;
 using Runic.Agent.Framework.Models;
-using System.Threading.Tasks;
 using Runic.Agent.TestHarness.Services;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Runic.Agent.Core.UnitTest.Tests.StepController
 {
     [TestClass]
     public class FlowThreadManagerTests
     {
-        private TestEnvironmentBuilder _testEnvironment { get; set; }
         private Flow _flow { get; set; }
         private FlowThreadManager _manager { get; set; }
-
+        private Mock<IRunnerService> _runnerService { get; set; }
         [TestInitialize]
         public void Init()
         {
-            _testEnvironment = new UnitEnvironment();
             _flow = TestData.GetTestFlowSingleStep;
-            _manager = new FlowThreadManager(
-                _flow,
-                _testEnvironment.Get<IRunnerService>(),
-                _testEnvironment.Get<IEventService>());
+            _runnerService = new Mock<IRunnerService>();
+            _manager = new FlowThreadManager(_flow, _runnerService.Object, new Mock<IEventService>().Object);
         }
 
         [TestCategory("UnitTest")]
@@ -36,7 +32,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.StepController
             Assert.AreEqual(1, _manager.GetCurrentThreadCount());
             await _manager.UpdateThreadCountAsync(0);
             Assert.AreEqual(0, _manager.GetCurrentThreadCount());
-            //todo verify mocks
+            _runnerService.Verify(r => r.ExecuteFlowAsync(_flow, It.IsAny<CancellationToken>()));
         }
 
         [TestCategory("UnitTest")]
@@ -47,7 +43,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.StepController
             Assert.AreEqual(1, _manager.GetCurrentThreadCount());
             _manager.StopAll();
             Assert.AreEqual(0, _manager.GetCurrentThreadCount());
-            //todo verify mocks
+            _runnerService.Verify(r => r.ExecuteFlowAsync(_flow, It.IsAny<CancellationToken>()));
         }
     }
 }

@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Runic.Agent.TestHarness.Harness;
 using Runic.Agent.TestHarness.UnitTest.TestUtility;
-using Runic.Agent.TestUtility;
 using Runic.Agent.Framework.Models;
 using System;
 using System.Threading;
@@ -15,19 +14,12 @@ namespace Runic.Agent.Core.UnitTest.Tests.Services
     [TestClass]
     public class FunctionStepRunnerTests
     {
-        private TestEnvironmentBuilder _environment { get; set; }
-
-        [TestInitialize]
-        public void Init()
-        {
-            _environment = new UnitEnvironment();
-        }
-
         [TestCategory("UnitTest")]
         [TestMethod]
         public async Task WhenFunctionStepRunnerIsExecuted_MethodsAreInvoked()
         {
-            var functionHarness = new TestHarness.Harness.FunctionHarness(_environment.Get<IDataService>());
+            var dataService = new Mock<IDataService>();
+            var functionHarness = new TestHarness.Harness.FunctionHarness(dataService.Object);
 
             var fakeFunction = new FakeFunction();
             var step = new Step()
@@ -39,23 +31,25 @@ namespace Runic.Agent.Core.UnitTest.Tests.Services
                     AssemblyQualifiedClassName = ""
                 }
             };
+
             functionHarness.Bind(fakeFunction, step);
 
-            _environment.GetMock<IFunctionFactory>()
-                        .Setup(f => f.CreateFunction(It.IsAny<Step>(), It.IsAny<Framework.Models.TestContext>()))
-                        .Returns(functionHarness);
+            var functionFactory = new Mock<IFunctionFactory>();
+            functionFactory.Setup(f => f.CreateFunction(It.IsAny<Step>(), It.IsAny<Framework.Models.TestContext>()))
+                           .Returns(functionHarness);
 
             var startTime = DateTime.Now;
             var cts = new CancellationTokenSource();
             cts.CancelAfter(1000);
 
-            _environment.DatetimeService.MockObject.Setup(d => d.Now).Returns(startTime);
+            var datetimeService = new Mock<IDatetimeService>();
+            datetimeService.Setup(d => d.Now).Returns(startTime);
 
-            var functionRunner = new FunctionStepRunnerService(_environment.Get<IFunctionFactory>(), _environment.Get<IDatetimeService>());
+            var functionRunner = new FunctionStepRunnerService(functionFactory.Object, datetimeService.Object);
             
             var result = await functionRunner.ExecuteStepAsync(step, cts.Token);
 
-            _environment.DatetimeService.MockObject.Setup(d => d.Now).Returns(startTime.AddMinutes(1));
+            datetimeService.Setup(d => d.Now).Returns(startTime.AddMinutes(1));
 
             result.Success.Should().BeTrue();
             result.NextStep.Should().BeNullOrEmpty();

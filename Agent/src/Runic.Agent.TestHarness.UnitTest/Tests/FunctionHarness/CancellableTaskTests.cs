@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Runic.Agent.Core.Services;
+using Runic.Agent.TestHarness.FunctionHarness;
 using System.Threading;
 using System.Threading.Tasks;
 

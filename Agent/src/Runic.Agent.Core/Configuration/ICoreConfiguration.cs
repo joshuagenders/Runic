@@ -1,6 +1,6 @@
 ﻿namespace Runic.Agent.Core.Configuration
 {
-    public interface IConfiguration
+    public interface ICoreConfiguration
     {
         int MaxThreads { get; }
         int MaxErrors { get; }

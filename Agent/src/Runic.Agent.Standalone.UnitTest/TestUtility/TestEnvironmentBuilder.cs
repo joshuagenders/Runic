@@ -1,22 +1,23 @@
-﻿using Autofac;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Runic.Agent.Core.IoC;
+using System;
 using System.Linq;
 using System.Reflection;
 
-namespace Runic.Agent.TestUtility
+namespace Runic.Agent.Standalone.Test.TestUtility
 {
     public abstract class TestEnvironmentBuilder : TestEnvironment
     {
-        private ContainerBuilder _builder { get; set; }
+        private ServiceCollection _serviceCollection { get; set; }
         protected TestEnvironmentBuilder()
         {
-            _builder = new ContainerBuilder();
+            _serviceCollection = new ServiceCollection();
             RegisterTestObjects();
         }
 
-        public IContainer Build()
+        public IServiceProvider Build()
         {
-            return _builder.Build();
+            return _serviceCollection.BuildServiceProvider();
         }
 
         public TestEnvironmentBuilder With<T>(T instance) where T : class
@@ -32,7 +33,7 @@ namespace Runic.Agent.TestUtility
                 testObj.GetType().GetProperty("Instance").SetValue(testObj, instance);
             }
 
-            _builder.RegisterInstance(instance);
+            _serviceCollection.AddSingleton(instance);
             return this;
         }
 
@@ -49,31 +50,25 @@ namespace Runic.Agent.TestUtility
                 var testObject = prop.GetValue(this);
                 var instance = testObject.GetType().GetProperty("Instance").GetValue(testObject);
                 var asType = prop.PropertyType.GenericTypeArguments[0];
-                _builder.RegisterInstance(instance).As(asType);
+                _serviceCollection.AddSingleton(asType, instance);
             }
         }
 
-        public TestEnvironmentBuilder WithType<T, U>()
+        public TestEnvironmentBuilder WithType<TService, TImplementation>() where TImplementation : class, TService, new() where TService : class
         {
-            _builder.RegisterType<T>().As<U>();
+            _serviceCollection.AddTransient<TService, TImplementation>();
             return this;
         }
 
         public TestEnvironmentBuilder WithInstance<T>(T obj) where T : class
         {
-            _builder.RegisterInstance<T>(obj);
-            return this;
-        }
-
-        public TestEnvironmentBuilder WithSingleInstanceType<T, U>()
-        {
-            _builder.RegisterType<T>().As<U>().SingleInstance();
+            _serviceCollection.AddSingleton(obj);
             return this;
         }
 
         public virtual TestEnvironmentBuilder WithStandardTypes()
         {
-            TypeList.GetDefaultTypeList().ForEach(t => _builder.RegisterType(t.Item1).As(t.Item2));
+            CoreServiceCollection.ConfigureServices(_serviceCollection);
             return this;
         }
     }

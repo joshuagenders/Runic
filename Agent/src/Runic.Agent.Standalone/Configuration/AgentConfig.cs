@@ -1,6 +1,9 @@
-﻿namespace Runic.Agent.Standalone.Configuration
+﻿using System;
+using Runic.Agent.Core.Configuration;
+
+namespace Runic.Agent.Standalone.Configuration
 {
-    public class AgentConfig : IAgentConfig
+    public class AgentConfig : IAgentConfig, ICoreConfiguration
     {
         public AgentConfig(IStatsdSettings statsdSettings, IAgentSettings agentSettings)
         {
@@ -13,5 +16,8 @@
 
         private static IAgentSettings _agentSettings { get; set; }
         public IAgentSettings AgentSettings => _agentSettings;
+
+        public int MaxThreads => 400;
+        public int MaxErrors => 200;
     }
 }

@@ -3,9 +3,10 @@ using Moq;
 using Runic.Agent.Core.PluginManagement;
 using Runic.Agent.Core.UnitTest.TestUtility;
 using Runic.Agent.Framework.Clients;
-using System.IO;
 using System.Linq;
 using Runic.Agent.Core.Services;
+using Runic.Agent.Framework.ExternalInterfaces;
+using System.Reflection;
 
 namespace Runic.Agent.Core.UnitTest.Tests.PluginManagement
 {
@@ -13,23 +14,16 @@ namespace Runic.Agent.Core.UnitTest.Tests.PluginManagement
     public class PluginManagerTests
     {
         private PluginManager _pluginManager { get; set; }
+        private Mock<IPluginProvider> _pluginProvider { get; set; }
 
         [TestInitialize]
         public void Init()
         {
+            _pluginProvider = new Mock<IPluginProvider>();
             _pluginManager = new PluginManager(
                 new Mock<IRuneClient>().Object, 
-                new FilePluginProvider(Directory.GetCurrentDirectory()),
+                _pluginProvider.Object,
                 new Mock<IEventService>().Object);
-        }
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
-        public void WhenAssemblyIsLoadedTwice_AssemblyIsLoadedOnce()
-        {
-            _pluginManager.LoadPlugin(TestConstants.AssemblyName);
-            _pluginManager.LoadPlugin(TestConstants.AssemblyName);
-            Assert.AreEqual(1, _pluginManager.GetAssemblies().Count);
         }
 
         [TestCategory("UnitTest")]

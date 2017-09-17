@@ -1,27 +1,28 @@
-﻿using Autofac;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Runic.Agent.Standalone.Configuration;
 using System;
 using System.Threading;
 
 namespace Runic.Agent.Standalone
 {
-    class Program
+    static class Program
     {
         static void Main(string[] args)
         {
-            var startup = new Startup();
-            var container = startup.BuildContainer();
+            var serviceCollection = new ServiceCollection();
+            Startup.ConfigureServices(serviceCollection);
+            var serviceProvider = serviceCollection.BuildServiceProvider();
             var cts = new CancellationTokenSource();
             
-            using (var scope = container.BeginLifetimeScope())
+            using (var scope = serviceProvider.CreateScope())
             {
-                var config = scope.Resolve<IAgentConfig>();
+                var config = scope.ServiceProvider.GetService<IAgentConfig>();
                 if (config.AgentSettings.FlowDurationSeconds != 0)
                 {
                     cts.CancelAfter(config.AgentSettings.FlowDurationSeconds * 1000);
                 }
 
-                var agent = scope.Resolve<IApplication>();
+                var agent = scope.ServiceProvider.GetService<IApplication>();
                 agent.RunApplicationAsync(cts.Token)
                      .ContinueWith((result) =>
                      {

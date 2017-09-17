@@ -1,7 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Runic.Agent.TestHarness.StepController;
-using Runic.Agent.ExampleTest.Functions;
 using Runic.Agent.Standalone.Test.TestUtility;
 using Runic.Agent.Framework.Models;
 using System;

@@ -13,9 +13,9 @@ using Runic.Agent.Core.Services;
 using Runic.Agent.Core.ThreadPatterns;
 using Runic.Agent.TestHarness.Services;
 
-namespace Runic.Agent.TestUtility
+namespace Runic.Agent.Standalone.Test.TestUtility
 {
-    public abstract class TestEnvironment
+    public abstract class TestEnvironment : ITestEnvironment
     {        
         public TestObject<IPluginManager> PluginManager { get; set; } = new TestObject<IPluginManager>();
         public TestObject<IPluginProvider> PluginProvider { get; set; } = new TestObject<IPluginProvider>();
@@ -26,7 +26,7 @@ namespace Runic.Agent.TestUtility
         public TestObject<IDatetimeService> DatetimeService { get; set; } = new TestObject<IDatetimeService>();
         public TestObject<IRunnerService> RunnerService { get; set; } = new TestObject<IRunnerService>();
         public TestObject<IFunctionFactory> FunctionFactory { get; set; } = new TestObject<IFunctionFactory>();
-        public TestObject<IConfiguration> AgentCoreConfiguration { get; set; } = new TestObject<IConfiguration>();
+        public TestObject<ICoreConfiguration> AgentCoreConfiguration { get; set; } = new TestObject<ICoreConfiguration>();
         public TestObject<IEventService> EventService { get; set; } = new TestObject<IEventService>();
         public TestObject<IEventHandler> EventHandler { get; set; } = new TestObject<IEventHandler>();
         public TestObject<TestContext> TestContext { get; set; } = new TestObject<TestContext>();
@@ -55,6 +55,6 @@ namespace Runic.Agent.TestUtility
             return propValue.MockObject;
         }
 
-        public abstract TestEnvironment StartApplication();
+        public abstract ITestEnvironment StartApplication();
     }
 }

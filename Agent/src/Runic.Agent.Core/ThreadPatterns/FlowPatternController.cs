@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Core.Services
+namespace Runic.Agent.Core.ThreadPatterns
 {
     public class FlowPatternController : IFlowPatternController
     {

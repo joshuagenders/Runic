@@ -13,49 +13,45 @@ using Runic.Agent.Framework.Models;
 using StatsN;
 using System.Collections.Generic;
 using System.IO;
-using Runic.Agent.TestHarness.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Runic.Agent.Core.Configuration;
 
 namespace Runic.Agent.Standalone
 {
-    public class Startup : IStartup
+    public static class Startup
     {
-        public IContainer BuildContainer(string[] args = null)
+        public static void ConfigureServices(IServiceCollection serviceCollection)
         {
-            var builder = new ContainerBuilder();
-            CoreServiceCollection.GetDefaultTypeList().ForEach(t => builder.RegisterType(t.Item1).As(t.Item2));
-            builder.RegisterType<DataService>().As<IDataService>().SingleInstance();
-            builder.RegisterType<InMemoryRuneClient>().As<IRuneClient>().SingleInstance();
-            builder.RegisterType<Application>().As<IApplication>();
-            builder.RegisterType<AgentConfig>().As<IAgentConfig>().SingleInstance();
-            builder.RegisterType<AgentSettings>().As<IAgentSettings>().SingleInstance();
-            builder.RegisterType<FunctionFactory>().As<IFunctionFactory>().SingleInstance();
-            builder.RegisterType<FileTestDataService>().As<ITestDataService>();
-            builder.RegisterType<StatsdSettings>().As<IStatsdSettings>().SingleInstance();
-            builder.RegisterType<FileFlowProvider>().As<IFlowProvider>();
-            builder.RegisterType<FilePluginProvider>()
-                   .WithParameter(new PositionalParameter(0, Directory.GetCurrentDirectory()))
-                   .WithParameter(new PositionalParameter(1, "Plugins"))
-                   .As<IPluginProvider>();
+            serviceCollection.AddTransient<IRuneClient, InMemoryRuneClient>();
+            serviceCollection.AddTransient<IApplication, Application>();
+            serviceCollection.AddSingleton<IAgentConfig, AgentConfig>();
+            serviceCollection.AddTransient<IAgentSettings, AgentSettings>();
+            serviceCollection.AddTransient<ITestDataService, FileTestDataService>();
+            serviceCollection.AddTransient<IStatsdSettings, StatsdSettings>();
+            serviceCollection.AddTransient<IFlowProvider, FileFlowProvider>();
+            serviceCollection.AddTransient<ITestDataService, FileTestDataService>();
             
-            RegisterInstances(builder);
-
-            return builder.Build();
+            CoreServiceCollection.ConfigureServices(serviceCollection);
+            AddSingletons(serviceCollection);
         }
 
-        protected virtual void RegisterInstances(ContainerBuilder builder)
+        private static void AddSingletons(IServiceCollection serviceCollection)
         {
+            serviceCollection.AddSingleton<IPluginProvider>(new FilePluginProvider(Directory.GetCurrentDirectory(), "Plugins"));
+
             var statsdSettings = new StatsdSettings();
             var agentSettings = new AgentSettings();
             var agentConfig = new AgentConfig(statsdSettings, agentSettings);
 
-            builder.RegisterInstance(new TestContext()
-            {
-                DeploymentDirectory = Directory.GetCurrentDirectory(),
-                FlowExecutionId = agentConfig.AgentSettings.FlowPatternExecutionId,
-                ThreadPatternName = agentConfig.AgentSettings.FlowThreadPatternName,
-                PluginDirectory = "Plugins"
-            });
-
+            serviceCollection.AddSingleton(
+                new TestContext()
+                {
+                    DeploymentDirectory = Directory.GetCurrentDirectory(),
+                    FlowExecutionId = agentConfig.AgentSettings.FlowPatternExecutionId,
+                    ThreadPatternName = agentConfig.AgentSettings.FlowThreadPatternName,
+                    PluginDirectory = "Plugins"
+                });
+        
             IStatsd statsd = Statsd.New<Udp>(options =>
             {
                 options.Port = agentConfig.StatsdSettings.Port;
@@ -63,14 +59,13 @@ namespace Runic.Agent.Standalone
                 options.Prefix = agentConfig.StatsdSettings.Prefix;
                 options.BufferMetrics = false;
             });
-
-            builder.RegisterInstance(statsd).As<IStatsd>().SingleInstance();
+            serviceCollection.AddSingleton<ICoreConfiguration>(agentConfig);
+            serviceCollection.AddSingleton(statsd);
             var statsHandler = new StatsHandler(statsd);
             var loggerFactory = new LoggerFactory();
             var loggingHandler = new LoggingHandler(loggerFactory);
 
-            builder.RegisterType<IEventHandler>()
-                   .WithParameter(new PositionalParameter(0, new List<IEventHandler>() { statsHandler, loggingHandler }));
+            serviceCollection.AddSingleton<IEventService>(new EventService(new List<IEventHandler>() { statsHandler, loggingHandler }));
         }
     }   
 }

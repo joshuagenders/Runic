@@ -1,20 +1,14 @@
-﻿using System;
-using Autofac;
-using Moq;
+﻿using Moq;
 using Runic.Agent.Standalone.Configuration;
 using Runic.Agent.Standalone.Providers;
-using Runic.Agent.TestUtility;
-using Runic.Agent.Core.Services;
-using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using Runic.Agent.Framework.Models;
 using Runic.Agent.Standalone.Logging;
-using Runic.Agent.Core.PluginManagement;
 using Runic.Agent.TestHarness.Services;
+using System.Threading.Tasks;
 
 namespace Runic.Agent.Standalone.Test.TestUtility
 {
-    public sealed class StandaloneTestEnvironment : Startup
+    public sealed class StandaloneTestEnvironment : TestEnvironmentBuilder
     {
         private IApplication _application { get; set; }
         
@@ -22,40 +16,31 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         public TestObject<IAgentSettings> AgentSettings { get; set; } = new TestObject<IAgentSettings>();
         public TestObject<IStatsdSettings> StatsdSettings { get; set; } = new TestObject<IStatsdSettings>();
         public TestObject<IFlowProvider> FlowProvider { get; set; } = new TestObject<IFlowProvider>();
-        public TestObject<IEventHandler> EventHandler { get; set; } = new TestObject<IEventHandler>();
         public TestObject<IDatetimeService> DateTimeService { get; set; } = new TestObject<IDatetimeService>();
-        public TestObject<IPluginManager> PluginManager{ get; set; } = new TestObject<IPluginManager>();
-
+        public Task ApplicationTask { get; private set; }
         public IApplication Application
         {
             get { return _application ?? new Mock<IApplication>().Object; }
             set { _application = value; }
         }
 
-        public StandaloneTestEnvironment StartApplication()
+        public override ITestEnvironment StartApplication()
         {
-            var container = BuildContainer();
-            var scope = container.BeginLifetimeScope();
-            Application = scope.Resolve<IApplication>();
+            With(AgentConfig);
+            With(AgentSettings);
+            With(StatsdSettings);
+            With(FlowProvider);
+            With(DatetimeService);
+            var loggerFactory = new LoggerFactory();
+            With<ILoggerFactory>(loggerFactory);
+
+            var loggingHandler = new LoggingHandler(loggerFactory);
+            With(loggingHandler);
+
+            var serviceCollection = Build();
+            _application = serviceCollection.GetService(typeof(IApplication)) as IApplication;
+            ApplicationTask = _application.RunApplicationAsync();
             return this;
         }
-   
-        protected override void RegisterInstances(ContainerBuilder builder)
-        {
-            builder.RegisterInstance(new TestContext());
-            var loggerFactory = new LoggerFactory();
-            builder.RegisterInstance(loggerFactory).As<ILoggerFactory>();
-            var loggingHandler = new LoggingHandler(loggerFactory);
-            
-            builder.RegisterInstance(AgentConfig.Instance).As<IAgentConfig>();
-            builder.RegisterInstance(AgentSettings.Instance).As<IAgentSettings>();
-            builder.RegisterInstance(StatsdSettings.Instance).As<IStatsdSettings>();
-            builder.RegisterInstance(FlowProvider.Instance).As<IFlowProvider>();
-            builder.RegisterInstance(PluginManager.Instance).As<IPluginManager>();
-
-            builder.RegisterType<IEventHandler>()
-                   .WithParameter(new PositionalParameter(0, new List<IEventHandler>() { loggingHandler, EventHandler.Instance }));
-        }
     }
-
 }
