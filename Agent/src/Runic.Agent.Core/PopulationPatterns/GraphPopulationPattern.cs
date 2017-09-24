@@ -6,33 +6,33 @@ using System.Linq;
 
 namespace Runic.Agent.Core.ThreadPatterns
 {
-    public class GraphThreadPattern : IThreadPattern
+    public class GraphPopulationPattern : IPopulationPattern
     {
         private readonly IDatetimeService _datetimeService;
         
         public IList<Point> Points { get; set; }
         public int DurationSeconds { get; set; }
 
-        public GraphThreadPattern(IDatetimeService datetimeService)
+        public GraphPopulationPattern(IDatetimeService datetimeService)
         {
             _datetimeService = datetimeService;
         }
 
         public virtual int GetMaxDurationSeconds() => DurationSeconds;
-        public virtual int GetMaxThreadCount() => Points.Max(p => p.ThreadLevel);
+        public virtual int GetMaxPersonCount() => Points.Max(p => p.PopulationSize);
 
         public List<Tuple<DateTime, int>> GetThreadChangeEvents(DateTime startTime)
         {
             double maxX = Points.Max(p => p.UnitsFromStart);
             double secondsPerPoint = (DurationSeconds / maxX);
-            var threadEvents = Points.Select(p => Tuple.Create(startTime.AddSeconds(secondsPerPoint * p.UnitsFromStart), p.ThreadLevel)).ToList();
+            var threadEvents = Points.Select(p => Tuple.Create(startTime.AddSeconds(secondsPerPoint * p.UnitsFromStart), p.PopulationSize)).ToList();
             threadEvents.Add(Tuple.Create(startTime.AddSeconds(DurationSeconds), 0));
             return threadEvents;
         }
 
         public virtual string GetPatternType() => "graph";
 
-        public int GetCurrentThreadLevel(DateTime startTime)
+        public int GetCurrentActivePopulationCount(DateTime startTime)
         {
             if (_datetimeService.Now > startTime.AddSeconds(DurationSeconds))
             {
@@ -59,7 +59,7 @@ namespace Runic.Agent.Core.ThreadPatterns
                     break;
                 point = Points[index];
             }
-            return point.ThreadLevel;
+            return point.PopulationSize;
         }
     }
 }

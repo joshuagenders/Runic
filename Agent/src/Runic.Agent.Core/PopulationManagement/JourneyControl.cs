@@ -9,24 +9,24 @@ using System.Threading.Tasks;
 
 namespace Runic.Agent.Core.ThreadManagement
 {
-    public sealed class FlowThreadManager : IDisposable
+    public sealed class JourneyControl : IDisposable
     {
-        private readonly Flow _flow;
+        private readonly Framework.Models.Journey _journey;
         private readonly TaskFactory _taskFactory;
 
         private ConcurrentDictionary<int, CancellableTask> _taskPool { get; set; }
         private int _currentThreadCount { get; set; }
         public readonly string Id;
-        private readonly IRunnerService _runnerService;
+        private readonly IPerson _runnerService;
         private readonly IEventService _eventService;
 
-        public FlowThreadManager(Flow flow, IRunnerService runnerService, IEventService eventService)
+        public JourneyControl(Framework.Models.Journey journey, IPerson runnerService, IEventService eventService)
         {
             Id = Guid.NewGuid().ToString("N");
             _eventService = eventService;
             _taskFactory = new TaskFactory(new ConcurrentExclusiveSchedulerPair().ExclusiveScheduler);
             _taskPool = new ConcurrentDictionary<int, CancellableTask>();
-            _flow = flow;
+            _journey = journey;
             _runnerService = runnerService;
         }
 
@@ -42,7 +42,7 @@ namespace Runic.Agent.Core.ThreadManagement
             if (task == null)
             {
                 var cts = new CancellationTokenSource();
-                var flowTask = _runnerService.ExecuteFlowAsync(_flow, cts.Token)
+                var flowTask = _runnerService.PerformJourneyAsync(_journey, cts.Token)
                                              .ContinueWith(async (_) => await RemoveTaskAsync(id));
 
                 var cancellableTask = new CancellableTask(flowTask, cts);
@@ -64,7 +64,7 @@ namespace Runic.Agent.Core.ThreadManagement
 
         public async Task UpdateThreadCountAsync (int threadCount)
         {
-            _eventService.Info($"Update thread count to {threadCount} for flow {_flow.Name}");
+            _eventService.Info($"Update thread count to {threadCount} for flow {_journey.Name}");
             await _taskFactory.StartNew(() => UpdateThreads(threadCount));
         }
 
@@ -92,14 +92,14 @@ namespace Runic.Agent.Core.ThreadManagement
                 Task.WaitAll(removalTasks.ToArray());
             }
             _currentThreadCount = threadCount;
-            _eventService.OnThreadChange(_flow, threadCount);
+            _eventService.OnThreadChange(_journey, threadCount);
         }
 
         public void Dispose()
         {
             UpdateThreads(0);
-            if (_flow != null)
-                _eventService.OnThreadChange(_flow, 0);
+            if (_journey != null)
+                _eventService.OnThreadChange(_journey, 0);
         }
     }
 }

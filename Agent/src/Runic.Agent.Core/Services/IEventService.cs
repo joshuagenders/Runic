@@ -11,8 +11,8 @@ namespace Runic.Agent.Core.Services
         void Error(string message, Exception ex = null);
 
         //void OnTestResult(Result result);
-        void OnFlowStart(Flow flow);
-        void OnFlowComplete(Flow flow);
-        void OnThreadChange(Flow flow, int threadLevel);
+        void OnFlowStart(Framework.Models.Journey flow);
+        void OnFlowComplete(Framework.Models.Journey flow);
+        void OnThreadChange(Framework.Models.Journey flow, int threadLevel);
     }
 }

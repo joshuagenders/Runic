@@ -2,6 +2,6 @@
 {
     public class AddUpdateFlowRequest
     {
-        public Flow Flow { get; set; }
+        public Journey Flow { get; set; }
     }
 }

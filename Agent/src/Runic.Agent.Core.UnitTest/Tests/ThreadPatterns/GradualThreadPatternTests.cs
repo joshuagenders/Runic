@@ -16,7 +16,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
         [TestMethod]
         public void WhenGradualWithNoRampUpDownExecutes__CorrectThreadLevelsReturned()
         {
-            var pattern = new GradualThreadPattern(_mockDatetimeService.Object)
+            var pattern = new GradualPopulationPattern(_mockDatetimeService.Object)
             {
                 DurationSeconds = 2,
                 ThreadCount = 2
@@ -30,7 +30,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
         [TestMethod]
         public void WhenGradualWithRampUpDownEdgeAndIntervalCollisionExecutes_CorrectThreadLevelsReturned()
         {
-            var pattern = new GradualThreadPattern(_mockDatetimeService.Object)
+            var pattern = new GradualPopulationPattern(_mockDatetimeService.Object)
             {
                 DurationSeconds = 14,
                 RampDownSeconds = 7,
@@ -47,7 +47,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
         [TestMethod]
         public void WhenAComplexGradualFlowIsExecuted_CorrectThreadLevelsReturned()
         {
-            var pattern = new GradualThreadPattern(_mockDatetimeService.Object)
+            var pattern = new GradualPopulationPattern(_mockDatetimeService.Object)
             {
                 DurationSeconds = 14,
                 RampDownSeconds = 5,
@@ -70,7 +70,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
         [TestMethod]
         public void WhenGradualFlowExecutes_CorrectThreadLevelsReturned()
         {
-            var pattern = new GradualThreadPattern(_mockDatetimeService.Object)
+            var pattern = new GradualPopulationPattern(_mockDatetimeService.Object)
             {
                 DurationSeconds = 60,
                 RampDownSeconds = 9,
@@ -111,10 +111,10 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
         }
 
 
-        private void AssertThreadLevel(IThreadPattern pattern, DateTime startTime, int secondsEllapsed, int expectedThreadLevel)
+        private void AssertThreadLevel(IPopulationPattern pattern, DateTime startTime, int secondsEllapsed, int expectedThreadLevel)
         {
             _mockDatetimeService.Setup(s => s.Now).Returns(startTime.AddSeconds(secondsEllapsed));
-            Assert.AreEqual(expectedThreadLevel, pattern.GetCurrentThreadLevel(startTime));
+            Assert.AreEqual(expectedThreadLevel, pattern.GetCurrentActivePopulationCount(startTime));
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.StepController
     [TestClass]
     public class StandardStepControllerTests
     {
-        private Flow _flow => new Flow()
+        private Journey _flow => new Journey()
         {
             Steps = new List<Step>()
                 {

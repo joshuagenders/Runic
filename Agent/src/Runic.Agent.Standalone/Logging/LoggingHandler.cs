@@ -58,17 +58,17 @@ namespace Runic.Agent.Standalone.Logging
             _log.LogInformation(message, ex);
         }
 
-        public void OnFlowAdded(Flow flow)
+        public void OnFlowAdded(Journey flow)
         {
             _log.LogInformation("Flow added", flow);
         }
 
-        public void OnFlowComplete(Flow flow)
+        public void OnFlowComplete(Journey flow)
         {
             _log.LogInformation("Flow complete", flow);
         }
 
-        public void OnFlowStart(Flow flow)
+        public void OnFlowStart(Journey flow)
         {
             _log.LogInformation("Flow started", flow);
         }
@@ -78,7 +78,7 @@ namespace Runic.Agent.Standalone.Logging
             _log.LogInformation("Test Result", result);
         }
 
-        public void OnThreadChange(Flow flow, int threadLevel)
+        public void OnThreadChange(Journey flow, int threadLevel)
         {
             _log.LogInformation($"Thread Change on flow {flow.Name} to {threadLevel}");
         }

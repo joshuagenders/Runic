@@ -5,7 +5,7 @@ namespace Runic.Agent.Core.UnitTest.TestUtility
 {
     public static class TestData
     {
-        public static Flow GetTestFlowSingleStep => new Flow()
+        public static Journey GetTestFlowSingleStep => new Framework.Models.Journey()
         {
             Name = "Test",
                 Steps = new List<Step>()
@@ -23,7 +23,7 @@ namespace Runic.Agent.Core.UnitTest.TestUtility
                 }
             };
 
-        public static Flow GetTestFlowSingleStepRepeatTwice => new Flow()
+        public static Journey GetTestFlowSingleStepRepeatTwice => new Framework.Models.Journey()
         {
             Name = "Test",
             Steps = new List<Step>()
@@ -42,7 +42,7 @@ namespace Runic.Agent.Core.UnitTest.TestUtility
                 }
         };
 
-        public static Flow GetTestFlowSingleStepLooping => new Flow()
+        public static Journey GetTestFlowSingleStepLooping => new Framework.Models.Journey()
         {
             Name = "Test",
             Steps = new List<Step>()
@@ -60,7 +60,7 @@ namespace Runic.Agent.Core.UnitTest.TestUtility
                 }
         };
 
-        public static Flow GetTestFlowTwoSteps => new Flow()
+        public static Journey GetTestFlowTwoSteps => new Framework.Models.Journey()
         {
             Name = "Test",
             Steps = new List<Step>()

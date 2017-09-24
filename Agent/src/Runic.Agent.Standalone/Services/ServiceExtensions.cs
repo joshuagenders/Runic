@@ -14,7 +14,7 @@ namespace Runic.Agent.Standalone.Services
                 points.Add(new Point()
                 {
                     UnitsFromStart = int.Parse(split[0]),
-                    ThreadLevel = int.Parse(split[1])
+                    PopulationSize = int.Parse(split[1])
                 });
             }
             return points;

@@ -5,9 +5,9 @@
         //time value, calculated as ratio of max x
         private int unitsFromStart;
         //thread level
-        private int threadLevel;
+        private int populationsSize;
 
         public int UnitsFromStart { get => unitsFromStart; set => unitsFromStart = value; }
-        public int ThreadLevel { get => threadLevel; set => threadLevel = value; }
+        public int PopulationSize { get => populationsSize; set => populationsSize = value; }
     }
 }

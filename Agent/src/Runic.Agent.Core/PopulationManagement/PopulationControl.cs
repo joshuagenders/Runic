@@ -1,5 +1,4 @@
 ﻿using Runic.Agent.Core.Services;
-using Runic.Agent.Framework.Models;
 using Runic.Agent.TestHarness.Services;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -9,23 +8,23 @@ using System.Threading.Tasks;
 
 namespace Runic.Agent.Core.ThreadManagement
 {
-    public class ThreadManager : IThreadManager
+    public class PopulationControl : IPopulationControl
     {
-        private readonly IRunnerService _runnerService;
+        private readonly IPerson _runnerService;
         private readonly IEventService _eventService;
 
-        private static ConcurrentDictionary<string, FlowThreadManager> _threadManagers { get; set; }
+        private static ConcurrentDictionary<string, JourneyControl> _threadManagers { get; set; }
 
-        public ThreadManager(IRunnerService runnerService, IEventService eventService)
+        public PopulationControl(IPerson runnerService, IEventService eventService)
         {
             _runnerService = runnerService;
-            _threadManagers = new ConcurrentDictionary<string, FlowThreadManager>();
+            _threadManagers = new ConcurrentDictionary<string, JourneyControl>();
             _eventService = eventService;
         }
 
         public int GetThreadLevel(string flowId)
         {
-            if (_threadManagers.TryGetValue(flowId, out FlowThreadManager manager))
+            if (_threadManagers.TryGetValue(flowId, out JourneyControl manager))
             {
                 return manager.GetCurrentThreadCount();
             }
@@ -35,7 +34,7 @@ namespace Runic.Agent.Core.ThreadManagement
 
         public void StopFlow(string flowId)
         {
-            if (_threadManagers.TryRemove(flowId, out FlowThreadManager threadManager))
+            if (_threadManagers.TryRemove(flowId, out JourneyControl threadManager))
             {
                 threadManager.StopAll();
             }
@@ -52,18 +51,18 @@ namespace Runic.Agent.Core.ThreadManagement
             }
         }
 
-        public async Task SetThreadLevelAsync(string flowId, Flow flow, int threadLevel, CancellationToken ctx = default(CancellationToken))
+        public async Task SetThreadLevelAsync(string flowId, Framework.Models.Journey flow, int threadLevel, CancellationToken ctx = default(CancellationToken))
         {
             //TODO implement maxthreads
             _eventService.Debug($"Attempting to update thread level to {threadLevel} for {flow.Name}");
             
-            if (_threadManagers.TryGetValue(flowId, out FlowThreadManager manager))
+            if (_threadManagers.TryGetValue(flowId, out JourneyControl manager))
             {
                 await manager.UpdateThreadCountAsync(threadLevel);
             }
             else
             {
-                var resolvedManager = _threadManagers.GetOrAdd(flowId, new FlowThreadManager(flow, _runnerService, _eventService));
+                var resolvedManager = _threadManagers.GetOrAdd(flowId, new JourneyControl(flow, _runnerService, _eventService));
                 await resolvedManager.UpdateThreadCountAsync(threadLevel);
             }
             _eventService.OnThreadChange(flow, threadLevel);

@@ -23,8 +23,8 @@ namespace Runic.Agent.Core.UnitTest.Tests.Services
             var mockDatetimeService = new Mock<IDatetimeService>();
             var mockDataService = new Mock<IDataService>();
 
-            var runnerService = new RunnerService(mockFunctionFactory.Object, mockDatetimeService.Object, GetType().GetTypeInfo().Assembly);
-            var flow = new Flow()
+            var runnerService = new Person(mockFunctionFactory.Object, mockDatetimeService.Object, GetType().GetTypeInfo().Assembly);
+            var flow = new Journey()
             {
                 Name = "flow",
                 StepDelayMilliseconds = 10,
@@ -52,7 +52,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.Services
             mockDataService.Setup(d => d.GetParams(It.IsAny<string[]>(), It.IsAny<MethodInfo>())).Returns(new object[] { });
 
             cts.CancelAfter(500);
-            await runnerService.ExecuteFlowAsync(flow, cts.Token);
+            await runnerService.PerformJourneyAsync(flow, cts.Token);
             
             fakeFunction.CallList.Should().Contain(f => f.InvocationTarget == "BeforeEach", "BeforeEach");
             fakeFunction.CallList.Should().Contain(f => f.InvocationTarget == "Login", "Login");

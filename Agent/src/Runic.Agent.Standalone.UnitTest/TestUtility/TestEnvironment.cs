@@ -20,11 +20,11 @@ namespace Runic.Agent.Standalone.Test.TestUtility
         public TestObject<IPluginManager> PluginManager { get; set; } = new TestObject<IPluginManager>();
         public TestObject<IPluginProvider> PluginProvider { get; set; } = new TestObject<IPluginProvider>();
         public TestObject<IDataService> DataService { get; set; } = new TestObject<IDataService>();
-        public TestObject<IFlowPatternController> PatternService { get; set; } = new TestObject<IFlowPatternController>();
-        public TestObject<IThreadManager> ThreadManager { get; set; } = new TestObject<IThreadManager>();
+        public TestObject<IPopulationPatternController> PatternService { get; set; } = new TestObject<IPopulationPatternController>();
+        public TestObject<IPopulationControl> ThreadManager { get; set; } = new TestObject<IPopulationControl>();
         public TestObject<IRuneClient> RuneClient { get; set; } = new TestObject<IRuneClient>();
         public TestObject<IDatetimeService> DatetimeService { get; set; } = new TestObject<IDatetimeService>();
-        public TestObject<IRunnerService> RunnerService { get; set; } = new TestObject<IRunnerService>();
+        public TestObject<IPerson> RunnerService { get; set; } = new TestObject<IPerson>();
         public TestObject<IFunctionFactory> FunctionFactory { get; set; } = new TestObject<IFunctionFactory>();
         public TestObject<ICoreConfiguration> AgentCoreConfiguration { get; set; } = new TestObject<ICoreConfiguration>();
         public TestObject<IEventService> EventService { get; set; } = new TestObject<IEventService>();

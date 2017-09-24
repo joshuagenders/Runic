@@ -4,6 +4,6 @@
     {
         public string PatternExecutionId { get; set; }
         public ConstantThreadModel ThreadPattern { get; set; }
-        public Flow Flow { get; set; }
+        public Journey Flow { get; set; }
     }
 }

@@ -5,34 +5,43 @@ using System.Threading.Tasks;
 using Runic.Agent.TestHarness.StepController;
 using Runic.Agent.TestHarness.Harness;
 using System.Reflection;
+using System.Collections.Generic;
+using System;
 
 namespace Runic.Agent.TestHarness.Services
 {
-    public class RunnerService : IRunnerService
+    public class Person : IPerson
     {
         private readonly IFunctionFactory _functionFactory;
         private readonly IDatetimeService _datetimeService;
         private readonly Assembly _assembly;
-        
-        public RunnerService(IFunctionFactory functionFactory, IDatetimeService datetimeService, Assembly assembly)
+        private Dictionary<string, string> _attributes { get; set; }
+
+        public Person(IFunctionFactory functionFactory, IDatetimeService datetimeService, Assembly assembly)
         {
             _functionFactory = functionFactory;
             _datetimeService = datetimeService;
             _assembly = assembly;
         }
 
-        public async Task ExecuteFlowAsync(Flow flow, CancellationToken ctx = default(CancellationToken))
+        public void SetAttributes(Dictionary<string, string> attributes)
         {
+            _attributes = attributes;
+        }
+
+        public async Task PerformJourneyAsync(Journey journey, CancellationToken ctx = default(CancellationToken))
+        {
+            //TODO pass attributes int journey
             Result result = null;
             IStepRunnerService service;
             IStepController stepController;
-            if (flow.Steps.All(s => s.Distribution != null))
+            if (journey.Steps.All(s => s.Distribution != null))
             {
-                stepController = new DistributionStepController(flow.Steps);
+                stepController = new DistributionStepController(journey.Steps);
             }
             else
             {
-                stepController = new StandardStepController(flow);
+                stepController = new StandardStepController(journey);
             }
             try
             {
@@ -55,7 +64,7 @@ namespace Runic.Agent.TestHarness.Services
 
                     if (ctx.IsCancellationRequested)
                         break;
-                    await _datetimeService.WaitMilliseconds(flow.StepDelayMilliseconds, ctx);
+                    await _datetimeService.WaitMilliseconds(journey.StepDelayMilliseconds, ctx);
                 }
             }
             finally

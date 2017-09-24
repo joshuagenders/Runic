@@ -1,27 +1,24 @@
 ﻿using Runic.Agent.TestHarness.Services;
 using System;
-using System.Collections.Generic;
 
 namespace Runic.Agent.Core.ThreadPatterns
 {
-    public class ConstantThreadPattern : IThreadPattern
+    public class ConstantPopulationPattern : IPopulationPattern
     {
-        private List<Tuple<DateTime,int>> _threadEvents { get; set; }
         private readonly IDatetimeService _datetimeService;
 
-        public int ThreadCount { get; set; }
+        public int PersonCount { get; set; }
         public int DurationSeconds { get; set; }
 
-        public ConstantThreadPattern(IDatetimeService datetimeService)
+        public ConstantPopulationPattern(IDatetimeService datetimeService)
         {
-            _threadEvents = new List<Tuple<DateTime, int>>();
             _datetimeService = datetimeService;
         }
 
         public int GetMaxDurationSeconds() => DurationSeconds;
-        public int GetMaxThreadCount() => ThreadCount;
+        public int GetMaxPersonCount() => PersonCount;
 
-        public int GetCurrentThreadLevel(DateTime startTime)
+        public int GetCurrentActivePopulationCount(DateTime startTime)
         {
             if (DurationSeconds > 0 && _datetimeService.Now > startTime.AddSeconds(DurationSeconds))
             {
@@ -31,7 +28,7 @@ namespace Runic.Agent.Core.ThreadPatterns
             {
                 return 0;
             }
-            return ThreadCount;
+            return PersonCount;
         }
 
         public string GetPatternType() => "constant";

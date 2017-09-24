@@ -23,7 +23,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.FlowManagement
         public void WhenInitialiseFlow_PluginsAreLoaded()
         {
             var flow = TestData.GetTestFlowSingleStep;   
-            var flowInitialiser = new FlowInitialiser(_pluginManager.Object, new Mock<IEventService>().Object);
+            var flowInitialiser = new JourneyInitialiser(_pluginManager.Object, new Mock<IEventService>().Object);
             flowInitialiser.InitialiseFlow(flow);
             _pluginManager.Verify(p => p.LoadPlugin(TestConstants.AssemblyName));
         }

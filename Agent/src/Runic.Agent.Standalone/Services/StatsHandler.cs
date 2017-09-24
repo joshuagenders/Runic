@@ -32,12 +32,12 @@ namespace Runic.Agent.Standalone.Services
             // Method intentionally left empty.
         }
 
-        public void OnFlowComplete(Flow flow)
+        public void OnFlowComplete(Journey flow)
         {
             _statsd.Count($"flows.{flow.Name}.Complete");
         }
 
-        public void OnFlowStart(Flow flow)
+        public void OnFlowStart(Journey flow)
         {
             _statsd.Count($"flows.{flow.Name}.Start");
         }
@@ -58,7 +58,7 @@ namespace Runic.Agent.Standalone.Services
             }
         }
 
-        public void OnThreadChange(Flow flow, int threadLevel)
+        public void OnThreadChange(Journey flow, int threadLevel)
         {
             _statsd.Gauge($"flows.{flow.Name}.threadLevel", threadLevel);
         }

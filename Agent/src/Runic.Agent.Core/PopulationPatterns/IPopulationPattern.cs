@@ -2,11 +2,11 @@
 
 namespace Runic.Agent.Core.ThreadPatterns
 {
-    public interface IThreadPattern
+    public interface IPopulationPattern
     {
-        int GetCurrentThreadLevel(DateTime startTime);
+        int GetCurrentActivePopulationCount(DateTime startTime);
         int GetMaxDurationSeconds();
-        int GetMaxThreadCount();
+        int GetMaxPersonCount();
         string GetPatternType();
     }
 }

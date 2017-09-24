@@ -11,14 +11,14 @@ namespace Runic.Agent.Standalone
 {
     public class Application : IApplication
     {
-        private readonly IFlowPatternController _patternController;
+        private readonly IPopulationPatternController _patternController;
         private readonly ILogger _logger;
         private readonly ILoggerFactory _loggerFactory;
         private readonly IAgentConfig _config;
         private readonly IFlowProvider _flowProvider;
         private readonly IDatetimeService _datetimeService;
 
-        public Application(IFlowPatternController patternController, ILoggerFactory loggerFactory, IAgentConfig config, IFlowProvider flowProvider, IDatetimeService datetimeService)
+        public Application(IPopulationPatternController patternController, ILoggerFactory loggerFactory, IAgentConfig config, IFlowProvider flowProvider, IDatetimeService datetimeService)
         {
             _patternController = patternController;
             _logger = loggerFactory.CreateLogger<IApplication>();

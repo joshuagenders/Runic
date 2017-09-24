@@ -17,9 +17,9 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
         [TestMethod]
         public void WhenConstantThreadPatternIsExecuted_CorrectThreadLevelsReturned()
         {
-            var pattern = new ConstantThreadPattern(_mockDatetimeService.Object)
+            var pattern = new ConstantPopulationPattern(_mockDatetimeService.Object)
             {
-                ThreadCount = 4
+                PersonCount = 4
             };
             var startTime = new DateTime(2017, 1, 1, 1, 1, 0);
             AssertThreadLevel(pattern, startTime, 1, 4);
@@ -30,9 +30,9 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
         [TestMethod]
         public void WhenConstantPatternWithDurationIsExecuted_CorrectThreadLevelsReturned()
         {
-            var pattern = new ConstantThreadPattern(_mockDatetimeService.Object)
+            var pattern = new ConstantPopulationPattern(_mockDatetimeService.Object)
             {
-                ThreadCount = 4,
+                PersonCount = 4,
                 DurationSeconds = 20
             };
             var startTime = new DateTime(2017, 1, 1, 1, 1, 0);
@@ -62,10 +62,10 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
         }
 
 
-        private void AssertThreadLevel(IThreadPattern pattern, DateTime startTime, int secondsEllapsed, int expectedThreadLevel)
+        private void AssertThreadLevel(IPopulationPattern pattern, DateTime startTime, int secondsEllapsed, int expectedThreadLevel)
         {
             _mockDatetimeService.Setup(s => s.Now).Returns(startTime.AddSeconds(secondsEllapsed));
-            Assert.AreEqual(expectedThreadLevel, pattern.GetCurrentThreadLevel(startTime));
+            Assert.AreEqual(expectedThreadLevel, pattern.GetCurrentActivePopulationCount(startTime));
         }
     }
 }

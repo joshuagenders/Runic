@@ -4,6 +4,6 @@ namespace Runic.Agent.Standalone.Providers
 {
     public interface IFlowProvider
     {
-        Flow GetFlow(string key);
+        Journey GetFlow(string key);
     }
 }

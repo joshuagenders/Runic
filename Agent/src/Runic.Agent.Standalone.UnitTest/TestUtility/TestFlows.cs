@@ -5,7 +5,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
 {
     public static class TestFlows
     {
-        public static Flow StringReturnFlow => new Flow()
+        public static Journey StringReturnFlow => new Journey()
         {
             Name = "StringReturnFlow",
             StepDelayMilliseconds = 10,
@@ -75,7 +75,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
                 }
         };
 
-        public static Flow EvenStepDistributionFlow => new Flow()
+        public static Journey EvenStepDistributionFlow => new Journey()
         {
             Name = "StepRepeatFlow",
             StepDelayMilliseconds = 10,
@@ -112,7 +112,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
                 }
         };
 
-        public static Flow StepRepeatFlow => new Flow()
+        public static Journey StepRepeatFlow => new Journey()
         {
             Name = "StepRepeatFlow",
             StepDelayMilliseconds = 10,
@@ -142,7 +142,7 @@ namespace Runic.Agent.Standalone.Test.TestUtility
                 }
         };
 
-        public static Flow SystemTestFlow => new Flow()
+        public static Journey SystemTestFlow => new Journey()
         {
             Name = "SystemTestFlow",
             StepDelayMilliseconds = 10,

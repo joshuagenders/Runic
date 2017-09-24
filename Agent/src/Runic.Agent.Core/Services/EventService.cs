@@ -18,8 +18,8 @@ namespace Runic.Agent.Core.Services
         public void Warning(string message, Exception ex = null) => _eventHandlers?.ForEach(h => h.Warning(message, ex));
         public void Error(string message, Exception ex = null) => _eventHandlers?.ForEach(h => h.Error(message, ex));
         //public void OnTestResult(Result result) => _eventHandlers?.ForEach(h => h.OnTestResult(result));
-        public void OnFlowStart(Flow flow) => _eventHandlers?.ForEach(h => h.OnFlowStart(flow));
-        public void OnFlowComplete(Flow flow) => _eventHandlers?.ForEach(h => h.OnFlowComplete(flow));
-        public void OnThreadChange(Flow flow, int threadLevel) => _eventHandlers?.ForEach(h => h.OnThreadChange(flow, threadLevel));
+        public void OnFlowStart(Framework.Models.Journey flow) => _eventHandlers?.ForEach(h => h.OnFlowStart(flow));
+        public void OnFlowComplete(Framework.Models.Journey flow) => _eventHandlers?.ForEach(h => h.OnFlowComplete(flow));
+        public void OnThreadChange(Framework.Models.Journey flow, int threadLevel) => _eventHandlers?.ForEach(h => h.OnThreadChange(flow, threadLevel));
     }
 }

@@ -16,11 +16,11 @@ namespace Runic.Agent.Core.IoC
             serviceCollection.AddTransient<IFunctionFactory, FunctionFactory>();
             serviceCollection.AddTransient<IPluginManager, PluginManager>();
             serviceCollection.AddTransient<IEventService, EventService>();
-            serviceCollection.AddTransient<IThreadManager, ThreadManager>();
-            serviceCollection.AddTransient<IFlowPatternController, FlowPatternController>();
+            serviceCollection.AddTransient<IPopulationControl, PopulationControl>();
+            serviceCollection.AddTransient<IPopulationPatternController, PopulationPatternController>();
             serviceCollection.AddTransient<IFunctionFactory, FunctionFactory>();
             serviceCollection.AddTransient<IDatetimeService, DateTimeService>();
-            serviceCollection.AddTransient<IRunnerService, RunnerService>();
+            serviceCollection.AddTransient<IPerson, TestHarness.Services.Person>();
         }
     }
 }

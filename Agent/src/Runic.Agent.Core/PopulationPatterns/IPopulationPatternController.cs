@@ -1,13 +1,12 @@
 ﻿using Runic.Agent.Framework.Models;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Runic.Agent.Core.ThreadPatterns
 {
-    public interface IFlowPatternController
+    public interface IPopulationPatternController
     {
-        void AddThreadPattern(string id, Flow flow, IThreadPattern pattern, CancellationToken ctx);
+        void AddPopulationPattern(string id, Journey flow, IPopulationPattern pattern, CancellationToken ctx);
         Task Stop(string id, CancellationToken ctx);
         Task StopAll(CancellationToken ctx);
         Task Run(CancellationToken ctx);

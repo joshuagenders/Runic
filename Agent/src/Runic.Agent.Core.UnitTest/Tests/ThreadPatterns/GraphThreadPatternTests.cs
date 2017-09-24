@@ -18,14 +18,14 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
         [TestMethod]
         public void WhenExpandingGraphPatternExecuted_CorrectThreadLevelsReturned()
         {
-            var pattern = new GraphThreadPattern(_mockDatetimeService.Object)
+            var pattern = new GraphPopulationPattern(_mockDatetimeService.Object)
             {
                 DurationSeconds = 60,
                 Points = new List<Point>()
                 {
-                   new Point(){ ThreadLevel = 2, UnitsFromStart = 0 },
-                   new Point(){ ThreadLevel = 5, UnitsFromStart = 1 },
-                   new Point(){ ThreadLevel = 0, UnitsFromStart = 2 }
+                   new Point(){ PopulationSize = 2, UnitsFromStart = 0 },
+                   new Point(){ PopulationSize = 5, UnitsFromStart = 1 },
+                   new Point(){ PopulationSize = 0, UnitsFromStart = 2 }
                 }
             };
             var startTime = new DateTime(2017, 1, 1, 1, 1, 0);
@@ -38,14 +38,14 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
         [TestMethod]
         public void WhenShrinkingGraphExecutes_CorrectThreadLevelsReturned()
         {
-            var pattern = new GraphThreadPattern(_mockDatetimeService.Object)
+            var pattern = new GraphPopulationPattern(_mockDatetimeService.Object)
             {
                 DurationSeconds = 20,
                 Points = new List<Point>()
                 {
-                   new Point(){ ThreadLevel = 2, UnitsFromStart = 0 },
-                   new Point(){ ThreadLevel = 5, UnitsFromStart = 50 },
-                   new Point(){ ThreadLevel = 0, UnitsFromStart = 100 }
+                   new Point(){ PopulationSize = 2, UnitsFromStart = 0 },
+                   new Point(){ PopulationSize = 5, UnitsFromStart = 50 },
+                   new Point(){ PopulationSize = 0, UnitsFromStart = 100 }
                 }
             };
             var startTime = new DateTime(2017, 1, 1, 1, 1, 0);
@@ -73,10 +73,10 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
             _mockDatetimeService.Setup(d => d.Now).Returns(DateTime.Now);
         }
 
-        private void AssertThreadLevel(IThreadPattern pattern, DateTime startTime, int secondsEllapsed, int expectedThreadLevel)
+        private void AssertThreadLevel(IPopulationPattern pattern, DateTime startTime, int secondsEllapsed, int expectedThreadLevel)
         {
             _mockDatetimeService.Setup(s => s.Now).Returns(startTime.AddSeconds(secondsEllapsed));
-            Assert.AreEqual(expectedThreadLevel, pattern.GetCurrentThreadLevel(startTime));
+            Assert.AreEqual(expectedThreadLevel, pattern.GetCurrentActivePopulationCount(startTime));
         }
     }
 }

@@ -3,11 +3,18 @@ using System.Collections.Generic;
 
 namespace Runic.Agent.Framework.Models
 {
-    public class Flow
+    public class Journey
     {
         public string Name { get; set; }
         public int StepDelayMilliseconds { get; set; }
         public List<Step> Steps { get; set; }
+        public JourneyFrequency Frequency { get; set; }
+    }
+
+    public class JourneyFrequency
+    {
+        public int JourneysPerMinute { get; set; }
+        public int JourneysPerHour { get; set; }
     }
 
     public class Step

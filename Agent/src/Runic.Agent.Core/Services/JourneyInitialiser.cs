@@ -5,18 +5,18 @@ using System;
 
 namespace Runic.Agent.Core.FlowManagement
 {
-    public class FlowInitialiser
+    public class JourneyInitialiser
     {
         private readonly IPluginManager _pluginManager;
         private readonly IEventService _eventService;
 
-        public FlowInitialiser(IPluginManager pluginManager, IEventService eventService)
+        public JourneyInitialiser(IPluginManager pluginManager, IEventService eventService)
         {
             _pluginManager = pluginManager;
             _eventService = eventService;
         }
 
-        public void InitialiseFlow(Flow flow)
+        public void InitialiseFlow(Framework.Models.Journey flow)
         {
             foreach (var step in flow.Steps)
             {

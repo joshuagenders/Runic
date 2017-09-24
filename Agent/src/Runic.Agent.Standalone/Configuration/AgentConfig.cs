@@ -17,7 +17,7 @@ namespace Runic.Agent.Standalone.Configuration
         private static IAgentSettings _agentSettings { get; set; }
         public IAgentSettings AgentSettings => _agentSettings;
 
-        public int MaxThreads => 400;
+        public int MaxActivePopulation => 400;
         public int MaxErrors => 200;
     }
 }

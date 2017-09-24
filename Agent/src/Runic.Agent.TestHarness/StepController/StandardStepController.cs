@@ -7,9 +7,9 @@ namespace Runic.Agent.TestHarness.StepController
     {
         private bool _getNextStepFromResult { get; set; }
         private int _lastStepIndex { get; set; }
-        private readonly Flow _flow;
+        private readonly Journey _flow;
 
-        public StandardStepController(Flow flow)
+        public StandardStepController(Journey flow)
         {
             _flow = flow;
         }

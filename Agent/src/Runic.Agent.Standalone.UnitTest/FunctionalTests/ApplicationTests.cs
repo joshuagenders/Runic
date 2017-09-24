@@ -88,7 +88,7 @@ namespace Runic.Agent.Standalone.Test.FunctionalTests
             _environment.EventHandler.MockObject.Verify(l => l.Error(It.IsAny<string>(), It.IsAny<Exception>()), Times.Never);
         }
 
-        private void AssertSuccessfulTestResult(Flow flow)
+        private void AssertSuccessfulTestResult(Journey flow)
         {
             _environment.EventHandler.MockObject.Verify(r => r.OnFlowStart(flow));
             //_environment.EventHandler.MockObject.Verify(r => r.OnTestResult(It.Is<Result>(f => f.Success)));
@@ -98,7 +98,7 @@ namespace Runic.Agent.Standalone.Test.FunctionalTests
             _environment.EventHandler.MockObject.Verify(r => r.OnFlowComplete(flow));
         }
 
-        private async Task RunApplication(Flow flow, string patternType)
+        private async Task RunApplication(Journey flow, string patternType)
         {
             SetupTestEnvironment(flow, patternType);
 
@@ -120,7 +120,7 @@ namespace Runic.Agent.Standalone.Test.FunctionalTests
             await appTask;
         }
 
-        public void SetupTestEnvironment(Flow flow, string patternType = "constant")
+        public void SetupTestEnvironment(Journey flow, string patternType = "constant")
         {
             var mockAgentSettings = _environment.AgentSettings.MockObject;
             mockAgentSettings.Setup(s => s.FlowPatternExecutionId).Returns("test_execution_id");
