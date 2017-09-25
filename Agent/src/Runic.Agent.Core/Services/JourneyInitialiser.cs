@@ -16,9 +16,9 @@ namespace Runic.Agent.Core.FlowManagement
             _eventService = eventService;
         }
 
-        public void InitialiseFlow(Framework.Models.Journey flow)
+        public void InitialiseJourney(Journey journey)
         {
-            foreach (var step in flow.Steps)
+            foreach (var step in journey.Steps)
             {
                 try
                 {
@@ -27,7 +27,7 @@ namespace Runic.Agent.Core.FlowManagement
                 }
                 catch (Exception ex)
                 {
-                    _eventService.Error($"Encountered error initialising flow {flow.Name}", ex);
+                    _eventService.Error($"Encountered error initialising journey {journey.Name}", ex);
                     throw;
                 }
             }

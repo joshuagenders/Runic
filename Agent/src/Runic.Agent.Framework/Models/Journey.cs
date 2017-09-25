@@ -46,6 +46,7 @@ namespace Runic.Agent.Framework.Models
 
     public class DataInput
     {
+        public List<string> PersonAttributeKeys { get; set; }
         public string InputDatasource { get; set; }
         public Dictionary<string, string> DatasourceMapping { get; set; }
     }

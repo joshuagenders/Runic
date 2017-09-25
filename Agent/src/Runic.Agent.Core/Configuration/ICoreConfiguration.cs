@@ -7,6 +7,7 @@
         int StepTimeoutSeconds { get; }
         int PopulationPollingIntervalSeconds { get; }
         int PopulationRequestTimeoutSeconds { get; }
+        int JourneyTimeoutSeconds { get; }
     }
     //use observer
 }
