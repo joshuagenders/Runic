@@ -18,8 +18,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.Services
         [TestMethod]
         public async Task WhenFunctionStepRunnerIsExecuted_MethodsAreInvoked()
         {
-            var dataService = new Mock<IDataService>();
-            var functionHarness = new TestHarness.Harness.FunctionHarness(dataService.Object);
+            var functionHarness = new TestHarness.Harness.FunctionHarness();
 
             var fakeFunction = new FakeFunction();
             var step = new Step()

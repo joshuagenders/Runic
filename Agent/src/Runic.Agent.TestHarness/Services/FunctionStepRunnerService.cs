@@ -20,7 +20,7 @@ namespace Runic.Agent.TestHarness.Services
             //TODO test context
             var testContext = new TestContext();
             var function = _functionFactory.CreateFunction(step, testContext);
-            return await function.OrchestrateFunctionExecutionAsync(ctx);
+            return await function.ExecuteAsync(ctx);
         }
         
     }

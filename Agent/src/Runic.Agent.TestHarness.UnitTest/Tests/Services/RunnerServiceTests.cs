@@ -21,8 +21,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.Services
         {
             var mockFunctionFactory = new Mock<IFunctionFactory>();
             var mockDatetimeService = new Mock<IDatetimeService>();
-            var mockDataService = new Mock<IDataService>();
-
+            
             var runnerService = new Person(mockFunctionFactory.Object, mockDatetimeService.Object, GetType().GetTypeInfo().Assembly);
             var flow = new Journey()
             {
@@ -38,19 +37,18 @@ namespace Runic.Agent.Core.UnitTest.Tests.Services
                             FunctionName = "Login",
                             AssemblyQualifiedClassName = "ClassName",
                             AssemblyName = "AssemblyName",
-                            InputParameters = new List<string>()
+                            PositionalMethodParameterValues = new List<string>()
                         }
                     }
                 }
             };
             var cts = new CancellationTokenSource();
             var fakeFunction = new FakeFunction();
-            var functionHarness = new TestHarness.Harness.FunctionHarness(mockDataService.Object);
+            var functionHarness = new TestHarness.Harness.FunctionHarness();
             functionHarness.Bind(fakeFunction, flow.Steps[0]);
             mockFunctionFactory.Setup(f => f.CreateFunction(It.IsAny<Step>(), It.IsAny<Framework.Models.TestContext>()))
                                .Returns(functionHarness);
-            mockDataService.Setup(d => d.GetParams(It.IsAny<string[]>(), It.IsAny<MethodInfo>())).Returns(new object[] { });
-
+            
             cts.CancelAfter(500);
             await runnerService.PerformJourneyAsync(flow, cts.Token);
             

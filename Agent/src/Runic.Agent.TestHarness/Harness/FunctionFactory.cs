@@ -8,12 +8,10 @@ namespace Runic.Agent.TestHarness.Harness
 {
     public class FunctionFactory : IFunctionFactory
     {
-        private readonly IDataService _dataService;
         private readonly Assembly _assembly;
 
-        public FunctionFactory(Assembly assembly, IDataService dataService)
+        public FunctionFactory(Assembly assembly)
         {
-            _dataService = dataService;
             _assembly = assembly;
         }
 
@@ -21,19 +19,12 @@ namespace Runic.Agent.TestHarness.Harness
         public FunctionHarness CreateFunction(Step step, TestContext testContext)
         {
             object instance = null;
-            try
+            var type = _assembly.GetType(step.Function.AssemblyQualifiedClassName);
+            if (type == null)
             {
-                var type = _assembly.GetType(step.Function.AssemblyQualifiedClassName);
-                if (type == null)
-                {
-                    return null;
-                }
-                instance = Activator.CreateInstance(type);
+                return null;
             }
-            catch (Exception ex)
-            {
-                throw new ClassNotFoundInAssemblyException($"Could not locate {step.Function.AssemblyQualifiedClassName}", ex);
-            }
+            instance = Activator.CreateInstance(type);
             var testContextProperties = instance.GetType()
                                                 .GetProperties()
                                                 .Where(p => p.GetType() == typeof(TestContext) 
@@ -47,7 +38,7 @@ namespace Runic.Agent.TestHarness.Harness
                 }
             }
 
-            var harness = new FunctionHarness(_dataService);
+            var harness = new FunctionHarness();
             harness.Bind(instance, step);
             return harness;
         }

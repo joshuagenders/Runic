@@ -1,43 +1,36 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Runic.Agent.Core.PluginManagement;
-using Runic.Agent.Core.UnitTest.TestUtility;
-using Runic.Agent.Framework.Clients;
+using Runic.Agent.Core.AssemblyManagement;
 using System.Linq;
-using Runic.Agent.Core.Services;
 using Runic.Agent.Framework.ExternalInterfaces;
-using System.Reflection;
 
 namespace Runic.Agent.Core.UnitTest.Tests.PluginManagement
 {
     [TestClass]
     public class PluginManagerTests
     {
-        private PluginManager _pluginManager { get; set; }
+        private AssemblyManager _pluginManager { get; set; }
         private Mock<IPluginProvider> _pluginProvider { get; set; }
 
         [TestInitialize]
         public void Init()
         {
             _pluginProvider = new Mock<IPluginProvider>();
-            _pluginManager = new PluginManager(
-                new Mock<IRuneClient>().Object, 
-                _pluginProvider.Object,
-                new Mock<IEventService>().Object);
+            _pluginManager = new AssemblyManager(_pluginProvider.Object);
         }
 
         [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenLoadingMissingPlugin_ThrowsException()
         {
-            Assert.ThrowsException<AssemblyNotFoundException>(() => _pluginManager.LoadPlugin("SomeAssembly"));
+            Assert.ThrowsException<AssemblyNotFoundException>(() => _pluginManager.LoadAssembly("SomeAssembly"));
         }
 
         [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenGettingUnloadedPlugin_ThrowsException()
         {
-            Assert.ThrowsException<AssemblyNotFoundException>(() => _pluginManager.GetPlugin("someplugin"));
+            Assert.ThrowsException<AssemblyNotFoundException>(() => _pluginManager.GetAssembly("someplugin"));
         }
 
         [TestCategory("UnitTest")]

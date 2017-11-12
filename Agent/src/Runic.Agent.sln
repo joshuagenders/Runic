@@ -7,10 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Core", "Runic.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Core.UnitTest", "Runic.Agent.Core.UnitTest\Runic.Agent.Core.UnitTest.csproj", "{DE08AD1D-FB3E-4356-97D8-F04F2E92CE3D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Standalone", "Runic.Agent.Standalone\Runic.Agent.Standalone.csproj", "{1AFA36AC-006A-4FAF-84CB-E9426AFFD99C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Standalone.Test", "Runic.Agent.Standalone.UnitTest\Runic.Agent.Standalone.Test.csproj", "{641D739C-A389-4DDA-9B9F-8854A0A41C80}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Cucumber", "Runic.Cucumber\Runic.Cucumber.csproj", "{2E427711-9C07-4B8F-A684-634A7CF7894E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Cucumber.UnitTest", "Runic.Cucumber.UnitTest\Runic.Cucumber.UnitTest.csproj", "{3C8FA656-6259-4569-BA86-D084087A1035}"
@@ -37,14 +33,6 @@ Global
 		{DE08AD1D-FB3E-4356-97D8-F04F2E92CE3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE08AD1D-FB3E-4356-97D8-F04F2E92CE3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE08AD1D-FB3E-4356-97D8-F04F2E92CE3D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1AFA36AC-006A-4FAF-84CB-E9426AFFD99C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1AFA36AC-006A-4FAF-84CB-E9426AFFD99C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1AFA36AC-006A-4FAF-84CB-E9426AFFD99C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1AFA36AC-006A-4FAF-84CB-E9426AFFD99C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{641D739C-A389-4DDA-9B9F-8854A0A41C80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{641D739C-A389-4DDA-9B9F-8854A0A41C80}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{641D739C-A389-4DDA-9B9F-8854A0A41C80}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{641D739C-A389-4DDA-9B9F-8854A0A41C80}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2E427711-9C07-4B8F-A684-634A7CF7894E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2E427711-9C07-4B8F-A684-634A7CF7894E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E427711-9C07-4B8F-A684-634A7CF7894E}.Release|Any CPU.ActiveCfg = Release|Any CPU

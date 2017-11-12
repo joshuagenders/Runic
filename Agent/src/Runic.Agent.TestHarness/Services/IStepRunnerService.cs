@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Runic.Agent.TestHarness.Services
 {
-    public interface IStepRunnerService
+    internal interface IStepRunnerService
     {
         Task<Result> ExecuteStepAsync(Step step, CancellationToken ctx = default(CancellationToken));
     }

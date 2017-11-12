@@ -3,52 +3,45 @@ using System.Linq;
 
 namespace Runic.Agent.TestHarness.StepController
 {
-    public class StandardStepController : IStepController
+    public class StandardStepController
     {
-        private bool _getNextStepFromResult { get; set; }
-        private int _lastStepIndex { get; set; }
-        private readonly Journey _flow;
+        private Result _lastResult { get; set; }
+        private readonly Journey _journey;
 
-        public StandardStepController(Journey flow)
+        public StandardStepController(Journey journey)
         {
-            _flow = flow;
+            _journey = journey;
         }
+
         public Step GetNextStep(Result result)
         {
-            //todo refactor into interface for Irunner
-            Step nextStep = null;
-
-            if (_getNextStepFromResult && result?.NextStep != null)
+            if (result == null)
             {
-                var matchingStep = _flow.Steps
-                                        .Where(s => s.StepName == result.NextStep);
+                return _journey.Steps.First();
+            }
+
+            var last = _lastResult;
+            _lastResult = result;
+
+            if (result.Step.Function.GetNextStepFromFunctionResult && result?.NextStep != null)
+            {
+                var matchingStep = _journey.Steps
+                                           .Where(s => s.StepName == result.NextStep);
                 if (!matchingStep.Any())
                 {
-                    throw new StepNotFoundException($"Step not found for step {result.Step.StepName}");
+                    throw new StepNotFoundException($"Step not found for step {result.NextStep}");
                 }
                 if (matchingStep.Count() > 1)
                 {
-                    throw new StepNotFoundException($"Duplicate step found for step {result.Step.StepName}");
+                    throw new StepNotFoundException($"Duplicate step name in journey: {result.NextStep}");
                 }
-                nextStep = matchingStep.Single();
+                return matchingStep.Single();
             }
 
-            if (result == null )
-            {
-                nextStep = _flow.Steps.First();
-                _lastStepIndex = 0;
-                _getNextStepFromResult = nextStep.Function.GetNextStepFromFunctionResult;
-            }
-            else if (nextStep == null)
-            {
-                _lastStepIndex++;
-                _lastStepIndex= _lastStepIndex >= _flow.Steps.Count ? 0 : _lastStepIndex;
-                nextStep = _flow.Steps[_lastStepIndex];
-            }
-            if (nextStep == null)
-                throw new StepNotFoundException($"Step not found for step {result.Step.StepName}");
-
-            return nextStep;
+            var nextIndex = _journey.Steps.IndexOf(last.Step) + 1;
+            return nextIndex >= _journey.Steps.Count 
+                    ? _journey.Steps.First() 
+                    : _journey.Steps[nextIndex];
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.StepController
     [TestClass]
     public class StandardStepControllerTests
     {
-        private Journey _flow => new Journey()
+        private Journey _journey => new Journey()
         {
             Steps = new List<Step>()
                 {
@@ -24,36 +24,37 @@ namespace Runic.Agent.Core.UnitTest.Tests.StepController
         [TestMethod]
         public void WhenNullResult_ReturnsFirstStep()
         {
-            var flow = _flow;
-            var stepController = new StandardStepController(flow);
+            var journey = _journey;
+            var stepController = new StandardStepController(journey);
             var step = stepController.GetNextStep(null);
-            step.Should().Be(flow.Steps.First());
+            step.Should().Be(journey.Steps.First());
         }
 
         [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenStringReturnedAsNextStepFromFunction_ReturnsNextStep()
         {
-            var flow = _flow;
-            flow.Steps[0].Function.GetNextStepFromFunctionResult = true;
-            flow.Steps.Add(new Step() { StepName = "Step3" });
+            var journey = _journey;
+            journey.Steps[0].Function.GetNextStepFromFunctionResult = true;
+            journey.Steps.Add(new Step() { StepName = "Step3" });
             var result = new FunctionResult()
             {
                 Success = true,
+                Step = journey.Steps[0],
                 NextStep = "Step3"
             };
-            var stepController = new StandardStepController(flow);
+            var stepController = new StandardStepController(journey);
             stepController.GetNextStep(null);
             var step = stepController.GetNextStep(result);
-            step.Should().Be(flow.Steps[2]);
+            step.Should().Be(journey.Steps[2]);
         }
 
         [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenGettingStepsLoopsAround_ReturnsSteps()
         {
-            var flow = _flow;
-            var stepController = new StandardStepController(flow);
+            var journey = _journey;
+            var stepController = new StandardStepController(journey);
             var step1 = stepController.GetNextStep(null);
 
             var result1 = new FunctionResult()
@@ -70,9 +71,9 @@ namespace Runic.Agent.Core.UnitTest.Tests.StepController
             };
             var step3 = stepController.GetNextStep(result2);
 
-            step1.Should().Be(flow.Steps[0]);
-            step2.Should().Be(flow.Steps[1]);
-            step3.Should().Be(flow.Steps[0]);
+            step1.Should().Be(journey.Steps[0]);
+            step2.Should().Be(journey.Steps[1]);
+            step3.Should().Be(journey.Steps[0]);
         }
     }
 }

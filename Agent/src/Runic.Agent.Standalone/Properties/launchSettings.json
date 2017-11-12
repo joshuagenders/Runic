@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Runic.Agent.Standalone": {
-      "commandName": "Project",
-      "commandLineArgs": "PatternExecutionId=123 FlowFilepath=c:/Temp/testflow.json ThreadPatternName=Constant DurationSeconds=20 ThreadCount=1 "
-    }
-  }
-}

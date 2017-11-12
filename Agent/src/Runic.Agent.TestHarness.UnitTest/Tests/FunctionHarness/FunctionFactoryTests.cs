@@ -16,8 +16,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.FunctionHarness
         [TestMethod]
         public void WhenCreatingFunction_ThenFunctionIsReturned()
         {
-            var dataService = new Mock<IDataService>();
-            var functionFactory = new FunctionFactory(GetType().GetTypeInfo().Assembly, dataService.Object);
+            var functionFactory = new FunctionFactory(GetType().GetTypeInfo().Assembly);
 
             var step = new Step()
             {
@@ -28,9 +27,6 @@ namespace Runic.Agent.Core.UnitTest.Tests.FunctionHarness
                     FunctionName = "Login"
                 }
             };
-
-            dataService.Setup(d => d.GetParams(It.IsAny<string[]>(), It.IsAny<MethodInfo>()))
-                       .Returns(new object[] { });
 
             var function = functionFactory.CreateFunction(step, new Framework.Models.TestContext());
             function.Should().NotBeNull();
