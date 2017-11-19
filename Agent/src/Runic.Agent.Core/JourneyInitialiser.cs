@@ -3,26 +3,19 @@ using Runic.Agent.Framework.Models;
 
 namespace Runic.Agent.Core.FlowManagement
 {
-    public class JourneyInitialiser
+    public static class JourneyInitialiser
     {
-        private readonly IAssemblyManager _assemblyManager;
-        
-        public JourneyInitialiser(IAssemblyManager assemblyManager)
-        {
-            _assemblyManager = assemblyManager;
-        }
-
-        public void InitialiseJourney(Journey journey)
+        public static void InitialiseJourney(IAssemblyManager assemblyManager, Journey journey)
         {
             foreach (var step in journey.Steps)
             {
                 if (step.Function != null)
                 {
-                    _assemblyManager.LoadAssembly(step.Function.AssemblyName);
+                    assemblyManager.LoadAssembly(step.Function.AssemblyName);
                 }
                 else if (step.Cucumber != null)
                 {
-                    _assemblyManager.LoadAssembly(step.Cucumber.AssemblyName);
+                    assemblyManager.LoadAssembly(step.Cucumber.AssemblyName);
                 }
             }
         }

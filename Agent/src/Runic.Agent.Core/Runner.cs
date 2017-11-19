@@ -4,7 +4,11 @@ using System.Threading.Tasks;
 
 namespace Runic.Agent.Core
 {
-    public class Runner<T>
+    public interface IRunner<T>
+    {
+        Task Start(CancellationToken ctx);
+    }
+    public class Runner<T> : IRunner<T>
     {
         private readonly IProducer<T> _producer;
         private readonly IConsumer<T> _consumer;
@@ -27,7 +31,7 @@ namespace Runic.Agent.Core
             await Task.WhenAll(tasks);
         }
 
-        public async Task Monitor(CancellationToken ctx)
+        private async Task Monitor(CancellationToken ctx)
         {
             while (!ctx.IsCancellationRequested && !_consumer.Closed)
             {

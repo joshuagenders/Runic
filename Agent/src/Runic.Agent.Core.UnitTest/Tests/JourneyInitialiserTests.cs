@@ -21,9 +21,8 @@ namespace Runic.Agent.Core.UnitTest.Tests
         [TestMethod]
         public void WhenInitialiseJourney_PluginsAreLoaded()
         {
-            var flow = TestData.NewJourney.WithStep();   
-            var journeyInitialiser = new JourneyInitialiser(_assemblyManager.Object);
-            journeyInitialiser.InitialiseJourney(flow);
+            var journey = TestData.NewJourney.WithStep();   
+            JourneyInitialiser.InitialiseJourney(_assemblyManager.Object, journey);
             _assemblyManager.Verify(p => p.LoadAssembly("AssemblyName"));
         }
     }

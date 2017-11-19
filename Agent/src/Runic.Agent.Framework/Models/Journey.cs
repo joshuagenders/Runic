@@ -8,5 +8,6 @@ namespace Runic.Agent.Framework.Models
         public int StepDelayMilliseconds { get; set; }
         public List<Step> Steps { get; set; }
         public Distribution Distribution { get; set; }
+        public string AssemblyName { get; set; }
     }
 }

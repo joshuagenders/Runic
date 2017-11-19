@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Runic.Agent.Core\Runic.Agent.Core.csproj" />
+    <ProjectReference Include="..\Runic.Agent.Framework\Runic.Agent.Framework.csproj" />
+    <ProjectReference Include="..\Runic.Agent.TestHarness\Runic.Agent.TestHarness.csproj" />
+  </ItemGroup>
+
+</Project>
