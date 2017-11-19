@@ -1,4 +1,5 @@
 ﻿using Runic.Agent.Framework.Models;
+using System;
 using System.Linq;
 
 namespace Runic.Agent.TestHarness.StepController
@@ -23,7 +24,9 @@ namespace Runic.Agent.TestHarness.StepController
             var last = _lastResult;
             _lastResult = result;
 
-            if (result.Step.Function.GetNextStepFromFunctionResult && result?.NextStep != null)
+            if (result.Step?.Function != null &&
+                result.Step.Function.GetNextStepFromFunctionResult &&
+                !string.IsNullOrEmpty(result.NextStep))
             {
                 var matchingStep = _journey.Steps
                                            .Where(s => s.StepName == result.NextStep);
@@ -37,11 +40,16 @@ namespace Runic.Agent.TestHarness.StepController
                 }
                 return matchingStep.Single();
             }
+            
+            var lastIndex = 
+                _journey.Steps
+                        .IndexOf(
+                            _journey.Steps
+                                    .Single(s => s.StepName == result.Step.StepName));
 
-            var nextIndex = _journey.Steps.IndexOf(last.Step) + 1;
-            return nextIndex >= _journey.Steps.Count 
+            return (lastIndex + 1 >= _journey.Steps.Count || lastIndex < 0)
                     ? _journey.Steps.First() 
-                    : _journey.Steps[nextIndex];
+                    : _journey.Steps[lastIndex + 1];
         }
     }
 }

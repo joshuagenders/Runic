@@ -4,7 +4,7 @@ using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.FlowManagement;
 using Runic.Agent.Core.UnitTest.TestUtility;
 
-namespace Runic.Agent.Core.UnitTest.Tests.FlowManagement
+namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
     public class JourneyInitialiserTests

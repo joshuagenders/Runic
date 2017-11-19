@@ -18,8 +18,6 @@ namespace Runic.Agent.Core.UnitTest.Tests.Services
         [TestMethod]
         public async Task WhenFunctionStepRunnerIsExecuted_MethodsAreInvoked()
         {
-            var functionHarness = new TestHarness.Harness.FunctionHarness();
-
             var fakeFunction = new FakeFunction();
             var step = new Step()
             {
@@ -31,7 +29,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.Services
                 }
             };
 
-            functionHarness.Bind(fakeFunction, step);
+            var functionHarness = new TestHarness.Harness.FunctionHarness(fakeFunction, step);
 
             var functionFactory = new Mock<IFunctionFactory>();
             functionFactory.Setup(f => f.CreateFunction(It.IsAny<Step>(), It.IsAny<Framework.Models.TestContext>()))

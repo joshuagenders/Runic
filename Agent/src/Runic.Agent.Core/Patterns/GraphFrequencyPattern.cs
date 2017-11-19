@@ -13,15 +13,6 @@ namespace Runic.Agent.Core.Patterns
         public virtual string PatternType => "graph";
         public double MaxJourneysPerMinute => Points.Max(j => j.FrequencyPerMinute);
         
-        public List<Tuple<DateTime, double>> GetThreadChangeEvents(DateTime startTime)
-        {
-            double maxX = Points.Max(p => p.UnitsFromStart);
-            double secondsPerPoint = (DurationSeconds / maxX);
-            var threadEvents = Points.Select(p => Tuple.Create(startTime.AddSeconds(secondsPerPoint * p.UnitsFromStart), p.FrequencyPerMinute)).ToList();
-            threadEvents.Add(Tuple.Create(startTime.AddSeconds(DurationSeconds), 0.0));
-            return threadEvents;
-        }
-
         public double GetCurrentFrequencyPerMinute(DateTime startTime, DateTime now)
         {
             if (now > startTime.AddSeconds(DurationSeconds)

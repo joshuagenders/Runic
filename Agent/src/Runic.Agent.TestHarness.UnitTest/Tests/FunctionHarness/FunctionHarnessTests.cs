@@ -15,7 +15,6 @@ namespace Runic.Agent.Core.UnitTest.Tests
         private TestHarness.Harness.FunctionHarness GetFunctionHarness(object instance = null, Step step = null)
         {
             var fakeFunction = instance ?? new FakeFunction();
-            var functionHarness = new TestHarness.Harness.FunctionHarness();
 
             var fakeStep = step ?? new Step()
             {
@@ -26,14 +25,12 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 },
                 
             };
-            functionHarness.Bind(fakeFunction, fakeStep);
-
-            return functionHarness;
+            return new TestHarness.Harness.FunctionHarness(fakeFunction, fakeStep);
         }
 
         [TestCategory("UnitTest")]
         [TestMethod]
-        public async Task WhenAFunctionIsBoundAndExecuted_MethodsAreInvoked()
+        public async Task WhenAFunctionIsExecuted_MethodsAreInvoked()
         {
             var cts = new CancellationTokenSource();
             cts.CancelAfter(1000);

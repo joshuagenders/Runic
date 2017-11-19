@@ -6,7 +6,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
+namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
     public class GradualFrequencyPatternTests
@@ -37,7 +37,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
                 JourneysPerMinute = 2
             };
             var startTime = new DateTime(2017, 1, 1, 1, 1, 0);
-            AssertFrequencyLevel(pattern, startTime, 0, 1);
+            AssertFrequencyLevel(pattern, startTime, 1, (1.0/7*2));
             AssertFrequencyLevel(pattern, startTime, 7, 2);
             AssertFrequencyLevel(pattern, startTime, 15, 0);
         }
@@ -55,14 +55,12 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
             };
             var startTime = new DateTime(2017, 1, 1, 1, 1, 0);
 
-            AssertFrequencyLevel(pattern, startTime, 1, 1);
-            AssertFrequencyLevel(pattern, startTime, 3, 2);
-            AssertFrequencyLevel(pattern, startTime, 4, 3);
+            AssertFrequencyLevel(pattern, startTime, 1, 0.8);
+            AssertFrequencyLevel(pattern, startTime, 2, 1.6);
+            AssertFrequencyLevel(pattern, startTime, 4, 3.2);
             AssertFrequencyLevel(pattern, startTime, 5, 4);
-            AssertFrequencyLevel(pattern, startTime, 11, 3);
-            AssertFrequencyLevel(pattern, startTime, 12, 2);
-            AssertFrequencyLevel(pattern, startTime, 13, 1);
-            AssertFrequencyLevel(pattern, startTime, 15, 0);
+            AssertFrequencyLevel(pattern, startTime, 11, 2.4);
+            AssertFrequencyLevel(pattern, startTime, 16, 0);
         }
 
         [TestCategory("UnitTest")]
@@ -77,16 +75,14 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
                 JourneysPerMinute = 3
             };
             var startTime = new DateTime(2017, 1, 1, 1, 1, 0);
-            AssertFrequencyLevel(pattern, startTime, 1, 1);
-            AssertFrequencyLevel(pattern, startTime, 8, 2);
+            AssertFrequencyLevel(pattern, startTime, 3, 1);
+            AssertFrequencyLevel(pattern, startTime, 9, 3);
             AssertFrequencyLevel(pattern, startTime, 10, 3);
             
             AssertFrequencyLevel(pattern, startTime, 30, 3);
             
             AssertFrequencyLevel(pattern, startTime, 50, 3);
-            AssertFrequencyLevel(pattern, startTime, 54, 2);
-            AssertFrequencyLevel(pattern, startTime, 58, 1);
-            
+            AssertFrequencyLevel(pattern, startTime, 54, 2);            
             AssertFrequencyLevel(pattern, startTime, 62, 0);
         }
 
@@ -109,7 +105,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
             _mockDatetimeService.Setup(d => d.Now).Returns(DateTime.Now);
         }
 
-        private void AssertFrequencyLevel(IFrequencyPattern pattern, DateTime startTime, int secondsEllapsed, int expectedFrequencyLevel)
+        private void AssertFrequencyLevel(IFrequencyPattern pattern, DateTime startTime, int secondsEllapsed, double expectedFrequencyLevel)
         {
             Assert.AreEqual(
                 expectedFrequencyLevel, 

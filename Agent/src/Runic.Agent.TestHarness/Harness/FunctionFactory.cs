@@ -38,9 +38,7 @@ namespace Runic.Agent.TestHarness.Harness
                 }
             }
 
-            var harness = new FunctionHarness();
-            harness.Bind(instance, step);
-            return harness;
+            return new FunctionHarness(instance, step);
         }
     }
 }

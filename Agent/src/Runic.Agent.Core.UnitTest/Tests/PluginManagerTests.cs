@@ -4,7 +4,7 @@ using Runic.Agent.Core.AssemblyManagement;
 using System.Linq;
 using Runic.Agent.Framework.ExternalInterfaces;
 
-namespace Runic.Agent.Core.UnitTest.Tests.PluginManagement
+namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
     public class PluginManagerTests

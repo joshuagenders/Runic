@@ -1,45 +1,57 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Runic.Agent.Core.Patterns;
+using Runic.Agent.Framework.Models;
 using Runic.Agent.TestHarness.Services;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
+namespace Runic.Agent.Core.UnitTest.Tests
 {
     [TestClass]
-    public class ConstantFrequencyPatternTests
+    public class GraphFrequencyPatternTests
     {
-
         [TestCategory("UnitTest")]
         [TestMethod]
-        public void WhenConstantThreadPatternIsExecuted_CorrectThreadLevelsReturned()
+        public void WhenExpandingGraphPatternExecuted_CorrectThreadLevelsReturned()
         {
-            var pattern = new ConstantFrequencyPattern()
+            var pattern = new GraphFrequencyPattern()
             {
-                JourneysPerMinute = 4
+                DurationSeconds = 60,
+                Points = new List<Point>()
+                {
+                   new Point(){ FrequencyPerMinute = 2, UnitsFromStart = 0 },
+                   new Point(){ FrequencyPerMinute = 5, UnitsFromStart = 1 },
+                   new Point(){ FrequencyPerMinute = 0, UnitsFromStart = 2 }
+                }
             };
             var startTime = new DateTime(2017, 1, 1, 1, 1, 0);
-            AssertFrequencyLevel(pattern, startTime, 1, 4);
-            AssertFrequencyLevel(pattern, startTime, 5425, 4);
+            AssertFrequencyLevel(pattern, startTime, 1, 2);
+            AssertFrequencyLevel(pattern, startTime, 31, 5);
+            AssertFrequencyLevel(pattern, startTime, 61, 0);
         }
 
         [TestCategory("UnitTest")]
         [TestMethod]
-        public void WhenConstantPatternWithDurationIsExecuted_CorrectThreadLevelsReturned()
+        public void WhenShrinkingGraphExecutes_CorrectThreadLevelsReturned()
         {
-            var pattern = new ConstantFrequencyPattern()
+            var pattern = new GraphFrequencyPattern()
             {
-                JourneysPerMinute = 4,
-                DurationSeconds = 20
+                DurationSeconds = 20,
+                Points = new List<Point>()
+                {
+                   new Point(){ FrequencyPerMinute = 2, UnitsFromStart = 0 },
+                   new Point(){ FrequencyPerMinute = 5, UnitsFromStart = 50 },
+                   new Point(){ FrequencyPerMinute = 0, UnitsFromStart = 100 }
+                }
             };
             var startTime = new DateTime(2017, 1, 1, 1, 1, 0);
-            AssertFrequencyLevel(pattern, startTime, 1, 4);
-            AssertFrequencyLevel(pattern, startTime, 19, 4);
+            AssertFrequencyLevel(pattern, startTime, 1, 2);
+            AssertFrequencyLevel(pattern, startTime, 11, 5);
             AssertFrequencyLevel(pattern, startTime, 21, 0);
         }
-
 
         private Mock<IDatetimeService> _mockDatetimeService { get; set; }
         private SemaphoreSlim _semaphore { get; set; }
@@ -59,7 +71,6 @@ namespace Runic.Agent.Core.UnitTest.Tests.ThreadPatterns
                 }));
             _mockDatetimeService.Setup(d => d.Now).Returns(DateTime.Now);
         }
-
 
         private void AssertFrequencyLevel(IFrequencyPattern pattern, DateTime startTime, int secondsEllapsed, int expectedFrequencyLevel)
         {

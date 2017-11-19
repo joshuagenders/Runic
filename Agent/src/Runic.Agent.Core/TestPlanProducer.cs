@@ -8,44 +8,37 @@ using System.Threading.Tasks;
 
 namespace Runic.Agent.Core
 {
-    public class TestPlanProducer
+    public class TestPlanProducer : IProducer<TestPlan>
     {
-        private readonly TestPlanConsumer _taskQueue;
+        private readonly IConsumer<TestPlan> _consumer;
         private readonly IDatetimeService _datetimeService;
         private readonly ICoreConfiguration _config;
         
         private ConcurrentDictionary<string, TestPlan> TestPlans { get; set; }
         private DateTime? _lastPollTime { get; set; }
 
-        public TestPlanProducer(TestPlanConsumer taskQueue, IDatetimeService datetimeService, ICoreConfiguration config)
+        public TestPlanProducer(IConsumer<TestPlan> consumer, IDatetimeService datetimeService, ICoreConfiguration config)
         {
-            _taskQueue = taskQueue;
+            _consumer = consumer;
             _datetimeService = datetimeService;
             _config = config;
             TestPlans = new ConcurrentDictionary<string, TestPlan>();
         }
 
-        public TestPlan GetPlan(string id)
+        public TestPlan GetWorkItem(string id) => (TestPlans.TryGetValue(id, out TestPlan plan)) ? plan : null;
+        public void AddUpdateWorkItem(string id, TestPlan item)
         {
-            if (TestPlans.TryGetValue(id, out TestPlan plan))
-                return plan;
-            else
-                return null;
+            item.StartTime = _datetimeService.Now;
+            TestPlans.AddOrUpdate(id, item, (x, y) => y);
         }
 
-        public async Task ProduceWorkItems(CancellationToken ctx = default(CancellationToken))
+        public async Task ProduceWorkItems(CancellationToken ctx)
         {
             while (!ctx.IsCancellationRequested)
             {
-                PopulateQueue(ctx);
+                PopulateWorkQueue(ctx);
                 await _datetimeService.WaitMilliseconds(_config.TaskCreationPollingIntervalSeconds * 1000);
             }
-        }
-
-        public void AddUpdatePlan(string id, TestPlan plan)
-        {
-            plan.StartTime = _datetimeService.Now;
-            TestPlans.AddOrUpdate(id, plan, (x, y) => plan);
         }
 
         private int GetJourneyCountInPeriod(IFrequencyPattern frequencyPattern, DateTime startTime, DateTime endTime)
@@ -60,7 +53,7 @@ namespace Runic.Agent.Core
             return (int)total;
         }
 
-        public void PopulateQueue(CancellationToken ctx)
+        public void PopulateWorkQueue(CancellationToken ctx)
         {
             var lastTime = _lastPollTime;
             var now = _datetimeService.Now;
@@ -72,14 +65,14 @@ namespace Runic.Agent.Core
                 {
                     continue;
                 }
+
                 var count = 
                     GetJourneyCountInPeriod(testPlan.Frequency, testPlan.StartTime, now) 
                         - GetJourneyCountInPeriod(testPlan.Frequency, testPlan.StartTime, lastTime.Value);
 
-                Parallel.For(0, (int)count, i =>
-                {
-                    _taskQueue.EnqueueTask(testPlan, ctx);
-                });
+                for (int i = 0; i < count; i++)
+                    _consumer.EnqueueTask(testPlan);
+
                 if (ctx.IsCancellationRequested)
                     break;
             }

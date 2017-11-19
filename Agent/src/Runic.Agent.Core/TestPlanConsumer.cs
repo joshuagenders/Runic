@@ -1,55 +1,74 @@
-﻿using System.Collections.Concurrent;
+﻿using Runic.Agent.TestHarness.Services;
+using System;
+using System.Collections.Concurrent;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Runic.Agent.Core
 {
-    public class TestPlanConsumer
+    public class TestPlanConsumer : IConsumer<TestPlan>
     {
         private readonly IPersonFactory _personFactory;
         private readonly BlockingCollection<TestPlan> _workQueue;
-        public bool Closed { get; private set; }
+        public bool Closed => _workQueue.IsAddingCompleted;
         public int Count => _workQueue?.Count ?? 0;
+
+        private IDatetimeService _datetimeService { get; set; }
 
         public TestPlanConsumer(
             IProducerConsumerCollection<TestPlan> testPlanTaskCollection,
-            IPersonFactory personFactory)
+            IPersonFactory personFactory,
+            IDatetimeService datetimeService)
         {
             _personFactory = personFactory;
             _workQueue = new BlockingCollection<TestPlan>(testPlanTaskCollection);
+            _datetimeService = datetimeService;
         }
 
-        public void EnqueueTask(TestPlan testPlan, CancellationToken ctx)
+        public void EnqueueTask(TestPlan workItem)
         {
-            _workQueue.Add(testPlan);
+            _workQueue.Add(workItem);
         }
 
-        private void ProcessPlan(object stateInfo)
+        private async Task ProcessPlan(TestPlanContext stateInfo)
         {
-            var si = (TestPlanInfo)stateInfo;
-            var person = _personFactory.GetPerson(si.TestPlan.Journey);
-            person.PerformJourneyAsync(si.TestPlan.Journey, si.Ctx).Wait();
+            if (stateInfo == null)
+                return;
+            var person = _personFactory.GetPerson(stateInfo.TestPlan.Journey);
+            await person.PerformJourneyAsync(stateInfo.TestPlan.Journey, stateInfo.Ctx);
         }
 
-        public void Start(CancellationToken ctx)
+        public async Task ProcessCallback(object stateInfo)
+        {
+            await ProcessPlan((TestPlanContext)stateInfo);
+        }
+
+        public void ProcessQueue(CancellationToken ctx)
         {
             foreach (var testPlan in _workQueue.GetConsumingEnumerable())
-            { 
-                ThreadPool.QueueUserWorkItem(new WaitCallback(ProcessPlan), new TestPlanInfo(){ TestPlan = testPlan, Ctx = ctx });
-                if (ctx.IsCancellationRequested)
+            {
+                var context = new TestPlanContext()
+                {
+                    TestPlan = testPlan,
+                    Ctx = ctx
+                };
+                ThreadPool.QueueUserWorkItem(
+                    new WaitCallback(
+                        async delegate {
+                            await ProcessCallback(context);
+                        }));
+
+                if (ctx.IsCancellationRequested || _workQueue.Count == 0)
+                {
+                    Close();
                     break;
+                }
             }
         }
 
         public void Close()
         {
-            Closed = true;
             _workQueue.CompleteAdding();
-        }
-
-        class TestPlanInfo
-        {
-            public CancellationToken Ctx { get; set; }
-            public TestPlan TestPlan { get; set; }
         }
     }
 }

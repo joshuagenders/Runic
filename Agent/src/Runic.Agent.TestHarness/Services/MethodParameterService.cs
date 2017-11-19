@@ -27,9 +27,7 @@ namespace Runic.Agent.TestHarness.Services
                 if (i < p.Length)
                 {
                     //change type to match
-                    var newParam = TypeDescriptor.GetConverter(typeof(String))
-                                                 .ConvertTo(positionalParameters[i], p[i].ParameterType);
-                    methodParams[i] = newParam;
+                    methodParams[i] = Convert.ChangeType(positionalParameters[i], p[i].ParameterType); 
                 }
             }
             //add defaults for remaining params

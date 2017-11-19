@@ -17,8 +17,4 @@
     <ProjectReference Include="..\Runic.Cucumber\Runic.Cucumber.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\" />
-  </ItemGroup>
-
 </Project>

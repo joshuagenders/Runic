@@ -15,19 +15,15 @@ namespace Runic.Agent.TestHarness.Harness
     {
         private readonly MethodParameterService _methodParameterService;
 
-        private object _instance { get; set; }
-        private Step _step { get; set; }
+        private readonly object _instance;
+        private readonly Step _step;
         private string _nextStep { get; set; }
 
-        public FunctionHarness()
-        {
-            _methodParameterService = new MethodParameterService();
-        }
-
-        public void Bind(object functionInstance, Step step)
+        public FunctionHarness(object functionInstance, Step step)
         {
             _instance = functionInstance;
             _step = step;
+            _methodParameterService = new MethodParameterService();
         }
 
         public async Task<FunctionResult> ExecuteAsync(CancellationToken ctx = default(CancellationToken))
@@ -41,9 +37,9 @@ namespace Runic.Agent.TestHarness.Harness
             try
             {
                 timer.Start();
-                await ExecuteMethodWithAttribute(typeof(BeforeEachAttribute), ctx);
+                await ExecuteMethodWithAttribute(typeof(BeforeEachAttribute));
                 await ExecuteFunctionAsync(ctx);
-                await ExecuteMethodWithAttribute(typeof(AfterEachAttribute), ctx);
+                await ExecuteMethodWithAttribute(typeof(AfterEachAttribute));
                 timer.Stop();
                 result.Success = true;
                 result.ExecutionTimeMilliseconds = timer.ElapsedMilliseconds;
@@ -84,7 +80,7 @@ namespace Runic.Agent.TestHarness.Harness
             else
             {
                 var parameters = _methodParameterService.GetParams(_step.Function.PositionalMethodParameterValues?.ToArray(), functionMethod);
-                await ExecuteMethodAsync(functionMethod, ctx, parameters);
+                await ExecuteMethodAsync(functionMethod, parameters);
             }
         }
 
@@ -109,11 +105,11 @@ namespace Runic.Agent.TestHarness.Harness
             }
         }
 
-        private async Task ExecuteMethodAsync(MethodInfo method, CancellationToken ctx, params object[] inputParams)
+        private async Task ExecuteMethodAsync(MethodInfo method, params object[] inputParams)
         {
             if (IsAsyncMethod(method))
             {
-                await Task.Run(() => (Task)method.Invoke(_instance, inputParams), ctx);
+                await (Task)method.Invoke(_instance, inputParams);
             }
             else
             {
@@ -133,11 +129,11 @@ namespace Runic.Agent.TestHarness.Harness
             return null;
         }
 
-        private async Task ExecuteMethodWithAttribute(Type attributeType, CancellationToken ctx = default(CancellationToken))
+        private async Task ExecuteMethodWithAttribute(Type attributeType)
         {
             var method = GetMethodWithAttribute(attributeType);
             if (method != null)
-                await ExecuteMethodAsync(method, ctx);
+                await ExecuteMethodAsync(method);
         }
     }
 }

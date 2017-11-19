@@ -60,31 +60,23 @@ namespace Runic.Agent.Core.AssemblyManagement
             }
         }
 
-        public IList<FunctionInformation> GetAvailableFunctions()
-        {
-            var functions = new List<FunctionInformation>();
-            foreach (var assembly in _assemblies)
-            {
-                foreach (var type in assembly.DefinedTypes)
-                {
-                    var methods = type.AsType().GetRuntimeMethods();
-                    foreach (var method in methods)
-                    {
-                        var attribute = method.GetCustomAttribute<FunctionAttribute>();
-                        if (attribute != null)
-                        {
-                            functions.Add(new FunctionInformation()
-                            {
-                                AssemblyName = assembly.FullName,
-                                AssemblyQualifiedClassName = type.FullName,
-                                FunctionName = attribute.Name
-                            });
-                        }
-                    }
-                }
-            }
-            return functions;
-        }
+        public IList<FunctionInformation> GetAvailableFunctions() =>
+            _assemblies.SelectMany(
+                a => a.DefinedTypes
+                      .SelectMany(
+                        t => t.AsType()
+                              .GetRuntimeMethods()
+                              .Select(
+                                x => x.GetCustomAttribute<FunctionAttribute>())
+                              ?.Select(
+                                  f => new FunctionInformation()
+                                  {
+                                      AssemblyName = a.FullName,
+                                      AssemblyQualifiedClassName = t.FullName,
+                                      FunctionName = f?.Name
+                                  })))
+            .Where(o => o != null && o.FunctionName != null)
+            .ToList();
 
         public IList<Assembly> GetAssemblies()
         {
@@ -98,7 +90,7 @@ namespace Runic.Agent.Core.AssemblyManagement
 
         public IList<string> GetAssemblyKeys()
         {
-            return _assembliesLoaded.Where(t => t.Value).Select(t => t.Key).ToList();
+            return _assembliesLoaded.Keys.ToList();
         }
 
         public Assembly GetAssembly(string pluginAssemblyName)

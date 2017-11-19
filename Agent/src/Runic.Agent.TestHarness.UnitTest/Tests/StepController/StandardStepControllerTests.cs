@@ -60,14 +60,16 @@ namespace Runic.Agent.Core.UnitTest.Tests.StepController
             var result1 = new FunctionResult()
             {
                 Success = true,
-                StepName = step1.StepName
+                StepName = step1.StepName,
+                Step = _journey.Steps[0]
             };
             var step2 = stepController.GetNextStep(result1);
 
             var result2 = new FunctionResult()
             {
                 Success = true,
-                StepName = step2.StepName
+                StepName = step2.StepName,
+                Step = _journey.Steps[1]
             };
             var step3 = stepController.GetNextStep(result2);
 
