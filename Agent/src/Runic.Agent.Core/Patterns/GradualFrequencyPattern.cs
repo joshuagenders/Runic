@@ -13,17 +13,20 @@ namespace Runic.Agent.Core.Patterns
                 
         public double GetCurrentFrequencyPerMinute(DateTime startTime, DateTime now)
         {
-            if (now > startTime.AddSeconds(DurationSeconds) || now < startTime)
+            if (now < startTime)
+                return 0;
+
+            if (DurationSeconds > 0 && now > startTime.AddSeconds(DurationSeconds))
             {
                 return 0;
             }
+
             if (now < startTime.AddSeconds(RampUpSeconds))
             {
                 return (JourneysPerMinute / RampUpSeconds) * now.Subtract(startTime).Seconds;
             }
-            if (DurationSeconds < 0)
-                return JourneysPerMinute;
-            if (now > startTime.AddSeconds(DurationSeconds - RampDownSeconds))
+
+            if (DurationSeconds > 0 && now > startTime.AddSeconds(DurationSeconds - RampDownSeconds))
             {
                 double gradient = JourneysPerMinute / RampDownSeconds;
                 var timeEllapsed = now.Subtract(startTime.AddSeconds(DurationSeconds - RampDownSeconds)).Seconds;
