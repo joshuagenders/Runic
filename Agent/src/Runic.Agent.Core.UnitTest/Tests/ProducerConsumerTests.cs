@@ -4,6 +4,7 @@ using Runic.Agent.Core.Configuration;
 using Runic.Agent.Core.Patterns;
 using Runic.Agent.Core.Models;
 using Runic.Agent.Core.Services;
+using Runic.Agent.Core.WorkGenerator;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;

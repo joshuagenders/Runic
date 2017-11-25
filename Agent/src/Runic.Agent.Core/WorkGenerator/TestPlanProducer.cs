@@ -6,7 +6,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Core
+namespace Runic.Agent.Core.WorkGenerator
 {
     public class TestPlanProducer : IProducer<TestPlan>
     {

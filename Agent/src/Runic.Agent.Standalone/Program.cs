@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Runic.Agent.Core;
-using System;
+using Runic.Agent.Core.WorkGenerator;
 using System.Threading;
 
 namespace Runic.Agent.Standalone

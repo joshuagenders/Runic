@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace Runic.Agent.Core
+namespace Runic.Agent.Core.WorkGenerator
 {
     public interface IConsumer<T>
     {

@@ -2,7 +2,7 @@
 using Runic.Agent.Core.Models;
 using System;
 
-namespace Runic.Agent.Core
+namespace Runic.Agent.Core.WorkGenerator
 {
     public class TestPlan
     {

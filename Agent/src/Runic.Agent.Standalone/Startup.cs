@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Runic.Agent.Core;
+using Runic.Agent.Core.WorkGenerator;
 using Runic.Agent.Core.Configuration;
 using Runic.Agent.Core.Harness;
 using Runic.Agent.Core.IoC;
