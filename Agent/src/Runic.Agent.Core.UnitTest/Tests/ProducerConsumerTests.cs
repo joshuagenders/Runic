@@ -21,7 +21,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         public void WhenProducerProducesForAMinute_ThenCorrectAmountIsProduced()
         {
             var time = new DateTime(2017, 01, 23, 13, 00, 00);
-            var testPlan = new TestPlan(
+            var testPlan = new Expedition(
                 new Journey()
                 {
                     Name = "Test journey"
@@ -36,12 +36,12 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 }
             };
             //
-            var mockConsumer = new Mock<IConsumer<TestPlan>>();
+            var mockConsumer = new Mock<IConsumer<Expedition>>();
             var mockDatetime = new Mock<IDatetimeService>();
             var mockConfig = new Mock<ICoreConfiguration>();
 
             mockConfig.Setup(m => m.TaskCreationPollingIntervalSeconds).Returns(2);
-            var producer = new TestPlanProducer(mockConsumer.Object, mockDatetime.Object, mockConfig.Object);
+            var producer = new ExpeditionProducer(mockConsumer.Object, mockDatetime.Object, mockConfig.Object);
 
             mockDatetime.Setup(d => d.Now).Returns(time);
             var cts = new CancellationTokenSource();
@@ -59,7 +59,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
         [TestMethod]
         public async Task WhenCancelled_ThenProductionStops()
         {
-            var testPlan = new TestPlan(
+            var testPlan = new Expedition(
                 new Journey()
                 {
                     Name = "Test journey"
@@ -74,12 +74,12 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 }
             };
             //
-            var mockConsumer = new Mock<IConsumer<TestPlan>>();
+            var mockConsumer = new Mock<IConsumer<Expedition>>();
             var mockDatetime = new Mock<IDatetimeService>();
             var mockConfig = new Mock<ICoreConfiguration>();
 
             mockConfig.Setup(m => m.TaskCreationPollingIntervalSeconds).Returns(0);
-            var producer = new TestPlanProducer(mockConsumer.Object, mockDatetime.Object, mockConfig.Object);
+            var producer = new ExpeditionProducer(mockConsumer.Object, mockDatetime.Object, mockConfig.Object);
             //this return is required otherwise it runs sync and blocks the test thread
             mockDatetime.Setup(d => d.WaitMilliseconds(It.IsAny<int>(), It.IsAny<CancellationToken>())).Returns(async () => await Task.Delay(50));
             var cts = new CancellationTokenSource();
@@ -101,15 +101,15 @@ namespace Runic.Agent.Core.UnitTest.Tests
         public async Task WhenProcessCallBackIsCalled_ThenJourneyIsPerformed()
         {
             var mockPersonFactory = new Mock<IPersonFactory>();
-            var workQueue = new ConcurrentQueue<TestPlan>();
+            var workQueue = new ConcurrentQueue<Expedition>();
             var mockDts = new Mock<IDatetimeService>();
-            var consumer = new TestPlanConsumer(workQueue, mockPersonFactory.Object, mockDts.Object);
+            var consumer = new ExpeditionConsumer(workQueue, mockPersonFactory.Object, mockDts.Object);
             var mockPerson = new Mock<IPerson>();
             var cts = new CancellationTokenSource();
 
             mockPersonFactory.Setup(p => p.GetPerson(It.IsAny<Journey>())).Returns(mockPerson.Object);
             
-            var testPlan = new TestPlan(
+            var testPlan = new Expedition(
                 new Journey()
                 {
                     Name = "Test Journey"
@@ -121,7 +121,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             cts.CancelAfter(1000);
             consumer.EnqueueTask(testPlan);
 
-            await consumer.ProcessCallback(new TestPlanContext()
+            await consumer.ProcessCallback(new ExpeditionContext()
             {
                 Ctx = cts.Token,
                 TestPlan = testPlan
@@ -134,15 +134,15 @@ namespace Runic.Agent.Core.UnitTest.Tests
         public void WhenMultipleItemsAreQueued_ThenConsumerConsumesMultipleItems()
         {
             var mockPersonFactory = new Mock<IPersonFactory>();
-            var workQueue = new ConcurrentQueue<TestPlan>();
+            var workQueue = new ConcurrentQueue<Expedition>();
             var mockDts = new Mock<IDatetimeService>();
-            var consumer = new TestPlanConsumer(workQueue, mockPersonFactory.Object, mockDts.Object);
+            var consumer = new ExpeditionConsumer(workQueue, mockPersonFactory.Object, mockDts.Object);
             var mockPerson = new Mock<IPerson>();
             var cts = new CancellationTokenSource();
             
             mockPersonFactory.Setup(p => p.GetPerson(It.IsAny<Journey>())).Returns(mockPerson.Object);
 
-            var testPlan = new TestPlan(
+            var testPlan = new Expedition(
                 new Journey()
                 {
                     Name = "Test Journey"

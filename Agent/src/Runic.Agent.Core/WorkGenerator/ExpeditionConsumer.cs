@@ -7,31 +7,31 @@ using System.Threading.Tasks;
 
 namespace Runic.Agent.Core.WorkGenerator
 {
-    public class TestPlanConsumer : IConsumer<TestPlan>
+    public class ExpeditionConsumer : IConsumer<Expedition>
     {
         private readonly IPersonFactory _personFactory;
-        private readonly BlockingCollection<TestPlan> _workQueue;
+        private readonly BlockingCollection<Expedition> _workQueue;
         public bool Closed => _workQueue.IsAddingCompleted;
         public int Count => _workQueue?.Count ?? 0;
 
         private IDatetimeService _datetimeService { get; set; }
 
-        public TestPlanConsumer(
-            IProducerConsumerCollection<TestPlan> testPlanTaskCollection,
+        public ExpeditionConsumer(
+            IProducerConsumerCollection<Expedition> testPlanTaskCollection,
             IPersonFactory personFactory,
             IDatetimeService datetimeService)
         {
             _personFactory = personFactory;
-            _workQueue = new BlockingCollection<TestPlan>(testPlanTaskCollection);
+            _workQueue = new BlockingCollection<Expedition>(testPlanTaskCollection);
             _datetimeService = datetimeService;
         }
 
-        public void EnqueueTask(TestPlan workItem)
+        public void EnqueueTask(Expedition workItem)
         {
             _workQueue.Add(workItem);
         }
 
-        private async Task ProcessPlan(TestPlanContext stateInfo)
+        private async Task ProcessPlan(ExpeditionContext stateInfo)
         {
             if (stateInfo == null)
                 return;
@@ -41,14 +41,14 @@ namespace Runic.Agent.Core.WorkGenerator
 
         public async Task ProcessCallback(object stateInfo)
         {
-            await ProcessPlan((TestPlanContext)stateInfo);
+            await ProcessPlan((ExpeditionContext)stateInfo);
         }
 
         public void ProcessQueue(CancellationToken ctx)
         {
             foreach (var testPlan in _workQueue.GetConsumingEnumerable())
             {
-                var context = new TestPlanContext()
+                var context = new ExpeditionContext()
                 {
                     TestPlan = testPlan,
                     Ctx = ctx

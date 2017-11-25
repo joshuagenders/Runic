@@ -8,28 +8,28 @@ using System.Threading.Tasks;
 
 namespace Runic.Agent.Core.WorkGenerator
 {
-    public class TestPlanProducer : IProducer<TestPlan>
+    public class ExpeditionProducer : IProducer<Expedition>
     {
-        private readonly IConsumer<TestPlan> _consumer;
+        private readonly IConsumer<Expedition> _consumer;
         private readonly IDatetimeService _datetimeService;
         private readonly ICoreConfiguration _config;
         
-        private ConcurrentDictionary<string, TestPlan> TestPlans { get; set; }
+        private ConcurrentDictionary<string, Expedition> _expeditions { get; set; }
         private DateTime? _lastPollTime { get; set; }
 
-        public TestPlanProducer(IConsumer<TestPlan> consumer, IDatetimeService datetimeService, ICoreConfiguration config)
+        public ExpeditionProducer(IConsumer<Expedition> consumer, IDatetimeService datetimeService, ICoreConfiguration config)
         {
             _consumer = consumer;
             _datetimeService = datetimeService;
             _config = config;
-            TestPlans = new ConcurrentDictionary<string, TestPlan>();
+            _expeditions = new ConcurrentDictionary<string, Expedition>();
         }
 
-        public TestPlan GetWorkItem(string id) => (TestPlans.TryGetValue(id, out TestPlan plan)) ? plan : null;
-        public void AddUpdateWorkItem(string id, TestPlan item)
+        public Expedition GetWorkItem(string id) => (_expeditions.TryGetValue(id, out Expedition plan)) ? plan : null;
+        public void AddUpdateWorkItem(string id, Expedition item)
         {
             item.StartTime = _datetimeService.Now;
-            TestPlans.AddOrUpdate(id, item, (x, y) => y);
+            _expeditions.AddOrUpdate(id, item, (x, y) => y);
         }
 
         public async Task ProduceWorkItems(CancellationToken ctx)
@@ -59,7 +59,7 @@ namespace Runic.Agent.Core.WorkGenerator
             var now = _datetimeService.Now;
             _lastPollTime = now;
 
-            foreach (var testPlan in TestPlans.Values)
+            foreach (var testPlan in _expeditions.Values)
             {
                 if (!lastTime.HasValue)
                 {

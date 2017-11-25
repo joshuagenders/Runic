@@ -15,18 +15,18 @@ namespace Runic.Agent.Standalone
         {
 
             CoreServiceCollection.ConfigureServices(services);
-            services.AddScoped<IRunner<TestPlan>>();
-            services.AddTransient<IConsumer<TestPlan>>((_) =>
+            services.AddScoped<IRunner<Expedition>>();
+            services.AddTransient<IConsumer<Expedition>>((_) =>
             {
-                return new TestPlanConsumer(
-                    new ConcurrentQueue<TestPlan>(),
+                return new ExpeditionConsumer(
+                    new ConcurrentQueue<Expedition>(),
                     _.GetService<IPersonFactory>(),
                     _.GetService<IDatetimeService>());
             });
-            services.AddTransient<IProducer<TestPlan>>((_) =>
+            services.AddTransient<IProducer<Expedition>>((_) =>
             {
-                var producer = new TestPlanProducer(
-                    _.GetService<IConsumer<TestPlan>>(),
+                var producer = new ExpeditionProducer(
+                    _.GetService<IConsumer<Expedition>>(),
                     _.GetService<IDatetimeService>(),
                     _.GetService<ICoreConfiguration>());
 
@@ -39,10 +39,10 @@ namespace Runic.Agent.Standalone
             });
         }
 
-        public static Dictionary<string,TestPlan> GetTestPlans()
+        public static Dictionary<string,Expedition> GetTestPlans()
         {
             //todo read from config
-            return new Dictionary<string, TestPlan>();
+            return new Dictionary<string, Expedition>();
         }
     }
 }

@@ -21,6 +21,8 @@ namespace Runic.Agent.Core.Patterns
             {
                 return (JourneysPerMinute / RampUpSeconds) * now.Subtract(startTime).Seconds;
             }
+            if (DurationSeconds < 0)
+                return JourneysPerMinute;
             if (now > startTime.AddSeconds(DurationSeconds - RampDownSeconds))
             {
                 double gradient = JourneysPerMinute / RampDownSeconds;

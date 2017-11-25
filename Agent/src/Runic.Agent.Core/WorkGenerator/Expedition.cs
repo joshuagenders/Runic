@@ -4,9 +4,9 @@ using System;
 
 namespace Runic.Agent.Core.WorkGenerator
 {
-    public class TestPlan
+    public class Expedition
     {
-        public TestPlan(Journey journey)
+        public Expedition(Journey journey)
         {
             Journey = journey;
         }

@@ -11,6 +11,9 @@ namespace Runic.Agent.Core.Patterns
 
         public double GetCurrentFrequencyPerMinute(DateTime startTime, DateTime now)
         {
+            if (DurationSeconds < 0)
+                return MaxJourneysPerMinute;
+
             if (DurationSeconds > 0 && now > startTime.AddSeconds(DurationSeconds))
             {
                 return 0;
