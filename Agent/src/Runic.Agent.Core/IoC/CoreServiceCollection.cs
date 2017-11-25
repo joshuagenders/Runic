@@ -13,7 +13,6 @@ namespace Runic.Agent.Core.IoC
             serviceCollection.AddTransient<IAssemblyManager, AssemblyManager>();
             serviceCollection.AddTransient<IFunctionFactory, FunctionFactory>();
             serviceCollection.AddTransient<IDatetimeService, DateTimeService>();
-            serviceCollection.AddTransient<IPersonFactory, PersonFactory>();
             serviceCollection.AddTransient<IPerson, Person>();
         }
     }

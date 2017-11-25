@@ -26,7 +26,7 @@ namespace Runic.Agent.Core.UnitTest.Tests.Services
             var step = new Step()
             {
                 StepName = "TestStep",
-                Cucumber = new CucmberInformation()
+                Cucumber = new CucumberInformation()
                 {
                     AssemblyName = "thisassembly",
                     Document = cucumberDocument

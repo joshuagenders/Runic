@@ -15,34 +15,33 @@ namespace Runic.Agent.Standalone
         {
 
             CoreServiceCollection.ConfigureServices(services);
-            services.AddScoped<IRunner<Expedition>>();
-            services.AddTransient<IConsumer<Expedition>>((_) =>
-            {
-                return new ExpeditionConsumer(
-                    new ConcurrentQueue<Expedition>(),
-                    _.GetService<IPersonFactory>(),
-                    _.GetService<IDatetimeService>());
-            });
-            services.AddTransient<IProducer<Expedition>>((_) =>
-            {
-                var producer = new ExpeditionProducer(
-                    _.GetService<IConsumer<Expedition>>(),
-                    _.GetService<IDatetimeService>(),
-                    _.GetService<ICoreConfiguration>());
-
-                foreach (var plan in GetTestPlans())
-                {
-                    producer.AddUpdateWorkItem(plan.Key, plan.Value);
-                }
-
-                return producer;
-            });
+            services.AddScoped<IRunner<Work>>();
+            //services.AddTransient<IConsumer<Expedition>>((_) =>
+            //{
+            //    return new ExpeditionConsumer(
+            //        new ConcurrentQueue<Expedition>(),
+            //        _.GetService<IDatetimeService>());
+            //});
+            //services.AddTransient<IProducer<Expedition>>((_) =>
+            //{
+            //    var producer = new ExpeditionProducer(
+            //        _.GetService<IConsumer<Expedition>>(),
+            //        _.GetService<IDatetimeService>(),
+            //        _.GetService<ICoreConfiguration>());
+            //
+            //    foreach (var plan in GetTestPlans())
+            //    {
+            //        producer.AddUpdateWorkItem(plan.Key, plan.Value);
+            //    }
+            //
+            //    return producer;
+            //});
         }
 
-        public static Dictionary<string,Expedition> GetTestPlans()
+        public static Dictionary<string,Work> GetTestPlans()
         {
             //todo read from config
-            return new Dictionary<string, Expedition>();
+            return new Dictionary<string, Work>();
         }
     }
 }

@@ -5,6 +5,6 @@
         public string StepName { get; set; }
         public int RepeatCount { get; set; }
         public MethodInformation Function { get; set; }
-        public CucmberInformation Cucumber { get; set; }
+        public CucumberInformation Cucumber { get; set; }
     }
 }

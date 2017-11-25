@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Runic.Agent.Core.StepController
+namespace Runic.Agent.Core.Harness
 {
     public class StepNotFoundException : Exception
     {

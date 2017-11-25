@@ -7,6 +7,6 @@ namespace Runic.Agent.Core.Models
         public string Name { get; set; }
         public int StepDelayMilliseconds { get; set; }
         public List<Step> Steps { get; set; }
-        public string AssemblyName { get; set; }
+        public string AssemblyName { get; internal set; }
     }
 }

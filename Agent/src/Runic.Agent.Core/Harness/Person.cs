@@ -1,11 +1,9 @@
-﻿using Runic.Agent.Core.Models;
+﻿using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.Models;
+using Runic.Agent.Core.Services;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Runic.Agent.Core.StepController;
-using Runic.Agent.Core.Harness;
-using Runic.Agent.Core.Services;
-using System.Reflection;
-using System.Collections.Generic;
 
 namespace Runic.Agent.Core.Harness
 {
@@ -13,14 +11,14 @@ namespace Runic.Agent.Core.Harness
     {
         private readonly IFunctionFactory _functionFactory;
         private readonly IDatetimeService _datetimeService;
-        private readonly Assembly _assembly;
+        private readonly IAssemblyManager _assemblyManager;
         private Dictionary<string, string> _attributes { get; set; }
 
-        public Person(IFunctionFactory functionFactory, IDatetimeService datetimeService, Assembly assembly)
+        public Person(IFunctionFactory functionFactory, IDatetimeService datetimeService, IAssemblyManager assemblyManager)
         {
             _functionFactory = functionFactory;
             _datetimeService = datetimeService;
-            _assembly = assembly;
+            _assemblyManager = assemblyManager;
         }
 
         public void SetAttributes(Dictionary<string, string> attributes)
@@ -39,12 +37,15 @@ namespace Runic.Agent.Core.Harness
                 var step = stepController.GetNextStep(result);
                 if (!string.IsNullOrWhiteSpace(step.Cucumber?.Document))
                 {
-                    service = new CucumberStepRunnerService(_assembly);
+                    _assemblyManager.LoadAssembly(step.Cucumber.AssemblyName);
+                    var assembly = _assemblyManager.GetAssembly(step.Cucumber.AssemblyName);
+                    service = new CucumberStepRunnerService(assembly);
                     var executionResult = await service.ExecuteStepAsync(step, ctx);
                     result = executionResult;
                 }
                 else
                 {
+                    _assemblyManager.LoadAssembly(step.Function.AssemblyName);
                     service = new FunctionStepRunnerService(_functionFactory, _datetimeService);
                     var executionResult = await service.ExecuteStepAsync(step, ctx);
                     result = executionResult;

@@ -2,9 +2,9 @@
 
 namespace Runic.Agent.Core.WorkGenerator
 {
-    public class ExpeditionContext
+    public class WorkContext
     { 
         public CancellationToken Ctx { get; set; }
-        public Expedition TestPlan { get; set; }
+        public Work Work { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using Runic.Agent.Core.Configuration;
+using System;
 
 namespace Runic.Agent.Core.AssemblyManagement
 {
@@ -58,19 +59,20 @@ namespace Runic.Agent.Core.AssemblyManagement
         }
 
         public IList<MethodInformation> GetAvailableMethods() =>
-            _assemblies.SelectMany(
-                a => a.DefinedTypes
-                      .SelectMany(
+            _assemblies.SelectMany(a => SelectMethodInformation(a.DefinedTypes)).ToList();
+        
+        private IEnumerable<MethodInformation> SelectMethodInformation(IEnumerable<TypeInfo> types) => 
+                types.SelectMany(
                         t => t.AsType()
                               .GetRuntimeMethods()
-                              .Select(
-                                  m => new MethodInformation()
-                                  {
-                                      AssemblyName = a.FullName,
-                                      AssemblyQualifiedClassName = t.FullName,
-                                      MethodName = m?.Name
-                                  })))
-                      .ToList();
+                              .Select(SelectMethodInformation));
+
+        private MethodInformation SelectMethodInformation (MethodInfo methodInfo) => new MethodInformation()
+        {
+            AssemblyName = methodInfo.DeclaringType.DeclaringType.GetTypeInfo().Assembly.FullName,
+            AssemblyQualifiedClassName = methodInfo.DeclaringType.FullName,
+            MethodName = methodInfo.Name
+        };
 
         public IList<Assembly> GetAssemblies()
         {

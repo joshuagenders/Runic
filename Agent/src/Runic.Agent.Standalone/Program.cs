@@ -14,7 +14,7 @@ namespace Runic.Agent.Standalone
             var cts = new CancellationTokenSource();
             using (var scope = serviceProvider.CreateScope())
             {
-                var runner = serviceProvider.GetRequiredService<IRunner<Expedition>>();
+                var runner = serviceProvider.GetRequiredService<IRunner<Work>>();
                 runner.Start(cts.Token).Wait();
             }
         }

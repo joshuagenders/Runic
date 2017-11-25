@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Runic.Agent.Core.StepController;
 using Runic.Agent.Core.Models;
 using System.Collections.Generic;
 using System.Linq;

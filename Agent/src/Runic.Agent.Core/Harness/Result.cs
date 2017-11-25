@@ -1,7 +1,7 @@
 ﻿using Runic.Agent.Core.Models;
 using System;
 
-namespace Runic.Agent.Core.StepController
+namespace Runic.Agent.Core.Harness
 {
     public abstract class Result
     {

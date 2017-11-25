@@ -1,10 +1,6 @@
-﻿using Runic.Agent.Core.Models;
+﻿using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.Models;
 using Runic.Agent.Core.Services;
-using Runic.Agent.Core.AssemblyManagement;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 
 namespace Runic.Agent.Core.Harness
 {
@@ -22,9 +18,7 @@ namespace Runic.Agent.Core.Harness
         }
         public IPerson GetPerson(Journey journey)
         {
-            JourneyInitialiserService.InitialiseJourney(_assemblyManager, journey);
-            var assembly = _assemblyManager.GetAssembly(journey.AssemblyName);
-            return new Person(_functionFactory, _datetimeService, assembly);
+            return new Person(_functionFactory, _datetimeService, _assemblyManager);
         }
     }
 }

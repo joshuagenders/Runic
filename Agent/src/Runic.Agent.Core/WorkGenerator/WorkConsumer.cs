@@ -1,4 +1,5 @@
-﻿using Runic.Agent.Core.Harness;
+﻿using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.Harness;
 using Runic.Agent.Core.Services;
 using System;
 using System.Collections.Concurrent;
@@ -7,50 +8,51 @@ using System.Threading.Tasks;
 
 namespace Runic.Agent.Core.WorkGenerator
 {
-    public class ExpeditionConsumer : IConsumer<Expedition>
+    public class WorkConsumer : IConsumer<Work>
     {
+        private readonly BlockingCollection<Work> _workQueue;
         private readonly IPersonFactory _personFactory;
-        private readonly BlockingCollection<Expedition> _workQueue;
+
         public bool Closed => _workQueue.IsAddingCompleted;
         public int Count => _workQueue?.Count ?? 0;
 
         private IDatetimeService _datetimeService { get; set; }
 
-        public ExpeditionConsumer(
-            IProducerConsumerCollection<Expedition> testPlanTaskCollection,
-            IPersonFactory personFactory,
-            IDatetimeService datetimeService)
+        public WorkConsumer(
+            IProducerConsumerCollection<Work> workCollection,
+            IDatetimeService datetimeService,
+            IPersonFactory personFactory)
         {
-            _personFactory = personFactory;
-            _workQueue = new BlockingCollection<Expedition>(testPlanTaskCollection);
+            _workQueue = new BlockingCollection<Work>(workCollection);
             _datetimeService = datetimeService;
+            _personFactory = personFactory;
         }
 
-        public void EnqueueTask(Expedition workItem)
+        public void EnqueueTask(Work workItem)
         {
             _workQueue.Add(workItem);
         }
 
-        private async Task ProcessPlan(ExpeditionContext stateInfo)
+        private async Task ProcessPlan(WorkContext stateInfo)
         {
             if (stateInfo == null)
                 return;
-            var person = _personFactory.GetPerson(stateInfo.TestPlan.Journey);
-            await person.PerformJourneyAsync(stateInfo.TestPlan.Journey, stateInfo.Ctx);
+            var person = _personFactory.GetPerson(stateInfo.Work.Journey);
+            await person.PerformJourneyAsync(stateInfo.Work.Journey, stateInfo.Ctx);
         }
 
         public async Task ProcessCallback(object stateInfo)
         {
-            await ProcessPlan((ExpeditionContext)stateInfo);
+            await ProcessPlan((WorkContext)stateInfo);
         }
 
         public void ProcessQueue(CancellationToken ctx)
         {
-            foreach (var testPlan in _workQueue.GetConsumingEnumerable())
+            foreach (var work in _workQueue.GetConsumingEnumerable())
             {
-                var context = new ExpeditionContext()
+                var context = new WorkContext()
                 {
-                    TestPlan = testPlan,
+                    Work = work,
                     Ctx = ctx
                 };
                 ThreadPool.QueueUserWorkItem(

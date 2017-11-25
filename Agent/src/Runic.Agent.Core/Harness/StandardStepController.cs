@@ -1,7 +1,7 @@
 ﻿using Runic.Agent.Core.Models;
 using System.Linq;
 
-namespace Runic.Agent.Core.StepController
+namespace Runic.Agent.Core.Harness
 {
     public class StandardStepController
     {

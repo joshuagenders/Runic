@@ -4,7 +4,7 @@ namespace Runic.Cucumber
 {
     public abstract class CucumberAttribute : Attribute, IRegexMatchable
     {
-        public CucumberAttribute(string matchString)
+        protected CucumberAttribute(string matchString)
         {
             MatchString = matchString;
         }

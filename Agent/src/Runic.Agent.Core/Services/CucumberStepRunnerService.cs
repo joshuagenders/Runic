@@ -1,5 +1,4 @@
-﻿using Runic.Agent.Core.StepController;
-using Runic.Agent.Core.Models;
+﻿using Runic.Agent.Core.Models;
 using Runic.Agent.Core.Harness;
 using System.Reflection;
 using System.Threading;

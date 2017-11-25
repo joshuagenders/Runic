@@ -14,8 +14,7 @@ namespace Runic.Agent.Core.Harness
 
             var stopWatch = new Stopwatch();
             stopWatch.Start();
-            var testTask = test.ExecuteAsync(document, ctx);
-            var result = await testTask;
+            var result = await test.ExecuteAsync(document, ctx);
             stopWatch.Stop();
 
             return new CucumberResult()

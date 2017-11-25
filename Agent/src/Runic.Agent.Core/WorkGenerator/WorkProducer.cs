@@ -8,25 +8,25 @@ using System.Threading.Tasks;
 
 namespace Runic.Agent.Core.WorkGenerator
 {
-    public class ExpeditionProducer : IProducer<Expedition>
+    public class WorkProducer : IProducer<Work>
     {
-        private readonly IConsumer<Expedition> _consumer;
+        private readonly IConsumer<Work> _consumer;
         private readonly IDatetimeService _datetimeService;
         private readonly ICoreConfiguration _config;
         
-        private ConcurrentDictionary<string, Expedition> _expeditions { get; set; }
+        private ConcurrentDictionary<string, Work> _expeditions { get; set; }
         private DateTime? _lastPollTime { get; set; }
 
-        public ExpeditionProducer(IConsumer<Expedition> consumer, IDatetimeService datetimeService, ICoreConfiguration config)
+        public WorkProducer(IConsumer<Work> consumer, IDatetimeService datetimeService, ICoreConfiguration config)
         {
             _consumer = consumer;
             _datetimeService = datetimeService;
             _config = config;
-            _expeditions = new ConcurrentDictionary<string, Expedition>();
+            _expeditions = new ConcurrentDictionary<string, Work>();
         }
 
-        public Expedition GetWorkItem(string id) => (_expeditions.TryGetValue(id, out Expedition plan)) ? plan : null;
-        public void AddUpdateWorkItem(string id, Expedition item)
+        public Work GetWorkItem(string id) => (_expeditions.TryGetValue(id, out Work plan)) ? plan : null;
+        public void AddUpdateWorkItem(string id, Work item)
         {
             item.StartTime = _datetimeService.Now;
             _expeditions.AddOrUpdate(id, item, (x, y) => y);
