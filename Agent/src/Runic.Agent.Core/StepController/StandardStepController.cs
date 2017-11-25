@@ -1,12 +1,10 @@
 ﻿using Runic.Agent.Core.Models;
-using System;
 using System.Linq;
 
 namespace Runic.Agent.Core.StepController
 {
     public class StandardStepController
     {
-        private Result _lastResult { get; set; }
         private readonly Journey _journey;
 
         public StandardStepController(Journey journey)
@@ -20,9 +18,6 @@ namespace Runic.Agent.Core.StepController
             {
                 return _journey.Steps.First();
             }
-
-            var last = _lastResult;
-            _lastResult = result;
 
             if (result.Step?.Function != null &&
                 result.Step.Function.GetNextStepFromMethodResult &&

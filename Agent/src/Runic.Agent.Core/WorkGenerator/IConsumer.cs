@@ -2,7 +2,7 @@
 
 namespace Runic.Agent.Core.WorkGenerator
 {
-    public interface IConsumer<T>
+    public interface IConsumer<in T>
     {
         void EnqueueTask(T workItem);
         void ProcessQueue(CancellationToken ctx);
