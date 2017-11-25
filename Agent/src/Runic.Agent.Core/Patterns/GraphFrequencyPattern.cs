@@ -1,5 +1,5 @@
-﻿using Runic.Agent.TestHarness.Services;
-using Runic.Agent.Framework.Models;
+﻿using Runic.Agent.Services;
+using Runic.Agent.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

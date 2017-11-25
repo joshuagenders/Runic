@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Runic.Agent.Framework.Models;
-using Runic.Agent.TestHarness.Services;
-using Runic.Agent.TestHarness.Harness;
+using Runic.Agent.Core.Models;
+using Runic.Agent.Services;
+using Runic.Agent.Harness;
 using System.Reflection;
 using Runic.Agent.Core.AssemblyManagement;
-using Runic.Agent.Core.FlowManagement;
+using Runic.Agent.Core.Services;
 
 namespace Runic.Agent.Core
 {
@@ -24,7 +24,7 @@ namespace Runic.Agent.Core
         }
         public IPerson GetPerson(Journey journey)
         {
-            JourneyInitialiser.InitialiseJourney(_assemblyManager, journey);
+            JourneyInitialiserService.InitialiseJourney(_assemblyManager, journey);
             var assembly = _assemblyManager.GetAssembly(journey.AssemblyName);
             return new Person(_functionFactory, _datetimeService, assembly);
         }

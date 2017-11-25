@@ -1,4 +1,4 @@
-﻿using Runic.Agent.Framework.Models;
+﻿using Runic.Agent.Core.Models;
 using System;
 using System.Collections.Generic;
 
@@ -34,12 +34,12 @@ namespace Runic.Agent.Core.UnitTest.TestUtility
 
         public static Step WithFunction(this Step step)
         {
-            step.Function = new FunctionInformation()
+            step.Function = new MethodInformation()
             {
                 AssemblyName = "AssemblyName",
                 AssemblyQualifiedClassName = "AssemblyQualifiedClassName",
-                FunctionName = "FunctionName",
-                GetNextStepFromFunctionResult = false,
+                MethodName = "MethodName",
+                GetNextStepFromMethodResult = false,
                 PositionalMethodParameterValues = new List<string>() { },
             };
             return step;

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Runic.Agent.Core.AssemblyManagement;
-using Runic.Agent.TestHarness.Harness;
-using Runic.Agent.TestHarness.Services;
+using Runic.Agent.Harness;
+using Runic.Agent.Services;
 
 namespace Runic.Agent.Core.IoC
 {

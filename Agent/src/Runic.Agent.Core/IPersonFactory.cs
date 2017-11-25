@@ -1,5 +1,5 @@
-﻿using Runic.Agent.Framework.Models;
-using Runic.Agent.TestHarness.Services;
+﻿using Runic.Agent.Core.Models;
+using Runic.Agent.Services;
 
 namespace Runic.Agent.Core
 {

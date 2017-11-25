@@ -2,7 +2,7 @@
 using Runic.Agent.Core;
 using Runic.Agent.Core.Configuration;
 using Runic.Agent.Core.IoC;
-using Runic.Agent.TestHarness.Services;
+using Runic.Agent.Services;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 

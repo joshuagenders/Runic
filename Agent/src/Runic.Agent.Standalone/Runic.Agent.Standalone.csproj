@@ -7,8 +7,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Runic.Agent.Core\Runic.Agent.Core.csproj" />
-    <ProjectReference Include="..\Runic.Agent.Framework\Runic.Agent.Framework.csproj" />
-    <ProjectReference Include="..\Runic.Agent.TestHarness\Runic.Agent.TestHarness.csproj" />
   </ItemGroup>
 
 </Project>

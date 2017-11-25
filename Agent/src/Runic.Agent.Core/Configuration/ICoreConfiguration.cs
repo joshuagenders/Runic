@@ -3,5 +3,6 @@
     public interface ICoreConfiguration
     {
         int TaskCreationPollingIntervalSeconds { get; }
+        string PluginFolderPath { get; set; }
     }
 }

@@ -2,8 +2,8 @@
 using Moq;
 using Runic.Agent.Core.Configuration;
 using Runic.Agent.Core.Patterns;
-using Runic.Agent.Framework.Models;
-using Runic.Agent.TestHarness.Services;
+using Runic.Agent.Core.Models;
+using Runic.Agent.Services;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;

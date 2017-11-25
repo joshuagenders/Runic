@@ -1,8 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Runic.Agent.Core.AssemblyManagement;
+using Runic.Agent.Core.Configuration;
 using System.Linq;
-using Runic.Agent.Framework.ExternalInterfaces;
 
 namespace Runic.Agent.Core.UnitTest.Tests
 {
@@ -10,13 +10,14 @@ namespace Runic.Agent.Core.UnitTest.Tests
     public class PluginManagerTests
     {
         private AssemblyManager _pluginManager { get; set; }
-        private Mock<IPluginProvider> _pluginProvider { get; set; }
 
         [TestInitialize]
         public void Init()
         {
-            _pluginProvider = new Mock<IPluginProvider>();
-            _pluginManager = new AssemblyManager(_pluginProvider.Object);
+            var config = new Mock<ICoreConfiguration>();
+            config.Setup(c => c.PluginFolderPath).Returns("/plugins/");
+            config.Setup(c => c.TaskCreationPollingIntervalSeconds).Returns(2);
+            _pluginManager = new AssemblyManager(config.Object);
         }
 
         [TestCategory("UnitTest")]
@@ -49,9 +50,9 @@ namespace Runic.Agent.Core.UnitTest.Tests
 
         [TestCategory("UnitTest")]
         [TestMethod]
-        public void WhenGettingFunctionsWithoutLoad_ReturnsEmptyList()
+        public void WhenGettingMethodsWithoutLoad_ReturnsEmptyList()
         {
-            Assert.IsFalse(_pluginManager.GetAvailableFunctions().Any());
+            Assert.IsFalse(_pluginManager.GetAvailableMethods().Any());
         }
     }
 }

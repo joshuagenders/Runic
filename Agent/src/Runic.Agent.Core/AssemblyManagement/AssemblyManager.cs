@@ -1,12 +1,11 @@
-﻿using Runic.Agent.Framework.ExternalInterfaces;
-using Runic.Agent.Framework.Attributes;
-using Runic.Agent.Framework.Models;
+﻿using Runic.Agent.Core.Models;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
+using Runic.Agent.Core.Configuration;
 
 namespace Runic.Agent.Core.AssemblyManagement
 {
@@ -14,13 +13,13 @@ namespace Runic.Agent.Core.AssemblyManagement
     {
         private readonly ConcurrentBag<Assembly> _assemblies;
         private readonly ConcurrentDictionary<string, bool> _assembliesLoaded;
-        private readonly IPluginProvider _provider;
-        
-        public AssemblyManager(IPluginProvider provider)
+        private readonly ICoreConfiguration _config;
+
+        public AssemblyManager(ICoreConfiguration config)
         {
             _assemblies = new ConcurrentBag<Assembly>();
             _assembliesLoaded = new ConcurrentDictionary<string, bool>();
-            _provider = provider;
+            _config = config;
         }
 
         public void LoadAssembly(string pluginAssemblyName)
@@ -33,9 +32,7 @@ namespace Runic.Agent.Core.AssemblyManagement
             }
             try
             {
-                //retrieve
-                _provider.RetrieveSourceDll(pluginAssemblyName);
-                var pluginPath = _provider.GetFilepath(pluginAssemblyName);
+                var pluginPath = Path.Combine(_config.PluginFolderPath, pluginAssemblyName);
                 if (!File.Exists(pluginPath))
                 {
                     throw new AssemblyNotFoundException($"Could not find file {pluginPath}");
@@ -60,23 +57,20 @@ namespace Runic.Agent.Core.AssemblyManagement
             }
         }
 
-        public IList<FunctionInformation> GetAvailableFunctions() =>
+        public IList<MethodInformation> GetAvailableMethods() =>
             _assemblies.SelectMany(
                 a => a.DefinedTypes
                       .SelectMany(
                         t => t.AsType()
                               .GetRuntimeMethods()
                               .Select(
-                                x => x.GetCustomAttribute<FunctionAttribute>())
-                              ?.Select(
-                                  f => new FunctionInformation()
+                                  m => new MethodInformation()
                                   {
                                       AssemblyName = a.FullName,
                                       AssemblyQualifiedClassName = t.FullName,
-                                      FunctionName = f?.Name
+                                      MethodName = m?.Name
                                   })))
-            .Where(o => o != null && o.FunctionName != null)
-            .ToList();
+                      .ToList();
 
         public IList<Assembly> GetAssemblies()
         {

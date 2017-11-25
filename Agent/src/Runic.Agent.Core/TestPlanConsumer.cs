@@ -1,4 +1,4 @@
-﻿using Runic.Agent.TestHarness.Services;
+﻿using Runic.Agent.Services;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
