@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Runic.Agent.Core.Models;
-using Runic.Agent.Harness;
+using Runic.Agent.Core.Harness;
 using System.Reflection;
 
 namespace Runic.Agent.Core.UnitTest.Tests.FunctionHarness

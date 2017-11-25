@@ -1,7 +1,7 @@
-﻿using Runic.Agent.StepController;
+﻿using Runic.Agent.Core.StepController;
 using System.Collections.Generic;
 
-namespace Runic.Agent.Harness
+namespace Runic.Agent.Core.Harness
 {
     public class CucumberResult : Result
     {

@@ -1,13 +1,13 @@
 ﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Runic.Agent.Harness;
+using Runic.Agent.Core.Harness;
 using Runic.Agent.UnitTest.TestUtility;
 using Runic.Agent.Core.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Runic.Agent.Services;
+using Runic.Agent.Core.Services;
 
 namespace Runic.Agent.Core.UnitTest.Tests.Services
 {

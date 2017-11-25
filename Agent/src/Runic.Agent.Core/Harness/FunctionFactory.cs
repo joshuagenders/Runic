@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Reflection;
 using System;
-using Runic.Agent.Services;
+using Runic.Agent.Core.Services;
 
-namespace Runic.Agent.Harness
+namespace Runic.Agent.Core.Harness
 {
     public class FunctionFactory : IFunctionFactory
     {

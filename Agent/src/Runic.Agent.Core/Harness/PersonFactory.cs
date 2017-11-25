@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using Runic.Agent.Core.Models;
-using Runic.Agent.Services;
-using Runic.Agent.Harness;
+using Runic.Agent.Core.Services;
+using Runic.Agent.Core.Harness;
 using System.Reflection;
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Services;
 
-namespace Runic.Agent.Core
+namespace Runic.Agent.Core.Harness
 {
     public class PersonFactory : IPersonFactory
     {

@@ -1,10 +1,10 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Runic.Agent.Core.Models;
-using Runic.Agent.StepController;
-using Runic.Agent.Harness;
+using Runic.Agent.Core.StepController;
+using Runic.Agent.Core.Harness;
 
-namespace Runic.Agent.Services
+namespace Runic.Agent.Core.Services
 {
     public class FunctionStepRunnerService : IStepRunnerService
     {

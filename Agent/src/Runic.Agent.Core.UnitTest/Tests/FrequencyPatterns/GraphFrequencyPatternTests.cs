@@ -2,7 +2,7 @@
 using Moq;
 using Runic.Agent.Core.Patterns;
 using Runic.Agent.Core.Models;
-using Runic.Agent.Services;
+using Runic.Agent.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading;

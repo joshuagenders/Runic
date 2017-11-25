@@ -1,5 +1,5 @@
 ﻿using Runic.Agent.Core.Models;
-using Runic.Agent.Services;
+using Runic.Agent.Core.Services;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Harness
+namespace Runic.Agent.Core.Harness
 {
     public class FunctionHarness
     {

@@ -1,7 +1,7 @@
 ﻿using Runic.Agent.Core.Models;
-using Runic.Agent.Services;
+using Runic.Agent.Core.Services;
 
-namespace Runic.Agent.Core
+namespace Runic.Agent.Core.Harness
 {
     public interface IPersonFactory
     {

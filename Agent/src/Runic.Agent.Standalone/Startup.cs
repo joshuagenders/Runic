@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Runic.Agent.Core;
 using Runic.Agent.Core.Configuration;
+using Runic.Agent.Core.Harness;
 using Runic.Agent.Core.IoC;
-using Runic.Agent.Services;
+using Runic.Agent.Core.Services;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.UnitTest.TestUtility;
-using Runic.Agent.Harness;
+using Runic.Agent.Core.Harness;
 using System.Linq;
 using System.Reflection;
 using System.Threading;

@@ -1,10 +1,10 @@
 ﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Runic.Agent.StepController;
+using Runic.Agent.Core.StepController;
 using Runic.Agent.Core.Models;
 using System.Collections.Generic;
 using System.Linq;
-using Runic.Agent.Harness;
+using Runic.Agent.Core.Harness;
 
 namespace Runic.Agent.Core.UnitTest.Tests.StepController
 {

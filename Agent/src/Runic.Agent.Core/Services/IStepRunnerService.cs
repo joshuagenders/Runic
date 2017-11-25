@@ -1,9 +1,9 @@
-﻿using Runic.Agent.StepController;
+﻿using Runic.Agent.Core.StepController;
 using Runic.Agent.Core.Models;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Services
+namespace Runic.Agent.Core.Services
 {
     internal interface IStepRunnerService
     {

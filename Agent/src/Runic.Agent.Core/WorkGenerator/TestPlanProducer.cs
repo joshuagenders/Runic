@@ -1,6 +1,6 @@
 ﻿using Runic.Agent.Core.Configuration;
 using Runic.Agent.Core.Patterns;
-using Runic.Agent.Services;
+using Runic.Agent.Core.Services;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;

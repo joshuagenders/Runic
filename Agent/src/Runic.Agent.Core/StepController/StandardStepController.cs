@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 
-namespace Runic.Agent.StepController
+namespace Runic.Agent.Core.StepController
 {
     public class StandardStepController
     {

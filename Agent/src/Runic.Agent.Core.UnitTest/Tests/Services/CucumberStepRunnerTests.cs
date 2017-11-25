@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Runic.Agent.Core.Models;
-using Runic.Agent.Services;
+using Runic.Agent.Core.Services;
 using System.Reflection;
 using System.Threading.Tasks;
 

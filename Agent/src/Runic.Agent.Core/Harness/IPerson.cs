@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-namespace Runic.Agent.Services
+namespace Runic.Agent.Core.Harness
 {
     public interface IPerson
     {

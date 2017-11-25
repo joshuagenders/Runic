@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Runic.Agent.Harness
+namespace Runic.Agent.Core.Harness
 {
     public class CucumberHarness
     {

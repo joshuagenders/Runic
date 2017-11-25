@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Runic.Agent.Core.Patterns;
-using Runic.Agent.Services;
+using Runic.Agent.Core.Services;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

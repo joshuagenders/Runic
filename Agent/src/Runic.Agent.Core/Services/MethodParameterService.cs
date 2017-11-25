@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
-namespace Runic.Agent.Services
+namespace Runic.Agent.Core.Services
 {
     internal class MethodParameterService
     {

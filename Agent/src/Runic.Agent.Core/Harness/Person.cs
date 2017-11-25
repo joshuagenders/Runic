@@ -1,12 +1,13 @@
 ﻿using Runic.Agent.Core.Models;
 using System.Threading;
 using System.Threading.Tasks;
-using Runic.Agent.StepController;
-using Runic.Agent.Harness;
+using Runic.Agent.Core.StepController;
+using Runic.Agent.Core.Harness;
+using Runic.Agent.Core.Services;
 using System.Reflection;
 using System.Collections.Generic;
 
-namespace Runic.Agent.Services
+namespace Runic.Agent.Core.Harness
 {
     public class Person : IPerson
     {
