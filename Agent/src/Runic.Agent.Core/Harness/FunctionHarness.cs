@@ -33,7 +33,8 @@ namespace Runic.Agent.Core.Harness
             FunctionResult result = new FunctionResult()
             {
                 MethodName = _step.Function.MethodName,
-                StepName = _step.StepName
+                StepName = _step.StepName,
+                Step = _step
             };
             var timer = new Stopwatch();
             try
