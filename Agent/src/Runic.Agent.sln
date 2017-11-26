@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Cucumber.UnitTest", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.Standalone", "Runic.Agent.Standalone\Runic.Agent.Standalone.csproj", "{47D8326B-F7DD-4626-BD7F-02ACCF5B3ECD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runic.Agent.Standalone.FunctionalTest", "Runic.Agent.Standalone.FunctionalTest\Runic.Agent.Standalone.FunctionalTest.csproj", "{E78D26D5-8CF7-4BEA-A22E-6553AFD87D7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Runic.Agent.FunctionalTest", "Runic.Agent.Standalone.FunctionalTest\Runic.Agent.FunctionalTest.csproj", "{E78D26D5-8CF7-4BEA-A22E-6553AFD87D7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
