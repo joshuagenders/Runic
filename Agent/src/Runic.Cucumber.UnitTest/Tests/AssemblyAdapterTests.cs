@@ -1,28 +1,24 @@
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Runic.Cucumber.UnitTest.TestUtility;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace Runic.Cucumber.UnitTest.Tests
 {
-    [TestClass]
     public class AssemblyAdapterTests : TestBase
     {
         Mock<FakeCucumberClass> _fakeTest { get; set; }
-
-        [TestInitialize]
-        public override void Init()
+        
+        public AssemblyAdapterTests()
         {
-            base.Init();
             _fakeTest = new Mock<FakeCucumberClass>();
             TestEnvironment.SetupMocks(_fakeTest);
         }
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        
+        [Fact]
         public async Task WhenGivenMethodIsExecuted_MethodIsInvoked()
         {
             var method = _fakeTest.Object
@@ -40,22 +36,16 @@ namespace Runic.Cucumber.UnitTest.Tests
 
             _fakeTest.Verify(f => f.GivenMethod(input));
         }
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        
+        [Fact]
         public void WhenInitialised_PopulatesMethodReferences()
         {
             ((AssemblyAdapter)TestEnvironment.AssemblyAdapter.Instance).Methods.Count.Should().Be(6);
         }
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        
+        [Fact]
         public async Task WhenGivenMethodAttributeExecuted_LocatesAndInvokesMethod()
         {
-            var method = _fakeTest.GetType()
-                                 .GetTypeInfo()
-                                 .GetMethod("GivenMethod");
-
             var statement = "Given I have a given \"method\"";
             var cts = new CancellationTokenSource();
             cts.CancelAfter(1000);
@@ -67,55 +57,32 @@ namespace Runic.Cucumber.UnitTest.Tests
             _fakeTest.Verify(f => f.GivenMethod(input));
         }
 
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        [Fact]
         public async Task WhenDuplicateMethodExecuted_ThrowsException()
         {
-            var method = _fakeTest.GetType()
-                                 .GetTypeInfo()
-                                 .GetMethod("GivenMethod");
-
             var statement = "Given I have a duplicate method";
             var cts = new CancellationTokenSource();
             cts.CancelAfter(1000);
 
-            try
-            {
+            await Assert.ThrowsAsync<MultipleMethodsFoundException>(async () => 
                 await TestEnvironment.AssemblyAdapter
                                      .Instance
-                                     .ExecuteMethodFromStatementAsync(statement, new object[] { }, cts.Token);
-                Assert.Fail("No exception thrown");
-            }
-            catch (MultipleMethodsFoundException)
-            {
-            }
+                                     .ExecuteMethodFromStatementAsync(statement, new object[] { }, cts.Token));
         }
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        
+        [Fact]
         public async Task WhenMethodNotFound_ThrowsException()
         {
             var fakeTest = new Mock<FakeCucumberClass>();
             TestEnvironment.SetupMocks(fakeTest);
 
-            var method = fakeTest.GetType()
-                                 .GetTypeInfo()
-                                 .GetMethod("GivenMethod");
-
             var statement = "Given I have a non existent method";
             var cts = new CancellationTokenSource();
             cts.CancelAfter(1000);
-
-            try
-            {
+            await Assert.ThrowsAsync<MethodNotFoundException>(async () =>
                 await TestEnvironment.AssemblyAdapter
                                      .Instance
-                                     .ExecuteMethodFromStatementAsync(statement, new object[] { }, cts.Token);
-                Assert.Fail("No exception thrown");
-            }
-            catch (MethodNotFoundException)
-            {
-            }
+                                     .ExecuteMethodFromStatementAsync(statement, new object[] { }, cts.Token));
         }
     }
 }

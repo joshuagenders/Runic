@@ -1,17 +1,15 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Runic.Cucumber.UnitTest.TestUtility;
 using System.Collections.Generic;
 using Moq;
+using Xunit;
 
 namespace Runic.Cucumber.UnitTest.Tests
 {
-    [TestClass]
     public class CucumberTestTests : TestBase
     {
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        [Fact]
         public async Task WhenCucumberTestIsExecuted_ExecutesAllMethodsWithParameters()
         {
             var fakeTest = new Mock<FakeCucumberClass>();
@@ -23,7 +21,7 @@ namespace Runic.Cucumber.UnitTest.Tests
                       .And("I have a method with no inputs")
                       .When("I have a when \"whenstring\"")
                       .Then("I have a then \"thenstring\"")
-                      .ExecuteAsync();
+                      .ExecuteAsync(cts.Token);
 
             fakeTest.Verify(f => f.GivenMethod("givenstring"));
             fakeTest.Verify(f => f.WhenMethod("whenstring"));
@@ -31,8 +29,7 @@ namespace Runic.Cucumber.UnitTest.Tests
             fakeTest.Verify(f => f.NoInputs());
         }
 
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        [Fact]
         public async Task WhenCucumberTestWithExampleExecuted_InvokesMultipleTimesWithParameters()
         {
             var fakeTest = new Mock<FakeCucumberClass>();
@@ -51,12 +48,12 @@ namespace Runic.Cucumber.UnitTest.Tests
                       .When(@"I have a when ""<when>""")
                       .Then(@"I have a then ""<then>""")
                       .Examples(examples)
-                      .ExecuteAsync();
+                      .ExecuteAsync(cts.Token);
 
             VerifyList(fakeTest, examples);
         }
 
-        public void VerifyList(Mock<FakeCucumberClass> fakeTest, Dictionary<string, List<string>> examples)
+        private void VerifyList(Mock<FakeCucumberClass> fakeTest, Dictionary<string, List<string>> examples)
         {
             foreach (var example in examples)
             {

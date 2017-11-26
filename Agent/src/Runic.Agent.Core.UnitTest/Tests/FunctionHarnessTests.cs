@@ -1,18 +1,19 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Runic.Agent.UnitTest.TestUtility;
+﻿using Runic.Agent.UnitTest.TestUtility;
 using Runic.Agent.Core.Models;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Runic.Agent.Core.Harness;
+using Xunit;
+using FluentAssertions;
 
 namespace Runic.Agent.Core.UnitTest.Tests
 {
-    [TestClass]
     public class FunctionHarnessTests
     {
-        private Harness.FunctionHarness GetFunctionHarness(object instance = null, Step step = null)
+        private FunctionHarness GetFunctionHarness(object instance = null, Step step = null)
         {
             var fakeFunction = instance ?? new FakeFunction();
 
@@ -25,11 +26,10 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 },
                 
             };
-            return new Harness.FunctionHarness(fakeFunction, fakeStep);
+            return new FunctionHarness(fakeFunction, fakeStep);
         }
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        
+        [Fact]
         public async Task WhenAFunctionIsExecuted_MethodsAreInvoked()
         {
             var cts = new CancellationTokenSource();
@@ -41,12 +41,11 @@ namespace Runic.Agent.Core.UnitTest.Tests
             var functionHarness = GetFunctionHarness(fakeFunction, step);
             var result = await functionHarness.ExecuteAsync(cts.Token);
 
-            Assert.IsTrue(result.Success, "Function returned false - error in execution");
+            result.Success.Should().BeTrue("Function returned false - error in execution");
             AssertFunctionCall(fakeFunction, "Login");
         }
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        
+        [Fact]
         public async Task WhenAsyncFunctionIsCalled_HarnessWaitsToCompletion()
         {
             var cts = new CancellationTokenSource();
@@ -57,12 +56,11 @@ namespace Runic.Agent.Core.UnitTest.Tests
             var functionHarness = GetFunctionHarness(fakeFunction, step);
             await functionHarness.ExecuteAsync(cts.Token);
             
-            Assert.IsTrue(fakeFunction.AsyncTask.IsCompleted);
+            fakeFunction.AsyncTask.IsCompleted.Should().BeTrue();
             AssertFunctionCall(fakeFunction, "AsyncWait");
         }
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        
+        [Fact]
         public async Task WhenInputParametersAreBound_InputsArePassedToMethods()
         {
             var cts = new CancellationTokenSource();
@@ -87,11 +85,13 @@ namespace Runic.Agent.Core.UnitTest.Tests
             await functionHarness.ExecuteAsync(cts.Token);
 
             AssertFunctionCall(fakeFunction, "Inputs");
-            Assert.IsTrue(fakeFunction.CallList.Any(c => c.AdditionalData == $"input1={uniqueString},input2={randomInt}"));
+            fakeFunction.CallList
+                        .Any(c => c.AdditionalData == $"input1={uniqueString},input2={randomInt}")
+                        .Should()
+                        .BeTrue();
         }
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        
+        [Fact]
         public async Task WhenInputParametersAreBound_OverrideDefaultOveridesTheInput()
         {
             var cts = new CancellationTokenSource();
@@ -116,11 +116,13 @@ namespace Runic.Agent.Core.UnitTest.Tests
             await functionHarness.ExecuteAsync(cts.Token);
 
             AssertFunctionCall(fakeFunction, "InputsWithDefault");
-            Assert.IsTrue(fakeFunction.CallList.Any(c => c.AdditionalData == $"input1={uniqueString},input2={randomInt},input3={uniqueString2}"));
+            fakeFunction.CallList
+                        .Any(c => c.AdditionalData == $"input1={uniqueString},input2={randomInt},input3={uniqueString2}")
+                        .Should()
+                        .BeTrue();
         }
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        
+        [Fact]
         public async Task WhenInvokingMethodWithDefaults_MethodsAreInvokedWithDefault()
         {
             var cts = new CancellationTokenSource();
@@ -143,13 +145,23 @@ namespace Runic.Agent.Core.UnitTest.Tests
             var functionHarness = GetFunctionHarness(fakeFunction, step);
             await functionHarness.ExecuteAsync(cts.Token);
             AssertFunctionCall(fakeFunction, "InputsWithDefault");
-            Assert.IsTrue(fakeFunction.CallList.Any(c => c.AdditionalData == $"input1={uniqueString},input2={randomInt},input3=default"));
+            fakeFunction.CallList
+                        .Any(c => c.AdditionalData == $"input1={uniqueString},input2={randomInt},input3=default")
+                        .Should()
+                        .BeTrue();
         }
 
         private void AssertFunctionCall(FakeFunction fakeFunction, string MethodName)
         {
-            Assert.AreEqual(1, fakeFunction.CallList.Count);
-            Assert.IsTrue(fakeFunction.CallList.Any(c => c.InvocationTarget == MethodName), $"{MethodName} called");
+            fakeFunction.CallList
+                        .Count
+                        .Should()
+                        .Be(1);
+
+            fakeFunction.CallList
+                        .Any(c => c.InvocationTarget == MethodName)
+                        .Should()
+                        .BeTrue($"{MethodName} called");
         }
     }
 }

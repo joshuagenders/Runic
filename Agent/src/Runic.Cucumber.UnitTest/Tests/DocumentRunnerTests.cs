@@ -1,16 +1,14 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
+﻿using Moq;
 using Runic.Cucumber.UnitTest.TestUtility;
 using System.Threading;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace Runic.Cucumber.UnitTest.Tests
 {
-    [TestClass]
     public class DocumentRunnerTests : TestBase
     {
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        [Fact]
         public async Task WhenAGivenWhenThenDocumentIsExecuted_CallsAssemblyAdapter()
         {
             var fakeTest = new Mock<FakeCucumberClass>();
@@ -45,11 +43,9 @@ namespace Runic.Cucumber.UnitTest.Tests
                     @"I have a then ""whomever""",
                     It.IsAny<object[]>(),
                     It.IsAny<CancellationToken>()));
-
         }
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        
+        [Fact]
         public async Task WhenBadDocumentIsExecuted_ReturnsParserError()
         {
             var assemblyAdapter = new Mock<IAssemblyAdapter>();
@@ -63,7 +59,7 @@ namespace Runic.Cucumber.UnitTest.Tests
                    Thenfdf I have a then ""whomever""";
 
             var result = await documentRunner.ExecuteAsync(statement, cts.Token);
-            Assert.IsTrue(result.Exception.GetType() == typeof(GherkinDocumentParserError));
+            Assert.True(result.Exception.GetType() == typeof(GherkinDocumentParserError));
         }
     }
 }

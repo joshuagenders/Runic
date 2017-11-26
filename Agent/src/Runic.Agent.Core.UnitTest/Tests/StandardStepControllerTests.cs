@@ -1,13 +1,12 @@
 ﻿using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Runic.Agent.Core.Harness;
 using Runic.Agent.Core.Models;
 using System.Collections.Generic;
 using System.Linq;
-using Runic.Agent.Core.Harness;
+using Xunit;
 
-namespace Runic.Agent.Core.UnitTest.Tests.StepController
+namespace Runic.Agent.Core.UnitTest.Tests.Harness
 {
-    [TestClass]
     public class StandardStepControllerTests
     {
         private Journey _journey => new Journey()
@@ -18,9 +17,8 @@ namespace Runic.Agent.Core.UnitTest.Tests.StepController
                     new Step() { StepName = "Step2", Function = new MethodInformation() },
                 }
         };
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        
+        [Fact]
         public void WhenNullResult_ReturnsFirstStep()
         {
             var journey = _journey;
@@ -28,9 +26,8 @@ namespace Runic.Agent.Core.UnitTest.Tests.StepController
             var step = stepController.GetNextStep(null);
             step.Should().Be(journey.Steps.First());
         }
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        
+        [Fact]
         public void WhenStringReturnedAsNextStepFromFunction_ReturnsNextStep()
         {
             var journey = _journey;
@@ -47,9 +44,8 @@ namespace Runic.Agent.Core.UnitTest.Tests.StepController
             var step = stepController.GetNextStep(result);
             step.Should().Be(journey.Steps[2]);
         }
-
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        
+        [Fact]
         public void WhenGettingStepsLoopsAround_ReturnsSteps()
         {
             var journey = _journey;

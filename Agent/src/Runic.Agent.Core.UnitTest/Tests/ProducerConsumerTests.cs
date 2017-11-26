@@ -1,24 +1,21 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
+﻿using Moq;
 using Runic.Agent.Core.Configuration;
-using Runic.Agent.Core.Patterns;
+using Runic.Agent.Core.Harness;
 using Runic.Agent.Core.Models;
+using Runic.Agent.Core.Patterns;
 using Runic.Agent.Core.Services;
 using Runic.Agent.Core.WorkGenerator;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
-using Runic.Agent.Core.Harness;
-using Runic.Agent.Core.AssemblyManagement;
+using Xunit;
 
 namespace Runic.Agent.Core.UnitTest.Tests
 {
-    [TestClass]
     public class ProducerConsumerTests
     {
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        [Fact]
         public void WhenProducerProducesForAMinute_ThenCorrectAmountIsProduced()
         {
             var time = new DateTime(2017, 01, 23, 13, 00, 00);
@@ -56,8 +53,8 @@ namespace Runic.Agent.Core.UnitTest.Tests
             mockConsumer.Verify(c => c.EnqueueTask(work), Times.Exactly((int)work.JourneysPerMinute));
         }
 
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        
+        [Fact]
         public async Task WhenCancelled_ThenProductionStops()
         {
             var work = new Work(
@@ -96,8 +93,8 @@ namespace Runic.Agent.Core.UnitTest.Tests
                 //allg 
             }
         }
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        
+        [Fact]
         public async Task WhenProcessCallBackIsCalled_ThenJourneyIsPerformed()
         {
             var mockPersonFactory = new Mock<IPersonFactory>();
@@ -129,9 +126,9 @@ namespace Runic.Agent.Core.UnitTest.Tests
             mockPerson.Verify(p => p.PerformJourneyAsync(work.Journey, cts.Token));
         }
 
-        [TestCategory("UnitTest")]
-        [TestMethod]
-        public void WhenMultipleItemsAreQueued_ThenConsumerConsumesMultipleItems()
+        
+        [Fact]
+        public async Task WhenMultipleItemsAreQueued_ThenConsumerConsumesMultipleItems()
         {
             var mockPersonFactory = new Mock<IPersonFactory>();
             var workQueue = new ConcurrentQueue<Work>();
@@ -155,10 +152,11 @@ namespace Runic.Agent.Core.UnitTest.Tests
             consumer.EnqueueTask(work);
             consumer.EnqueueTask(work);
             consumer.ProcessQueue(cts.Token);
-            Thread.Sleep(1250);
+            await Task.Delay(1750);
             mockPerson.Verify(p => p.PerformJourneyAsync(work.Journey, cts.Token), Times.Exactly(2));
         }
 
+        [Fact]
         public void ProducerProducesItemsForMultipleTestPlans()
         {
             // TODO

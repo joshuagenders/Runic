@@ -1,18 +1,16 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Runic.Agent.UnitTest.TestUtility;
+﻿using Runic.Agent.UnitTest.TestUtility;
 using Runic.Agent.Core.Harness;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace Runic.Agent.UnitTest.Tests
 {
-    [TestClass]
     public class CucumberHarnessTests
     {
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        [Fact]
         public async Task WhenBasicCucumberTestExecutes_AllMethodsAreInvoked()
         {
             var harness = new CucumberHarness();
@@ -30,11 +28,11 @@ namespace Runic.Agent.UnitTest.Tests
             var maxKey = FakeCucumberClass.FakeCucumberClasses.Keys.OrderBy(a => a).Last();
             if (!FakeCucumberClass.FakeCucumberClasses.TryGetValue(maxKey, out FakeCucumberClass test))
             {
-                Assert.Fail("No cucumber test class found in static FakeCucumberClasses Dictionary");
+                Assert.False(true, "No cucumber test class found in static FakeCucumberClasses Dictionary");
             }
-            Assert.IsTrue(test.CallList.Any(c => c.InvocationTarget == "GivenMethod"), "Given method not called");
-            Assert.IsTrue(test.CallList.Any(c => c.InvocationTarget == "WhenMethod"), "When method not called");
-            Assert.IsTrue(test.CallList.Any(c => c.InvocationTarget == "ThenMethod"), "Then method not called");
+            Assert.True(test.CallList.Any(c => c.InvocationTarget == "GivenMethod"), "Given method not called");
+            Assert.True(test.CallList.Any(c => c.InvocationTarget == "WhenMethod"), "When method not called");
+            Assert.True(test.CallList.Any(c => c.InvocationTarget == "ThenMethod"), "Then method not called");
         }
     }
 }

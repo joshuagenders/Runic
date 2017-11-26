@@ -1,17 +1,14 @@
 ﻿using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using Runic.Agent.Core.Models;
 using Runic.Agent.Core.Harness;
 using System.Reflection;
+using Xunit;
 
-namespace Runic.Agent.Core.UnitTest.Tests.FunctionHarness
+namespace Runic.Agent.Core.UnitTest.Tests
 {
-    [TestClass]
     public class FunctionFactoryTests
     {
-        [TestCategory("UnitTest")]
-        [TestMethod]
+        [Fact]
         public void WhenCreatingFunction_ThenFunctionIsReturned()
         {
             var functionFactory = new FunctionFactory(GetType().GetTypeInfo().Assembly);
@@ -26,11 +23,11 @@ namespace Runic.Agent.Core.UnitTest.Tests.FunctionHarness
                 }
             };
 
-            var function = functionFactory.CreateFunction(step, new Models.TestContext());
+            var function = functionFactory.CreateFunction(step, new TestContext());
             function.Should().NotBeNull();
         }
 
-        public void Login()
+        protected void Login()
         {
             // Method intentionally left empty.
         }
