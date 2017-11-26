@@ -23,16 +23,15 @@ namespace Runic.Agent.Core.UnitTest.Tests
             AssertFrequencyLevel(pattern, startTime, time, value);
         }
 
-        //[Theory]
-        //[InlineData(-1, 0)]
-        //[InlineData(1, 1.0/7*2)]
-        //[InlineData(7.5, 2)]
-        //[InlineData(17, 0)]
+        [Theory]
+        [InlineData(-1, 0)]
+        [InlineData(7.5, 2)]
+        [InlineData(16, 0)]
         public void WhenGradualWithRampUpDownEdgeAndIntervalCollisionExecutes_CorrectThreadLevelsReturned(int time, int value)
         {
             var pattern = new GradualFrequencyPattern()
             {
-                DurationSeconds = 14,
+                DurationSeconds = 15,
                 RampDownSeconds = 7,
                 RampUpSeconds = 7,
                 JourneysPerMinute = 2
@@ -43,19 +42,23 @@ namespace Runic.Agent.Core.UnitTest.Tests
 
 
         [Theory]
-        //[InlineData(1, 0.8)]
-        //[InlineData(2, 2.4)]
-        //[InlineData(4, 3.6)]
-        //[InlineData(5, 4)]
-        //[InlineData(11, 2.4)]
+        [InlineData(1, 1)]
+        [InlineData(2, 2)]
+        [InlineData(3, 3)]
+        [InlineData(4, 4)]
+        [InlineData(10, 4)]
+        [InlineData(12, 3)]
+        [InlineData(13, 2)]
+        [InlineData(14, 1)]
         [InlineData(15, 0)]
+        [InlineData(16, 0)]
         public void WhenAComplexGradualFlowIsExecuted_CorrectThreadLevelsReturned(int time, int value)
         {
             var pattern = new GradualFrequencyPattern()
             {
-                DurationSeconds = 14,
-                RampDownSeconds = 5,
-                RampUpSeconds = 5,
+                DurationSeconds = 15,
+                RampDownSeconds = 4,
+                RampUpSeconds = 4,
                 JourneysPerMinute = 4
             };
             var startTime = new DateTime(2017, 1, 1, 1, 1, 0);

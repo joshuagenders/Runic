@@ -152,7 +152,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             consumer.EnqueueTask(work);
             consumer.EnqueueTask(work);
             consumer.ProcessQueue(cts.Token);
-            await Task.Delay(1750);
+            await Task.Delay(1500);
             mockPerson.Verify(p => p.PerformJourneyAsync(work.Journey, cts.Token), Times.Exactly(2));
         }
 
