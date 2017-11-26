@@ -1,12 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Runic.Agent.Core.WorkGenerator;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Runic.Agent.Standalone
 {
-    static class Program
+    public static class Program
     {
-        static void Main(string[] args)
+       public static async Task Main(string[] args)
         {
             IServiceCollection serviceCollection = new ServiceCollection();
             Startup.ConfigureServices(serviceCollection);
@@ -15,7 +16,7 @@ namespace Runic.Agent.Standalone
             using (var scope = serviceProvider.CreateScope())
             {
                 var runner = serviceProvider.GetRequiredService<IRunner<Work>>();
-                runner.Start(cts.Token).Wait();
+                await runner.Start(cts.Token);
             }
         }
     }
