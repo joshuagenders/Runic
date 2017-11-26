@@ -5,8 +5,8 @@ namespace Runic.Agent.Standalone
 {
     public class Configuration : ICoreConfiguration
     {
-        public int TaskCreationPollingIntervalSeconds => throw new NotImplementedException();
-
-        public string PluginFolderPath { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int TaskCreationPollingIntervalSeconds { get; set; }
+        public string PluginFolderPath { get; set; }
+        public string WorkFolderPath { get; internal set; }
     }
 }

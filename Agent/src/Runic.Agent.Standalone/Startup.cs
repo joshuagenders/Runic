@@ -1,22 +1,37 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Runic.Agent.Core.WorkGenerator;
-using Runic.Agent.Core.Configuration;
 using Runic.Agent.Core.IoC;
-using System.Collections.Generic;
+using Fclp;
+using System;
+using Runic.Agent.Core.Configuration;
 
 namespace Runic.Agent.Standalone
 {
     public static class Startup
     {
-        public static void ConfigureServices(IServiceCollection services)
+        public static void ConfigureServices(IServiceCollection services, params string[] args)
         {
             CoreServiceCollection.ConfigureServices(services);
+            var configBuilder = GetConfigurationBuilder();
+            var configResult = configBuilder.Parse(args);
+            if (configResult.HasErrors)
+            {
+                throw new ArgumentException(configResult.ErrorText);
+            }
+            var config = configBuilder.Object;
+            services.AddSingleton<ICoreConfiguration>(config);
+            services.AddSingleton(config);
         }
 
-        public static Dictionary<string,Work> GetTestPlans()
+        public static FluentCommandLineParser<Configuration> GetConfigurationBuilder()
         {
-            //todo read from config
-            return new Dictionary<string, Work>();
+            var p = new FluentCommandLineParser<Configuration>();
+            p.Setup(arg => arg.PluginFolderPath)
+             .As('p', "pluginpath") 
+             .Required();
+            p.Setup(arg => arg.TaskCreationPollingIntervalSeconds)
+             .As('i', "workpollingintervalseconds")
+             .SetDefault(3);
+            return p;
         }
     }
 }
