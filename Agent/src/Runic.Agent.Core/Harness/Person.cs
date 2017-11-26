@@ -2,6 +2,7 @@
 using Runic.Agent.Core.Models;
 using Runic.Agent.Core.Services;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +13,6 @@ namespace Runic.Agent.Core.Harness
         private readonly IFunctionFactory _functionFactory;
         private readonly IDatetimeService _datetimeService;
         private readonly IAssemblyManager _assemblyManager;
-        private Dictionary<string, string> _attributes { get; set; }
 
         public Person(IFunctionFactory functionFactory, IDatetimeService datetimeService, IAssemblyManager assemblyManager)
         {
@@ -21,15 +21,21 @@ namespace Runic.Agent.Core.Harness
             _assemblyManager = assemblyManager;
         }
 
-        public void SetAttributes(Dictionary<string, string> attributes)
+        private async Task<CucumberResult> ExecuteCucumber(Assembly assembly, Step step, CancellationToken ctx)
         {
-            _attributes = attributes;
+            return await new CucumberHarness().ExecuteTestAsync(assembly, step.Cucumber.Document, ctx);
+        }
+
+        private async Task<FunctionResult> ExecuteFunction(Step step, CancellationToken ctx)
+        {
+            var testContext = new TestContext();
+            var function = _functionFactory.CreateFunction(step, testContext);
+            return await function.ExecuteAsync(ctx);
         }
 
         public async Task PerformJourneyAsync(Journey journey, CancellationToken ctx = default(CancellationToken))
         {
             Result result = null;
-            IStepRunnerService service;
             var stepController = new StandardStepController(journey);
 
             while (!ctx.IsCancellationRequested)
@@ -39,16 +45,12 @@ namespace Runic.Agent.Core.Harness
                 {
                     _assemblyManager.LoadAssembly(step.Cucumber.AssemblyName);
                     var assembly = _assemblyManager.GetAssembly(step.Cucumber.AssemblyName);
-                    service = new CucumberStepRunnerService(assembly);
-                    var executionResult = await service.ExecuteStepAsync(step, ctx);
-                    result = executionResult;
+                    result = await ExecuteCucumber(assembly, step, ctx);
                 }
                 else
                 {
                     _assemblyManager.LoadAssembly(step.Function.AssemblyName);
-                    service = new FunctionStepRunnerService(_functionFactory, _datetimeService);
-                    var executionResult = await service.ExecuteStepAsync(step, ctx);
-                    result = executionResult;
+                    result = await ExecuteFunction(step, ctx); ;
                 }
 
                 if (ctx.IsCancellationRequested)
