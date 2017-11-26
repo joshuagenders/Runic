@@ -24,14 +24,14 @@ namespace Runic.Agent.Core.UnitTest.Tests
         [TestMethod]
         public void WhenLoadingMissingPlugin_ThrowsException()
         {
-            Assert.ThrowsException<AssemblyNotFoundException>(() => _pluginManager.LoadAssembly("SomeAssembly"));
+            Assert.ThrowsException<AssemblyLoadException>(() => _pluginManager.LoadAssembly("SomeAssembly"));
         }
 
         [TestCategory("UnitTest")]
         [TestMethod]
         public void WhenGettingUnloadedPlugin_ThrowsException()
         {
-            Assert.ThrowsException<AssemblyNotFoundException>(() => _pluginManager.GetAssembly("someplugin"));
+            Assert.ThrowsException<AssemblyLoadException>(() => _pluginManager.GetAssembly("someplugin"));
         }
 
         [TestCategory("UnitTest")]

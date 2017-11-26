@@ -36,7 +36,7 @@ namespace Runic.Agent.Core.AssemblyManagement
                 var pluginPath = Path.Combine(_config.PluginFolderPath, pluginAssemblyName);
                 if (!File.Exists(pluginPath))
                 {
-                    throw new AssemblyNotFoundException($"Could not find file {pluginPath}");
+                    throw new AssemblyLoadException($"Could not find file {pluginPath}");
                 }
 
                 //load
@@ -95,7 +95,7 @@ namespace Runic.Agent.Core.AssemblyManagement
             {
                 return GetAssemblies().Single(a => a.FullName == pluginAssemblyName);
             }
-            throw new AssemblyNotFoundException($"Unable to locate assembly by key {pluginAssemblyName}");
+            throw new AssemblyLoadException($"Unable to locate assembly by key {pluginAssemblyName}");
         }
     }
 }
