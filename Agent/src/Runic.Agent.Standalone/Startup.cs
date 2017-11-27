@@ -16,6 +16,7 @@ namespace Runic.Agent.Standalone
             services.AddSingleton<ICoreConfiguration>(config);
             services.AddSingleton(config);
             services.AddSingleton<IWorkLoader>(new WorkLoader());
+            services.AddTransient<IApplication>();
             return services;
         }
 

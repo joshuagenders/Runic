@@ -2,34 +2,33 @@
 using Newtonsoft.Json;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Runic.Agent.Standalone
 {
     public static class Program
     {
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
-            var serviceCollection = Startup.ConfigureServices(new ServiceCollection());
-            
-            var cts = new CancellationTokenSource();
-            using (var scope = serviceCollection.BuildServiceProvider().CreateScope())
+            try
             {
-                var application = scope.ServiceProvider.GetService<IApplication>();
-                try
+                var serviceCollection = Startup.ConfigureServices(new ServiceCollection());
+            
+                var cts = new CancellationTokenSource();
+                using (var scope = serviceCollection.BuildServiceProvider().CreateScope())
                 {
-                    await application.Run(cts.Token);
+                    var application = scope.ServiceProvider.GetService<IApplication>();
+                    application.Run(cts.Token).GetAwaiter().GetResult();
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("An error has occured.");
-                    Console.WriteLine(JsonConvert.SerializeObject(ex));
-                }
-                finally
-                {
-                    Console.WriteLine("Press the 'any' key to exit.");
-                    Console.ReadLine();
-                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error has occured.");
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                Console.WriteLine("Press the 'any' key to exit.");
+                Console.ReadLine();
             }
         }
     }
