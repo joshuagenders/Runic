@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,7 +16,20 @@ namespace Runic.Agent.Standalone
             using (var scope = serviceCollection.BuildServiceProvider().CreateScope())
             {
                 var application = scope.ServiceProvider.GetService<IApplication>();
-                await application.Run(cts.Token);
+                try
+                {
+                    await application.Run(cts.Token);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error has occured.");
+                    Console.WriteLine(JsonConvert.SerializeObject(ex));
+                }
+                finally
+                {
+                    Console.WriteLine("Press the 'any' key to exit.");
+                    Console.ReadLine();
+                }
             }
         }
     }

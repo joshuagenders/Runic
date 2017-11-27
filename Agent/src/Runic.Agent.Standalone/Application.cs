@@ -28,8 +28,8 @@ namespace Runic.Agent.Standalone
         public async Task Run(CancellationToken ctx)
         {
             _workLoader.GetWork(_config)
-                      .ToList()
-                      .ForEach(i => _workProducer.AddUpdateWorkItem(i.Journey.Name, i));
+                       .ToList()
+                       .ForEach(i => _workProducer.AddUpdateWorkItem(i.Journey.Name, i));
             await _runner.Start(ctx);
         }
     }
