@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using System;
 using System.Threading;
 
@@ -24,6 +23,8 @@ namespace Runic.Agent.Standalone
             {
                 Console.WriteLine("An error has occured.");
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Source);
+                Console.WriteLine(ex.StackTrace);  
             }
             finally
             {
