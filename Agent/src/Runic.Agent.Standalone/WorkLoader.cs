@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace Runic.Agent.Standalone
 {
-    public static class WorkLoader
+    public class WorkLoader : IWorkLoader
     {
-        public static IEnumerable<Work> GetWork (Configuration configuration)
+        public IEnumerable<Work> GetWork (Configuration configuration)
         {
             var files = Directory.GetFiles(configuration.WorkFolderPath)
                                  .Where(f => f.EndsWith(".work.json"));

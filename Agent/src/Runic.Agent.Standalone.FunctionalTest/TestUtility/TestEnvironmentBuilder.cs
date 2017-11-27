@@ -6,5 +6,9 @@ namespace Runic.Agent.FunctionalTest.TestUtility
 {
     public class TestEnvironmentBuilder
     {
+        public void Build()
+        {
+            
+        }
     }
 }

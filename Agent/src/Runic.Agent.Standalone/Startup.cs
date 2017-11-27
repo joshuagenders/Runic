@@ -8,18 +8,26 @@ namespace Runic.Agent.Standalone
 {
     public static class Startup
     {
-        public static void ConfigureServices(IServiceCollection services, params string[] args)
+        public static IServiceCollection ConfigureServices(IServiceCollection services, params string[] args)
         {
+            var config = GetConfig(args);
+
             CoreServiceCollection.ConfigureServices(services);
+            services.AddSingleton<ICoreConfiguration>(config);
+            services.AddSingleton(config);
+            services.AddSingleton<IWorkLoader>(new WorkLoader());
+            return services;
+        }
+
+        public static Configuration GetConfig(string[] args)
+        {
             var configBuilder = GetConfigurationBuilder();
             var configResult = configBuilder.Parse(args);
             if (configResult.HasErrors)
             {
                 throw new ArgumentException(configResult.ErrorText);
             }
-            var config = configBuilder.Object;
-            services.AddSingleton<ICoreConfiguration>(config);
-            services.AddSingleton(config);
+            return configBuilder.Object;
         }
 
         public static FluentCommandLineParser<Configuration> GetConfigurationBuilder()

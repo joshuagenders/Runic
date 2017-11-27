@@ -30,21 +30,18 @@ namespace Runic.Agent.Core.UnitTest.Tests
         {
             Assert.Throws<AssemblyLoadException>(() => _assemblyManager.GetAssembly("someassembly"));
         }
-
         
         [Fact]
         public void WhenGettingAssembliesWithoutLoad_ReturnsEmptyList()
         {
             _assemblyManager.GetAssemblies().Any().Should().BeFalse();
         }
-
         
         [Fact]
         public void WhenGettingAssemblyKeysWithoutLoad_ReturnsEmptyList()
         {
             _assemblyManager.GetAssemblyKeys().Any().Should().BeFalse();
         }
-
         
         [Fact]
         public void WhenGettingMethodsWithoutLoad_ReturnsEmptyList()
