@@ -3,6 +3,7 @@ using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Harness;
 using Runic.Agent.Core.Models;
 using Runic.Agent.Core.Services;
+using Runic.Agent.UnitTest.TestUtility;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,12 +19,13 @@ namespace Runic.Agent.Core.UnitTest.Tests
             var ff = new Mock<IFunctionFactory>();
             var dts = new Mock<IDatetimeService>();
             var am = new Mock<IAssemblyManager>();
-            var fakeFunction = new FunctionHarness(this, new Step()
+            var testClass = new FakeFunction();
+            var fakeFunction = new FunctionHarness(testClass, new Step()
             {
                 StepName = "Step1",
                 Function = new MethodInformation()
                 {
-                    MethodName = "DoSomething",
+                    MethodName = "NoInputs",
                     PositionalMethodParameterValues = new List<string>()
                 }
             });
@@ -51,11 +53,6 @@ namespace Runic.Agent.Core.UnitTest.Tests
             await person.PerformJourneyAsync(journey, cts.Token);
             am.Verify(a => a.LoadAssembly("someassembly"), Times.AtLeastOnce);
             ff.Verify(f => f.CreateFunction(It.IsAny<Step>(), It.IsAny<TestContext>()), Times.AtLeastOnce);
-        }
-
-        public void DoSomething()
-        {
-            //ok
-        }
+        }   
     }
 }

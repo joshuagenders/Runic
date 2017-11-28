@@ -9,7 +9,7 @@ namespace Runic.Agent.Core.Patterns
         public int RampDownSeconds { get; set; }
         public int DurationSeconds { get; set; }
         public string PatternType => "gradual";
-        public double MaxJourneysPerMinute => JourneysPerMinute;
+        public double MaxJourneysPerMinute { get { return JourneysPerMinute; } set { JourneysPerMinute = value; } }
                 
         public double GetCurrentFrequencyPerMinute(DateTime startTime, DateTime now)
         {

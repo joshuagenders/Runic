@@ -90,7 +90,19 @@ namespace Runic.Agent.UnitTest.TestUtility
                 AdditionalData = $"input1={input1},input2={input2}"
             });
         }
-        
+
+        public void NoInputs()
+        {
+        }
+
+        public void SingleStringInput(string input)
+        {
+        }
+
+        public void DefaultStringInput(string input = "default")
+        {
+        }
+
         public void InputsWithDefault(string input1, int input2, string defaultVal = "default")
         {
             CallList.Add(new InvocationInformation()

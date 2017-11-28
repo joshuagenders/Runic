@@ -40,6 +40,9 @@ namespace Runic.Agent.Standalone
             p.Setup(arg => arg.TaskCreationPollingIntervalSeconds)
              .As('i', "workpollingintervalseconds")
              .SetDefault(3);
+            p.Setup(arg => arg.WorkFolderPath)
+             .As('w', "workpath")
+             .Required();
             return p;
         }
     }
