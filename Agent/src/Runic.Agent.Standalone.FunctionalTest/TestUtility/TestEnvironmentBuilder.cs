@@ -15,16 +15,13 @@ namespace Runic.Agent.FunctionalTest.TestUtility
             testEnvironment = testEnvironment ?? new TestEnvironment();
 
             args = args ?? new [] { "--pluginpath", "\\/plugins", "--workpath", "\\/work", "--workpollingintervalseconds", "3" };
-            var config = Startup.GetConfig(args);
-
             var services = new ServiceCollection();
-            CoreServiceCollection.ConfigureServices(services);
-            services.AddSingleton<ICoreConfiguration>(config);
-            services.AddSingleton(config);
-            services.AddSingleton(testEnvironment.WorkLoader ?? new WorkLoader());
-            services.AddSingleton<IApplication, Application>();
-            services.AddSingleton<IProducerConsumerCollection<Work>>(new ConcurrentQueue<Work>());
+            Startup.ConfigureServices(services, args);
 
+            if (testEnvironment?.WorkLoader!= null)
+            {
+                services.AddSingleton(testEnvironment.WorkLoader);
+            }
             if (testEnvironment?.AssemblyManager != null)
             {
                 services.AddSingleton(testEnvironment.AssemblyManager);

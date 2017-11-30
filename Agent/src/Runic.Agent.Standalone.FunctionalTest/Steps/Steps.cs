@@ -57,15 +57,18 @@ namespace Runic.Agent.FunctionalTest.Steps
 
         public Steps GivenTheFrequencyIsJourneysPerMinute(int journeysPerMinute)
         {
-            if (_work.Frequency is ConstantFrequencyPattern)
+            var gradual = _work.Frequency as GradualFrequencyPattern;
+            if (gradual != null)
             {
-                var constant = (ConstantFrequencyPattern)_work.Frequency;
-                constant.JourneysPerMinute = journeysPerMinute;
-            }
-            if (_work.Frequency is GradualFrequencyPattern)
-            {
-                var gradual = (GradualFrequencyPattern)_work.Frequency;
                 gradual.JourneysPerMinute = journeysPerMinute;
+                return this;
+            }
+
+            var constant =_work.Frequency as ConstantFrequencyPattern;
+            if (constant != null)
+            {
+                constant.JourneysPerMinute = journeysPerMinute;
+                return this;
             }
 
             return this;
@@ -74,9 +77,12 @@ namespace Runic.Agent.FunctionalTest.Steps
         public Steps WhenIEmbarkOnTheJourney()
         {
             var cts = new CancellationTokenSource();
-            cts.CancelAfter(3000);
+            cts.CancelAfter(20000);
             _sut.WorkProducer.AddUpdateWorkItem(Guid.NewGuid().ToString("N"), _work);
-            _sut.Runner.Start(cts.Token).GetAwaiter().GetResult();
+            var task = _sut.Runner.Start(cts.Token);
+            task.GetAwaiter().GetResult();
+            if (task.Exception != null)
+                throw task.Exception;
             return this;
         }
 

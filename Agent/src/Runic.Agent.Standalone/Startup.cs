@@ -12,41 +12,14 @@ namespace Runic.Agent.Standalone
     {
         public static IServiceCollection ConfigureServices(IServiceCollection services, params string[] args)
         {
-            var config = GetConfig(args);
-
             CoreServiceCollection.ConfigureServices(services);
-            services.AddSingleton<IProducerConsumerCollection<Work>>(new ConcurrentQueue<Work>());
-            services.AddSingleton<ICoreConfiguration>(config);
-            services.AddSingleton(config);
-            services.AddSingleton<IWorkLoader>(new WorkLoader());
-            services.AddTransient<IApplication>();
+            services.AddSingleton<IConfigBuilder>((_) => new ConfigBuilder(args));
+            services.AddSingleton<ICoreConfiguration>((_) => _.GetService<IConfigBuilder>().Config);
+            services.AddSingleton((_) => _.GetService<IConfigBuilder>().Config);
+            services.AddSingleton<IProducerConsumerCollection<Work>, ConcurrentQueue<Work>>();
+            services.AddSingleton<IWorkLoader, WorkLoader>();
+            services.AddTransient<IApplication, Application>();
             return services;
-        }
-
-        public static Configuration GetConfig(string[] args)
-        {
-            var configBuilder = GetConfigurationBuilder();
-            var configResult = configBuilder.Parse(args);
-            if (configResult.HasErrors)
-            {
-                throw new ArgumentException(configResult.ErrorText);
-            }
-            return configBuilder.Object;
-        }
-
-        public static FluentCommandLineParser<Configuration> GetConfigurationBuilder()
-        {
-            var p = new FluentCommandLineParser<Configuration>();
-            p.Setup(arg => arg.PluginFolderPath)
-             .As('p', "pluginpath") 
-             .Required();
-            p.Setup(arg => arg.TaskCreationPollingIntervalSeconds)
-             .As('i', "workpollingintervalseconds")
-             .SetDefault(3);
-            p.Setup(arg => arg.WorkFolderPath)
-             .As('w', "workpath")
-             .Required();
-            return p;
         }
     }
 }
