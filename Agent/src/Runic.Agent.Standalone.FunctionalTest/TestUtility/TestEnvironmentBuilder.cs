@@ -4,6 +4,7 @@ using Runic.Agent.Core.Configuration;
 using Runic.Agent.Core.IoC;
 using Runic.Agent.Core.WorkGenerator;
 using Runic.Agent.Standalone;
+using System.Collections.Concurrent;
 
 namespace Runic.Agent.FunctionalTest.TestUtility
 {
@@ -13,7 +14,7 @@ namespace Runic.Agent.FunctionalTest.TestUtility
         {
             testEnvironment = testEnvironment ?? new TestEnvironment();
 
-            args = args ?? new [] { "-p", "/plugins", "-w", "/work", "-i", "3" };
+            args = args ?? new [] { "--pluginpath", "\\/plugins", "--workpath", "\\/work", "--workpollingintervalseconds", "3" };
             var config = Startup.GetConfig(args);
 
             var services = new ServiceCollection();
@@ -21,7 +22,8 @@ namespace Runic.Agent.FunctionalTest.TestUtility
             services.AddSingleton<ICoreConfiguration>(config);
             services.AddSingleton(config);
             services.AddSingleton(testEnvironment.WorkLoader ?? new WorkLoader());
-            services.AddSingleton<IApplication>();
+            services.AddSingleton<IApplication, Application>();
+            services.AddSingleton<IProducerConsumerCollection<Work>>(new ConcurrentQueue<Work>());
 
             if (testEnvironment?.AssemblyManager != null)
             {
@@ -37,13 +39,13 @@ namespace Runic.Agent.FunctionalTest.TestUtility
             }
 
             var provider = services.BuildServiceProvider();
+            
             testEnvironment.AssemblyManager = provider.GetService<IAssemblyManager>();
             testEnvironment.WorkConsumer = provider.GetService<IConsumer<Work>>();
             testEnvironment.WorkProducer = provider.GetService<IProducer<Work>>();
             testEnvironment.WorkLoader = provider.GetService<IWorkLoader>();
             testEnvironment.Runner = provider.GetService<IRunner<Work>>();
             testEnvironment.Application = provider.GetService<IApplication>();
-
             return testEnvironment;
         }
     }

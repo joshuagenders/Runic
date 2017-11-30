@@ -15,7 +15,7 @@ namespace Runic.Agent.FunctionalTest.Features
                      .GivenIHaveAFrequencyPattern("constant")
                      .GivenTheFrequencyIsJourneysPerMinute(journeysPerMinute)
                      .GivenTheJourneyLastsForSeconds(journeyLength)
-                     .WhenIEmbarkOnTheJourney()
+                     .WhenIEmbarkOnTheJourney()  //and accelerate time 
                      .ThenTheGooglePageIsReturnedAtleastTimes(numberOfTimes);
         }
     }

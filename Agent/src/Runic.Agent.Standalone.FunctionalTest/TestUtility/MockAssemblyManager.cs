@@ -28,7 +28,7 @@ namespace Runic.Agent.FunctionalTest.TestUtility
         }
         private MethodInformation SelectMethodInformation(MethodInfo methodInfo) => new MethodInformation()
         {
-            AssemblyName = methodInfo.DeclaringType.DeclaringType.GetTypeInfo().Assembly.FullName,
+            AssemblyName = methodInfo.DeclaringType.GetTypeInfo().Assembly.FullName,
             AssemblyQualifiedClassName = methodInfo.DeclaringType.FullName,
             MethodName = methodInfo.Name
         };

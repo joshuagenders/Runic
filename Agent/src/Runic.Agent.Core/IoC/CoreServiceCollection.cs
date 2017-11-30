@@ -19,7 +19,7 @@ namespace Runic.Agent.Core.IoC
             serviceCollection.AddSingleton<IConsumer<Work>, WorkConsumer>();
             serviceCollection.AddSingleton<IProducer<Work>, WorkProducer>();
 
-            serviceCollection.AddScoped<IRunner<Work>>();
+            serviceCollection.AddScoped<IRunner<Work>, Runner<Work>>();
         }
     }
 }

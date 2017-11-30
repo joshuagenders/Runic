@@ -13,7 +13,7 @@ namespace Runic.Agent.Core.WorkGenerator
         private readonly IProducer<T> _producer;
         private readonly IConsumer<T> _consumer;
         private readonly TaskFactory _taskFactory;
-
+        
         public Runner(IProducer<T> producer, IConsumer<T> consumer, ICoreConfiguration config)
         {
             _taskFactory = new TaskFactory();

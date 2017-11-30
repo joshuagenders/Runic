@@ -26,7 +26,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
             parms.Single().Should().BeNull();
         }
         [Fact]
-        public void WhenSingleStringWithDefaulInput_ThenDefaultReturned()
+        public void WhenSingleStringWithDefaultInput_ThenDefaultReturned()
         {
             var mps = new MethodParameterService();
             var parms = mps.GetParams(new string[] { }, typeof(FakeFunction).GetTypeInfo().GetMethod("DefaultStringInput", new Type[] { typeof(string) }));

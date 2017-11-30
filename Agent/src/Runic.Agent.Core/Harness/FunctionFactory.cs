@@ -2,24 +2,25 @@
 using System.Linq;
 using System.Reflection;
 using System;
-using Runic.Agent.Core.Services;
+using Runic.Agent.Core.AssemblyManagement;
 
 namespace Runic.Agent.Core.Harness
 {
     public class FunctionFactory : IFunctionFactory
     {
-        private readonly Assembly _assembly;
+        private readonly IAssemblyManager _assemblyManager;
 
-        public FunctionFactory(Assembly assembly)
+        public FunctionFactory(IAssemblyManager assemblyManager)
         {
-            _assembly = assembly;
+            _assemblyManager = assemblyManager;
         }
 
         //todo think about state lifecycle for functions and assemblies
         public FunctionHarness CreateFunction(Step step, TestContext testContext)
         {
             object instance = null;
-            var type = _assembly.GetType(step.Function.AssemblyQualifiedClassName);
+            var assembly = _assemblyManager.GetAssembly(step.Function.AssemblyName);
+            var type = assembly.GetType(step.Function.AssemblyQualifiedClassName);
             if (type == null)
             {
                 return null;

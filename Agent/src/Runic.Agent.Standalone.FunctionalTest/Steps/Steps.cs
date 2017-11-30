@@ -57,23 +57,24 @@ namespace Runic.Agent.FunctionalTest.Steps
 
         public Steps GivenTheFrequencyIsJourneysPerMinute(int journeysPerMinute)
         {
-            var constant = (ConstantFrequencyPattern)_work.Frequency;
-            if (constant != null)
+            if (_work.Frequency is ConstantFrequencyPattern)
             {
+                var constant = (ConstantFrequencyPattern)_work.Frequency;
                 constant.JourneysPerMinute = journeysPerMinute;
             }
-            var gradual = (GradualFrequencyPattern)_work.Frequency;
-            if (gradual != null)
+            if (_work.Frequency is GradualFrequencyPattern)
             {
+                var gradual = (GradualFrequencyPattern)_work.Frequency;
                 gradual.JourneysPerMinute = journeysPerMinute;
             }
-            
+
             return this;
         }
 
         public Steps WhenIEmbarkOnTheJourney()
         {
             var cts = new CancellationTokenSource();
+            cts.CancelAfter(3000);
             _sut.WorkProducer.AddUpdateWorkItem(Guid.NewGuid().ToString("N"), _work);
             _sut.Runner.Start(cts.Token).GetAwaiter().GetResult();
             return this;

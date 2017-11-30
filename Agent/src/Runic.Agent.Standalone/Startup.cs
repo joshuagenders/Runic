@@ -3,6 +3,8 @@ using Runic.Agent.Core.IoC;
 using Fclp;
 using System;
 using Runic.Agent.Core.Configuration;
+using Runic.Agent.Core.WorkGenerator;
+using System.Collections.Concurrent;
 
 namespace Runic.Agent.Standalone
 {
@@ -13,6 +15,7 @@ namespace Runic.Agent.Standalone
             var config = GetConfig(args);
 
             CoreServiceCollection.ConfigureServices(services);
+            services.AddSingleton<IProducerConsumerCollection<Work>>(new ConcurrentQueue<Work>());
             services.AddSingleton<ICoreConfiguration>(config);
             services.AddSingleton(config);
             services.AddSingleton<IWorkLoader>(new WorkLoader());
