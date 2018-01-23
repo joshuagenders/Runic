@@ -35,11 +35,8 @@ namespace Runic.Agent.Standalone
             p.Setup(arg => arg.PluginFolderPath)
              .As('p', "pluginpath")
              .Required();
-            p.Setup(arg => arg.TaskCreationPollingIntervalSeconds)
-             .As('i', "workpollingintervalseconds")
-             .SetDefault(3);
-            p.Setup(arg => arg.WorkFolderPath)
-             .As('w', "workpath")
+            p.Setup(arg => arg.TestPlanPath)
+             .As('t', "testplanpath")
              .Required();
             return p;
         }

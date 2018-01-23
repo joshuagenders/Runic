@@ -5,46 +5,36 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Runic.Agent.Core.Harness
 {
     public class FunctionHarness
     {
-        private readonly MethodParameterService _methodParameterService;
-
-        private readonly object _instance;
-        private readonly Step _step;
-        private string _nextStep { get; set; }
-        private readonly SemaphoreSlim _semaphore;
-
-        public FunctionHarness(object functionInstance, Step step)
+        public FunctionResult ExecuteTest(Assembly assembly, Step step)
         {
-            _instance = functionInstance;
-            _step = step;
-            _methodParameterService = new MethodParameterService();
-            _semaphore = new SemaphoreSlim(1);
-        }
-
-        public async Task<FunctionResult> ExecuteAsync(CancellationToken ctx = default(CancellationToken))
-        {
-            await _semaphore.WaitAsync();
             FunctionResult result = new FunctionResult()
             {
-                MethodName = _step.Function.MethodName,
-                StepName = _step.StepName,
-                Step = _step
+                MethodName = step.Function.MethodName,
+                StepName = step.StepName,
+                Step = step
             };
             var timer = new Stopwatch();
             try
             {
+                var type = assembly.GetType(step.Function.AssemblyQualifiedClassName);
+                if (type == null)
+                {
+                    throw new ArgumentException($"Class not found for step {step.StepName}");
+                }
+                var instance = Activator.CreateInstance(type);
+
                 timer.Start();
-                await ExecuteFunctionAsync(_step.Function.MethodName, ctx);
+                ExecuteFunction(instance, step);
                 timer.Stop();
+
                 result.Success = true;
                 result.ExecutionTimeMilliseconds = timer.ElapsedMilliseconds;
-                result.NextStep = _nextStep;
             }
             catch (Exception ex)
             {
@@ -53,30 +43,33 @@ namespace Runic.Agent.Core.Harness
                 result.Success = false;
                 result.ExecutionTimeMilliseconds = timer.ElapsedMilliseconds;
             }
-            _semaphore.Release();
             return result;
         }
 
-        private async Task ExecuteFunctionAsync(string methodName, CancellationToken ctx = default(CancellationToken))
+        private void ExecuteFunction(object instance, Step step)
         {
             var functionMethod = 
-                _instance.GetType()
+                instance.GetType()
                          .GetRuntimeMethods()
-                         .Where(m => m.Name == methodName);
+                         .Where(m => m.Name == step.Function.MethodName);
 
             if (!functionMethod.Any())
-                throw new ArgumentException($"Method {methodName} not found on type {_instance.GetType().Name}.");
+                throw new ArgumentException($"Method {step.Function.MethodName} not found on type {instance.GetType().Name}.");
 
-            if (_step.Function.GetNextStepFromMethodResult)
+            var parameters = new MethodParameterService()
+                                    .GetParams(
+                                        step.Function.PositionalMethodParameterValues?.ToArray(), 
+                                        functionMethod.First());
+            if (IsAsyncMethod(functionMethod.First()))
             {
-                var parameters = _methodParameterService.GetParams(_step.Function.PositionalMethodParameterValues?.ToArray(), functionMethod.First());
-                var result = await ExecuteMethodWithReturnAsync(functionMethod.First(), ctx, parameters);
-                _nextStep = result;
+                ((Task)functionMethod.First().Invoke(instance, parameters))
+                    .ConfigureAwait(false)
+                    .GetAwaiter()
+                    .GetResult();
             }
             else
             {
-                var parameters = _methodParameterService.GetParams(_step.Function.PositionalMethodParameterValues?.ToArray(), functionMethod.First());
-                await ExecuteMethodAsync(functionMethod.First(), parameters);
+                functionMethod.First().Invoke(instance, parameters);
             }
         }
 
@@ -86,31 +79,6 @@ namespace Runic.Agent.Core.Harness
                         method.ReturnTypeCustomAttributes
                               .GetCustomAttributes(false)
                               .Any(c => c is AsyncStateMachineAttribute);
-        }
-
-        private async Task<string> ExecuteMethodWithReturnAsync(MethodInfo method, params object[] inputParams)
-        {
-            if (IsAsyncMethod(method))
-            {
-                return await (Task<string>)method.Invoke(_instance, inputParams);
-            }
-            else
-            {
-                string result = (string)method.Invoke(_instance, inputParams);
-                return result;
-            }
-        }
-
-        private async Task ExecuteMethodAsync(MethodInfo method, params object[] inputParams)
-        {
-            if (IsAsyncMethod(method))
-            {
-                await (Task)method.Invoke(_instance, inputParams);
-            }
-            else
-            {
-                method.Invoke(_instance, inputParams);
-            }
         }
     }
 }

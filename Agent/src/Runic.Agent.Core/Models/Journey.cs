@@ -4,9 +4,21 @@ namespace Runic.Agent.Core.Models
 {
     public class Journey
     {
-        public string Name { get; set; }
-        public int StepDelayMilliseconds { get; set; }
-        public List<Step> Steps { get; set; }
-        public string AssemblyName { get; set; }
+        public Journey(
+            string name, 
+            int stepDelayMilliseconds, 
+            IReadOnlyList<Step> steps, 
+            string assemblyName)
+        {
+            Name = name;
+            StepDelayMilliseconds = stepDelayMilliseconds;
+            Steps = steps;
+            AssemblyName = assemblyName;
+        }
+
+        public string Name { get; }
+        public int StepDelayMilliseconds { get; }
+        public IReadOnlyList<Step> Steps { get; }
+        public string AssemblyName { get; }
     }
 }

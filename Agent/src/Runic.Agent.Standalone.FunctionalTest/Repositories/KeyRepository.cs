@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Runic.Agent.FunctionalTest.Repositories
 {
-    public class KeyRepository<T>
+    public abstract class KeyRepository<T>
     {
         protected Dictionary<string, T> _values { get; set; } = new Dictionary<string, T>();
         public T Get(string key)

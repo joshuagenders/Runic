@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Runic.Cucumber.UnitTest.TestUtility;
+﻿using Runic.Cucumber.UnitTest.TestUtility;
 using System.Collections.Generic;
 using Moq;
 using Xunit;
@@ -10,18 +8,17 @@ namespace Runic.Cucumber.UnitTest.Tests
     public class CucumberTestTests : TestBase
     {
         [Fact]
-        public async Task WhenCucumberTestIsExecuted_ExecutesAllMethodsWithParameters()
+        public void WhenCucumberTestIsExecuted_ExecutesAllMethodsWithParameters()
         {
             var fakeTest = new Mock<FakeCucumberClass>();
             TestEnvironment.SetupMocks(fakeTest);
             var test = new CucumberTest(TestEnvironment.AssemblyAdapter.Instance);
 
-            var cts = new CancellationTokenSource();
-            await test.Given("I have a given \"givenstring\"")
-                      .And("I have a method with no inputs")
-                      .When("I have a when \"whenstring\"")
-                      .Then("I have a then \"thenstring\"")
-                      .ExecuteAsync(cts.Token);
+            test.Given("I have a given \"givenstring\"")
+                .And("I have a method with no inputs")
+                .When("I have a when \"whenstring\"")
+                .Then("I have a then \"thenstring\"")
+                .Execute();
 
             fakeTest.Verify(f => f.GivenMethod("givenstring"));
             fakeTest.Verify(f => f.WhenMethod("whenstring"));
@@ -30,7 +27,7 @@ namespace Runic.Cucumber.UnitTest.Tests
         }
 
         [Fact]
-        public async Task WhenCucumberTestWithExampleExecuted_InvokesMultipleTimesWithParameters()
+        public void WhenCucumberTestWithExampleExecuted_InvokesMultipleTimesWithParameters()
         {
             var fakeTest = new Mock<FakeCucumberClass>();
             TestEnvironment.SetupMocks(fakeTest);
@@ -41,14 +38,13 @@ namespace Runic.Cucumber.UnitTest.Tests
                           { "when" , new List<string>(){ "whenstring1", "whenstring2" } },
                           { "inthenput3" , new List<string>(){ "thenstring1", "thenstring2" } }
                       };
-            var cts = new CancellationTokenSource();
-            await test.ScenarioOutline("My Scenario Outline")
-                      .Given(@"I have a given ""<given>""")
-                      .And("I have a method with no inputs")
-                      .When(@"I have a when ""<when>""")
-                      .Then(@"I have a then ""<then>""")
-                      .Examples(examples)
-                      .ExecuteAsync(cts.Token);
+            test.ScenarioOutline("My Scenario Outline")
+                .Given(@"I have a given ""<given>""")
+                .And("I have a method with no inputs")
+                .When(@"I have a when ""<when>""")
+                .Then(@"I have a then ""<then>""")
+                .Examples(examples)
+                .Execute();
 
             VerifyList(fakeTest, examples);
         }

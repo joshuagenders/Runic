@@ -6,7 +6,7 @@ namespace Runic.Agent.Core.AssemblyManagement
 {
     public interface IAssemblyManager
     {
-        IList<MethodInformation> GetAvailableMethods();
+        IList<MethodStepInformation> GetAvailableMethods();
         void LoadAssembly(string pluginAssemblyName);
         Assembly GetAssembly(string pluginAssemblyName);
     }

@@ -1,7 +1,5 @@
 ﻿using System.Reflection;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Runic.Cucumber
 {
@@ -23,16 +21,15 @@ namespace Runic.Cucumber
             _documentRunner = new DocumentRunner(adapter);
         }
 
-        public async Task<TestResult> ExecuteAsync(string document, CancellationToken ctx = default(CancellationToken))
+        public TestResult Execute(string document)
         {
-            return await _documentRunner.ExecuteAsync(document, ctx);
+            return _documentRunner.Execute(document);
         }
 
-        public async Task<TestResult> ExecuteAsync(CancellationToken ctx = default(CancellationToken))
+        public TestResult Execute()
         {
             var doc = _stringBuilder.ToString();
-            var documentTask = _documentRunner.ExecuteAsync(doc, ctx);
-            return await documentTask;
+            return _documentRunner.Execute(doc);
         }
     }
 }

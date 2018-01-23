@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 
 namespace Runic.Agent.Core.Services
@@ -7,15 +6,6 @@ namespace Runic.Agent.Core.Services
     public class MethodParameterService
     {
         public object[] GetParams(string[] positionalParameters, MethodInfo methodInfo)
-        {
-            //if (!methodInfo.GetParameters().Any())
-            //{
-            //    return new object[] { };
-            //}
-            return GetMapMethodParameters(positionalParameters, methodInfo);
-        }
-
-        private object[] GetMapMethodParameters(object[] positionalParameters, MethodBase methodInfo)
         {
             var p = methodInfo.GetParameters();
             if (p == null)

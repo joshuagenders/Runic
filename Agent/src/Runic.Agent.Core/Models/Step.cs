@@ -2,9 +2,18 @@
 {
     public class Step
     {
-        public string StepName { get; set; }
-        public int RepeatCount { get; set; }
-        public MethodInformation Function { get; set; }
-        public CucumberInformation Cucumber { get; set; }
+        public Step(
+            string stepName, 
+            MethodStepInformation function, 
+            CucumberStepInformation cucumber)
+        {
+            StepName = stepName;
+            Function = function;
+            Cucumber = cucumber;
+        }
+        
+        public string StepName { get; }
+        public MethodStepInformation Function { get; set; }
+        public CucumberStepInformation Cucumber { get; set; }
     }
 }

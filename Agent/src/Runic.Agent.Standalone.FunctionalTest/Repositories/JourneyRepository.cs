@@ -23,7 +23,7 @@ namespace Runic.Agent.FunctionalTest.Repositories
                             new Step()
                             {
                                 StepName = "Step 1",
-                                Function = new MethodInformation()
+                                Function = new MethodStepInformation()
                                 {
                                     AssemblyName = assembly.FullName,
                                     AssemblyQualifiedClassName = typeof(FakeTest).AssemblyQualifiedName,

@@ -1,7 +1,5 @@
-﻿using Moq;
-using Xunit;
+﻿using Xunit;
 using Runic.Agent.Core.AssemblyManagement;
-using Runic.Agent.Core.Configuration;
 using System.Linq;
 using FluentAssertions;
 
@@ -13,10 +11,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
 
         public AssemblyManagerTests()
         {
-            var config = new Mock<ICoreConfiguration>();
-            config.Setup(c => c.PluginFolderPath).Returns("/plugins/");
-            config.Setup(c => c.TaskCreationPollingIntervalSeconds).Returns(2);
-            _assemblyManager = new AssemblyManager(config.Object);
+            _assemblyManager = new AssemblyManager("");
         }
         
         [Fact]

@@ -1,10 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Runic.Agent.Core.AssemblyManagement;
-using Runic.Agent.Core.Configuration;
-using Runic.Agent.Core.IoC;
 using Runic.Agent.Core.WorkGenerator;
 using Runic.Agent.Standalone;
-using System.Collections.Concurrent;
 
 namespace Runic.Agent.FunctionalTest.TestUtility
 {

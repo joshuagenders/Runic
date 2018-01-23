@@ -1,99 +1,64 @@
 ﻿using Runic.Agent.Core.Models;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
-using Runic.Agent.Core.Configuration;
-using System;
 
 namespace Runic.Agent.Core.AssemblyManagement
 {
     public class AssemblyManager : IAssemblyManager
     {
-        private readonly ConcurrentBag<Assembly> _assemblies;
-        private readonly ConcurrentDictionary<string, bool> _assembliesLoaded;
-        private readonly ICoreConfiguration _config;
+        private readonly Dictionary<string, Assembly> _assemblies;
+        private readonly string _pluginPath;
 
-        public AssemblyManager(ICoreConfiguration config)
+        public AssemblyManager(string pluginPath)
         {
-            _assemblies = new ConcurrentBag<Assembly>();
-            _assembliesLoaded = new ConcurrentDictionary<string, bool>();
-            _config = config;
+            _assemblies = new Dictionary<string, Assembly>();
+            _pluginPath = pluginPath;
         }
 
         public void LoadAssembly(string pluginAssemblyName)
         {
-            lock (_assembliesLoaded)
+            if (_assemblies.ContainsKey(pluginAssemblyName))
+                return;
+            
+            var pluginPath = Path.Combine(_pluginPath, pluginAssemblyName);
+            if (!File.Exists(pluginPath))
             {
-                if (_assembliesLoaded.ContainsKey(pluginAssemblyName))
-                    return;
-                _assembliesLoaded[pluginAssemblyName] = true;
+                throw new AssemblyLoadException($"Could not find file {pluginPath}");
             }
-            try
-            {
-                var pluginPath = Path.Combine(_config.PluginFolderPath, pluginAssemblyName);
-                if (!File.Exists(pluginPath))
-                {
-                    throw new AssemblyLoadException($"Could not find file {pluginPath}");
-                }
 
-                //load
-                Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(pluginPath);
-                if (assembly == null)
-                {
-                    throw new AssemblyLoadException($"Could not load assembly {pluginPath}, {pluginAssemblyName}");
-                }
-                _assemblies.Add(assembly);
-            }
-            catch
-            {
-                //failed to load
-                lock (_assembliesLoaded)
-                {
-                    _assembliesLoaded[pluginAssemblyName] = false;
-                }
-                throw;
-            }
+            //load
+            Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(pluginPath);
+            _assemblies[pluginAssemblyName] = assembly ?? throw new AssemblyLoadException($"Could not load assembly {pluginPath}, {pluginAssemblyName}");
         }
 
-        public IList<MethodInformation> GetAvailableMethods() =>
-            _assemblies.SelectMany(a => SelectMethodInformation(a.DefinedTypes)).ToList();
+        public IList<MethodStepInformation> GetAvailableMethods() =>
+            _assemblies.SelectMany(a => SelectMethodInformation(a.Value.DefinedTypes)).ToList();
         
-        private IEnumerable<MethodInformation> SelectMethodInformation(IEnumerable<TypeInfo> types) => 
+        private IEnumerable<MethodStepInformation> SelectMethodInformation(IEnumerable<TypeInfo> types) => 
                 types.SelectMany(
                         t => t.AsType()
                               .GetRuntimeMethods()
                               .Select(SelectMethodInformation));
 
-        private MethodInformation SelectMethodInformation (MethodInfo methodInfo) => new MethodInformation()
-        {
-            AssemblyName = methodInfo.DeclaringType.DeclaringType.GetTypeInfo().Assembly.FullName,
-            AssemblyQualifiedClassName = methodInfo.DeclaringType.FullName,
-            MethodName = methodInfo.Name
-        };
+        private MethodStepInformation SelectMethodInformation (
+            MethodInfo methodInfo) => 
+                new MethodStepInformation(
+                    methodInfo.DeclaringType.DeclaringType.GetTypeInfo().Assembly.FullName,
+                    methodInfo.DeclaringType.FullName,
+                    methodInfo.Name
+                );
 
-        public IList<Assembly> GetAssemblies()
-        {
-            List<Assembly> assemblyList;
-            lock (_assemblies)
-            {
-                assemblyList = _assemblies.ToList();
-            }
-            return assemblyList;
-        }
-
-        public IList<string> GetAssemblyKeys()
-        {
-            return _assembliesLoaded.Keys.ToList();
-        }
+        public IList<Assembly> GetAssemblies() => _assemblies.Values.ToList();
+        public IList<string> GetAssemblyKeys() => _assemblies.Keys.ToList();
 
         public Assembly GetAssembly(string pluginAssemblyName)
         {
-            if (_assembliesLoaded.TryGetValue(pluginAssemblyName, out bool loaded) && loaded)
+            if (_assemblies.TryGetValue(pluginAssemblyName, out Assembly val))
             {
-                return GetAssemblies().Single(a => a.FullName == pluginAssemblyName);
+                return val;
             }
             throw new AssemblyLoadException($"Unable to locate assembly by key {pluginAssemblyName}");
         }

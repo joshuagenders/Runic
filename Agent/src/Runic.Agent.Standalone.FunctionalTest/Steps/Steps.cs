@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using Moq;
-using Runic.Agent.Core.Models;
 using Runic.Agent.Core.Patterns;
 using Runic.Agent.Core.WorkGenerator;
 using Runic.Agent.FunctionalTest.Repositories;

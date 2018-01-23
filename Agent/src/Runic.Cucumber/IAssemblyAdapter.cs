@@ -1,12 +1,10 @@
 ﻿using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Runic.Cucumber
 {
     public interface IAssemblyAdapter
     {
-        Task ExecuteMethodAsync(object instance, MethodInfo method, object[] arguments, CancellationToken ctx = default(CancellationToken));
-        Task ExecuteMethodFromStatementAsync(string statement, object[] arguments, CancellationToken ctx = default(CancellationToken));
+        void ExecuteMethod(object instance, MethodInfo method, object[] arguments);
+        void ExecuteMethodFromStatement(string statement, object[] arguments);
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Moq;
 using Runic.Cucumber.UnitTest.TestUtility;
 using System.Threading;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Runic.Cucumber.UnitTest.Tests
@@ -9,15 +8,13 @@ namespace Runic.Cucumber.UnitTest.Tests
     public class DocumentRunnerTests : TestBase
     {
         [Fact]
-        public async Task WhenAGivenWhenThenDocumentIsExecuted_CallsAssemblyAdapter()
+        public void WhenAGivenWhenThenDocumentIsExecuted_CallsAssemblyAdapter()
         {
             var fakeTest = new Mock<FakeCucumberClass>();
             TestEnvironment.SetupMocks(fakeTest);
             var assemblyAdapter = new Mock<IAssemblyAdapter>();
             var documentRunner = new DocumentRunner(assemblyAdapter.Object);
 
-            var cts = new CancellationTokenSource();
-            cts.CancelAfter(1000);
             var statement = 
                 @"Feature: MyExample
                   Scenario: MyScenario
@@ -25,28 +22,25 @@ namespace Runic.Cucumber.UnitTest.Tests
                    When I have a when ""wherever""
                    Then I have a then ""whomever""";
 
-            await documentRunner.ExecuteAsync(statement, cts.Token);
+            documentRunner.Execute(statement);
             assemblyAdapter.Verify(a => 
-                a.ExecuteMethodFromStatementAsync(
+                a.ExecuteMethodFromStatement(
                     @"I have a given ""method""", 
-                    It.IsAny<object[]>(), 
-                    It.IsAny<CancellationToken>()));
+                    It.IsAny<object[]>()));
 
             assemblyAdapter.Verify(a =>
-                a.ExecuteMethodFromStatementAsync(
+                a.ExecuteMethodFromStatement(
                     @"I have a when ""wherever""",
-                    It.IsAny<object[]>(),
-                    It.IsAny<CancellationToken>()));
+                    It.IsAny<object[]>()));
 
             assemblyAdapter.Verify(a =>
-                a.ExecuteMethodFromStatementAsync(
+                a.ExecuteMethodFromStatement(
                     @"I have a then ""whomever""",
-                    It.IsAny<object[]>(),
-                    It.IsAny<CancellationToken>()));
+                    It.IsAny<object[]>()));
         }
         
         [Fact]
-        public async Task WhenBadDocumentIsExecuted_ReturnsParserError()
+        public void WhenBadDocumentIsExecuted_ReturnsParserError()
         {
             var assemblyAdapter = new Mock<IAssemblyAdapter>();
             var documentRunner = new DocumentRunner(assemblyAdapter.Object);
@@ -58,7 +52,7 @@ namespace Runic.Cucumber.UnitTest.Tests
                    Whdfdfen I fdfhave a when ""wherever""
                    Thenfdf I have a then ""whomever""";
 
-            var result = await documentRunner.ExecuteAsync(statement, cts.Token);
+            var result = documentRunner.Execute(statement);
             Assert.True(result.Exception.GetType() == typeof(GherkinDocumentParserError));
         }
     }

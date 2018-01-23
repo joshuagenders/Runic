@@ -1,12 +1,14 @@
 ﻿namespace Runic.Agent.Core.Models
 {
-    public struct Point
+    public class Point
     {
-        //time value, calculated as ratio of max x
-        private int unitsFromStart;
-        private double frequencyPerMinute;
+        public Point(int unitsFromStart, double frequencyPerMinute)
+        {
+            UnitsFromStart = unitsFromStart;
+            FrequencyPerMinute = frequencyPerMinute;
+        }
 
-        public int UnitsFromStart { get => unitsFromStart; set => unitsFromStart = value; }
-        public double FrequencyPerMinute { get => frequencyPerMinute; set => frequencyPerMinute = value; }
+        public int UnitsFromStart { get; }
+        public double FrequencyPerMinute { get; }
     }
 }

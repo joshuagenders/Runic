@@ -3,7 +3,6 @@ using Moq;
 using Runic.Cucumber.UnitTest.TestUtility;
 using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Runic.Cucumber.UnitTest.Tests
@@ -19,20 +18,18 @@ namespace Runic.Cucumber.UnitTest.Tests
         }
         
         [Fact]
-        public async Task WhenGivenMethodIsExecuted_MethodIsInvoked()
+        public void WhenGivenMethodIsExecuted_MethodIsInvoked()
         {
             var method = _fakeTest.Object
                                   .GetType()
                                   .GetTypeInfo()
                                   .GetMethod("GivenMethod");
 
-            var cts = new CancellationTokenSource();
-            cts.CancelAfter(1000);
-
+      
             const string input = "input";
-            await TestEnvironment.AssemblyAdapter
-                                 .Instance
-                                 .ExecuteMethodAsync(_fakeTest.Object, method, new object[] { input }, cts.Token);
+            TestEnvironment.AssemblyAdapter
+                           .Instance
+                           .ExecuteMethod(_fakeTest.Object, method, new object[] { input });
 
             _fakeTest.Verify(f => f.GivenMethod(input));
         }
@@ -44,45 +41,41 @@ namespace Runic.Cucumber.UnitTest.Tests
         }
         
         [Fact]
-        public async Task WhenGivenMethodAttributeExecuted_LocatesAndInvokesMethod()
+        public void WhenGivenMethodAttributeExecuted_LocatesAndInvokesMethod()
         {
             var statement = "Given I have a given \"method\"";
-            var cts = new CancellationTokenSource();
-            cts.CancelAfter(1000);
             const string input = "input";
-            await TestEnvironment.AssemblyAdapter
+            TestEnvironment.AssemblyAdapter
                                  .Instance
-                                 .ExecuteMethodFromStatementAsync(statement, new object[] { input }, cts.Token);
+                                 .ExecuteMethodFromStatement(statement, new object[] { input });
 
             _fakeTest.Verify(f => f.GivenMethod(input));
         }
 
         [Fact]
-        public async Task WhenDuplicateMethodExecuted_ThrowsException()
+        public void WhenDuplicateMethodExecuted_ThrowsException()
         {
             var statement = "Given I have a duplicate method";
             var cts = new CancellationTokenSource();
             cts.CancelAfter(1000);
 
-            await Assert.ThrowsAsync<MultipleMethodsFoundException>(async () => 
-                await TestEnvironment.AssemblyAdapter
-                                     .Instance
-                                     .ExecuteMethodFromStatementAsync(statement, new object[] { }, cts.Token));
+            Assert.Throws<MultipleMethodsFoundException>(() => 
+                TestEnvironment.AssemblyAdapter
+                               .Instance
+                               .ExecuteMethodFromStatement(statement, new object[] { }));
         }
         
         [Fact]
-        public async Task WhenMethodNotFound_ThrowsException()
+        public void WhenMethodNotFound_ThrowsException()
         {
             var fakeTest = new Mock<FakeCucumberClass>();
             TestEnvironment.SetupMocks(fakeTest);
 
             var statement = "Given I have a non existent method";
-            var cts = new CancellationTokenSource();
-            cts.CancelAfter(1000);
-            await Assert.ThrowsAsync<MethodNotFoundException>(async () =>
-                await TestEnvironment.AssemblyAdapter
-                                     .Instance
-                                     .ExecuteMethodFromStatementAsync(statement, new object[] { }, cts.Token));
+            Assert.Throws<MethodNotFoundException>(() =>
+                TestEnvironment.AssemblyAdapter
+                               .Instance
+                               .ExecuteMethodFromStatement(statement, new object[] { }));
         }
     }
 }

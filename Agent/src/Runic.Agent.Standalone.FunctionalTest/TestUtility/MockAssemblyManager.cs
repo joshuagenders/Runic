@@ -17,7 +17,7 @@ namespace Runic.Agent.FunctionalTest.TestUtility
             assemblyManager.Setup(a => a.GetAvailableMethods()).Returns(GetAvailableMethods());
             Object = assemblyManager.Object;
         }
-        private IList<MethodInformation> GetAvailableMethods()
+        private IList<MethodStepInformation> GetAvailableMethods()
         {
             return GetType().GetTypeInfo()
                             .Assembly
@@ -26,7 +26,7 @@ namespace Runic.Agent.FunctionalTest.TestUtility
                                               .Select(SelectMethodInformation))
                             .ToList(); 
         }
-        private MethodInformation SelectMethodInformation(MethodInfo methodInfo) => new MethodInformation()
+        private MethodStepInformation SelectMethodInformation(MethodInfo methodInfo) => new MethodStepInformation()
         {
             AssemblyName = methodInfo.DeclaringType.GetTypeInfo().Assembly.FullName,
             AssemblyQualifiedClassName = methodInfo.DeclaringType.FullName,

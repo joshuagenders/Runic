@@ -1,34 +1,27 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Akka.Actor;
+using Runic.Agent.Standalone.Actors;
+using Runic.Agent.Standalone.Messages;
 using System;
-using System.Threading;
 
 namespace Runic.Agent.Standalone
 {
     public static class Program
-    {
+    {   
         public static void Main(string[] args)
         {
-            try
+            var config = new ConfigBuilder(args).Config;
+            var testPlans = TestPlanLoader.GetTestPlans(config);
+
+            using (var system = ActorSystem.Create("runic-system"))
             {
-                var serviceCollection = Startup.ConfigureServices(new ServiceCollection());
-            
-                var cts = new CancellationTokenSource();
-                using (var scope = serviceCollection.BuildServiceProvider().CreateScope())
+                // Create top level supervisor
+                var app = system.ActorOf(Props.Create<RunicApplication>(), "application");
+
+                foreach (var plan in testPlans)
                 {
-                    var application = scope.ServiceProvider.GetService<IApplication>();
-                    application.Run(cts.Token).GetAwaiter().GetResult();
+                    app.Tell(new ExecuteTestPlan() { TestPlan = plan });
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("An error has occured.");
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.Source);
-                Console.WriteLine(ex.StackTrace);  
-            }
-            finally
-            {
-                Console.WriteLine("Press the 'any' key to exit.");
+                // Exit the system after ENTER is pressed
                 Console.ReadLine();
             }
         }

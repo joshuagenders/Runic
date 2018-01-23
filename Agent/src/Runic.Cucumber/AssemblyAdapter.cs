@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Runic.Cucumber
@@ -22,13 +21,13 @@ namespace Runic.Cucumber
             RegisterAttributes();
         }
 
-        public async Task ExecuteMethodAsync(object instance, MethodInfo method, object[] arguments, CancellationToken ctx = default(CancellationToken))
+        public void ExecuteMethod(object instance, MethodInfo method, object[] arguments)
         {
             Task task;
             if (IsAsyncMethod(method))
             {
                 task = (Task)method.Invoke(instance, GetMapMethodParameters(arguments, method));
-                await task;
+                task.ConfigureAwait(false).GetAwaiter().GetResult();
                 if (task.IsFaulted)
                 {
                     throw task.Exception;
@@ -40,7 +39,7 @@ namespace Runic.Cucumber
             }   
         }
 
-        public async Task ExecuteMethodFromStatementAsync(string statement, object[] arguments, CancellationToken ctx = default(CancellationToken))
+        public void ExecuteMethodFromStatement(string statement, object[] arguments)
         {
             var methodDetails = GetMethodTypeFromStatement(statement);
             var instance = _stateManager.GetObject(methodDetails.Item1.DeclaringType);
@@ -48,7 +47,7 @@ namespace Runic.Cucumber
             List<object> methodArgs = arguments.ToList();
             methodArgs.AddRange(methodDetails.Item2);
 
-            await ExecuteMethodAsync(instance, methodDetails.Item1, methodArgs.ToArray(), ctx);
+            ExecuteMethod(instance, methodDetails.Item1, methodArgs.ToArray());
         }
 
         private Tuple<MethodInfo, List<string>> GetMethodTypeFromStatement(string statement)
