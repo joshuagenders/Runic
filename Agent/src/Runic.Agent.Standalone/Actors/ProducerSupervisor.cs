@@ -2,28 +2,45 @@
 using Runic.Agent.Standalone.Messages;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Runic.Agent.Standalone.Actors
 {
     public class ProducerSuperVisor : ReceiveActor
     {
-        private readonly IActorRef _consumerSupervisor;
-        private List<IActorRef> _producers { get; set; }
+        private Dictionary<IActorRef, ICancelable> _producerScheduleCancellers { get; set; }
 
-        public ProducerSuperVisor(IActorRef consumerSupervisor)
+        public ProducerSuperVisor()
         {
-            _producers = new List<IActorRef>();
-            _consumerSupervisor = consumerSupervisor;
-
+            _producerScheduleCancellers = new Dictionary<IActorRef, ICancelable>();
             Receive<StartProducer>(_ => CreateProducer(_));
-            //on terminate?
+            Receive<Terminated>(_ => HandleTerminate(_));
+            Receive<IfNoProducers>(_ => TellIfNoProducers());
+        }
+
+        private void TellIfNoProducers()
+        {
+            if (!Context.GetChildren().Any())
+                Sender.Tell(new NoProducers());
+        }
+
+        private void HandleTerminate(Terminated terminated)
+        {
+            ICancelable cancelable;
+            _producerScheduleCancellers.TryGetValue(terminated.ActorRef, out cancelable);
+
+            cancelable?.CancelIfNotNull();
+            Context.Stop(terminated.ActorRef);
+            _producerScheduleCancellers.Remove(terminated.ActorRef);
         }
 
         private void CreateProducer(StartProducer startProducer)
         {
             var producer = 
                 Context.ActorOf(
-                    Props.Create<Producer>(_consumerSupervisor, startProducer.TestPlan));
+                    Props.Create<Producer>(startProducer.TestPlan));
+
+            var cancellation = new Cancelable(Context.System.Scheduler);
             Context.System
                    .Scheduler
                    .ScheduleTellRepeatedly(
@@ -31,8 +48,10 @@ namespace Runic.Agent.Standalone.Actors
                         TimeSpan.FromSeconds(5),
                         producer,
                         new Produce(),
-                        Self);
-            _producers.Add(producer);   
+                        Self,
+                        cancellation);
+
+            _producerScheduleCancellers[producer] = cancellation;   
         }
     }
 }

@@ -14,32 +14,7 @@ namespace Runic.Agent.Core.Harness
         {
             _assemblyManager = assemblyManager;
         }
-
-        public List<Result> PerformJourney(Journey journey)
-        {
-            var results = new List<Result>();
-            foreach(var step in journey.Steps)
-            {
-                Result result = null;
-                if (!string.IsNullOrWhiteSpace(step.Cucumber?.Document))
-                {
-                    _assemblyManager.LoadAssembly(step.Cucumber.AssemblyName);
-                    var assembly = _assemblyManager.GetAssembly(step.Cucumber.AssemblyName);
-                    result = new CucumberHarness().ExecuteTest(assembly, step.Cucumber.Document);
-                }
-                else
-                {
-                    _assemblyManager.LoadAssembly(step.Function.AssemblyName);
-                    var assembly = _assemblyManager.GetAssembly(step.Function.AssemblyName);
-                    result = new FunctionHarness().ExecuteTest(assembly, step);
-                }
-                results.Add(result);
-                //todo non blocking implementation
-                Thread.Sleep(journey.StepDelayMilliseconds);
-            }
-            return results;
-        }
-
+        
         public async Task<List<Result>> PerformJourneyAsync(Journey journey)
         {
             var results = new List<Result>();

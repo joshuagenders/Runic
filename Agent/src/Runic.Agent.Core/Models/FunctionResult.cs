@@ -1,6 +1,4 @@
-﻿using Runic.Agent.Core.Harness;
-
-namespace Runic.Agent.Core.Harness
+﻿namespace Runic.Agent.Core.Models
 {
     public class FunctionResult : Result
     {

@@ -29,6 +29,7 @@ namespace Runic.Agent.Standalone.Actors
 
         private IActorRef CreateConsumer()
         {
+            //todo use persistent actors and control consumer counts to aid restart times?
             var consumer = Context.ActorOf<Consumer>();
             Context.Watch(consumer);
             _consumers.Add(consumer);

@@ -1,6 +1,7 @@
 ﻿using Akka.Actor;
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Harness;
+using Runic.Agent.Core.Models;
 using Runic.Agent.Core.WorkGenerator;
 using System;
 using System.Collections.Generic;

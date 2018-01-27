@@ -11,17 +11,29 @@ namespace Runic.Agent.Standalone.Actors
         protected override void PostStop() => Log.Info("Runic Application stopped");
         private IActorRef _producerSupervisor { get; set; }
         private IActorRef _consumerSupervisor { get; set; }
+        private ICancelable _consumerCancellation { get; set; }
 
         public RunicApplication()
         {
-            _consumerSupervisor = 
-                Context.ActorOf(
-                    Props.Create(() => new ConsumerSupervisor()), "consumer-supervisor");
-            _producerSupervisor = 
-                Context.ActorOf(Props.Create(() => new ProducerSuperVisor(_consumerSupervisor)), 
-                    "producer-supervisor");
+            _consumerSupervisor = Context.ActorOf<ConsumerSupervisor>("consumer-supervisor");
+            _producerSupervisor = Context.ActorOf<ProducerSuperVisor>("producer-supervisor");
 
+            //shutdown on completion - ask producer supervisor if there are active producers
+            _consumerCancellation = Context.System
+                                           .Scheduler
+                                           .ScheduleTellRepeatedlyCancelable(
+                                                initialMillisecondsDelay: 10000, 
+                                                millisecondsInterval: 15000, 
+                                                receiver: _producerSupervisor, 
+                                                message: new IfNoProducers(), 
+                                                sender: Self);
             Receive<ExecuteTestPlan>(_ => ExecutePlan(_));
+            Receive<NoProducers>(_ => Shutdown());
+        }
+
+        private void Shutdown()
+        {
+            Context.Stop(Self);
         }
 
         private void ExecutePlan(ExecuteTestPlan testPlan)

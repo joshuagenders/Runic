@@ -11,7 +11,7 @@ namespace Runic.Agent.UnitTest.Tests
     public class CucumberHarnessTests
     {
         [Fact]
-        public void WhenBasicCucumberTestExecutes_AllMethodsAreInvoked()
+        public async Task WhenBasicCucumberTestExecutes_AllMethodsAreInvoked()
         {
             var harness = new CucumberHarness();
 
@@ -22,7 +22,7 @@ namespace Runic.Agent.UnitTest.Tests
                    When I have a when ""wherever""
                    Then I have a then ""whomever""";
 
-            harness.ExecuteTest(GetType().GetTypeInfo().Assembly, cucumberDocument);
+            await harness.ExecuteTestAsync(GetType().GetTypeInfo().Assembly, cucumberDocument);
             
             var maxKey = FakeCucumberClass.FakeCucumberClasses.Keys.OrderBy(a => a).Last();
             if (!FakeCucumberClass.FakeCucumberClasses.TryGetValue(maxKey, out FakeCucumberClass test))

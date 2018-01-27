@@ -19,7 +19,7 @@ namespace Runic.Agent.Standalone
 
                 foreach (var plan in testPlans)
                 {
-                    app.Tell(new ExecuteTestPlan() { TestPlan = plan });
+                    app.Tell(new ExecuteTestPlan(plan));
                 }
                 // Exit the system after ENTER is pressed
                 Console.ReadLine();

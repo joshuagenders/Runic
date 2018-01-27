@@ -31,9 +31,9 @@ namespace Runic.Agent.Core.Services
             {
                 return (frequencyPattern.MaxJourneysPerMinute / frequencyPattern.RampUpSeconds) * timeEllapsedSeconds;
             }
-
-            if (frequencyPattern.DurationSeconds > 0 &&
-                timeEllapsedSeconds > frequencyPattern.DurationSeconds - frequencyPattern.RampDownSeconds)
+            
+            var rampdownStart = frequencyPattern.DurationSeconds - frequencyPattern.RampDownSeconds;
+            if (timeEllapsedSeconds > rampdownStart)
             {
                 double gradient = frequencyPattern.MaxJourneysPerMinute / frequencyPattern.RampDownSeconds;
                 return frequencyPattern.MaxJourneysPerMinute - (gradient * timeEllapsedSeconds);
@@ -49,19 +49,13 @@ namespace Runic.Agent.Core.Services
             double maxX = frequencyPattern.Points.Max(p => p.UnitsFromStart);
             double secondsPerPoint = (frequencyPattern.DurationSeconds / maxX);
             var currentPosition = timeEllapsedSeconds / secondsPerPoint;
-
-            Point point = frequencyPattern.Points[0];
-            for (var index = 1; index < frequencyPattern.Points.Count; index++)
-            {
-                if (point.UnitsFromStart > currentPosition)
-                {
-                    break;
-                }
-                if (currentPosition < frequencyPattern.Points[index].UnitsFromStart)
-                    break;
-                point = frequencyPattern.Points[index];
-            }
-            return point.FrequencyPerMinute;
+            
+            return Enumerable.Range(0, frequencyPattern.Points.Count)
+                             .Select(i => frequencyPattern.Points[i])
+                             .Where(p => p.UnitsFromStart <= currentPosition)
+                             .OrderByDescending(p => p.UnitsFromStart)
+                             .First()
+                             ?.FrequencyPerMinute ?? 0;
         }
     }
 }

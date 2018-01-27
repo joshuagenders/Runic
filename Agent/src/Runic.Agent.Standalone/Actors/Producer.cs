@@ -13,24 +13,21 @@ namespace Runic.Agent.Standalone.Actors
         private DateTime? _lastPollTime { get; set; }
         private DateTime _startTime { get; set; }
         private readonly TestPlan _testPlan;
-        private readonly IActorRef _consumerSupervisor;
-        public Producer(IActorRef consumerSupervisor, TestPlan testPlan)
+
+        public Producer(TestPlan testPlan)
         {
             _startTime = DateTime.Now;
             _testPlan = testPlan;
-            _consumerSupervisor = consumerSupervisor;
             Receive<Produce>(_ => PopulateWorkQueue());
         }
-
-        //todo terminate when duration passes
 
         private int GetJourneyCountInPeriod(FrequencyPattern frequencyPattern, DateTime startTime, DateTime endTime)
         {            
             int totalSeconds = Convert.ToInt32(endTime.Subtract(startTime).TotalSeconds);
             return Convert.ToInt32(
                         Enumerable.Range(0, totalSeconds)
-                                  .Select(s => new FrequencyService().GetCurrentFrequencyPerMinute(
-                                                frequencyPattern, s) / 60)
+                                  .Select(s => 
+                                    new FrequencyService().GetCurrentFrequencyPerMinute(frequencyPattern, s) / 60)
                                   .Sum());
         }
 
@@ -38,10 +35,12 @@ namespace Runic.Agent.Standalone.Actors
         {
             var lastTime = _lastPollTime;
             var now = DateTime.Now;
-            _lastPollTime = now;
+            
+            var currentTotal = GetJourneyCountInPeriod(_testPlan.Frequency, _startTime, now);
+            var lastJourneyCount = GetJourneyCountInPeriod(_testPlan.Frequency, _startTime, lastTime ?? now);
 
-            return GetJourneyCountInPeriod(_testPlan.Frequency, _startTime, now)
-                    - GetJourneyCountInPeriod(_testPlan.Frequency, _startTime, lastTime ?? now);
+            _lastPollTime = now;
+            return currentTotal - lastJourneyCount;
         }
 
         private void PopulateWorkQueue()
@@ -49,7 +48,12 @@ namespace Runic.Agent.Standalone.Actors
             var count = GetJourneyCount();
             for (int i = 0; i < count; i++)
             {
-                _consumerSupervisor.Tell(new ExecuteTestPlan() { TestPlan = _testPlan });
+                Context.ActorSelection("../../consumer-supervisor")
+                       .Tell(new ExecuteTestPlan(_testPlan));
+            }
+            if (_startTime.AddSeconds(_testPlan.Frequency.DurationSeconds) > DateTime.Now)
+            {
+                Context.Stop(Self);
             }
         }
     }

@@ -1,7 +1,6 @@
-﻿using Runic.Agent.Core.Models;
-using System;
+﻿using System;
 
-namespace Runic.Agent.Core.Harness
+namespace Runic.Agent.Core.Models
 {
     public abstract class Result
     {
