@@ -3,6 +3,7 @@ using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Harness;
 using Runic.Agent.Core.WorkGenerator;
 using System;
+using System.Collections.Generic;
 
 namespace Runic.Agent.Standalone
 {
@@ -17,13 +18,18 @@ namespace Runic.Agent.Standalone
             //todo get config path
             _assemblyManager = new AssemblyManager("");
             Receive<TestPlan>(_ => ExecuteTestPlan(_));
+            Receive<List<Result>>(_ => HandleTestResults(_));
+        }
+
+        private void HandleTestResults(List<Result> results)
+        {
+            //
         }
 
         private void ExecuteTestPlan(TestPlan testPlan)
         {
             var person = new Person(_assemblyManager);
-            //todo async properly
-            person.PerformJourney(testPlan.Journey);
+            person.PerformJourneyAsync(testPlan.Journey).PipeTo(Self);
         }
     }
 }

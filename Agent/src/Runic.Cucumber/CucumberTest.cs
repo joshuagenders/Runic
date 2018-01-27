@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Runic.Cucumber
 {
@@ -24,6 +25,11 @@ namespace Runic.Cucumber
         public TestResult Execute(string document)
         {
             return _documentRunner.Execute(document);
+        }
+
+        public async Task<TestResult> ExecuteAsync(string document)
+        {
+            return await _documentRunner.ExecuteAsync(document);
         }
 
         public TestResult Execute()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Runic.Cucumber
 {
@@ -36,6 +37,7 @@ namespace Runic.Cucumber
             AppendStatement("Background:", statement);
             return this;
         }
+
         public CucumberTest Scenario(string statement)
         {
             _hasScenario = true;

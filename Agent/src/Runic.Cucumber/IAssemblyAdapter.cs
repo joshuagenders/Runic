@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Runic.Cucumber
 {
@@ -6,5 +7,6 @@ namespace Runic.Cucumber
     {
         void ExecuteMethod(object instance, MethodInfo method, object[] arguments);
         void ExecuteMethodFromStatement(string statement, object[] arguments);
+        Task ExecuteMethodFromStatementAsync(string statement, object[] arguments);
     }
 }

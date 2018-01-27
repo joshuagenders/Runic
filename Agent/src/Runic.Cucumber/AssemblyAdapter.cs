@@ -21,6 +21,35 @@ namespace Runic.Cucumber
             RegisterAttributes();
         }
 
+        public async Task ExecuteMethodFromStatementAsync(string statement, object[] arguments)
+        {
+            var methodDetails = GetMethodTypeFromStatement(statement);
+            var instance = _stateManager.GetObject(methodDetails.Item1.DeclaringType);
+            //todo append, replace, error?
+            List<object> methodArgs = arguments.ToList();
+            methodArgs.AddRange(methodDetails.Item2);
+
+            await ExecuteMethodAsync(instance, methodDetails.Item1, methodArgs.ToArray());
+        }
+
+        public async Task ExecuteMethodAsync(object instance, MethodInfo method, object[] arguments)
+        {
+            Task task;
+            if (IsAsyncMethod(method))
+            {
+                task = (Task)method.Invoke(instance, GetMapMethodParameters(arguments, method));
+                await task;
+                if (task.IsFaulted)
+                {
+                    throw task.Exception;
+                }
+            }
+            else
+            {
+                method.Invoke(instance, GetMapMethodParameters(arguments, method));
+            }
+        }
+
         public void ExecuteMethod(object instance, MethodInfo method, object[] arguments)
         {
             Task task;

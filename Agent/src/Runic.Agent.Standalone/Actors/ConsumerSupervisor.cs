@@ -1,5 +1,4 @@
 ﻿using Akka.Actor;
-using Runic.Agent.Core.WorkGenerator;
 using Runic.Agent.Standalone.Messages;
 using System.Collections.Generic;
 
