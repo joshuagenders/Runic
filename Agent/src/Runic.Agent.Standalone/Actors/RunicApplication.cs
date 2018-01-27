@@ -26,7 +26,7 @@ namespace Runic.Agent.Standalone.Actors
 
         private void ExecutePlan(ExecuteTestPlan testPlan)
         {
-            _producerSupervisor.Tell(new ProduceTestPlan() { TestPlan = testPlan.TestPlan });
+            _producerSupervisor.Tell(new StartProducer(testPlan.TestPlan));
         }
     }
 }

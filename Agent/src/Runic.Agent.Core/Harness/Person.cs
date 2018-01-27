@@ -29,10 +29,11 @@ namespace Runic.Agent.Core.Harness
                 else
                 {
                     _assemblyManager.LoadAssembly(step.Function.AssemblyName);
-                    var assembly = _assemblyManager.GetAssembly(step.Cucumber.AssemblyName);
+                    var assembly = _assemblyManager.GetAssembly(step.Function.AssemblyName);
                     result = new FunctionHarness().ExecuteTest(assembly, step);
                 }
                 results.Add(result);
+                //todo non blocking implementation
                 Thread.Sleep(journey.StepDelayMilliseconds);
             }
             return results;

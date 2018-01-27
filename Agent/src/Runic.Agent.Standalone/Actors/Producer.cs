@@ -4,60 +4,52 @@ using Runic.Agent.Core.Services;
 using Runic.Agent.Core.WorkGenerator;
 using Runic.Agent.Standalone.Messages;
 using System;
-using System.Threading;
+using System.Linq;
 
 namespace Runic.Agent.Standalone.Actors
 {
     public class Producer : ReceiveActor
     {
         private DateTime? _lastPollTime { get; set; }
+        private DateTime _startTime { get; set; }
+        private readonly TestPlan _testPlan;
         private readonly IActorRef _consumerSupervisor;
-        public Producer(IActorRef consumerSupervisor)
+        public Producer(IActorRef consumerSupervisor, TestPlan testPlan)
         {
+            _startTime = DateTime.Now;
+            _testPlan = testPlan;
             _consumerSupervisor = consumerSupervisor;
-            Receive<ProduceTestPlan>(_ => ProduceTestPlans(_));
+            Receive<Produce>(_ => PopulateWorkQueue());
         }
 
-        private void ProduceTestPlans(ProduceTestPlan testPlan)
-        {
-            while (true)
-            {
-                PopulateWorkQueue(testPlan.TestPlan);
-                Thread.Sleep(1000);
-            }
-        }
+        //todo terminate when duration passes
 
         private int GetJourneyCountInPeriod(FrequencyPattern frequencyPattern, DateTime startTime, DateTime endTime)
-        {
-            //store and reuse calculation total
-            var totalSeconds = endTime.Subtract(startTime).TotalSeconds;
-            double total = 0;
-            for (int i = 0; i < totalSeconds; i++)
-            {
-                total += new FrequencyService()
-                    .GetCurrentFrequencyPerMinute(
-                        frequencyPattern, 
-                        startTime, 
-                        startTime.AddSeconds(i)) / 60;
-            }
-
-            return (int)total;
+        {            
+            int totalSeconds = Convert.ToInt32(endTime.Subtract(startTime).TotalSeconds);
+            return Convert.ToInt32(
+                        Enumerable.Range(0, totalSeconds)
+                                  .Select(s => new FrequencyService().GetCurrentFrequencyPerMinute(
+                                                frequencyPattern, s) / 60)
+                                  .Sum());
         }
 
-        private void PopulateWorkQueue(TestPlan testPlan)
+        private int GetJourneyCount()
         {
             var lastTime = _lastPollTime;
             var now = DateTime.Now;
             _lastPollTime = now;
 
-            var count =
-                GetJourneyCountInPeriod(testPlan.Frequency, testPlan.StartTime, now)
-                    - GetJourneyCountInPeriod(testPlan.Frequency, testPlan.StartTime, lastTime.Value);
+            return GetJourneyCountInPeriod(_testPlan.Frequency, _startTime, now)
+                    - GetJourneyCountInPeriod(_testPlan.Frequency, _startTime, lastTime ?? now);
+        }
 
+        private void PopulateWorkQueue()
+        {
+            var count = GetJourneyCount();
             for (int i = 0; i < count; i++)
             {
-                //todo
-                _consumerSupervisor.Tell(new ExecuteTestPlan() { TestPlan = testPlan });
+                _consumerSupervisor.Tell(new ExecuteTestPlan() { TestPlan = _testPlan });
             }
         }
     }

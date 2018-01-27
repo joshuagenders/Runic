@@ -1,21 +1,39 @@
 ﻿using Akka.Actor;
+using Runic.Agent.Core.WorkGenerator;
 using Runic.Agent.Standalone.Messages;
+using System.Collections.Generic;
 
 namespace Runic.Agent.Standalone.Actors
 {
     public class ConsumerSupervisor : ReceiveActor
     {
+        private readonly List<IActorRef> _consumers;
+        
+        //gracefully handle terminate of producer (finished/terminated)
+
         public ConsumerSupervisor()
         {
-            Receive<ExecuteTestPlan>(_ => CreateConsumer(_));
-            //todo error handling?
-          
+            _consumers = new List<IActorRef>();
+            Receive<ExecuteTestPlan>(_ => AssignTestToConsumer(_));
+            Receive<Terminated>(_ => RemoveConsumer(_));
         }
 
-        private void CreateConsumer(ExecuteTestPlan testPlan)
+        private void AssignTestToConsumer(ExecuteTestPlan testPlan)
+        {
+            CreateConsumer().Tell(testPlan.TestPlan); ;
+        }
+        
+        private void RemoveConsumer(Terminated terminated)
+        {
+            _consumers.RemoveAll(r => r == terminated.ActorRef);
+        }
+
+        private IActorRef CreateConsumer()
         {
             var consumer = Context.ActorOf<Consumer>();
-            consumer.Tell(testPlan.TestPlan);
+            Context.Watch(consumer);
+            _consumers.Add(consumer);
+            return consumer;
         }
     }
 }
