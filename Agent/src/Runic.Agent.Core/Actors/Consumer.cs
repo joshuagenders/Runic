@@ -10,15 +10,14 @@ namespace Runic.Agent.Core.Actors
     public class Consumer : ReceiveActor
     {
         public ILoggingAdapter Log { get; } = Context.GetLogger();
-        private readonly IAssemblyManager _assemblyManager;
+        private readonly AssemblyManager _assemblyManager;
 
         protected override void PreStart() => Log.Info("Test plan started");
         protected override void PostStop() => Log.Info("Test plan stopped");
 
         public Consumer()
         {
-            //todo get config path
-            _assemblyManager = new AssemblyManager("");
+            _assemblyManager = new AssemblyManager();
             Receive<TestPlan>(_ => ExecuteTestPlan(_));
             Receive<List<Result>>(_ => HandleTestResults(_));
         }
@@ -36,6 +35,8 @@ namespace Runic.Agent.Core.Actors
                     Log.Error($"Journey Failure: {result.ExceptionMessage}");
                 }
             }
+            //Stop here?
+            Context.Stop(Self);
         }
 
         private void ExecuteTestPlan(TestPlan testPlan)

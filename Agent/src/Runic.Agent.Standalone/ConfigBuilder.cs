@@ -32,9 +32,6 @@ namespace Runic.Agent.Standalone
         private FluentCommandLineParser<Configuration> GetConfigurationBuilder()
         {
             var p = new FluentCommandLineParser<Configuration>();
-            p.Setup(arg => arg.PluginFolderPath)
-             .As('p', "pluginpath")
-             .Required();
             p.Setup(arg => arg.TestPlanPath)
              .As('t', "testplanpath")
              .Required();

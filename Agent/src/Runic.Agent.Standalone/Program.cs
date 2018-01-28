@@ -17,7 +17,7 @@ namespace Runic.Agent.Standalone
                 using (var system = ActorSystem.Create("runic-system"))
                 {
                     // Create top level supervisor
-                    var app = system.ActorOf(Props.Create<RunicApplication>(), "application");
+                    var app = system.ActorOf(Props.Create<ProducerConsumerSupervisor>(), "producer-consumer-supervisor");
 
                     foreach (var plan in testPlans)
                     {

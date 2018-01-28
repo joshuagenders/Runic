@@ -1,7 +1,6 @@
 ﻿using Akka.Actor;
 using Akka.Event;
 using Runic.Agent.Core.Messages;
-using System;
 using System.Collections.Generic;
 
 namespace Runic.Agent.Core.Actors
@@ -9,12 +8,11 @@ namespace Runic.Agent.Core.Actors
     public class ConsumerSupervisor : ReceiveActor
     {
         private readonly List<IActorRef> _consumers;
-
+        
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 
         protected override void PreStart() => Log.Info("Consumer supervisor started");
         protected override void PostStop() => Log.Info("Consumer supervisor stopped");
-
 
         //gracefully handle terminate of producer (finished/terminated)
 

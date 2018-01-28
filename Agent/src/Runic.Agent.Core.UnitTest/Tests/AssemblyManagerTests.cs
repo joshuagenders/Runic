@@ -12,7 +12,7 @@ namespace Runic.Agent.Core.UnitTest.Tests
 
         public AssemblyManagerTests()
         {
-            _assemblyManager = new AssemblyManager("");
+            _assemblyManager = new AssemblyManager();
         }
         
         [Fact]

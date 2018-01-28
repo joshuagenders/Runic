@@ -8,30 +8,27 @@ using System.Runtime.Loader;
 
 namespace Runic.Agent.Core.AssemblyManagement
 {
-    public class AssemblyManager : IAssemblyManager
+    public class AssemblyManager
     {
         private readonly Dictionary<string, Assembly> _assemblies;
-        private readonly string _pluginPath;
-
-        public AssemblyManager(string pluginPath)
+        
+        public AssemblyManager()
         {
             _assemblies = new Dictionary<string, Assembly>();
-            _pluginPath = pluginPath;
         }
 
-        public void LoadAssembly(string pluginAssemblyName)
+        public void LoadAssembly(string pluginAssemblyPath)
         {
-            if (_assemblies.ContainsKey(pluginAssemblyName))
+            if (_assemblies.ContainsKey(pluginAssemblyPath))
                 return;
-            
-            var pluginPath = Path.Combine(_pluginPath, pluginAssemblyName);
-            if (!File.Exists(pluginPath))
+            ;
+            if (!File.Exists(pluginAssemblyPath))
             {
-                throw new ArgumentException($"Could not find file {pluginPath}");
+                throw new ArgumentException($"Could not find file {pluginAssemblyPath}");
             }
             
-            Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(pluginPath);
-            _assemblies[pluginAssemblyName] = assembly ?? throw new ArgumentException($"Could not load assembly {pluginPath}, {pluginAssemblyName}");
+            Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(pluginAssemblyPath);
+            _assemblies[pluginAssemblyPath] = assembly ?? throw new ArgumentException($"Could not load assembly {pluginAssemblyPath}");
         }
 
         public IList<Assembly> GetAssemblies() => _assemblies.Values.ToList();
@@ -55,13 +52,13 @@ namespace Runic.Agent.Core.AssemblyManagement
                     methodInfo.Name
                 );
 
-        public Assembly GetAssembly(string pluginAssemblyName)
+        public Assembly GetAssembly(string pluginAssemblyPath)
         {
-            if (_assemblies.TryGetValue(pluginAssemblyName, out Assembly val))
+            if (_assemblies.TryGetValue(pluginAssemblyPath, out Assembly val))
             {
                 return val;
             }
-            throw new ArgumentException($"Unable to locate assembly by key {pluginAssemblyName}");
+            throw new ArgumentException($"Unable to locate assembly by key {pluginAssemblyPath}");
         }
     }
 }

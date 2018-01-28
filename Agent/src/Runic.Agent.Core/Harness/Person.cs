@@ -7,9 +7,9 @@ namespace Runic.Agent.Core.Harness
 {
     public class Person
     {
-        private readonly IAssemblyManager _assemblyManager;
+        private readonly AssemblyManager _assemblyManager;
 
-        public Person(IAssemblyManager assemblyManager)
+        public Person(AssemblyManager assemblyManager)
         {
             _assemblyManager = assemblyManager;
         }
@@ -28,8 +28,8 @@ namespace Runic.Agent.Core.Harness
                 }
                 else
                 {
-                    _assemblyManager.LoadAssembly(step.Function.AssemblyName);
-                    var assembly = _assemblyManager.GetAssembly(step.Function.AssemblyName);
+                    _assemblyManager.LoadAssembly(step.Function.AssemblyPath);
+                    var assembly = _assemblyManager.GetAssembly(step.Function.AssemblyPath);
                     result = await new FunctionHarness().ExecuteTestAsync(assembly, step);
                 }
                 results.Add(result);

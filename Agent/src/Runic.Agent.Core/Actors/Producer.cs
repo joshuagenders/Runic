@@ -1,10 +1,10 @@
 ﻿using Akka.Actor;
+using Akka.Event;
 using Runic.Agent.Core.Models;
 using Runic.Agent.Core.Services;
 using Runic.Agent.Core.Messages;
 using System;
 using System.Linq;
-using Akka.Event;
 
 namespace Runic.Agent.Core.Actors
 {

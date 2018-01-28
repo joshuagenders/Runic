@@ -4,7 +4,7 @@ using Runic.Agent.Core.Messages;
 
 namespace Runic.Agent.Core.Actors
 {
-    public class RunicApplication : ReceiveActor
+    public class ProducerConsumerSupervisor : ReceiveActor
     {
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 
@@ -15,7 +15,7 @@ namespace Runic.Agent.Core.Actors
         private IActorRef _consumerSupervisor { get; set; }
         private ICancelable _producerCancellation { get; set; }
 
-        public RunicApplication()
+        public ProducerConsumerSupervisor()
         {
             _consumerSupervisor = Context.ActorOf<ConsumerSupervisor>("consumer-supervisor");
             _producerSupervisor = Context.ActorOf<ProducerSuperVisor>("producer-supervisor");
