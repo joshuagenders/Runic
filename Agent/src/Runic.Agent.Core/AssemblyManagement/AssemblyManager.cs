@@ -1,4 +1,5 @@
 ﻿using Runic.Agent.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,11 +27,11 @@ namespace Runic.Agent.Core.AssemblyManagement
             var pluginPath = Path.Combine(_pluginPath, pluginAssemblyName);
             if (!File.Exists(pluginPath))
             {
-                throw new AssemblyLoadException($"Could not find file {pluginPath}");
+                throw new ArgumentException($"Could not find file {pluginPath}");
             }
             
             Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(pluginPath);
-            _assemblies[pluginAssemblyName] = assembly ?? throw new AssemblyLoadException($"Could not load assembly {pluginPath}, {pluginAssemblyName}");
+            _assemblies[pluginAssemblyName] = assembly ?? throw new ArgumentException($"Could not load assembly {pluginPath}, {pluginAssemblyName}");
         }
 
         public IList<Assembly> GetAssemblies() => _assemblies.Values.ToList();
@@ -60,7 +61,7 @@ namespace Runic.Agent.Core.AssemblyManagement
             {
                 return val;
             }
-            throw new AssemblyLoadException($"Unable to locate assembly by key {pluginAssemblyName}");
+            throw new ArgumentException($"Unable to locate assembly by key {pluginAssemblyName}");
         }
     }
 }

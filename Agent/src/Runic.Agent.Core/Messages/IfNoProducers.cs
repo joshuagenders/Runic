@@ -1,4 +1,4 @@
-﻿namespace Runic.Agent.Standalone.Messages
+﻿namespace Runic.Agent.Core.Messages
 {
     public class IfNoProducers
     {

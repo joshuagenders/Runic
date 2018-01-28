@@ -1,17 +1,24 @@
 ﻿using Akka.Actor;
 using Runic.Agent.Core.Models;
 using Runic.Agent.Core.Services;
-using Runic.Agent.Standalone.Messages;
+using Runic.Agent.Core.Messages;
 using System;
 using System.Linq;
+using Akka.Event;
 
-namespace Runic.Agent.Standalone.Actors
+namespace Runic.Agent.Core.Actors
 {
     public class Producer : ReceiveActor
     {
         private DateTime? _lastPollTime { get; set; }
         private DateTime _startTime { get; set; }
         private readonly TestPlan _testPlan;
+
+        public ILoggingAdapter Log { get; } = Context.GetLogger();
+
+        protected override void PreStart() => Log.Info("Producer started");
+        protected override void PostStop() => Log.Info("Producer stopped");
+
 
         public Producer(TestPlan testPlan)
         {

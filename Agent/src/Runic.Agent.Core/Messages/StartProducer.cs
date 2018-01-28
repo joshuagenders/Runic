@@ -1,10 +1,10 @@
 ﻿using Runic.Agent.Core.Models;
 
-namespace Runic.Agent.Standalone.Messages
+namespace Runic.Agent.Core.Messages
 {
-    public class ExecuteTestPlan
+    public class StartProducer
     {
-        public ExecuteTestPlan(TestPlan testPlan)
+        public StartProducer(TestPlan testPlan)
         {
             TestPlan = testPlan;
         }

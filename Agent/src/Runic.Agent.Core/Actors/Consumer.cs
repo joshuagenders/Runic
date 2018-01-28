@@ -3,19 +3,18 @@ using Akka.Event;
 using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Harness;
 using Runic.Agent.Core.Models;
-using System;
 using System.Collections.Generic;
 
-namespace Runic.Agent.Standalone
+namespace Runic.Agent.Core.Actors
 {
     public class Consumer : ReceiveActor
     {
         public ILoggingAdapter Log { get; } = Context.GetLogger();
-
-        protected override void PreStart() => Console.WriteLine("Test plan started");
-        protected override void PostStop() => Console.WriteLine("Test plan stopped");
         private readonly IAssemblyManager _assemblyManager;
-        
+
+        protected override void PreStart() => Log.Info("Test plan started");
+        protected override void PostStop() => Log.Info("Test plan stopped");
+
         public Consumer()
         {
             //todo get config path
@@ -34,7 +33,7 @@ namespace Runic.Agent.Standalone
                 }
                 else
                 {
-                    Log.Error($"Journey Failure: {result.Exception.Message}");
+                    Log.Error($"Journey Failure: {result.ExceptionMessage}");
                 }
             }
         }

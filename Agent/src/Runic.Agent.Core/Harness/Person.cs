@@ -24,7 +24,7 @@ namespace Runic.Agent.Core.Harness
                 {
                     _assemblyManager.LoadAssembly(step.Cucumber.AssemblyName);
                     var assembly = _assemblyManager.GetAssembly(step.Cucumber.AssemblyName);
-                    result = await new CucumberHarness().ExecuteTestAsync(assembly, step.Cucumber.Document);
+                    result = await new CucumberHarness().ExecuteTestAsync(assembly, step);
                 }
                 else
                 {

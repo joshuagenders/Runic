@@ -13,12 +13,6 @@ namespace Runic.Agent.Core.Harness
     {
         public async Task<Result> ExecuteTestAsync(Assembly assembly, Step step)
         {
-            FunctionResult result = new FunctionResult()
-            {
-                MethodName = step.Function.MethodName,
-                StepName = step.StepName,
-                Step = step
-            };
             var timer = new Stopwatch();
             try
             {
@@ -32,18 +26,13 @@ namespace Runic.Agent.Core.Harness
                 timer.Start();
                 await ExecuteStepAsync(instance, step);
                 timer.Stop();
-
-                result.Success = true;
-                result.ExecutionTimeMilliseconds = timer.ElapsedMilliseconds;
+                return new Result(true, timer.ElapsedMilliseconds, null, step);
             }
             catch (Exception ex)
             {
                 timer.Stop();
-                result.Exception = ex;
-                result.Success = false;
-                result.ExecutionTimeMilliseconds = timer.ElapsedMilliseconds;
+                return new Result(false, timer.ElapsedMilliseconds, ex.Message, step);
             }
-            return result;
         }
 
         private async Task ExecuteStepAsync(object instance, Step step)

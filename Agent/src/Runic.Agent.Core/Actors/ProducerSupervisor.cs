@@ -1,14 +1,20 @@
 ﻿using Akka.Actor;
-using Runic.Agent.Standalone.Messages;
+using Akka.Event;
+using Runic.Agent.Core.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Runic.Agent.Standalone.Actors
+namespace Runic.Agent.Core.Actors
 {
     public class ProducerSuperVisor : ReceiveActor
     {
         private Dictionary<IActorRef, ICancelable> _producerScheduleCancellers { get; set; }
+
+        public ILoggingAdapter Log { get; } = Context.GetLogger();
+
+        protected override void PreStart() => Log.Info("Producer supervisor started");
+        protected override void PostStop() => Log.Info("Producer supervisor stopped");
 
         public ProducerSuperVisor()
         {

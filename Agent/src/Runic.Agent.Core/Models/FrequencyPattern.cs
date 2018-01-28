@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Immutable;
 
 namespace Runic.Agent.Core.Models
 {
@@ -17,7 +17,7 @@ namespace Runic.Agent.Core.Models
             double maxJourneysPerMinute, 
             int rampUpSeconds,
             int rampDownSeconds, 
-            IReadOnlyList<Point> points)
+            ImmutableList<Point> points)
         {
             PatternType = patternType;
             DurationSeconds = durationSeconds;
@@ -34,6 +34,6 @@ namespace Runic.Agent.Core.Models
         public int RampUpSeconds { get; }
         public int RampDownSeconds { get; }
         //graph
-        public IReadOnlyList<Point> Points { get; }
+        public ImmutableList<Point> Points { get; }
     }
 }

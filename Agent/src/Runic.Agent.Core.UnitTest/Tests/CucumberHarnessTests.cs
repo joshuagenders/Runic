@@ -5,6 +5,8 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
+using Runic.Agent.Core.Models;
+using FluentAssertions;
 
 namespace Runic.Agent.UnitTest.Tests
 {
@@ -22,16 +24,11 @@ namespace Runic.Agent.UnitTest.Tests
                    When I have a when ""wherever""
                    Then I have a then ""whomever""";
 
-            await harness.ExecuteTestAsync(GetType().GetTypeInfo().Assembly, cucumberDocument);
-            
-            var maxKey = FakeCucumberClass.FakeCucumberClasses.Keys.OrderBy(a => a).Last();
-            if (!FakeCucumberClass.FakeCucumberClasses.TryGetValue(maxKey, out FakeCucumberClass test))
-            {
-                Assert.False(true, "No cucumber test class found in static FakeCucumberClasses Dictionary");
-            }
-            Assert.True(test.CallList.Any(c => c.InvocationTarget == "GivenMethod"), "Given method not called");
-            Assert.True(test.CallList.Any(c => c.InvocationTarget == "WhenMethod"), "When method not called");
-            Assert.True(test.CallList.Any(c => c.InvocationTarget == "ThenMethod"), "Then method not called");
+            var result = 
+                await harness.ExecuteTestAsync(
+                    GetType().GetTypeInfo().Assembly, 
+                    new Step("step 1", null, new CucumberStepInformation(cucumberDocument, GetType().GetTypeInfo().Assembly.FullName)));
+            result.Success.Should().BeTrue();
         }
     }
 }

@@ -8,23 +8,16 @@ namespace Runic.Agent.Core.Harness
 {
     public class CucumberHarness
     {
-        public async Task<Result> ExecuteTestAsync(Assembly assembly, string document)
+        public async Task<Result> ExecuteTestAsync(Assembly assembly, Step step)
         {
             var test = new CucumberTest(assembly);
 
             var stopWatch = new Stopwatch();
             stopWatch.Start();
-            var result = await test.ExecuteAsync(document);
+            var result = await test.ExecuteAsync(step.Cucumber.Document);
             stopWatch.Stop();
 
-            return new CucumberResult()
-            {
-                Exception = result.Exception,
-                FailedStep = result.FailedStep,
-                Steps = result.Steps,
-                Success = result.Success,
-                ExecutionTimeMilliseconds = stopWatch.ElapsedMilliseconds
-            };
+            return new Result(result.Success, stopWatch.ElapsedMilliseconds, result.Exception?.Message, step);
         }
     }
 }

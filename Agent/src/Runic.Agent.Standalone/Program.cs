@@ -1,6 +1,6 @@
 ﻿using Akka.Actor;
-using Runic.Agent.Standalone.Actors;
-using Runic.Agent.Standalone.Messages;
+using Runic.Agent.Core.Actors;
+using Runic.Agent.Core.Messages;
 using System;
 
 namespace Runic.Agent.Standalone

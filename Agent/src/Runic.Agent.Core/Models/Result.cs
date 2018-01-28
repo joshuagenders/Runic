@@ -2,12 +2,26 @@
 
 namespace Runic.Agent.Core.Models
 {
-    public abstract class Result
+    public class Result
     {
-        //todo immutable?
-        public bool Success { get; set; }
-        public long ExecutionTimeMilliseconds { get; set; }
-        public Exception Exception { get; set; }
-        public Step Step { get; set; }
+        public Result(
+            bool success,
+            long executionTimeMilliseconds,
+            string exceptionMessage,
+            Step step)
+        {
+            Success = success;
+            ExecutionTimeMilliseconds = executionTimeMilliseconds;
+            ExceptionMessage = exceptionMessage;
+            Step = step;
+        }
+
+        public bool Success { get; }
+
+        public long ExecutionTimeMilliseconds { get; }
+
+        public string ExceptionMessage { get; }
+
+        public Step Step { get; }
     }
 }

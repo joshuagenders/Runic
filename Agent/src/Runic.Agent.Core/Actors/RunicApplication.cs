@@ -1,7 +1,8 @@
 ﻿using Akka.Actor;
 using Akka.Event;
-using Runic.Agent.Standalone.Messages;
-namespace Runic.Agent.Standalone.Actors
+using Runic.Agent.Core.Messages;
+
+namespace Runic.Agent.Core.Actors
 {
     public class RunicApplication : ReceiveActor
     {
@@ -9,6 +10,7 @@ namespace Runic.Agent.Standalone.Actors
 
         protected override void PreStart() => Log.Info("Runic Application started");
         protected override void PostStop() => Log.Info("Runic Application stopped");
+
         private IActorRef _producerSupervisor { get; set; }
         private IActorRef _consumerSupervisor { get; set; }
         private ICancelable _producerCancellation { get; set; }

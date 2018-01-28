@@ -2,6 +2,7 @@
 using Runic.Agent.Core.AssemblyManagement;
 using System.Linq;
 using FluentAssertions;
+using System;
 
 namespace Runic.Agent.Core.UnitTest.Tests
 {
@@ -17,13 +18,13 @@ namespace Runic.Agent.Core.UnitTest.Tests
         [Fact]
         public void WhenLoadingMissingAssembly_ThrowsException()
         {
-            Assert.Throws<AssemblyLoadException>(() => _assemblyManager.LoadAssembly("someassembly"));
+            Assert.Throws<ArgumentException>(() => _assemblyManager.LoadAssembly("someassembly"));
         }
 
         [Fact]
         public void WhenGettingUnloadedAssembly_ThrowsException()
         {
-            Assert.Throws<AssemblyLoadException>(() => _assemblyManager.GetAssembly("someassembly"));
+            Assert.Throws<ArgumentException>(() => _assemblyManager.GetAssembly("someassembly"));
         }
         
         [Fact]

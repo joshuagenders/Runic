@@ -1,13 +1,21 @@
 ﻿using Akka.Actor;
-using Runic.Agent.Standalone.Messages;
+using Akka.Event;
+using Runic.Agent.Core.Messages;
+using System;
 using System.Collections.Generic;
 
-namespace Runic.Agent.Standalone.Actors
+namespace Runic.Agent.Core.Actors
 {
     public class ConsumerSupervisor : ReceiveActor
     {
         private readonly List<IActorRef> _consumers;
-        
+
+        public ILoggingAdapter Log { get; } = Context.GetLogger();
+
+        protected override void PreStart() => Log.Info("Consumer supervisor started");
+        protected override void PostStop() => Log.Info("Consumer supervisor stopped");
+
+
         //gracefully handle terminate of producer (finished/terminated)
 
         public ConsumerSupervisor()
@@ -19,7 +27,7 @@ namespace Runic.Agent.Standalone.Actors
 
         private void AssignTestToConsumer(ExecuteTestPlan testPlan)
         {
-            CreateConsumer().Tell(testPlan.TestPlan); ;
+            CreateConsumer().Tell(testPlan.TestPlan);
         }
         
         private void RemoveConsumer(Terminated terminated)
