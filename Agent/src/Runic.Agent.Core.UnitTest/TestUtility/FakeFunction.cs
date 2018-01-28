@@ -93,14 +93,17 @@ namespace Runic.Agent.UnitTest.TestUtility
 
         public void NoInputs()
         {
+            //
         }
 
         public void SingleStringInput(string input)
         {
+            //
         }
 
         public void DefaultStringInput(string input = "default")
         {
+            //
         }
 
         public void InputsWithDefault(string input1, int input2, string defaultVal = "default")

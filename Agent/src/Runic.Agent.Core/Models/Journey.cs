@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Immutable;
 
 namespace Runic.Agent.Core.Models
 {
@@ -7,7 +7,7 @@ namespace Runic.Agent.Core.Models
         public Journey(
             string name, 
             int stepDelayMilliseconds, 
-            IReadOnlyList<Step> steps, 
+            ImmutableList<Step> steps, 
             string assemblyName)
         {
             Name = name;
@@ -18,7 +18,7 @@ namespace Runic.Agent.Core.Models
 
         public string Name { get; }
         public int StepDelayMilliseconds { get; }
-        public IReadOnlyList<Step> Steps { get; }
+        public ImmutableList<Step> Steps { get; }
         public string AssemblyName { get; }
     }
 }

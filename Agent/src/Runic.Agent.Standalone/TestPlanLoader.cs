@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Runic.Agent.Core.WorkGenerator;
+using Runic.Agent.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,10 +19,14 @@ namespace Runic.Agent.Standalone
                     $"No work files (.work.json) were located in the configured directory: {configuration.TestPlanPath}");
             }
             
-            var work = files.Select(File.ReadAllText)
-                            .Select(JsonConvert.DeserializeObject<TestPlan>)
-                            .ToList();
-            return work;
+            return files.Select(File.ReadAllText)
+                        .Select(DeserializeTestPlan)
+                        .ToList();
+        }
+
+        public static TestPlan DeserializeTestPlan(string fileText)
+        {
+            return JsonConvert.DeserializeObject<TestPlan>(fileText);
         }
     }
 }

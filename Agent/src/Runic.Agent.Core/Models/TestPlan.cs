@@ -1,7 +1,4 @@
-﻿using Runic.Agent.Core.Models;
-using System;
-
-namespace Runic.Agent.Core.WorkGenerator
+﻿namespace Runic.Agent.Core.Models
 {
     public class TestPlan
     {

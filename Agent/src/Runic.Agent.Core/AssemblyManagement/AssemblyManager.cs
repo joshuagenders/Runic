@@ -28,31 +28,31 @@ namespace Runic.Agent.Core.AssemblyManagement
             {
                 throw new AssemblyLoadException($"Could not find file {pluginPath}");
             }
-
-            //load
+            
             Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(pluginPath);
             _assemblies[pluginAssemblyName] = assembly ?? throw new AssemblyLoadException($"Could not load assembly {pluginPath}, {pluginAssemblyName}");
         }
 
+        public IList<Assembly> GetAssemblies() => _assemblies.Values.ToList();
+        public IList<string> GetAssemblyKeys() => _assemblies.Keys.ToList();
+
         public IList<MethodStepInformation> GetAvailableMethods() =>
-            _assemblies.SelectMany(a => SelectMethodInformation(a.Value.DefinedTypes)).ToList();
+            _assemblies.SelectMany(a => MapMethodInformation(a.Value.DefinedTypes))
+                       .ToList();
         
-        private IEnumerable<MethodStepInformation> SelectMethodInformation(IEnumerable<TypeInfo> types) => 
+        private IEnumerable<MethodStepInformation> MapMethodInformation(IEnumerable<TypeInfo> types) => 
                 types.SelectMany(
                         t => t.AsType()
                               .GetRuntimeMethods()
-                              .Select(SelectMethodInformation));
+                              .Select(MapMethodInformation));
 
-        private MethodStepInformation SelectMethodInformation (
+        private MethodStepInformation MapMethodInformation (
             MethodInfo methodInfo) => 
                 new MethodStepInformation(
                     methodInfo.DeclaringType.DeclaringType.GetTypeInfo().Assembly.FullName,
                     methodInfo.DeclaringType.FullName,
                     methodInfo.Name
                 );
-
-        public IList<Assembly> GetAssemblies() => _assemblies.Values.ToList();
-        public IList<string> GetAssemblyKeys() => _assemblies.Keys.ToList();
 
         public Assembly GetAssembly(string pluginAssemblyName)
         {

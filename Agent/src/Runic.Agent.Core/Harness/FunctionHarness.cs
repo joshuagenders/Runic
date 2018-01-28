@@ -30,7 +30,7 @@ namespace Runic.Agent.Core.Harness
                 var instance = Activator.CreateInstance(type);
 
                 timer.Start();
-                await ExecuteFunctionAsync(instance, step);
+                await ExecuteStepAsync(instance, step);
                 timer.Stop();
 
                 result.Success = true;
@@ -46,27 +46,25 @@ namespace Runic.Agent.Core.Harness
             return result;
         }
 
-        private async Task ExecuteFunctionAsync(object instance, Step step)
+        private async Task ExecuteStepAsync(object instance, Step step)
         {
-            var functionMethod =
+            var functionMethods =
                 instance.GetType()
                          .GetRuntimeMethods()
                          .Where(m => m.Name == step.Function.MethodName);
 
-            if (!functionMethod.Any())
+            if (functionMethods.Any())
                 throw new ArgumentException($"Method {step.Function.MethodName} not found on type {instance.GetType().Name}.");
 
-            var parameters = new MethodParameterService()
-                                    .GetParams(
-                                        step.Function.PositionalMethodParameterValues?.ToArray(),
-                                        functionMethod.First());
-            if (IsAsyncMethod(functionMethod.First()))
+            var method = functionMethods.First();
+            var parameters = new MethodParameterService().GetParams(step.Function.PositionalMethodParameterValues?.ToArray(), method);
+            if (IsAsyncMethod(method))
             {
-                await ((Task)functionMethod.First().Invoke(instance, parameters));
+                await ((Task)method.Invoke(instance, parameters));
             }
             else
             {
-                functionMethod.First().Invoke(instance, parameters);
+                method.Invoke(instance, parameters);
             }
         }
 

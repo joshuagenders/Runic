@@ -1,4 +1,4 @@
-﻿using Runic.Agent.Core.WorkGenerator;
+﻿using Runic.Agent.Core.Models;
 
 namespace Runic.Agent.Standalone.Messages
 {

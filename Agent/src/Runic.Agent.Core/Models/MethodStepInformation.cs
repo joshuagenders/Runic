@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Immutable;
 
 namespace Runic.Agent.Core.Models
 {
@@ -8,7 +8,7 @@ namespace Runic.Agent.Core.Models
             string assemblyName, 
             string assemblyQualifiedClassName, 
             string methodName,
-            List<string> positionalMethodParameterValues = null)
+            ImmutableList<string> positionalMethodParameterValues = null)
         {
             AssemblyName = assemblyName;
             AssemblyQualifiedClassName = assemblyQualifiedClassName;
@@ -19,6 +19,6 @@ namespace Runic.Agent.Core.Models
         public string AssemblyName { get; }
         public string AssemblyQualifiedClassName { get; }
         public string MethodName { get; }
-        public List<string> PositionalMethodParameterValues { get; }
+        public ImmutableList<string> PositionalMethodParameterValues { get; }
     }
 }

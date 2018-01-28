@@ -1,7 +1,6 @@
 ﻿using Akka.Actor;
 using Runic.Agent.Core.Models;
 using Runic.Agent.Core.Services;
-using Runic.Agent.Core.WorkGenerator;
 using Runic.Agent.Standalone.Messages;
 using System;
 using System.Linq;

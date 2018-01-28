@@ -9,20 +9,27 @@ namespace Runic.Agent.Standalone
     {   
         public static void Main(string[] args)
         {
-            var config = new ConfigBuilder(args).Config;
-            var testPlans = TestPlanLoader.GetTestPlans(config);
-
-            using (var system = ActorSystem.Create("runic-system"))
+            try
             {
-                // Create top level supervisor
-                var app = system.ActorOf(Props.Create<RunicApplication>(), "application");
+                var config = new ConfigBuilder(args).Config;
+                var testPlans = TestPlanLoader.GetTestPlans(config);
 
-                foreach (var plan in testPlans)
+                using (var system = ActorSystem.Create("runic-system"))
                 {
-                    app.Tell(new ExecuteTestPlan(plan));
+                    // Create top level supervisor
+                    var app = system.ActorOf(Props.Create<RunicApplication>(), "application");
+
+                    foreach (var plan in testPlans)
+                    {
+                        app.Tell(new ExecuteTestPlan(plan));
+                    }
+                    // Exit the system after ENTER is pressed
+                    Console.ReadLine();
                 }
-                // Exit the system after ENTER is pressed
-                Console.ReadLine();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error has occurred: {ex.Message}");
             }
         }
     }

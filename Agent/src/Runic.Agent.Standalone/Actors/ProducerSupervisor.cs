@@ -28,10 +28,10 @@ namespace Runic.Agent.Standalone.Actors
         {
             ICancelable cancelable;
             _producerScheduleCancellers.TryGetValue(terminated.ActorRef, out cancelable);
-
             cancelable?.CancelIfNotNull();
-            Context.Stop(terminated.ActorRef);
             _producerScheduleCancellers.Remove(terminated.ActorRef);
+
+            Context.Stop(terminated.ActorRef);
         }
 
         private void CreateProducer(StartProducer startProducer)

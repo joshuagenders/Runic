@@ -1,7 +1,6 @@
 ﻿using Runic.Agent.Core.AssemblyManagement;
 using Runic.Agent.Core.Models;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Runic.Agent.Core.Harness
