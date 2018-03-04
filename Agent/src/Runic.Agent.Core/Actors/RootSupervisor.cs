@@ -4,7 +4,7 @@ using Runic.Agent.Core.Messages;
 
 namespace Runic.Agent.Core.Actors
 {
-    public class ProducerConsumerSupervisor : ReceiveActor
+    public class RootSupervisor : ReceiveActor
     {
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 
@@ -13,12 +13,15 @@ namespace Runic.Agent.Core.Actors
 
         private IActorRef _producerSupervisor { get; set; }
         private IActorRef _consumerSupervisor { get; set; }
+        private IActorRef _resultProcessor { get; set; }
+
         private ICancelable _producerCancellation { get; set; }
 
-        public ProducerConsumerSupervisor()
+        public RootSupervisor()
         {
             _consumerSupervisor = Context.ActorOf<ConsumerSupervisor>("consumer-supervisor");
             _producerSupervisor = Context.ActorOf<ProducerSuperVisor>("producer-supervisor");
+            _resultProcessor = Context.ActorOf<ResultProcessor>("result-processor");
 
             //shutdown on completion - ask producer supervisor if there are active producers
             _producerCancellation = Context.System
@@ -32,8 +35,6 @@ namespace Runic.Agent.Core.Actors
             Receive<ExecuteTestPlan>(_ => ExecutePlan(_));
             Receive<NoProducers>(_ => Shutdown());
         }
-
-
 
         private void Shutdown()
         {
