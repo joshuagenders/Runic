@@ -1,5 +1,5 @@
-﻿using Runic.Agent.Core.AssemblyManagement;
-using Runic.Agent.Core.Models;
+﻿using Runic.Agent.Core.Models;
+using Runic.Agent.Core.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -7,11 +7,11 @@ namespace Runic.Agent.Core.Harness
 {
     public class Person
     {
-        private readonly IAssemblyManager _assemblyManager;
+        private readonly AssemblyService _assemblyService;
 
-        public Person(IAssemblyManager assemblyManager)
+        public Person(AssemblyService assemblyService)
         {
-            _assemblyManager = assemblyManager;
+            _assemblyService = assemblyService;
         }
         
         public async Task<List<Result>> PerformJourneyAsync(Journey journey)
@@ -22,12 +22,12 @@ namespace Runic.Agent.Core.Harness
                 Result result = null;
                 if (!string.IsNullOrWhiteSpace(step.Cucumber?.Document))
                 {
-                    var assembly = _assemblyManager.GetLoadAssembly(step.Cucumber.AssemblyPath);
+                    var assembly = _assemblyService.GetLoadAssembly(step.Cucumber.AssemblyPath);
                     result = await new CucumberHarness().ExecuteTestAsync(assembly, step);
                 }
                 else
                 {
-                    var assembly = _assemblyManager.GetLoadAssembly(step.Function.AssemblyPath);
+                    var assembly = _assemblyService.GetLoadAssembly(step.Function.AssemblyPath);
                     result = await new FunctionHarness().ExecuteTestAsync(assembly, step);
                 }
                 results.Add(result);

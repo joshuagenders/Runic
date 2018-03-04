@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Runic.Agent.Core.UnitTest.Tests
+﻿namespace Runic.Agent.Core.UnitTest.Tests
 {
-    class FunctionHarnessTests
+    public class FunctionHarnessTests
     {
+        //TODO
     }
 }
