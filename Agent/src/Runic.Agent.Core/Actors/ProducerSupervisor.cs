@@ -35,7 +35,10 @@ namespace Runic.Agent.Core.Actors
             ICancelable cancelable;
             _producerScheduleCancellers.TryGetValue(terminated.ActorRef, out cancelable);
             cancelable?.CancelIfNotNull();
-            _producerScheduleCancellers.Remove(terminated.ActorRef);
+            if (_producerScheduleCancellers.ContainsKey(terminated.ActorRef))
+            {
+                _producerScheduleCancellers.Remove(terminated.ActorRef);
+            }
 
             Context.Stop(terminated.ActorRef);
         }

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Runic.Agent.Standalone": {
+      "commandName": "Project",
+      "commandLineArgs": "-t c:/code/temp"
+    }
+  }
+}

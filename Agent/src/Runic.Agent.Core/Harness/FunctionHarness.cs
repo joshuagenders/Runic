@@ -42,7 +42,7 @@ namespace Runic.Agent.Core.Harness
                          .GetRuntimeMethods()
                          .Where(m => m.Name == step.Function.MethodName);
 
-            if (functionMethods.Any())
+            if (!functionMethods.Any())
                 throw new ArgumentException($"Method {step.Function.MethodName} not found on type {instance.GetType().Name}.");
 
             var method = functionMethods.First();

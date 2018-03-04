@@ -16,7 +16,7 @@ namespace Runic.Agent.Standalone
             if (!files.Any())
             {
                 throw new ArgumentException(
-                    $"No work files (.work.json) were located in the configured directory: {configuration.TestPlanPath}");
+                    $"No work files (.testplan.json) were located in the configured directory: {configuration.TestPlanPath}");
             }
             
             return files.Select(File.ReadAllText)

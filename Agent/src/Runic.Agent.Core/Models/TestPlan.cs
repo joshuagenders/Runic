@@ -8,12 +8,10 @@
             FrequencyPattern frequency)
         {
             Journey = journey;
-            JourneysPerMinute = journeysPerMinute;
             Frequency = frequency;
         }
         
         public Journey Journey { get; }
-        public double JourneysPerMinute { get; }
         public FrequencyPattern Frequency { get; }
     }
 }

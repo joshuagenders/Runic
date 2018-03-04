@@ -24,12 +24,14 @@ namespace Runic.Agent.Standalone
                         app.Tell(new ExecuteTestPlan(plan));
                     }
                     // Exit the system after ENTER is pressed
+                    Console.WriteLine("Press Enter to exit.");
                     Console.ReadLine();
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"An error has occurred: {ex.Message}");
+                Console.ReadLine();
             }
         }
     }

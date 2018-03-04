@@ -12,8 +12,8 @@ namespace Runic.Agent.Core.Actors
         public ILoggingAdapter Log { get; } = Context.GetLogger();
         private readonly AssemblyManager _assemblyManager;
 
-        protected override void PreStart() => Log.Info("Test plan started");
-        protected override void PostStop() => Log.Info("Test plan stopped");
+        protected override void PreStart() => Log.Info("Consumer started");
+        protected override void PostStop() => Log.Info("Consumer stopped");
 
         public Consumer()
         {

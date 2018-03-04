@@ -18,25 +18,19 @@ namespace Runic.Agent.Core.UnitTest.Tests
         [Fact]
         public void WhenLoadingMissingAssembly_ThrowsException()
         {
-            Assert.Throws<ArgumentException>(() => _assemblyManager.LoadAssembly("someassembly"));
-        }
-
-        [Fact]
-        public void WhenGettingUnloadedAssembly_ThrowsException()
-        {
-            Assert.Throws<ArgumentException>(() => _assemblyManager.GetAssembly("someassembly"));
+            Assert.Throws<ArgumentException>(() => _assemblyManager.GetLoadAssembly("someassembly"));
         }
         
         [Fact]
         public void WhenGettingAssembliesWithoutLoad_ReturnsEmptyList()
         {
-            _assemblyManager.GetAssemblies().Any().Should().BeFalse();
+            _assemblyManager.GetCachedAssemblies().Any().Should().BeFalse();
         }
         
         [Fact]
         public void WhenGettingAssemblyKeysWithoutLoad_ReturnsEmptyList()
         {
-            _assemblyManager.GetAssemblyKeys().Any().Should().BeFalse();
+            _assemblyManager.GetCachedAssemblyKeys().Any().Should().BeFalse();
         }
         
         [Fact]

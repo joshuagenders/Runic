@@ -4,9 +4,9 @@ namespace Runic.Agent.Core.Models
 {
     public enum PatternType
     {
-        Constant,
-        Gradual,
-        Graph
+        Constant = 1,
+        Gradual = 2,
+        Graph = 3
     }
 
     public class FrequencyPattern

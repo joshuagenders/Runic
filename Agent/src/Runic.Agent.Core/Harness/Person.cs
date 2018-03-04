@@ -22,14 +22,12 @@ namespace Runic.Agent.Core.Harness
                 Result result = null;
                 if (!string.IsNullOrWhiteSpace(step.Cucumber?.Document))
                 {
-                    _assemblyManager.LoadAssembly(step.Cucumber.AssemblyName);
-                    var assembly = _assemblyManager.GetAssembly(step.Cucumber.AssemblyName);
+                    var assembly = _assemblyManager.GetLoadAssembly(step.Cucumber.AssemblyName);
                     result = await new CucumberHarness().ExecuteTestAsync(assembly, step);
                 }
                 else
                 {
-                    _assemblyManager.LoadAssembly(step.Function.AssemblyPath);
-                    var assembly = _assemblyManager.GetAssembly(step.Function.AssemblyPath);
+                    var assembly = _assemblyManager.GetLoadAssembly(step.Function.AssemblyPath);
                     result = await new FunctionHarness().ExecuteTestAsync(assembly, step);
                 }
                 results.Add(result);

@@ -10,33 +10,34 @@ namespace Runic.Agent.Core.AssemblyManagement
 {
     public class AssemblyManager
     {
-        private readonly Dictionary<string, Assembly> _assemblies;
+        private readonly Dictionary<string, Assembly> _assemblyCache;
         
         public AssemblyManager()
         {
-            _assemblies = new Dictionary<string, Assembly>();
+            _assemblyCache = new Dictionary<string, Assembly>();
         }
 
-        public void LoadAssembly(string pluginAssemblyPath)
+        private void LoadAssembly(string pluginAssemblyPath)
         {
-            if (_assemblies.ContainsKey(pluginAssemblyPath))
+            if (_assemblyCache.ContainsKey(pluginAssemblyPath))
                 return;
-            ;
+
             if (!File.Exists(pluginAssemblyPath))
             {
                 throw new ArgumentException($"Could not find file {pluginAssemblyPath}");
             }
             
             Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(pluginAssemblyPath);
-            _assemblies[pluginAssemblyPath] = assembly ?? throw new ArgumentException($"Could not load assembly {pluginAssemblyPath}");
+            _assemblyCache[pluginAssemblyPath] = assembly ?? throw new ArgumentException($"Could not load assembly {pluginAssemblyPath}");
         }
 
-        public IList<Assembly> GetAssemblies() => _assemblies.Values.ToList();
-        public IList<string> GetAssemblyKeys() => _assemblies.Keys.ToList();
+        public IList<Assembly> GetCachedAssemblies() => _assemblyCache.Values.ToList();
+        public IList<string> GetCachedAssemblyKeys() => _assemblyCache.Keys.ToList();
 
         public IList<MethodStepInformation> GetAvailableMethods() =>
-            _assemblies.SelectMany(a => MapMethodInformation(a.Value.DefinedTypes))
-                       .ToList();
+            _assemblyCache
+                .SelectMany(a => MapMethodInformation(a.Value.DefinedTypes))
+                .ToList();
         
         private IEnumerable<MethodStepInformation> MapMethodInformation(IEnumerable<TypeInfo> types) => 
                 types.SelectMany(
@@ -52,9 +53,10 @@ namespace Runic.Agent.Core.AssemblyManagement
                     methodInfo.Name
                 );
 
-        public Assembly GetAssembly(string pluginAssemblyPath)
+        public Assembly GetLoadAssembly(string pluginAssemblyPath)
         {
-            if (_assemblies.TryGetValue(pluginAssemblyPath, out Assembly val))
+            LoadAssembly(pluginAssemblyPath);
+            if (_assemblyCache.TryGetValue(pluginAssemblyPath, out Assembly val))
             {
                 return val;
             }

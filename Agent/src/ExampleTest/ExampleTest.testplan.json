@@ -1,0 +1,22 @@
+﻿{
+  "Journey": {
+    "Name": "Example test plan",
+    "StepDelayMilliseconds": 300,
+    "Steps": [
+      {
+        "StepName": "step 1",
+        "Function": {
+          "AssemblyPath": "c:/code/temp/ExampleTest.dll",
+          "AssemblyQualifiedClassName": "ExampleTest.ExampleClass",
+          "MethodName": "ExampleMethod"
+        }
+      }
+    ],
+    "AssemblyName": "ExampleTest.dll"
+  },
+  "Frequency": {
+    "PatternType": 1,
+    "DurationSeconds": 300,
+    "MaxJourneysPerMinute": 10
+  }
+}

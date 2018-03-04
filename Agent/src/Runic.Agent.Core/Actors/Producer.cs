@@ -57,7 +57,8 @@ namespace Runic.Agent.Core.Actors
                 Context.ActorSelection("../../consumer-supervisor")
                        .Tell(new ExecuteTestPlan(_testPlan));
             }
-            if (_startTime.AddSeconds(_testPlan.Frequency.DurationSeconds) > DateTime.Now)
+            var endTime = _startTime.AddSeconds(_testPlan.Frequency.DurationSeconds);
+            if (DateTime.Now > endTime)
             {
                 Context.Stop(Self);
             }
