@@ -7,8 +7,7 @@ namespace Runic.Agent.Core.Models
         public Journey(
             string name, 
             int stepDelayMilliseconds, 
-            ImmutableList<Step> steps, 
-            string assemblyName)
+            ImmutableList<Step> steps)
         {
             Name = name;
             StepDelayMilliseconds = stepDelayMilliseconds;

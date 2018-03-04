@@ -8,7 +8,12 @@ using System.Runtime.Loader;
 
 namespace Runic.Agent.Core.AssemblyManagement
 {
-    public class AssemblyManager
+    public interface IAssemblyManager
+    {
+        Assembly GetLoadAssembly(string pluginAssemblyPath);
+    }
+
+    public class AssemblyManager : IAssemblyManager
     {
         private readonly Dictionary<string, Assembly> _assemblyCache;
         

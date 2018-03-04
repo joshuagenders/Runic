@@ -9,7 +9,7 @@ namespace Runic.Agent.Core.Actors
     public class Consumer : ReceiveActor
     {
         public ILoggingAdapter Log { get; } = Context.GetLogger();
-        private readonly AssemblyManager _assemblyManager;
+        private readonly IAssemblyManager _assemblyManager;
 
         protected override void PreStart() => Log.Info("Consumer started");
         protected override void PostStop() => Log.Info("Consumer stopped");

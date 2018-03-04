@@ -7,9 +7,9 @@ namespace Runic.Agent.Core.Harness
 {
     public class Person
     {
-        private readonly AssemblyManager _assemblyManager;
+        private readonly IAssemblyManager _assemblyManager;
 
-        public Person(AssemblyManager assemblyManager)
+        public Person(IAssemblyManager assemblyManager)
         {
             _assemblyManager = assemblyManager;
         }
