@@ -2,13 +2,13 @@
 {
     public class CucumberStepInformation
     {
-        public CucumberStepInformation(string document, string assemblyName)
+        public CucumberStepInformation(string document, string assemblyPath)
         {
             Document = document;
-            AssemblyName = assemblyName;
+            AssemblyPath = assemblyPath;
         }
 
         public string Document { get; }
-        public string AssemblyName { get; }
+        public string AssemblyPath { get; }
     }
 }

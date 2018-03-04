@@ -10,9 +10,32 @@
           "AssemblyQualifiedClassName": "ExampleTest.ExampleClass",
           "MethodName": "ExampleMethod"
         }
+      },
+      {
+        "StepName": "step 2",
+        "Function": {
+          "AssemblyPath": "c:/code/temp/ExampleTest.dll",
+          "AssemblyQualifiedClassName": "ExampleTest.ExampleClass",
+          "MethodName": "ExampleMethodAsync"
+        }
+      },
+      {
+        "StepName": "step 3",
+        "Function": {
+          "AssemblyPath": "c:/code/temp/ExampleTest.dll",
+          "AssemblyQualifiedClassName": "ExampleTest.ExampleClass",
+          "MethodName": "ExampleMethodWithParams",
+          "PositionalMethodParameters": [ "somestring", "42" ]
+        }
+      },
+      {
+        "StepName": "step 4",
+        "Cucumber": {
+          "Document": "Given I have set up preconditions\nWhen I execute some action\nThen I observe some result",
+          "AssemblyPath": "c:/code/temp/ExampleTest.dll"
+        }
       }
-    ],
-    "AssemblyName": "ExampleTest.dll"
+    ]
   },
   "Frequency": {
     "PatternType": 1,

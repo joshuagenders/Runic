@@ -13,12 +13,10 @@ namespace Runic.Agent.Core.Models
             Name = name;
             StepDelayMilliseconds = stepDelayMilliseconds;
             Steps = steps;
-            AssemblyName = assemblyName;
         }
 
         public string Name { get; }
         public int StepDelayMilliseconds { get; }
         public ImmutableList<Step> Steps { get; }
-        public string AssemblyName { get; }
     }
 }
